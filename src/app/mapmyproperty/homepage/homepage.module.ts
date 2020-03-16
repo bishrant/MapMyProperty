@@ -14,7 +14,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [EsrimapComponent, HomepageComponent],
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule, EsrimapComponent],
+  exports: [RouterModule],
 })
 export class HomepageModule { }
 
