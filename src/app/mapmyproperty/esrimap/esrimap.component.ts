@@ -1,59 +1,92 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import SketchViewModel from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
-import createMapView from './CreateMapView';
-import { SetupSketchViewModel } from './SketchViewModelUitls';
-import {CreatePolygonGraphicsLayer} from './CreateGraphicsLayer';
+import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import SketchViewModel from "arcgis-js-api/widgets/Sketch/SketchViewModel";
+import createMapView from "./CreateMapView";
+import { SetupSketchViewModel } from "./SketchViewModelUitls";
+import { CreatePolygonGraphicsLayer } from "./CreateGraphicsLayer";
 import E = __esri;
-import { redPolygon } from './Renderers';
-import { Store } from '@ngrx/store';
+import { redPolygon } from "./Renderers";
+import { Store } from "@ngrx/store";
+import { addGraphics } from "src/app/shared/store/graphics.actions";
+import { GraphicsState } from "src/app/shared/store/graphics.state";
+import Graphic from "arcgis-js-api/Graphic";
 
 @Component({
-  selector: 'app-esrimap',
-  templateUrl: './esrimap.component.html',
-  styleUrls: ['./esrimap.component.scss']
+  selector: "app-esrimap",
+  templateUrl: "./esrimap.component.html",
+  styleUrls: ["./esrimap.component.scss"]
 })
 export class EsrimapComponent implements OnInit {
-  @ViewChild('mapViewNode', {static: true}) private mapViewEl: ElementRef;
-  @ViewChild('graphicsStore', {static: true}) private graphicsStoreEl: ElementRef;
+  @ViewChild("mapViewNode", { static: true }) private mapViewEl: ElementRef;
+  @ViewChild("graphicsStore", { static: true })
+  private graphicsStoreEl: ElementRef;
   mapView: any;
   sketchVM: E.SketchViewModel = new SketchViewModel();
-  du = "ttttttt";
-  constructor(private store: Store) { }
+  readonly graphics$ = this.store.select(state => state.app.graphics);
+  polygonGraphicsLayer = CreatePolygonGraphicsLayer();
+  id = (): string => Math.random().toString(36).substr(2, 9);
+  
+  constructor(private store: Store<GraphicsState>) {}
 
   private initializeMap = async () => {
     try {
       this.mapView = createMapView(this.mapViewEl);
-      const polygonGraphicsLayer = CreatePolygonGraphicsLayer();
-      this.mapView.map.add(polygonGraphicsLayer);
-      this.sketchVM = SetupSketchViewModel(polygonGraphicsLayer, this.mapView);
-      this.sketchVM.on(['create'], (evt) => {
-        if (evt.state === 'complete') {
+      this.mapView.map.add(this.polygonGraphicsLayer);
+      this.sketchVM = SetupSketchViewModel(
+        this.polygonGraphicsLayer,
+        this.mapView
+      );
+      this.sketchVM.on(["create"], evt => {
+        if (evt.state === "complete") {
           console.log(evt);
           evt.graphic.symbol = redPolygon.symbol;
-          this.store.dispatch({type: 'ADD'});
-          polygonGraphicsLayer.add(evt.graphic);
+          const _g = evt.graphic;
+          evt.graphic.attributes = {gid: this.id()};
+          console.log(JSON.stringify(_g.toJSON()));
+          console.log(evt);
+          // this.polygonGraphicsLayer.add(Graphic.fromJSON(evt.graphic.toJSON()))
+          // this.store.dispatch({type: 'ADD'});
+          this.store.dispatch(
+            addGraphics({ payload: JSON.stringify(_g.toJSON()) })
+          );
+          // polygonGraphicsLayer.add(evt.graphic);
         }
       });
+      this.sketchVM.on('update', gg => console.log(gg))
     } catch (error) {
-      console.error('Map load error ', error);
+      console.error("Map load error ", error);
     }
-  }
+  };
 
+  private listenToGraphicsStore = () => {
+    this.graphics$.subscribe(g => {
+      if (g.length > 0) {
+        // console.log(g)
+        const graphicsArray = g.map(_g => {
+          const __g = JSON.parse(_g);
+          return Graphic.fromJSON(__g);
+        })
+        
+        this.polygonGraphicsLayer.graphics = graphicsArray;
+      } else {
+        this.polygonGraphicsLayer.removeAll();
+      }
+    });
 
-  startDrawing = (tool: string = 'polygon') => {
+    
+  };
+
+  startDrawing = (tool: string = "polygon") => {
     this.sketchVM.create(tool);
-  }
+  };
 
-  undo = () => {
-
-  }
+  undo = () => {};
 
   redo = () => {
     this.sketchVM.redo();
-  }
+  };
 
   ngOnInit() {
     this.initializeMap();
+    this.listenToGraphicsStore();
   }
-
 }

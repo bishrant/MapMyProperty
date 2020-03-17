@@ -11,6 +11,19 @@ const redPolygon = {
     }
   };
 
+const hollowPolygon = {
+  type: 'simple',
+  symbol: {
+    type: 'simple-fill',
+    color: 'transparent',
+    style: 'solid',
+    outline: {
+      color: 'transparent',
+      width: 2
+    }
+  }
+};
+
 const emptyPoint = {
     type: 'simple-marker',
     style: 'square',
@@ -29,4 +42,4 @@ const redDiamondMarker = {
     }
 };
 
-export {redPolygon, emptyPoint, redDiamondMarker};
+export {redPolygon, emptyPoint, redDiamondMarker, hollowPolygon};

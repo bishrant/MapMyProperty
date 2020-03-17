@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { HomepageComponent } from './homepage.component';
 import { Routes, RouterModule } from '@angular/router';
 import { EsrimapComponent } from '../esrimap/esrimap.component';
-import { StoreComponent } from '../../shared/store/Store.component';
+import { StoreComponent } from '../../shared/store/GraphicsStore.component';
 import { CommonModule } from '@angular/common';
 
 const routes: Routes = [

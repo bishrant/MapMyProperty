@@ -1,8 +1,8 @@
 <div #mapViewNode class="mapViewNode">
 
     <button (click)="startDrawing()">Polygon</button>
-    <button (click)="undo()">Undo</button>    
-    <button (click)="redo()">Redo</button> 
+    <!-- <button (click)="undo()">Undo</button>    
+    <button (click)="redo()">Redo</button>  -->
 
-    <app-stores #graphicsStore [sketchVM]="sketchVM" t={{du}}></app-stores>
+    <app-graphic-store #graphicsStore [sketchVM]="sketchVM" ></app-graphic-store>
 </div>

@@ -3,14 +3,19 @@ import { addGraphics, Actions, removeGraphics } from './graphics.actions';
 import { undoRedo } from './ngrx-undo';
 import { initialGraphicState } from './graphics.state';
 
-const id = () => Math.random().toString(36).substr(2, 9);
+const id = (): string => Math.random().toString(36).substr(2, 9);
 
-const reducer = (state, action: Actions, listener?: PatchListener) => {
+const reducer = (state: any, action: any, listener?: PatchListener) : any => {
+    console.log(action);
     return produce(
     state, next => {
         switch (action.type) {
         case addGraphics.type:
-            next.graphics.push({id: id(), data: action});
+            // action.payload.attributes = {id: id()};
+            // console.log()
+            // const graphicJson = action.payload.toJSON();
+            // console.log(graphicJson);
+            next.graphics.push(action.payload);
             return;
         case removeGraphics.type:
             next.graphics.splice(next.graphics.findIndex(t => t.id === action.id), 1);

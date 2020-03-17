@@ -8,7 +8,7 @@ export interface GraphicsState {
   app: Gstate;
 }
 export const initialGraphicState: Gstate = {
-  graphics: [{id: 1, data: 'test'}],
+  graphics: [],
   canUndo: false,
   canRedo: false
 };
