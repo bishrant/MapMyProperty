@@ -1,7 +1,7 @@
 <main>
     <header class="row">
       <span style="flex: 1;"></span>
-      <button title="undo" [disabled]="disableUndo$ | async" (click)="undo()">Undo</button>
+      <button title="undo" (click)="undo()">Undo</button>
       <button class="flip" title="redo" [disabled]="disableRedo$ | async" (click)="redo()">Redo</button>
     </header>
     <div class="row todo-in-row">
@@ -16,4 +16,5 @@
         {{ t.id }}
       
     </div>
+    {{t}}
   </main>

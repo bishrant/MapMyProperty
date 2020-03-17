@@ -7,12 +7,12 @@ import { AppComponent } from './app.component';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { GraphicsReducer } from './shared/store/graphics.reducer';
-import { StoreComponent } from './shared/store/Store.component';
+
 // import { GraphicsReducer } from './shared/store/store';
 
 @NgModule({
   declarations: [
-    AppComponent, StoreComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -21,6 +21,6 @@ import { StoreComponent } from './shared/store/Store.component';
     environment.production ? [] : StoreDevtoolsModule.instrument()
   ],
   providers: [],
-  bootstrap: [AppComponent, StoreComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
