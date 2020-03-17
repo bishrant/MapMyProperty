@@ -5,6 +5,7 @@ import { SetupSketchViewModel } from './SketchViewModelUitls';
 import {CreatePolygonGraphicsLayer} from './CreateGraphicsLayer';
 import E = __esri;
 import { redPolygon } from './Renderers';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-esrimap',
@@ -15,7 +16,7 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('mapViewNode', {static: true}) private mapViewEl: ElementRef;
   mapView: any;
   sketchVM: E.SketchViewModel = new SketchViewModel();
-  constructor() { }
+  constructor(private store: Store) { }
 
   private initializeMap = async () => {
     try {
@@ -27,6 +28,7 @@ export class EsrimapComponent implements OnInit {
         if (evt.state === 'complete') {
           console.log(evt);
           evt.graphic.symbol = redPolygon.symbol;
+          this.store.dispatch({type: 'ADD'});
           polygonGraphicsLayer.add(evt.graphic);
         }
       });
@@ -43,6 +45,7 @@ export class EsrimapComponent implements OnInit {
   undo = () => {
     console.log(this.sketchVM.state);
     if (this.sketchVM.state === 'ready') {
+      this.store.dispatch({type: 'DELETE'});
       this.sketchVM.layer.graphics.pop();
     }
     this.sketchVM.undo();
