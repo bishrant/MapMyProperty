@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { GraphicsState } from './graphics.state';
 import { addGraphics, removeGraphics } from './graphics.actions';
@@ -20,6 +20,12 @@ export class StoreComponent {
       this.graphics$.subscribe(f => console.log(f));
   }
 
+  // tslint:disable-next-line:no-input-rename
+  @Input('sketchVM') sketchVM: any;
+  @Input('t') t: any;
+  // @Input('account-id') id: string;
+
+  // @Output() undoAction = new EventEmitter<any>();
   add(text: string): void {
     this.store.dispatch(addGraphics({payload: text}));
   }
@@ -29,6 +35,14 @@ export class StoreComponent {
   }
 
   undo(): void {
+
+    console.log(this.sketchVM);
+    if (this.sketchVM.state === 'ready') {
+      this.store.dispatch({type: 'DELETE'});
+      this.sketchVM.layer.graphics.pop();
+    }
+    this.sketchVM.undo();
+
     this.store.dispatch({type: 'UNDO'});
   }
 

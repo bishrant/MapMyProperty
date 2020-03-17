@@ -14,8 +14,10 @@ import { Store } from '@ngrx/store';
 })
 export class EsrimapComponent implements OnInit {
   @ViewChild('mapViewNode', {static: true}) private mapViewEl: ElementRef;
+  @ViewChild('graphicsStore', {static: true}) private graphicsStoreEl: ElementRef;
   mapView: any;
   sketchVM: E.SketchViewModel = new SketchViewModel();
+  du = "ttttttt";
   constructor(private store: Store) { }
 
   private initializeMap = async () => {
@@ -43,12 +45,7 @@ export class EsrimapComponent implements OnInit {
   }
 
   undo = () => {
-    console.log(this.sketchVM.state);
-    if (this.sketchVM.state === 'ready') {
-      this.store.dispatch({type: 'DELETE'});
-      this.sketchVM.layer.graphics.pop();
-    }
-    this.sketchVM.undo();
+
   }
 
   redo = () => {
