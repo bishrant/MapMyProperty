@@ -18,7 +18,17 @@ const reducer = (state: any, action: any, listener?: PatchListener) : any => {
             next.graphics.push(action.payload);
             return;
         case removeGraphics.type:
-            next.graphics.splice(next.graphics.findIndex(t => t.id === action.id), 1);
+            console.log(action.gids);
+            action.gids.forEach(gid => {
+            const idx = next.graphics.findIndex(g => {
+                    const _gid = JSON.parse(g).attributes.gid;
+                    return gid === _gid;
+                });
+                console.log(idx);
+               next.graphics.splice(idx, 1);
+            })
+
+            
             return;
         default:
             return;

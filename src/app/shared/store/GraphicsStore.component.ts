@@ -10,6 +10,7 @@ import { removeGraphics } from './graphics.actions';
 })
 export class StoreComponent {
   @Input('sketchVM') sketchVM: any;
+  @Input('selectedGraphics') selectedGraphics: any[] = [];
   // readonly graphics$ = this.store.select(state => state.app.graphics);
 
   readonly disableUndo$ = this.store.select(state => !state.app.canUndo);
@@ -17,11 +18,6 @@ export class StoreComponent {
   readonly disableRedo$ = this.store.select(state => !state.app.canRedo);
 
   constructor(private readonly store: Store<GraphicsState>) {}
-  // @Output() undoAction = new EventEmitter<any>();
-
-  remove({id}: any): void {
-    this.store.dispatch(removeGraphics({id}));
-  }
 
   undo(): void {
     // console.log(this.sketchVM);
@@ -30,11 +26,17 @@ export class StoreComponent {
     // }
     // if (this.sketchVM.state === 'active') {
     this.sketchVM.undo();
-    // if (this.sketchVM.state !== 'active'){
-    // this.store.dispatch({type: 'UNDO'});
-    // }
+    if (this.sketchVM.state !== 'active'){
+    this.store.dispatch({type: 'UNDO'});
+    }
   }
 
+  delete(): void {
+    const gids = this.selectedGraphics.map(gg => gg.graphic.attributes.gid);
+    console.log(gids);
+    this.store.dispatch(removeGraphics({gids}));
+    // this.store.dispatch()
+  }
   redo(): void {
     // console.log(this.sketchVM);
     if (this.sketchVM.state === 'active') {
@@ -42,7 +44,6 @@ export class StoreComponent {
     } else {
       this.store.dispatch({type: 'REDO'});
     }
-    
     
   }
 }

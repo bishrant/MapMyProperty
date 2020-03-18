@@ -4,11 +4,8 @@ import MapView from 'arcgis-js-api/views/MapView';
 import Search from 'arcgis-js-api/widgets/Search';
 import SpatialReference from 'arcgis-js-api/geometry/SpatialReference';
 import Home from 'arcgis-js-api/widgets/Home';
-// import Extent from 'arcgis-js-api/geometry/Extent';
 
-// import { fullExtent } from './Variables';
-
-const createMapView = (mapViewEl: ElementRef): void => {
+const createMapView = (mapViewEl: ElementRef): __esri.MapView => {
   // const fullExtent = new Extent({ xmin: -106.645646, ymin: 24.837377, xmax: -93.508292, ymax: 37.500704 }).expand(1.2);
   const mapProperties = {
     basemap: 'streets',

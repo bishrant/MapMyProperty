@@ -5,6 +5,9 @@
       [disabled]="(sketchVM.state === 'ready') && (disableUndo$ | async)" 
       (click)="undo()">Undo</button>
       <button class="flip" title="redo" [disabled]="disableRedo$ | async" (click)="redo()">Redo</button>
+
+       <button title="delete" 
+       [disabled]="!(selectedGraphics && selectedGraphics.length > 0)" (click)="delete()">Delete</button>
     </header>
 
   </main>

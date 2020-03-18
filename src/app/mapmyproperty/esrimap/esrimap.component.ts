@@ -19,8 +19,9 @@ export class EsrimapComponent implements OnInit {
   @ViewChild("mapViewNode", { static: true }) private mapViewEl: ElementRef;
   @ViewChild("graphicsStore", { static: true })
   private graphicsStoreEl: ElementRef;
-  mapView: any;
+  mapView: E.MapView;
   sketchVM: E.SketchViewModel = new SketchViewModel();
+  selectedGraphics: any[];
   readonly graphics$ = this.store.select(state => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
   id = (): string => Math.random().toString(36).substr(2, 9);
@@ -51,6 +52,28 @@ export class EsrimapComponent implements OnInit {
           // polygonGraphicsLayer.add(evt.graphic);
         }
       });
+// to know if a graphic is selected 
+      // this.mapView.on('click', (evt) => {
+      //   // if (this.sketchVM.state !== 'active') {
+      //   this.mapView.hitTest(evt).then((r) => {
+      //     const _graphic = r.results.filter((result) => {
+      //       return result.graphic.layer === this.polygonGraphicsLayer;
+      //     });
+      //     this.selectedGraphics = _graphic;
+      //   })
+      // });
+
+            this.mapView.on('click', ['Shift'], (evt) => {
+              console.log('click shift')
+        // if (this.sketchVM.state !== 'active') {
+        this.mapView.hitTest(evt).then((r) => {
+          const _graphic = r.results.filter((result) => {
+            return result.graphic.layer === this.polygonGraphicsLayer;
+          });
+          this.selectedGraphics = this.selectedGraphics ? this.selectedGraphics.concat(_graphic): _graphic;
+        })
+      })
+
       this.sketchVM.on('update', gg => console.log(gg))
     } catch (error) {
       console.error("Map load error ", error);
