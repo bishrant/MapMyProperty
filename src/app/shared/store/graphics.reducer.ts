@@ -1,45 +1,66 @@
-import { produce, PatchListener } from 'immer';
-import { addGraphics, Actions, removeGraphics } from './graphics.actions';
-import { undoRedo } from './ngrx-undo';
-import { initialGraphicState } from './graphics.state';
+import { produce, PatchListener } from "immer";
+import {
+  addGraphics,
+  Actions,
+  removeGraphics,
+  updateGraphics
+} from "./graphics.actions";
+import { undoRedo } from "./ngrx-undo";
+import { initialGraphicState } from "./graphics.state";
 
-const id = (): string => Math.random().toString(36).substr(2, 9);
+const id = (): string =>
+  Math.random()
+    .toString(36)
+    .substr(2, 9);
 
-const reducer = (state: any, action: any, listener?: PatchListener) : any => {
-    console.log(action);
-    return produce(
-    state, next => {
-        switch (action.type) {
+const reducer = (state: any, action: any, listener?: PatchListener): any => {
+  console.log(action);
+  return produce(
+    state,
+    next => {
+      switch (action.type) {
         case addGraphics.type:
-            // action.payload.attributes = {id: id()};
-            // console.log()
-            // const graphicJson = action.payload.toJSON();
-            // console.log(graphicJson);
-            next.graphics.push(action.payload);
-            return;
+          next.graphics.push(action.payload);
+          return;
         case removeGraphics.type:
-            console.log(action.gids);
-            action.gids.forEach(gid => {
+          console.log(action.gids);
+          action.gids.forEach(gid => {
             const idx = next.graphics.findIndex(g => {
-                    const _gid = JSON.parse(g).attributes.gid;
-                    return gid === _gid;
-                });
-                console.log(idx);
-               next.graphics.splice(idx, 1);
-            })
+              const _gid = JSON.parse(g).attributes.gid;
+              return gid === _gid;
+            });
+            console.log(idx);
+            next.graphics.splice(idx, 1);
+          });
 
-            
-            return;
+          return;
+        case updateGraphics.type:
+          const _updatedGraphics = JSON.parse(action.graphics);
+          const newIds = _updatedGraphics.map(_u => _u.attributes.gid);
+          const j = JSON.parse(JSON.stringify(next.graphics));
+          for (let i = 0; i < j.length; i++) {
+            const n = JSON.parse(j[i]);
+            if (newIds.indexOf(n.attributes.gid) !== -1) {
+              const __u = _updatedGraphics.filter(
+                _u => _u.attributes.gid === n.attributes.gid
+              )[0];
+              j[i] = JSON.stringify(__u);
+            }
+          }
+          next.graphics = j;
+          return;
         default:
-            return;
-    }
-}, listener);
+          return;
+      }
+    },
+    listener
+  );
 };
 
-const undoableReducer = undoRedo({track: true})(reducer);
+const undoableReducer = undoRedo({ track: true })(reducer);
 
 const GraphicsReducer = (state = initialGraphicState, action: Actions) => {
-    return undoableReducer(state, action);
+  return undoableReducer(state, action);
 };
 
-export {GraphicsReducer};
+export { GraphicsReducer };

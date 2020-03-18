@@ -9,7 +9,13 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): __esri.Sket
         layer: graphicsLayer,
         pointSymbol: emptyPoint,
         polygonSymbol: hollowPolygon.symbol,
-        updateOnGraphicClick: true
+
+        updateOnGraphicClick: true,
+        defaultUpdateOptions: {
+        enableRotation: false,
+        enableScaling: false,
+        }
+        // toggleToolOnClick: false
     });
 };
 
