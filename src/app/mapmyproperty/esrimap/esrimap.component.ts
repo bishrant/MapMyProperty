@@ -9,6 +9,7 @@ import { Store } from "@ngrx/store";
 import { addGraphics } from "src/app/shared/store/graphics.actions";
 import { GraphicsState } from "src/app/shared/store/graphics.state";
 import Graphic from "arcgis-js-api/Graphic";
+import { updateGraphics } from '../../shared/store/graphics.actions';
 
 @Component({
   selector: "app-esrimap",
@@ -63,18 +64,34 @@ export class EsrimapComponent implements OnInit {
       //   })
       // });
 
-            this.mapView.on('click', ['Shift'], (evt) => {
-              console.log('click shift')
-        // if (this.sketchVM.state !== 'active') {
-        this.mapView.hitTest(evt).then((r) => {
-          const _graphic = r.results.filter((result) => {
-            return result.graphic.layer === this.polygonGraphicsLayer;
-          });
-          this.selectedGraphics = this.selectedGraphics ? this.selectedGraphics.concat(_graphic): _graphic;
-        })
-      })
+      //       this.mapView.on('click', ['Shift'], (evt) => {
+      //         console.log('click shift')
+      //   // if (this.sketchVM.state !== 'active') {
+      //   this.mapView.hitTest(evt).then((r) => {
+      //     const _graphic = r.results.filter((result) => {
+      //       return result.graphic.layer === this.polygonGraphicsLayer;
+      //     });
+      //     this.selectedGraphics = this.selectedGraphics ? this.selectedGraphics.concat(_graphic): _graphic;
+      //   })
+      // })
 
-      this.sketchVM.on('update', gg => console.log(gg))
+      this.sketchVM.on('update', gg => {
+        console.log(gg)
+        if (gg.state === 'start' || gg.state === 'active') {
+          this.selectedGraphics = gg.graphics;
+        } else if (gg.state === 'cancel') {
+          this.selectedGraphics = undefined;
+        } else if (gg.state === 'complete'){
+          // send update to the store once the editing is complete
+          this.store.dispatch(updateGraphics({graphics: JSON.stringify(gg.graphics)}))
+        }
+        console.log(this.selectedGraphics, gg, ' enable editing for this');
+
+      
+
+      });
+
+
     } catch (error) {
       console.error("Map load error ", error);
     }
@@ -97,6 +114,8 @@ export class EsrimapComponent implements OnInit {
 
     
   };
+
+
 
   startDrawing = (tool: string = "polygon") => {
     this.sketchVM.create(tool);

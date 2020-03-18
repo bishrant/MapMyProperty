@@ -8,6 +8,8 @@
 
        <button title="delete" 
        [disabled]="!(selectedGraphics && selectedGraphics.length > 0)" (click)="delete()">Delete</button>
+
+           <button (click)="startEditing()" [disabled]="!(selectedGraphics && selectedGraphics.length > 0)">Edit</button>  
     </header>
 
   </main>
