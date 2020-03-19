@@ -1,15 +1,17 @@
-<main>
-    <header class="row">
-      <span style="flex: 1;"></span>
-      <button title="undo" 
-      [disabled]="(sketchVM.state === 'ready') && (disableUndo$ | async)" 
-      (click)="undo()">Undo</button>
-      <button class="flip" title="redo" [disabled]="disableRedo$ | async" (click)="redo()">Redo</button>
+<button title="undo" [disabled]="(sketchVM.state === 'ready') && (disableUndo$ | async)" (click)="undo()">Undo</button>
 
-       <button title="delete" 
-       [disabled]="!(selectedGraphics && selectedGraphics.length > 0)" (click)="delete()">Delete</button>
+<button mat-icon-button matTooltip="Info about the action">
+  <mat-icon>undo</mat-icon>
+</button>
+<button class="flip" title="redo" [disabled]="disableRedo$ | async" (click)="redo()">Redo</button>
 
-           <button (click)="startEditing()" [disabled]="!(selectedGraphics && selectedGraphics.length > 0)">Edit</button>  
-    </header>
+<button title="delete" [disabled]="!(selectedGraphics && selectedGraphics.length > 0)"
+  (click)="delete()">Delete</button>
 
-  </main>
+<button (click)="startEditing()" [disabled]="!(selectedGraphics && selectedGraphics.length > 0)">Edit</button>
+
+<div matTooltip="You cannot delete that" >
+    <button mat-raised-button >
+        <mat-icon>delete</mat-icon>
+    </button>
+</div>

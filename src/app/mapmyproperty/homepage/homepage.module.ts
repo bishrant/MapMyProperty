@@ -4,6 +4,10 @@ import { Routes, RouterModule } from '@angular/router';
 import { EsrimapComponent } from '../esrimap/esrimap.component';
 import { StoreComponent } from '../../shared/store/GraphicsStore.component';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from "@angular/material/button";
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const routes: Routes = [
   {
@@ -15,8 +19,15 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [EsrimapComponent, HomepageComponent, StoreComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  imports: [
+    CommonModule,
+    // BrowserAnimationsModule,
+    RouterModule.forChild(routes),
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule
+  ],
+  exports: [RouterModule]
 })
-export class HomepageModule { }
+export class HomepageModule {}
 
