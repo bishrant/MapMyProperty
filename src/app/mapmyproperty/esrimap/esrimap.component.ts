@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from "@angular/core";
 import SketchViewModel from "arcgis-js-api/widgets/Sketch/SketchViewModel";
 import createMapView from "./CreateMapView";
 import { SetupSketchViewModel } from "./SketchViewModelUitls";
@@ -10,6 +10,7 @@ import { addGraphics } from "src/app/shared/store/graphics.actions";
 import { GraphicsState } from "src/app/shared/store/graphics.state";
 import Graphic from "arcgis-js-api/Graphic";
 import { updateGraphics } from '../../shared/store/graphics.actions';
+import { StoreComponent } from '../../shared/store/GraphicsStore.component';
 
 @Component({
   selector: "app-esrimap",
@@ -19,15 +20,32 @@ import { updateGraphics } from '../../shared/store/graphics.actions';
 export class EsrimapComponent implements OnInit {
   @ViewChild("mapViewNode", { static: true }) private mapViewEl: ElementRef;
   @ViewChild("graphicsStore", { static: true })
-  private graphicsStoreEl: ElementRef;
+  private graphicsStoreEl: StoreComponent;
   mapView: E.MapView;
   sketchVM: E.SketchViewModel = new SketchViewModel();
   selectedGraphics: any[];
   readonly graphics$ = this.store.select(state => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
-  id = (): string => Math.random().toString(36).substr(2, 9);
-  
+  id = (): string =>
+    Math.random()
+      .toString(36)
+      .substr(2, 9);
+
   constructor(private store: Store<GraphicsState>) {}
+
+  @HostListener("keydown.control.z") undoFromKeyboard() {
+    this.graphicsStoreEl.undo();
+  }
+  @HostListener("keydown.control.y") redoFromKeyboard() {
+    this.graphicsStoreEl.redo();
+  }
+  @HostListener("keydown.meta.shift.z") redoFromKeyboardMac() {
+    this.graphicsStoreEl.redo();
+  }
+
+  @HostListener("keydown.meta.z") undoFromKeyboardMac() {
+    this.graphicsStoreEl.undo();
+  }
 
   private initializeMap = async () => {
     try {
@@ -42,7 +60,7 @@ export class EsrimapComponent implements OnInit {
           console.log(evt);
           evt.graphic.symbol = redPolygon.symbol;
           const _g = evt.graphic;
-          evt.graphic.attributes = {gid: this.id()};
+          evt.graphic.attributes = { gid: this.id() };
           console.log(JSON.stringify(_g.toJSON()));
           console.log(evt);
           // this.polygonGraphicsLayer.add(Graphic.fromJSON(evt.graphic.toJSON()))
@@ -53,7 +71,7 @@ export class EsrimapComponent implements OnInit {
           // polygonGraphicsLayer.add(evt.graphic);
         }
       });
-// to know if a graphic is selected 
+      // to know if a graphic is selected
       // this.mapView.on('click', (evt) => {
       //   // if (this.sketchVM.state !== 'active') {
       //   this.mapView.hitTest(evt).then((r) => {
@@ -75,23 +93,21 @@ export class EsrimapComponent implements OnInit {
       //   })
       // })
 
-      this.sketchVM.on('update', gg => {
-        console.log(gg)
-        if (gg.state === 'start' || gg.state === 'active') {
+      this.sketchVM.on("update", gg => {
+        console.log(gg);
+        if (gg.state === "start" || gg.state === "active") {
           this.selectedGraphics = gg.graphics;
-        } else if (gg.state === 'cancel') {
+        } else if (gg.state === "cancel") {
           this.selectedGraphics = undefined;
-        } else if (gg.state === 'complete'){
+        } else if (gg.state === "complete") {
           // send update to the store once the editing is complete
-          this.store.dispatch(updateGraphics({graphics: JSON.stringify(gg.graphics)}))
+          this.store.dispatch(
+            updateGraphics({ graphics: JSON.stringify(gg.graphics) })
+          );
+          this.selectedGraphics = undefined;
         }
-        console.log(this.selectedGraphics, gg, ' enable editing for this');
-
-      
-
+        console.log(this.selectedGraphics, gg, " enable editing for this");
       });
-
-
     } catch (error) {
       console.error("Map load error ", error);
     }
@@ -104,27 +120,17 @@ export class EsrimapComponent implements OnInit {
         const graphicsArray = g.map(_g => {
           const __g = JSON.parse(_g);
           return Graphic.fromJSON(__g);
-        })
-        
+        });
+
         this.polygonGraphicsLayer.graphics = graphicsArray;
       } else {
         this.polygonGraphicsLayer.removeAll();
       }
     });
-
-    
   };
-
-
 
   startDrawing = (tool: string = "polygon") => {
     this.sketchVM.create(tool);
-  };
-
-  undo = () => {};
-
-  redo = () => {
-    this.sketchVM.redo();
   };
 
   ngOnInit() {

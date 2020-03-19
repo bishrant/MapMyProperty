@@ -17,6 +17,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    // MatTooltipModule,
     StoreModule.forRoot({ app: GraphicsReducer }),
     environment.production ? [] : StoreDevtoolsModule.instrument()
   ],

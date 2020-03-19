@@ -1,17 +1,31 @@
-<button title="undo" [disabled]="(sketchVM.state === 'ready') && (disableUndo$ | async)" (click)="undo()">Undo</button>
+<div matTooltip="Undo" [hidden]="(selectedGraphics && selectedGraphics.length > 0)">
+  <button mat-raised-button [disabled]="(sketchVM.state === 'ready') && (disableUndo$ | async)" (click)="undo()">
+    <mat-icon>undo</mat-icon>
+  </button>
+</div>
 
-<button mat-icon-button matTooltip="Info about the action">
-  <mat-icon>undo</mat-icon>
-</button>
-<button class="flip" title="redo" [disabled]="disableRedo$ | async" (click)="redo()">Redo</button>
+<div matTooltip="Delete" [hidden]="!(selectedGraphics && selectedGraphics.length > 0)">
+  <button mat-raised-button [disabled]="!(selectedGraphics && selectedGraphics.length > 0)" (click)="delete()">
+    <mat-icon>delete</mat-icon>Delete
+  </button>
+</div>
 
-<button title="delete" [disabled]="!(selectedGraphics && selectedGraphics.length > 0)"
-  (click)="delete()">Delete</button>
+<div matTooltip="Delete all drawings." [hidden]="!(sketchVM.layer.graphics.length > 0)">
+  <button mat-raised-button [disabled]="!(sketchVM.layer.graphics.length > 0)" (click)="deleteAll()">
+    <mat-icon>delete_forever</mat-icon>Delete All
+  </button>
+</div>
 
-<button (click)="startEditing()" [disabled]="!(selectedGraphics && selectedGraphics.length > 0)">Edit</button>
+<div matTooltip="Redo" [hidden]="(selectedGraphics && selectedGraphics.length > 0)">
+  <button mat-raised-button [disabled]="(disableRedo$ | async)" (click)="redo()">
+    <mat-icon>redo</mat-icon>
+  </button>
+</div>
 
-<div matTooltip="You cannot delete that" >
-    <button mat-raised-button >
-        <mat-icon>delete</mat-icon>
-    </button>
+<div matTooltip="Edit">
+  <button mat-raised-button [hidden]="!(selectedGraphics && selectedGraphics.length > 0)" (click)="startEditing()"
+    [disabled]="!(selectedGraphics && selectedGraphics.length > 0)">
+    <mat-icon >{{sketchVM.activeTool === 'reshape' ? 'save': 'edit'}}</mat-icon>
+    {{sketchVM.activeTool === 'reshape' ? 'Save': 'Edit'}}
+  </button>
 </div>
