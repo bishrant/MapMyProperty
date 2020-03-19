@@ -7,6 +7,7 @@ import {
 } from "./graphics.actions";
 import { undoRedo } from "./ngrx-undo";
 import { initialGraphicState } from "./graphics.state";
+import { removeAllGraphics } from './graphics.actions';
 
 const id = (): string =>
   Math.random()
@@ -24,14 +25,15 @@ const reducer = (state: any, action: any, listener?: PatchListener): any => {
           return;
         case removeGraphics.type:
           console.log(action.gids);
+          const jj = JSON.parse(JSON.stringify(next.graphics));
           action.gids.forEach(gid => {
             const idx = next.graphics.findIndex(g => {
               const _gid = JSON.parse(g).attributes.gid;
               return gid === _gid;
             });
-            console.log(idx);
-            next.graphics.splice(idx, 1);
+            jj.splice(idx, 1);
           });
+          next.graphics = jj;
 
           return;
         case updateGraphics.type:
@@ -48,6 +50,10 @@ const reducer = (state: any, action: any, listener?: PatchListener): any => {
             }
           }
           next.graphics = j;
+          return;
+
+        case removeAllGraphics.type:
+          next.graphics = [];
           return;
         default:
           return;
