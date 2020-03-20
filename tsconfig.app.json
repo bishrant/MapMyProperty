@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": ["arcgis-js-api"]
+    "types": ["bishrant-arcgis-js-api"]
   },
   "files": [
     "src/main.ts",

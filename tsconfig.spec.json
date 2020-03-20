@@ -5,7 +5,7 @@
     "types": [
       "jasmine",
       "node",
-      "arcgis-js-api"
+      "bishrant-arcgis-js-api"
     ]
   },
   "files": [

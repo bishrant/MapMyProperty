@@ -19,7 +19,7 @@
     "lib": ["dom", "es2015.promise", "es5", "es6"]
   },
   "types": [
-    "arcgis-js-api",
+    "bishrant-arcgis-js-api",
   ],
   "include": [
     "src/**/*.ts",
