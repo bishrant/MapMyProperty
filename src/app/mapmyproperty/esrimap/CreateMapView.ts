@@ -5,7 +5,7 @@ import Search from 'arcgis-js-api/widgets/Search';
 import SpatialReference from 'arcgis-js-api/geometry/SpatialReference';
 import Home from 'arcgis-js-api/widgets/Home';
 
-const createMapView = (mapViewEl: ElementRef): __esri.MapView => {
+const createMapView = (mapViewEl: ElementRef, searchBarDiv: ElementRef): __esri.MapView => {
   // const fullExtent = new Extent({ xmin: -106.645646, ymin: 24.837377, xmax: -93.508292, ymax: 37.500704 }).expand(1.2);
   const mapProperties = {
     basemap: 'streets',
@@ -24,9 +24,9 @@ const createMapView = (mapViewEl: ElementRef): __esri.MapView => {
     map
   };
   const view = new MapView(mapViewProperties);
-  const search = new Search({ view });
+  const search = new Search({ view: view, container: searchBarDiv.nativeElement });
   const homeWidget = new Home({view});
-  view.ui.add(search, 'top-right');
+  // view.ui.add(search);
   view.ui.move('zoom', 'bottom-right');
   view.ui.add(homeWidget, 'bottom-right');
   return view;

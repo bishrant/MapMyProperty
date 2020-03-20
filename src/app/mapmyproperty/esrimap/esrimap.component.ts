@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef, HostListener, Input } from "@angular/core";
 import SketchViewModel from "arcgis-js-api/widgets/Sketch/SketchViewModel";
 import createMapView from "./CreateMapView";
 import { SetupSketchViewModel } from "./SketchViewModelUitls";
@@ -19,6 +19,7 @@ import { StoreComponent } from '../../shared/store/GraphicsStore.component';
 })
 export class EsrimapComponent implements OnInit {
   @ViewChild("mapViewNode", { static: true }) private mapViewEl: ElementRef;
+  @ViewChild("searchBar", { static: true }) private searchBarDiv: ElementRef;
   @ViewChild("graphicsStore", { static: true })
   private graphicsStoreEl: StoreComponent;
   mapView: E.MapView;
@@ -32,7 +33,7 @@ export class EsrimapComponent implements OnInit {
       .substr(2, 9);
 
   constructor(private store: Store<GraphicsState>) {}
-
+  @Input('se') se: ElementRef;
   @HostListener("keydown.control.z") undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
@@ -48,8 +49,9 @@ export class EsrimapComponent implements OnInit {
   }
 
   private initializeMap = async () => {
+    console.log(this.se)
     try {
-      this.mapView = createMapView(this.mapViewEl);
+      this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       this.mapView.map.add(this.polygonGraphicsLayer);
       this.sketchVM = SetupSketchViewModel(
         this.polygonGraphicsLayer,

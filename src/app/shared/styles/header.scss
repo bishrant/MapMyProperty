@@ -5,10 +5,11 @@
   align-items: center;
   background-color: mat-color($app-primary, translucent);
   color: black;
+  padding-left: 10px;
 }
 
-.secondary{
-      background-color: mat-color($app-accent);
+.secondary {
+  background-color: mat-color($app-accent);
   color: white;
 }
 .smallLogo {

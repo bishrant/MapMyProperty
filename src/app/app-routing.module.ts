@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'mmp',
+    path: '',
     loadChildren: () => import('./mapmyproperty/homepage/homepage.module').then(m => m.HomepageModule)
   }
 ];

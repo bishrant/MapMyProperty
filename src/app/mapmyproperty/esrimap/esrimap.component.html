@@ -1,6 +1,21 @@
-<div #mapViewNode class="mapViewNode">
-    <button (click)="startDrawing()">Polygon</button>
-    <app-graphic-store #graphicsStore [sketchVM]="sketchVM" 
-    [selectedGraphics]="selectedGraphics" class="graphicsControls"
-    ></app-graphic-store>
+<div #sidebar class="sidebarBlanket">
+    <div class="sidebar">
+        Sidebar
+    </div>
+
+</div>
+<div class="mapBlanket">
+    <div class="headerBlanket">
+        <div class="header headerRow secondary" fxLayout="row">
+            <div #searchBar></div>
+        </div>
+    </div>
+    <div class="translucentPadding mapViewNodeBlanket">
+        <div #mapViewNode class="mapViewNode ">
+            <button class="graphicsControls" (click)="startDrawing()">Polygon</button>
+            <app-graphic-store #graphicsStore [sketchVM]="sketchVM" [selectedGraphics]="selectedGraphics"
+                class="graphicsControls"></app-graphic-store>
+        </div>
+    </div>
+
 </div>
