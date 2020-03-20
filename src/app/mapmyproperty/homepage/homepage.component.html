@@ -1,3 +1,26 @@
-Map My Property Homepage
-<br>
+<header class='header' >
+    <div class="headerRow" fxLayout="row" >
+        <a href="https://tfsweb.tamu.edu" target="_blank">
+            <img src="assets/TFS_Maroon.png" class="largeLogo logo" />
+        </a>
+        <a href="https://tfsweb.tamu.edu" target="_blank" class="logo">
+            <img src="assets/TFS_Star_Maroon.png" class="logo smallLogo" />
+        </a>
+        <h2>MAP MY PROPERTY</h2>
+        <span class="spacer"></span>
+        <div fxShow="true" fxHide.lt-md="true">
+            <a mat-button> About </a>
+            <a href="https://texasforestinfo.tamu.edu/Contact" target="_blank" mat-button> Contact </a>
+            <a mat-button> Help </a>
+            <a mat-button> Disclaimer </a>
+        </div>
+        <button mat-icon-button fxShow="true" fxHide.gt-sm>
+            <mat-icon>menu</mat-icon>
+        </button>
+    </div>
+    <div class="headerRow secondary">
+        Searchbar
+    </div>
+
+</header>
 <app-esrimap tabindex="1"></app-esrimap>

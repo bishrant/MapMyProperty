@@ -1,31 +1,32 @@
 <div matTooltip="Undo" [hidden]="(selectedGraphics && selectedGraphics.length > 0)">
-  <button mat-raised-button [disabled]="(sketchVM.state === 'ready') && (disableUndo$ | async)" (click)="undo()">
+  <button mat-raised-button color="accent" [disabled]="(sketchVM.state === 'ready') && (disableUndo$ | async)"
+    (click)="undo()">
     <mat-icon>undo</mat-icon>
   </button>
 </div>
 
 <div matTooltip="Delete" [hidden]="!(selectedGraphics && selectedGraphics.length > 0)">
-  <button mat-raised-button [disabled]="!(selectedGraphics && selectedGraphics.length > 0)" (click)="delete()">
+  <button mat-raised-button color="warn" [disabled]="!(selectedGraphics && selectedGraphics.length > 0)" (click)="delete()">
     <mat-icon>delete</mat-icon>Delete
   </button>
 </div>
 
 <div matTooltip="Delete all drawings." [hidden]="!(sketchVM.layer.graphics.length > 0)">
-  <button mat-raised-button [disabled]="!(sketchVM.layer.graphics.length > 0)" (click)="deleteAll()">
+  <button mat-raised-button color="warn" [disabled]="!(sketchVM.layer.graphics.length > 0)" (click)="deleteAll()">
     <mat-icon>delete_forever</mat-icon>Delete All
   </button>
 </div>
 
 <div matTooltip="Redo" [hidden]="(selectedGraphics && selectedGraphics.length > 0)">
-  <button mat-raised-button [disabled]="(disableRedo$ | async)" (click)="redo()">
+  <button mat-raised-button color="accent" [disabled]="(disableRedo$ | async)" (click)="redo()">
     <mat-icon>redo</mat-icon>
   </button>
 </div>
 
 <div matTooltip="Edit">
-  <button mat-raised-button [hidden]="!(selectedGraphics && selectedGraphics.length > 0)" (click)="startEditing()"
+  <button mat-raised-button color="accent" [hidden]="!(selectedGraphics && selectedGraphics.length > 0)" (click)="startEditing()"
     [disabled]="!(selectedGraphics && selectedGraphics.length > 0)">
-    <mat-icon >{{sketchVM.activeTool === 'reshape' ? 'save': 'edit'}}</mat-icon>
+    <mat-icon>{{sketchVM.activeTool === 'reshape' ? 'save': 'edit'}}</mat-icon>
     {{sketchVM.activeTool === 'reshape' ? 'Save': 'Edit'}}
   </button>
 </div>

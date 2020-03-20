@@ -1,0 +1,43 @@
+@import "../../../styles.scss";
+@import "./variables.scss";
+.headerRow {
+  height: 50px;
+  align-items: center;
+  background-color: mat-color($app-primary, translucent);
+  color: black;
+}
+
+.secondary{
+      background-color: mat-color($app-accent);
+  color: white;
+}
+.smallLogo {
+  display: none;
+  height: 100%;
+}
+.largeLogo {
+  height: 100%;
+}
+.logo {
+  height: 40px;
+  padding-right: 10px;
+  display: inline-block;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+
+@media screen and (max-width: $layout-breakpoint-sm) {
+  .reportDialogContainer {
+    max-width: 600px !important;
+    width: 100% !important;
+  }
+  .smallLogo {
+    display: inline-block;
+    // height: 100%;
+  }
+  .largeLogo {
+    display: none;
+    // height: 100%;
+  }
+}

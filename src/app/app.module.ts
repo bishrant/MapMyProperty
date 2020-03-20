@@ -11,18 +11,19 @@ import { MatIconModule } from "@angular/material/icon";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { FlexLayoutModule } from "@angular/flex-layout";
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    // MatTooltipModule,
+    FlexLayoutModule,
     StoreModule.forRoot({ app: GraphicsReducer }),
     environment.production ? [] : StoreDevtoolsModule.instrument()
   ],
   providers: [],
   bootstrap: [AppComponent],
-  exports: [MatIconModule, MatButtonModule, MatTooltipModule]
+  exports: [MatIconModule, MatButtonModule, MatTooltipModule, FlexLayoutModule]
 })
 export class AppModule {}

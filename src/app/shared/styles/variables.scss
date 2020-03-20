@@ -1,0 +1,44 @@
+@import "~@angular/material/theming";
+@include mat-core();
+@import "./mmp.scss";
+
+$font-family: Roboto, "Helvetica Neue", sans-serif !default;
+$font-size: 10px !default;
+$layout-breakpoint-xs: 600px !default;
+$layout-breakpoint-sm: 960px !default;
+$layout-breakpoint-md: 1280px !default;
+$layout-breakpoint-lg: 1920px !default;
+
+// Foreground palette for light themes.
+@function my-mat-theme-foreground($color) {
+  @return (
+    base: $color,
+    divider: $black-12-opacity,
+    dividers: $black-12-opacity,
+    disabled: rgba($color, 0.38),
+    disabled-button: rgba($color, 0.38),
+    disabled-text: rgba($color, 0.38),
+    hint-text: rgba($color, 0.38),
+    secondary-text: rgba($color, 0.54),
+    icon: rgba($color, 0.54),
+    icons: rgba($color, 0.54),
+    text: rgba($color, 0.87),
+    slider-off: rgba($color, 0.26),
+    slider-off-active: rgba($color, 0.38)
+  );
+}
+
+$app-primary: mat-palette($mmpPrimaryPalettee);
+$app-accent: mat-palette($mmpSecondaryPalettee);
+$app-warn: mat-palette($mat-red);
+$mmp-light-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
+$mmp-foreground: my-mat-theme-foreground(mat-color($app-primary, 700));
+
+$mmp-theme: map-merge(
+  $mmp-light-theme,
+  (
+    foreground: $mmp-foreground
+  )
+);
+
+@include angular-material-theme($mmp-theme);
