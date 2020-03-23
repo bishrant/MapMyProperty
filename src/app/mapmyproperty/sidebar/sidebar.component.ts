@@ -1,5 +1,8 @@
 import { Component, OnInit, Output, EventEmitter, Input, OnChanges } from "@angular/core";
 import { FormControl } from '@angular/forms';
+import { GraphicsState } from 'src/app/shared/store/graphics.state';
+import { Store } from '@ngrx/store';
+import { updateGraphics } from 'src/app/shared/store/graphics.actions';
 
 @Component({
   selector: "app-sidebar",
@@ -25,10 +28,30 @@ export class SidebarComponent implements OnInit, OnChanges {
     esriSLSNull: 'none'
   };
 
-  constructor() {}
+  constructor(private store: Store<GraphicsState>) {}
 
   changeStyle = (type: string, event$: any) => {
     console.log(type, event$.value);
+    if (this.selectedGraphics) {
+      const j = this.selectedGraphics[0];
+          const symbol = {
+            type: "simple-fill",
+            color: "transparent",
+            style: "solid",
+            outline: {
+              color: "red",
+              width: 2,
+              style: this.lineStyle
+            }
+          };
+      
+      j.symbol = symbol;
+      j.attributes.symbol = j.symbol;
+      this.store.dispatch(
+        updateGraphics({ graphics: JSON.stringify([j]) })
+      );
+      // this.selectedGraphics = j;
+    }
   };
   ngOnChanges() {
     if (this.selectedGraphics) {
