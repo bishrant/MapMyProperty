@@ -29,7 +29,7 @@ export class EsrimapComponent implements OnInit {
   @ViewChild("graphicsStore", { static: true })
   private graphicsStoreEl: StoreComponent;
   mapView: E.MapView;
-  sketchVM: E.SketchViewModel = new SketchViewModel();
+  sketchVM: any = new SketchViewModel();
   selectedGraphics: any[];
   mapCoords: any;
   symbolProps: any;
@@ -118,9 +118,10 @@ export class EsrimapComponent implements OnInit {
       //   })
       // })
 
-      this.sketchVM.on("update", gg => {
+      this.sketchVM.on("update", (gg:any) => {
         console.log(gg);
         if (gg.state === "start" || gg.state === "active") {
+          // gg.graphics.symbol = 
           this.selectedGraphics = gg.graphics;
         } else if (gg.state === "cancel") {
           this.selectedGraphics = undefined;
@@ -160,6 +161,15 @@ export class EsrimapComponent implements OnInit {
     console.log($event);
     this.symbolProps = $event.symbol;
     this.sketchVM.polygonSymbol = $event.symbol;
+    console.log(this.sketchVM);
+    this.sketchVM.activeLineSymbol = {
+      type: "simple-line",
+      color: $event.symbol.outline.color,
+      width: 2,
+      style: $event.symbol.outline.style,
+      cap: "round",
+      join: "round"
+    };
     this.sketchVM.create($event.tool);
   };
 

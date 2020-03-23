@@ -1,1 +1,5 @@
-@import '../../shared/styles/sidebar.scss';
+@import "../../shared/styles/sidebar.scss";
+
+.mat-option {
+  padding: 0 !important;
+}

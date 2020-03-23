@@ -14,6 +14,7 @@ import { MatExpansionModule } from "@angular/material/expansion";
 import { MatSelectModule } from "@angular/material/select";
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 const routes: Routes = [
   {
@@ -42,6 +43,7 @@ const routes: Routes = [
     MatSelectModule,
     FormsModule,
     MatFormFieldModule,
+    AngularSvgIconModule,
   ],
   exports: [RouterModule]
 })

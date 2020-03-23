@@ -13,6 +13,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AngularSvgIconModule } from "angular-svg-icon";
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -23,6 +24,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     HttpClientModule,
     ReactiveFormsModule,
     StoreModule.forRoot({ app: GraphicsReducer }),
+    AngularSvgIconModule.forRoot(),
     environment.production ? [] : StoreDevtoolsModule.instrument()
   ],
   providers: [],

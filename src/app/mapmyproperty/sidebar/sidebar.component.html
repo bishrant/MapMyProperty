@@ -8,18 +8,37 @@
 
     <div>
         <button mat-raised-button class="graphicsControls1" (click)="startDrawingGraphics('polygon')">Polygon</button>
+        <br>
+        Line color {{lineColor}}<br>
 
+        <mat-select [(ngModel)]="lineColor" class="matSelect" (selectionChange)="changeStyle('lineColor', $event)">
+            <mat-select-trigger>
+                <div [ngStyle]="{'background-color':lineColor}">
+                    &nbsp;
+                </div>
+            </mat-select-trigger>
+            <mat-option *ngFor="let _lineColor of lineColors" [value]="_lineColor">
+                <div [ngStyle]="{'background-color':_lineColor}">
+                    &nbsp;
+                </div>
+            </mat-option>
+
+        </mat-select>
         <br> Line Style:
         <mat-form-field>
             <mat-select [(ngModel)]="lineStyle" class="matSelect" (selectionChange)="changeStyle('lineStyle', $event)">
                 <mat-select-trigger>
-                    <img *ngIf="lineStyle !== 'none'" src="assets/icons/symbols-sls-{{lineStyle}}.png" />
+                    <!-- <img *ngIf="lineStyle !== 'none'" src="assets/icons/symbols-sls-{{lineStyle}}.png" /> -->
+                    <svg-icon [src]="'assets/icons/symbols-sls-'+lineStyle+'.svg'"
+                        [svgStyle]="{ 'width.px':90, 'fill':lineColor }"></svg-icon>
                     <span *ngIf="lineStyle === 'none'">None</span>
                 </mat-select-trigger>
 
 
                 <mat-option *ngFor="let style of lineStyles | keyvalue" [value]="style.value">
-                    <img *ngIf="style.value !== 'none'" src="assets/icons/symbols-sls-{{style.value}}.png" />
+                    <svg-icon [src]="'assets/icons/symbols-sls-'+style.value+'.svg'"
+                        [svgStyle]="{ 'width.px':90, 'fill':lineColor }"></svg-icon>
+                    <!-- <img *ngIf="style.value !== 'none'" src="assets/icons/symbols-sls-{{style.value}}.png" /> -->
                     <span *ngIf="style.value === 'none'">None</span>
                 </mat-option>
             </mat-select>
