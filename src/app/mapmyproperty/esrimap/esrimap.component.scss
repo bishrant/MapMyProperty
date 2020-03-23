@@ -1,45 +1,55 @@
-@import url('https://js.arcgis.com/4.14/esri/css/main.css');
-@import 'src/app/shared/styles/header.scss';
+@import url("https://js.arcgis.com/4.14/esri/css/main.css");
+@import "src/app/shared/styles/header.scss";
 .mapViewNode {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
-.graphicsControls{
-    position: absolute;
-    bottom: 10px;
-    z-index: 10;
-    left: 0;
-    right: 0;
+.graphicsControls {
+  width: 100%;
+  position: absolute;
+  bottom: 10px;
+  z-index: 10;
+  left: 0;
+  right: 0;
 }
 
-.sidebarBlanket{
-    width: 250px;
-    background-color: mat-color($app-primary, translucent);
-    padding: 5px 0 0px 5px;
+.sidebarBlanket {
+  width: 250px;
+  background-color: mat-color($app-primary, translucent);
+  padding: 5px 0 0px 5px;
 }
 
 .sidebar {
-    width: 100%;
-    height: 100%;
-    background-color: mat-color($app-accent);
+  width: 100%;
+  height: 100%;
+  background-color: mat-color($app-accent);
 }
 .translucentPadding {
-    padding: 5px;
-    background-color: mat-color($app-primary, translucent);
+  padding: 5px;
+  background-color: mat-color($app-primary, translucent);
 }
 
 .headerBlanket {
-    padding: 5px 0 0 5px;
-    background-color: mat-color($app-primary, translucent);
+  padding: 5px 0 0 5px;
+  background-color: mat-color($app-primary, translucent);
 }
 
-.mapBlanket{
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+.mapBlanket {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.mapViewNodeBlanket{
+.mapViewNodeBlanket {
+  flex: 1;
+  padding: 5px 0 0 5px;
+  position: relative;
+}
+
+.coordsDisplay {
+    text-align: right;
+    padding-right: 10px;
+    font-size: 14px;
     flex: 1;
-    padding: 5px 0 0 5px;
+    color: #dad2d2;
 }
