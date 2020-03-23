@@ -1,8 +1,6 @@
 <div #sidebar class="sidebarBlanket">
     <div class="sidebar">
-        <!-- Sidebar -->
-
-        <button class="graphicsControls1" (click)="startDrawing()">Polygon</button>
+        <app-sidebar (startDrawing)="startDrawing($event)" [selectedGraphics]="selectedGraphics"></app-sidebar>
     </div>
 
 </div>
@@ -17,10 +15,9 @@
     </div>
     <div class="translucentPadding mapViewNodeBlanket">
         <div #mapViewNode class="mapViewNode ">
-            
         </div>
-        <app-graphic-store #graphicsStore [sketchVM]="sketchVM" [selectedGraphics]="selectedGraphics" class="graphicsControls">
+        <app-graphic-store #graphicsStore [sketchVM]="sketchVM" [selectedGraphics]="selectedGraphics"
+            class="graphicsControls">
         </app-graphic-store>
     </div>
-
 </div>

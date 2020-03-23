@@ -1,22 +1,23 @@
-import MapView from 'arcgis-js-api/views/MapView';
-import SketchViewModel from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
-import Point from 'arcgis-js-api/geometry/Point';
-import { redPolygon, emptyPoint, hollowPolygon } from './Renderers';
+import MapView from "arcgis-js-api/views/MapView";
+import SketchViewModel from "arcgis-js-api/widgets/Sketch/SketchViewModel";
+import { emptyPoint, hollowPolygon, bluePolygon } from "./Renderers";
 
-const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): __esri.SketchViewModel => {
-    return new SketchViewModel({
-        view: mapView,
-        layer: graphicsLayer,
-        pointSymbol: emptyPoint,
-        polygonSymbol: hollowPolygon.symbol,
-
-        updateOnGraphicClick: true,
-        defaultUpdateOptions: {
-        enableRotation: false,
-        enableScaling: false,
-        }
-        // toggleToolOnClick: false
-    });
+const SetupSketchViewModel = (
+  graphicsLayer: any,
+  mapView: MapView
+): __esri.SketchViewModel => {
+  return new SketchViewModel({
+    view: mapView,
+    layer: graphicsLayer,
+    pointSymbol: emptyPoint,
+    polygonSymbol: bluePolygon.symbol,
+    updateOnGraphicClick: true,
+    defaultUpdateOptions: {
+      enableRotation: false,
+      enableScaling: false
+    }
+    // toggleToolOnClick: false
+  });
 };
 
-export {SetupSketchViewModel};
+export { SetupSketchViewModel };

@@ -11,7 +11,6 @@ import createMapView from "./CreateMapView";
 import { SetupSketchViewModel } from "./SketchViewModelUitls";
 import { CreatePolygonGraphicsLayer } from "./CreateGraphicsLayer";
 import E = __esri;
-import { redPolygon } from "./Renderers";
 import { Store } from "@ngrx/store";
 import { addGraphics } from "src/app/shared/store/graphics.actions";
 import { GraphicsState } from "src/app/shared/store/graphics.state";
@@ -33,6 +32,7 @@ export class EsrimapComponent implements OnInit {
   sketchVM: E.SketchViewModel = new SketchViewModel();
   selectedGraphics: any[];
   mapCoords: any;
+  symbolProps: any;
   readonly graphics$ = this.store.select(state => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
   id = (): string =>
@@ -58,7 +58,7 @@ export class EsrimapComponent implements OnInit {
 
   showCoordinates = (pt: any) => {
     this.mapCoords =
-      "Lat: " + pt.latitude.toFixed(3) + "  Long:" + pt.longitude.toFixed(3);
+      "Lat: " + pt.latitude.toFixed(5) + "  Long:" + pt.longitude.toFixed(5);
   };
   private showMapCoordinates = () => {
     if (this.mapView) {
@@ -84,11 +84,10 @@ export class EsrimapComponent implements OnInit {
       this.sketchVM.on(["create"], evt => {
         if (evt.state === "complete") {
           console.log(evt);
-          evt.graphic.symbol = redPolygon.symbol;
+          // evt.graphic.symbol = this.symbolProps;
+          console.log(this.symbolProps);
           const _g = evt.graphic;
-          evt.graphic.attributes = { gid: this.id() };
-          console.log(JSON.stringify(_g.toJSON()));
-          console.log(evt);
+          evt.graphic.attributes = { gid: this.id(), symbol: _g.symbol };
           // this.polygonGraphicsLayer.add(Graphic.fromJSON(evt.graphic.toJSON()))
           // this.store.dispatch({type: 'ADD'});
           this.store.dispatch(
@@ -149,7 +148,7 @@ export class EsrimapComponent implements OnInit {
           const __g = JSON.parse(_g);
           return Graphic.fromJSON(__g);
         });
-
+        console.log('array', graphicsArray);
         this.polygonGraphicsLayer.graphics = graphicsArray;
       } else {
         this.polygonGraphicsLayer.removeAll();
@@ -157,8 +156,11 @@ export class EsrimapComponent implements OnInit {
     });
   };
 
-  startDrawing = (tool: string = "polygon") => {
-    this.sketchVM.create(tool);
+  startDrawing = ($event: any) => {
+    console.log($event);
+    this.symbolProps = $event.symbol;
+    this.sketchVM.polygonSymbol = $event.symbol;
+    this.sketchVM.create($event.tool);
   };
 
   ngOnInit() {

@@ -6,11 +6,13 @@
   background-color: mat-color($app-primary, translucent);
   color: black;
   padding-left: 10px;
+  
 }
 
 .secondary {
   background-color: mat-color($app-accent);
   color: white;
+  border-radius: 5px 0 0 5px;
 }
 .smallLogo {
   display: none;

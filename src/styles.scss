@@ -80,8 +80,6 @@ $tanDark: (
 $fev-primary: mat-palette($tanColor);
 $fev-secondary: mat-palette($tanDark);
 $fev-accent: mat-palette($mat-pink, A200, A100, A400);
-
-// The warn palette is optional (defaults to red).
 $fev-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
@@ -187,25 +185,25 @@ body {
 }
 
 .esri-ui-bottom-right {
-    flex-flow: column-reverse !important;
+  flex-flow: column-reverse !important;
 }
 
 .mat-dialog-container {
-    display: block;
-    padding: 0px !important;
-    border-radius: 4px;
-    box-sizing: border-box;
-    overflow: auto;
-    outline: 0;
-    width: 100%;
-    max-width: 700px;
-    height: 100%;
-    min-height: inherit;
-    max-height: inherit;
+  display: block;
+  padding: 0px !important;
+  border-radius: 4px;
+  box-sizing: border-box;
+  overflow: auto;
+  outline: 0;
+  width: 100%;
+  max-width: 700px;
+  height: 100%;
+  min-height: inherit;
+  max-height: inherit;
 }
 
 .dialogContent {
-    padding: 20px;
+  padding: 20px;
 }
 
 .mat-menu-panel {

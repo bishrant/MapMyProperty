@@ -15,15 +15,8 @@ export class StoreComponent {
   readonly disableUndo$ = this.store.select(state => !state.app.canUndo);
   readonly disableRedo$ = this.store.select(state => !state.app.canRedo);
   constructor(private readonly store: Store<GraphicsState>) {}
-
-
   
   undo(): void {
-    // console.log(this.sketchVM);
-    // if (this.sketchVM.state === 'ready') {
-    //   this.sketchVM.layer.graphics.pop();
-    // }
-    // if (this.sketchVM.state === 'active') {
     this.sketchVM.undo();
     if (this.sketchVM.state !== "active") {
       this.store.dispatch({ type: "UNDO" });

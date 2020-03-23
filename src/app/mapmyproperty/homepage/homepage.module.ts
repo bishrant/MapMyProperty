@@ -9,6 +9,11 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from "@angular/flex-layout";
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatSelectModule } from "@angular/material/select";
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 const routes: Routes = [
   {
@@ -19,7 +24,12 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [EsrimapComponent, HomepageComponent, StoreComponent],
+  declarations: [
+    EsrimapComponent,
+    HomepageComponent,
+    StoreComponent,
+    SidebarComponent
+  ],
   imports: [
     CommonModule,
     // BrowserAnimationsModule,
@@ -27,7 +37,11 @@ const routes: Routes = [
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatExpansionModule,
+    MatSelectModule,
+    FormsModule,
+    MatFormFieldModule,
   ],
   exports: [RouterModule]
 })

@@ -9,11 +9,6 @@ import { undoRedo } from "./ngrx-undo";
 import { initialGraphicState } from "./graphics.state";
 import { removeAllGraphics } from './graphics.actions';
 
-const id = (): string =>
-  Math.random()
-    .toString(36)
-    .substr(2, 9);
-
 const reducer = (state: any, action: any, listener?: PatchListener): any => {
   console.log(action);
   return produce(

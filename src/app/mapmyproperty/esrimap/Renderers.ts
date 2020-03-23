@@ -9,7 +9,20 @@ const redPolygon = {
         width: 2
       }
     }
-  };
+};
+  
+const bluePolygon = {
+  type: "simple",
+  symbol: {
+    type: "simple-fill",
+    color: "transparent",
+    style: "solid",
+    outline: {
+      color: "blue",
+      width: 2
+    }
+  }
+};
 
 const hollowPolygon = {
   type: 'simple',
@@ -42,4 +55,4 @@ const redDiamondMarker = {
     }
 };
 
-export {redPolygon, emptyPoint, redDiamondMarker, hollowPolygon};
+export {redPolygon, emptyPoint, redDiamondMarker, hollowPolygon, bluePolygon};
