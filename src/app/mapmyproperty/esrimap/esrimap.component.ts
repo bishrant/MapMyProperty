@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener, Input } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  HostListener,
+  Input
+} from "@angular/core";
 import SketchViewModel from "arcgis-js-api/widgets/Sketch/SketchViewModel";
 import createMapView from "./CreateMapView";
 import { SetupSketchViewModel } from "./SketchViewModelUitls";
@@ -9,8 +16,8 @@ import { Store } from "@ngrx/store";
 import { addGraphics } from "src/app/shared/store/graphics.actions";
 import { GraphicsState } from "src/app/shared/store/graphics.state";
 import Graphic from "arcgis-js-api/Graphic";
-import { updateGraphics } from '../../shared/store/graphics.actions';
-import { StoreComponent } from '../../shared/store/GraphicsStore.component';
+import { updateGraphics } from "../../shared/store/graphics.actions";
+import { StoreComponent } from "../../shared/store/GraphicsStore.component";
 
 @Component({
   selector: "app-esrimap",
@@ -25,6 +32,7 @@ export class EsrimapComponent implements OnInit {
   mapView: E.MapView;
   sketchVM: E.SketchViewModel = new SketchViewModel();
   selectedGraphics: any[];
+  mapCoords: any;
   readonly graphics$ = this.store.select(state => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
   id = (): string =>
@@ -33,7 +41,7 @@ export class EsrimapComponent implements OnInit {
       .substr(2, 9);
 
   constructor(private store: Store<GraphicsState>) {}
-  @Input('se') se: ElementRef;
+  @Input("se") se: ElementRef;
   @HostListener("keydown.control.z") undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
@@ -48,8 +56,24 @@ export class EsrimapComponent implements OnInit {
     this.graphicsStoreEl.undo();
   }
 
+  showCoordinates = (pt: any) => {
+    this.mapCoords =
+      "Lat: " + pt.latitude.toFixed(3) + "  Long:" + pt.longitude.toFixed(3);
+  };
+  private showMapCoordinates = () => {
+    if (this.mapView) {
+    this.mapView.watch("stationary", () => {
+      this.showCoordinates(this.mapView.center);
+    });
+
+    this.mapView.on("pointer-move", (evt) => {
+      this.showCoordinates(this.mapView.toMap({ x: evt.x, y: evt.y }));
+    });
+  };
+  }
+
   private initializeMap = async () => {
-    console.log(this.se)
+    console.log(this.se);
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       this.mapView.map.add(this.polygonGraphicsLayer);
@@ -109,7 +133,9 @@ export class EsrimapComponent implements OnInit {
           this.selectedGraphics = undefined;
         }
         console.log(this.selectedGraphics, gg, " enable editing for this");
+        
       });
+      this.showMapCoordinates();
     } catch (error) {
       console.error("Map load error ", error);
     }

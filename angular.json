@@ -75,7 +75,11 @@
             "production": {
               "browserTarget": "mapmyproperty:build:production"
             }
-          }
+          },
+           "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ]
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
