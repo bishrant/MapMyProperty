@@ -6,7 +6,6 @@ import {
   Input,
   OnChanges
 } from "@angular/core";
-import { FormControl } from "@angular/forms";
 import { GraphicsState } from "src/app/shared/store/graphics.state";
 import { Store } from "@ngrx/store";
 import { updateGraphics } from "src/app/shared/store/graphics.actions";
@@ -103,7 +102,7 @@ export class SidebarComponent implements OnInit, OnChanges {
       : this.selectedGraphics[0].attributes.symbol.outline.style;
 
     this.lineColor = !this.selectedGraphics
-      ? "red"
+      ? this.lineColors[4]
       : this.RGBToHex(this.selectedGraphics[0].attributes.symbol.outline.color);
     console.log(this.lineColor);
   }
