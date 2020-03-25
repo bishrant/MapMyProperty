@@ -6,6 +6,8 @@ ESRI ArcGIS JS will be compiled using ArcGIS Webpack plugin https://github.com/E
 
 Use of esri-loader is discouraged for overall consistency and portability of the application.
 
+##View it live
+Go to https://bishrant.github.io/mapmyproperty to view it live.
 
 ## Development server
 
