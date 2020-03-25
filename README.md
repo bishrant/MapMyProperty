@@ -1,5 +1,6 @@
 # MapMyProperty
 ![Build and Deploy](https://github.com/bishrant/MapMyProperty/workflows/Build%20and%20Deploy/badge.svg)
+
 A revised version of map my property that integrates Draw My Ranch, Plan My Land Operation and the existing map my property into a single one.
 
 Bootstrapped using Angular CLI 9x. Will use at least 9.0.0 angular version.
