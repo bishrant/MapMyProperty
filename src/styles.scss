@@ -1,6 +1,7 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @import "~@angular/material/theming";
+@import "./app/shared/styles/CustomSlider.scss";
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -134,36 +135,7 @@ body {
   display: none !important;
 }
 
-.mat-tab-label {
-  color: black !important;
-  font-weight: bold !important;
-  min-width: 80px !important;
-  padding: 0 5px !important;
-  background: mat-color($fev-primary, 400);
-  margin-right: 1px;
-}
-
-.mat-tab-labels {
-  background: mat-color($fev-primary, 400);
-}
-
-.popupTable {
-  width: 100%;
-}
-
-.mat-header-cell {
-  background: mat-color($fev-primary);
-  color: black;
-  font-size: 14px;
-}
-
 @media screen and (max-width: 375px) {
-  .popupTable {
-    width: 100%;
-  }
-  .reportContainer {
-    width: 100%;
-  }
   .mat-toolbar-row {
     padding: 0 !important;
   }

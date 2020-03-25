@@ -15,6 +15,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import { ColorPickerModule } from '../../shared/components/color-picker/color-picker.module';
 
 const routes: Routes = [
   {
@@ -44,6 +45,7 @@ const routes: Routes = [
     FormsModule,
     MatFormFieldModule,
     AngularSvgIconModule,
+    ColorPickerModule
   ],
   exports: [RouterModule]
 })

@@ -9,6 +9,7 @@ import {
 import { GraphicsState } from "src/app/shared/store/graphics.state";
 import { Store } from "@ngrx/store";
 import { updateGraphics } from "src/app/shared/store/graphics.actions";
+import { RGBToHex } from 'src/app/shared/utils/Colors';
 
 @Component({
   selector: "app-sidebar",
@@ -22,19 +23,17 @@ export class SidebarComponent implements OnInit, OnChanges {
   lineStyles = {
     esriSLSSolid: "solid",
     esriSLSDash: "dash",
-    esriSLSShortDot: "short-dot"
+    esriSLSShortDot: "short-dot",
+    esriSLSDot: "dot",
+    esriSLSDashDot: "dash-dot",
+    esriSLSShortDashDotDot: "short-dash-dot-dot",
+    esriSLSLongDash: "long-dash",
+    esriSLSLongDashDot: "long-dash-dot",
+    esriSLSShortDash: "short-dash",
+    // esriSLSDashDotDot: "dash-dot-dot",
+    esriSLSShortDashDot: "short-dash-dot",
+      esriSLSNull: "none"
   };
-  //   esriSLSDashDot: "dash-dot",
-  //   esriSLSLongDash: "long-dash",
-  //   esriSLSShortDash: "short-dash",
-  //   esriSLSDashDotDot: "dash-dot-dot",
-  //   esriSLSDot: "dot",
-
-  //   esriSLSShortDashDot: "short-dash-dot",
-  //   esriSLSShortDashDotDot: "short-dash-dot-dot",
-  //   esriSLSLongDashDot: "long-dash-dot",
-  //   esriSLSNull: "none"
-  // };
 
   lineColor = "#f9ac26";
   lineColors: any = [
@@ -47,24 +46,19 @@ export class SidebarComponent implements OnInit, OnChanges {
     "#f92672"
   ];
 
-  RGBToHex = rgba => {
-    let r = rgba[0].toString(16);
-    let g = rgba[1].toString(16);
-    let b = rgba[2].toString(16);
 
-    if (r.length == 1) r = "0" + r;
-    if (g.length == 1) g = "0" + g;
-    if (b.length == 1) b = "0" + b;
-
-    return "#" + r + g + b;
-  };
   constructor(private store: Store<GraphicsState>) {}
 
+  changeColor = (color: string) => {
+    this.lineColor = color;
+    this.changeStyle('lineColor', color);
+    // console.log('color selected ', $event);
+  }
   changeStyle = (type: string, event$: any) => {
-    console.log(type, event$.value);
+    // console.log(type, event$.value);
     if (this.selectedGraphics) {
       const j = this.selectedGraphics[0];
-       const symbol = {
+      const symbol = {
         type: "simple-fill",
         color: "transparent",
         style: "solid",
@@ -86,12 +80,12 @@ export class SidebarComponent implements OnInit, OnChanges {
         this.selectedGraphics[0].attributes.symbol.outline.style
       ];
 
-          this.lineColor = !this.selectedGraphics
-            ? "red"
-            : this.RGBToHex(
-                this.selectedGraphics[0].attributes.symbol.outline.color
-              );
-          console.log(this.lineColor);
+      this.lineColor = !this.selectedGraphics
+        ? "red"
+        : RGBToHex(
+            this.selectedGraphics[0].attributes.symbol.outline.color
+          );
+      console.log(this.lineColor);
       // );
     }
   }
@@ -103,7 +97,7 @@ export class SidebarComponent implements OnInit, OnChanges {
 
     this.lineColor = !this.selectedGraphics
       ? this.lineColors[4]
-      : this.RGBToHex(this.selectedGraphics[0].attributes.symbol.outline.color);
+      : RGBToHex(this.selectedGraphics[0].attributes.symbol.outline.color);
     console.log(this.lineColor);
   }
 
