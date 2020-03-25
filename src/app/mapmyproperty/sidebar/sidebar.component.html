@@ -13,7 +13,7 @@
             <div>
                 Line color <br>
 
-                <mat-select [(ngModel)]="lineColor" class="matSelect"
+                <!-- <mat-select [(ngModel)]="lineColor" class="matSelect"
                     (selectionChange)="changeStyle('lineColor', $event)">
                     <mat-select-trigger>
                         <div [ngStyle]="{'background-color':lineColor}">
@@ -26,7 +26,8 @@
                         </div>
                     </mat-option>
 
-                </mat-select>
+                </mat-select> -->
+                <app-color-picker [color]="lineColor" (colorSelected)="changeColor($event)"></app-color-picker>
             </div>
             <div>
                 Line Style:<br>
@@ -34,23 +35,21 @@
                 <mat-select [(ngModel)]="lineStyle" class="matSelect"
                     (selectionChange)="changeStyle('lineStyle', $event)">
                     <mat-select-trigger>
-                        <!-- <img *ngIf="lineStyle !== 'none'" src="assets/icons/symbols-sls-{{lineStyle}}.png" /> -->
-                        <svg-icon [src]="'assets/icons/symbols-sls-'+lineStyle+'.svg'"
+                        <svg-icon *ngIf="lineStyle !== 'none'" [src]="'assets/icons/symbols-sls-'+lineStyle+'.svg'"
                             [svgStyle]="{ 'width.px':90, 'fill':lineColor }"></svg-icon>
                         <span *ngIf="lineStyle === 'none'">None</span>
                     </mat-select-trigger>
-
-
                     <mat-option *ngFor="let style of lineStyles | keyvalue" [value]="style.value">
-                        <svg-icon [src]="'assets/icons/symbols-sls-'+style.value+'.svg'"
+                        <svg-icon *ngIf="style.value !== 'none'" [src]="'assets/icons/symbols-sls-'+style.value+'.svg'"
                             [svgStyle]="{ 'width.px':90, 'fill':lineColor }"></svg-icon>
-                        <!-- <img *ngIf="style.value !== 'none'" src="assets/icons/symbols-sls-{{style.value}}.png" /> -->
                         <span *ngIf="style.value === 'none'">None</span>
                     </mat-option>
                 </mat-select>
 
             </div>
-        </div>
-    </div>
 
+        </div>
+
+    </div>
+    <div style="background: red; color:white">Color selector does not work yet !!!. Wait a day or two</div>
 </mat-expansion-panel>

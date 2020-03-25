@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-      "jsx": "react",
+    "jsx": "react",
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
@@ -11,20 +11,13 @@
     "module": "amd",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es5",
-    "esModuleInterop":true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": ["dom", "es2015.promise", "es5", "es6"]
+    "target": "ES5",
+    "esModuleInterop": true,
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["DOM", "es5", "ES6","es2015.promise"]
   },
-  "types": [
-    "bishrant-arcgis-js-api",
-  ],
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ],
+  "types": ["bishrant-arcgis-js-api"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
