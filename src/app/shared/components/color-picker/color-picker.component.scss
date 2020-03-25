@@ -2,6 +2,7 @@
 $radius: 5px;
 $size: 40px;
 .summary-info {
+  $sizes: 40px;
   box-shadow: 0 7px 13px 0 rgba(86, 95, 102, 0.07);
   background: #fff;
   max-width: 240px;
@@ -11,7 +12,7 @@ $size: 40px;
   cursor: pointer;
 
   .info {
-    width: calc(100% - $size); //40px is $size
+    width: calc(100% - 40px); //40px is $size
     p.style {
       color: #000;
       margin-bottom: 5px;
