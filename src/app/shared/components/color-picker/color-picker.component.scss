@@ -24,6 +24,10 @@ $size: 40px;
   }
 }
 
+.noColor {
+  border-bottom: 2px solid red;
+  transform: rotate(135deg) translate(12px, -12px);
+}
 .circle {
   height: $size;
   width: $size;
@@ -49,7 +53,7 @@ $size: 40px;
   &:after {
     border: 10px solid transparent;
     border-bottom: 10px solid #fff;
-    content: "";
+    content: '';
     right: 50%;
     position: absolute;
     top: -20px;
@@ -123,11 +127,7 @@ $size: 40px;
   width: 100%;
 }
 .opacitySliderBackground {
-  background-image: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 1)
-  );
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
   position: absolute;
   bottom: 10px;
   height: 10px;

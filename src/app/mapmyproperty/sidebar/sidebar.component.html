@@ -32,10 +32,14 @@
                 <app-color-picker [color]="lineColor" [opacity]="lineOpacity" (colorSelected)="changeColor($event)">
                 </app-color-picker>
             </div>
-
-
+        </div>
+        <div>
+            Width<br>
+            0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="1" tickInterval="1"
+                (change)="changeLineStyle($event)" [(ngModel)]="lineWidth" min="0" max="10">
+            </mat-slider> &nbsp;10
         </div>
 
     </div>
-    <div style="background: red; color:white">Works almost. not perfect !!!. Wait a day or so </div>
+    <div style="background: red; color:white">Works almost. not perfect !!!. Wait a day or so</div>
 </mat-expansion-panel>

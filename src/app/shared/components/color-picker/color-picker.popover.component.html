@@ -14,7 +14,10 @@
     Color
     <div class="colors">
         <div (click)="changeColor(paint)" *ngFor="let paint of defaultColors" class="circle"
-            [ngStyle]="{'background': paint}"></div>
+            [ngStyle]="{'background': paint}">
+            <div *ngIf="!paint" class="noColor">
+            </div>
+        </div>
     </div>
 
     <div class="hex-code">

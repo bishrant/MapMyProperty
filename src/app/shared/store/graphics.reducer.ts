@@ -10,7 +10,7 @@ import { initialGraphicState } from "./graphics.state";
 import { removeAllGraphics } from './graphics.actions';
 
 const reducer = (state: any, action: any, listener?: PatchListener): any => {
-  console.log(action);
+  // console.log(action);
   return produce(
     state,
     next => {
@@ -19,7 +19,7 @@ const reducer = (state: any, action: any, listener?: PatchListener): any => {
           next.graphics.push(action.payload);
           return;
         case removeGraphics.type:
-          console.log(action.gids);
+          // console.log(action.gids);
           const jj = JSON.parse(JSON.stringify(next.graphics));
           action.gids.forEach(gid => {
             const idx = next.graphics.findIndex(g => {

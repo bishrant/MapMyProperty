@@ -1,3 +1,5 @@
 <div class="summary-info" (click)="openColorSelector(colorsBtn)" #colorsBtn>
-    <div class="circle smallCircle" [ngStyle]="{'background': getCircleColor(color)}"></div>
+    <div class="circle smallCircle" [ngStyle]="{'background': getCircleColor(color)}">
+        <div class="noColor" *ngIf="!color"></div>
+    </div>
 </div>

@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ColorPickerModule } from '../../shared/components/color-picker/color-picker.module';
+import { MatSliderModule } from '@angular/material/slider';
 
 const routes: Routes = [
   {
@@ -39,6 +40,7 @@ const routes: Routes = [
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
+    MatSliderModule,
     FlexLayoutModule,
     MatExpansionModule,
     MatSelectModule,

@@ -13,7 +13,16 @@ const LineStyles = {
   esriSLSNull: 'none'
 };
 
+const CheckIfColorIsHollow = (RGBAarray) => {
+  if (RGBAarray.length === 4) {
+    return RGBAarray.filter(c => c === 0).length === 4;
+  } else {
+    throw new Error('RGBA Expected');
+  }
+}
+
 const ColorSwatch = [
+  null,
   '#c1800b',
   '#ffffff',
   '#000105',
@@ -40,4 +49,4 @@ const ColorSwatch = [
   '#62382f',
   '#c97545'
 ];
-export { LineStyles, ColorSwatch };
+export { LineStyles, ColorSwatch, CheckIfColorIsHollow };

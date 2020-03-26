@@ -106,7 +106,7 @@ export class EsrimapComponent implements OnInit {
       // })
 
       this.sketchVM.on('update', (gg: any) => {
-        console.log(gg);
+        // console.log(gg);
         if (gg.state === 'start' || gg.state === 'active') {
           // gg.graphics.symbol =
           this.selectedGraphics = gg.graphics;
@@ -117,7 +117,7 @@ export class EsrimapComponent implements OnInit {
           this.store.dispatch(updateGraphics({ graphics: JSON.stringify(gg.graphics) }));
           this.selectedGraphics = undefined;
         }
-        console.log(this.selectedGraphics, gg, ' enable editing for this');
+        // console.log(this.selectedGraphics, gg, ' enable editing for this');
       });
       this.showMapCoordinates();
     } catch (error) {
@@ -133,7 +133,7 @@ export class EsrimapComponent implements OnInit {
           const __g = JSON.parse(_g);
           return Graphic.fromJSON(__g);
         });
-        console.log('array', graphicsArray);
+        // console.log('array', graphicsArray);
         this.polygonGraphicsLayer.graphics = graphicsArray;
       } else {
         this.polygonGraphicsLayer.removeAll();
