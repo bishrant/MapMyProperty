@@ -9,7 +9,7 @@ import { ColorSwatch } from '../../utils/GraphicStyles';
 })
 export class ColorPickerPopoverComponent {
   @Input() color: any;
-  @Input() opacity: number = 100;
+  @Input() opacity: number;
   @ViewChild('customColorInput') customColorInput: ElementRef;
   defaultColors = ColorSwatch;
 

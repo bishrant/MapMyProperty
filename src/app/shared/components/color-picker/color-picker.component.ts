@@ -12,7 +12,7 @@ import { ComponentPortal } from '@angular/cdk/portal';
 export class ColorPickerComponent {
   @Input() heading: string;
   @Input() color: string;
-  @Input() opacity: number = 100;
+  @Input() opacity: number;
   @Output() colorSelected: EventEmitter<string> = new EventEmitter<string>();
 
   public show = true;
@@ -34,7 +34,13 @@ export class ColorPickerComponent {
   }
 
   getCircleColor = (color) => {
-    const h = HexToRGBA(color, this.opacity);
-    return `rgba(${h.r}, ${h.g}, ${h.b}, ${h.a})`;
+    
+    if (color) {
+      const h = HexToRGBA(color, this.opacity);
+      return `rgba(${h.r}, ${h.g}, ${h.b}, ${h.a})`;
+    }
+    // } else {
+    //   return 'rgb(255, 255, 255)';
+    // }
   }
 }

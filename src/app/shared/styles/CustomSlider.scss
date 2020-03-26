@@ -1,39 +1,52 @@
-.mat-slider.mat-slider-horizontal .mat-slider-wrapper {
-  top: 18px;
+.opacitySliderContainer {
+  .mat-slider.mat-slider-horizontal .mat-slider-wrapper {
+    top: 18px;
+  }
+  .mat-slider.mat-slider-horizontal .mat-slider-track-wrapper {
+    height: 12px;
+    border-radius: 10px;
+  }
+  .mat-slider.mat-slider-horizontal .mat-slider-track-background,
+  .mat-slider.mat-slider-horizontal .mat-slider-track-fill {
+    height: 100%;
+  }
+  .mat-slider.mat-slider-horizontal .mat-slider-track-fill {
+    /* background: unset; */
+    /* display: none; */
+    /* background-color: blue; */
+    opacity: 1;
+    /* background-image: linear-gradient(to right, rgba(0,0,0,0) , rgba(0,0,0,1)); */
+  }
+  .mat-slider-track-background {
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
+  }
+  .mat-accent .mat-slider-thumb {
+    height: 30px;
+    width: 30px;
+    background-color: white;
+    border: solid 2px gray;
+    bottom: -20px;
+    right: -20px;
+  }
+  .mat-slider-min-value:not(.mat-slider-thumb-label-showing) .mat-slider-thumb {
+    background-color: white;
+  }
+  .mat-slider-track-wrapper {
+    display: none;
+  }
 }
-.mat-slider.mat-slider-horizontal .mat-slider-track-wrapper {
-  height: 12px;
-  border-radius: 10px;
-}
-.mat-slider.mat-slider-horizontal .mat-slider-track-background,
-.mat-slider.mat-slider-horizontal .mat-slider-track-fill {
-  height: 100%;
-}
-.mat-slider.mat-slider-horizontal .mat-slider-track-fill {
-  /* background: unset; */
-  /* display: none; */
-  /* background-color: blue; */
-  opacity: 1;
-  /* background-image: linear-gradient(to right, rgba(0,0,0,0) , rgba(0,0,0,1)); */
-}
-.mat-slider-track-background {
-  background-image: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 1)
-  );
-}
-.mat-accent .mat-slider-thumb {
-  height: 30px;
-  width: 30px;
-  background-color: white;
-  border: solid 2px gray;
-  bottom: -20px;
-  right: -20px;
-}
-.mat-slider-min-value:not(.mat-slider-thumb-label-showing) .mat-slider-thumb {
-  background-color: white;
-}
-.mat-slider-track-wrapper {
-  display: none;
-}
+
+// ::ng-deep {
+//   .mat-slider-thumb-label {
+//     transform: rotate(45deg) !important;
+//     border-radius: 50% 50% 0 !important;
+//   }
+
+//   .mat-slider-thumb {
+//     transform: scale(0) !important;
+//   }
+
+//   .mat-slider-thumb-label-text {
+//     opacity: 1 !important;
+//   }
+// }
