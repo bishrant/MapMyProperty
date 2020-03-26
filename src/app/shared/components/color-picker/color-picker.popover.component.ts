@@ -1,42 +1,17 @@
 import { Component, Input, ViewChild, ElementRef } from "@angular/core";
 import { ColorsPopoverService } from "../../services/ColorsPopover.service";
+import { ColorSwatch } from '../../utils/GraphicStyles';
 
 @Component({
-  selector: "app-color-popover",
-  templateUrl: "./color-picker.popover.component.html",
-  styleUrls: ["./color-picker.component.scss"]
+  selector: 'app-color-popover',
+  templateUrl: './color-picker.popover.component.html',
+  styleUrls: ['./color-picker.component.scss']
 })
 export class ColorPickerPopoverComponent {
   @Input() color: any;
   @Input() opacity: number = 100;
-  @ViewChild("customColorInput") customColorInput: ElementRef;
-  public defaultColors: string[] = [
-    "#c1800b",
-    "#ffffff",
-    "#000105",
-    "#3e6158",
-    "#3f7a89",
-    "#96c582",
-    "#b7d5c4",
-    "#bcd6e7",
-    "#7c90c1",
-    "#9d8594",
-    "#dad0d8",
-    "#4b4fce",
-    "#4e0a77",
-    "#a367b5",
-    "#ee3e6d",
-    "#d63d62",
-    "#c6a670",
-    "#f46600",
-    "#cf0500",
-    "#efabbd",
-    "#8e0622",
-    "#f0b89a",
-    "#f0ca68",
-    "#62382f",
-    "#c97545"
-  ];
+  @ViewChild('customColorInput') customColorInput: ElementRef;
+  defaultColors = ColorSwatch;
 
   public changeColor(color: string): void {
     this.color = color;
@@ -64,10 +39,11 @@ export class ColorPickerPopoverComponent {
     this.customColorInput.nativeElement.click();
   };
 
-  closePopupWithColor = (closePopup) => {
-    const colorInfo = { color: this.color, opacity: this.opacity };
+  closePopupWithColor = closePopup => {
+    const colorInfo = { color: this.color, opacity: this.opacity, closePopup: closePopup };
     this.colorsPopoverService.close(colorInfo, closePopup);
   };
 
-  constructor(public colorsPopoverService: ColorsPopoverService) {}
+  constructor(public colorsPopoverService: ColorsPopoverService) {
+  }
 }

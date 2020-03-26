@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, Output, ViewChild, ElementRef, ViewContainerRef, TemplateRef, ContentChild } from "@angular/core";
-import { ColorsPopoverService } from "../../services/ColorsPopover.service";
-import { ColorPickerPopoverComponent } from "./color-picker.popover.component";
-import { OverlayConfig, Overlay, PositionStrategy, ConnectionPositionPair, FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
+import { HexToRGBA } from 'src/app/shared/utils/Colors';
+import { Component, EventEmitter, Input, Output, ViewContainerRef } from '@angular/core';
+import { ColorsPopoverService } from '../../services/ColorsPopover.service';
+import { ColorPickerPopoverComponent } from './color-picker.popover.component';
 import { ComponentPortal } from '@angular/cdk/portal';
 
 @Component({
-  selector: "app-color-picker",
-  templateUrl: "./color-picker.component.html",
-  styleUrls: ["./color-picker.component.scss"]
+  selector: 'app-color-picker',
+  templateUrl: './color-picker.component.html',
+  styleUrls: ['./color-picker.component.scss']
 })
 export class ColorPickerComponent {
   @Input() heading: string;
@@ -16,25 +16,25 @@ export class ColorPickerComponent {
   @Output() colorSelected: EventEmitter<string> = new EventEmitter<string>();
 
   public show = true;
-  constructor(
-    public colorsPopoverService: ColorsPopoverService,
-    private viewContainerRef: ViewContainerRef,
-    private overlay: Overlay
-  ) {}
+  constructor(public colorsPopoverService: ColorsPopoverService, private viewContainerRef: ViewContainerRef) {}
 
-  openRotiniPanel(origin: any) {
-    const componentPortal = new ComponentPortal(
-      ColorPickerPopoverComponent,
-      this.viewContainerRef
-    );
+  openColorSelector(origin: any) {
+    const componentPortal = new ComponentPortal(ColorPickerPopoverComponent, this.viewContainerRef);
     this.colorsPopoverService
-      .openRotiniPanel(origin, componentPortal, { color: this.color, opacity: this.opacity })
-      .subscribe((colorInfo) => {
+      .open(origin, componentPortal, { color: this.color, opacity: this.opacity })
+      .subscribe(colorInfo => {
         if (colorInfo) {
           this.color = colorInfo.color;
           this.opacity = colorInfo.opacity;
-          this.colorSelected.emit(colorInfo);
+          if (colorInfo.closePopup) {
+            this.colorSelected.emit(colorInfo);
+          }
         }
       });
+  }
+
+  getCircleColor = (color) => {
+    const h = HexToRGBA(color, this.opacity);
+    return `rgba(${h.r}, ${h.g}, ${h.b}, ${h.a})`;
   }
 }

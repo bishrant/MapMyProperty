@@ -1,43 +1,22 @@
-import {
-  Component,
-  OnInit,
-  Output,
-  EventEmitter,
-  Input,
-  OnChanges
-} from "@angular/core";
-import { GraphicsState } from "src/app/shared/store/graphics.state";
-import { Store } from "@ngrx/store";
-import { updateGraphics } from "src/app/shared/store/graphics.actions";
+import { Component, OnInit, Output, EventEmitter, Input, OnChanges } from '@angular/core';
+import { GraphicsState } from 'src/app/shared/store/graphics.state';
+import { Store } from '@ngrx/store';
+import { updateGraphics } from 'src/app/shared/store/graphics.actions';
 import { RGBToHex, HexToRGBA } from 'src/app/shared/utils/Colors';
+import { LineStyles } from 'src/app/shared/utils/GraphicStyles';
 
 @Component({
-  selector: "app-sidebar",
-  templateUrl: "./sidebar.component.html",
-  styleUrls: ["./sidebar.component.scss"]
+  selector: 'app-sidebar',
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit, OnChanges {
   @Output() startDrawing = new EventEmitter<any>();
   @Input() selectedGraphics: any[];
-  lineStyle = "solid";
-  lineStyles = {
-    esriSLSSolid: "solid",
-    esriSLSDash: "dash",
-    esriSLSShortDot: "short-dot",
-    esriSLSDot: "dot",
-    esriSLSDashDot: "dash-dot",
-    esriSLSShortDashDotDot: "short-dash-dot-dot",
-    esriSLSLongDash: "long-dash",
-    esriSLSLongDashDot: "long-dash-dot",
-    esriSLSShortDash: "short-dash",
-    // esriSLSDashDotDot: "dash-dot-dot",
-    esriSLSShortDashDot: "short-dash-dot",
-      esriSLSNull: "none"
-  };
-
-  lineColor = "#f9ac26";
+  lineStyle = 'solid';
+  lineColor = '#f9ac26';
   lineOpacity = 40;
-
+  lineStyles = LineStyles;
 
   constructor(private store: Store<GraphicsState>) {}
 
@@ -45,18 +24,18 @@ export class SidebarComponent implements OnInit, OnChanges {
     this.lineColor = colorInfo.color;
     this.lineOpacity = colorInfo.opacity;
     this.changeStyle('lineColor', colorInfo.color);
-  }
+  };
   changeStyle = (type: string, event$: any) => {
     if (this.selectedGraphics) {
       const j = this.selectedGraphics[0];
       const symbol = {
-        type: "simple-fill",
-        color: "transparent",
-        style: "solid",
+        type: 'simple-fill',
+        color: 'transparent',
+        style: 'solid',
         outline: {
           color: HexToRGBA(this.lineColor, this.lineOpacity),
           width: 2,
-          style: this.lineStyle,
+          style: this.lineStyle
           // opacity: this.lineOpacity
         }
       };
@@ -69,41 +48,32 @@ export class SidebarComponent implements OnInit, OnChanges {
     if (this.selectedGraphics) {
       // this.lineStyle.setValue(
       console.log(this.selectedGraphics);
-      this.lineStyle = this.lineStyles[
-        this.selectedGraphics[0].attributes.symbol.outline.style
-      ];
+      this.lineStyle = this.lineStyles[this.selectedGraphics[0].attributes.symbol.outline.style];
 
       this.lineColor = !this.selectedGraphics
-        ? "red"
-        : RGBToHex(
-            this.selectedGraphics[0].attributes.symbol.outline.color
-        );
-      
+        ? 'red'
+        : RGBToHex(this.selectedGraphics[0].attributes.symbol.outline.color);
+
       this.lineOpacity = !this.selectedGraphics
         ? 100
-        : parseInt(''+this.selectedGraphics[0].attributes.symbol.outline.color[3]*100/255);
-      console.log(
-        (this.selectedGraphics[0].attributes.symbol.outline.color[3] * 100) /
-          255
-      );
+        : parseInt('' + (this.selectedGraphics[0].attributes.symbol.outline.color[3] * 100) / 255);
+      console.log((this.selectedGraphics[0].attributes.symbol.outline.color[3] * 100) / 255);
     }
   }
 
   ngOnInit(): void {
-    this.lineStyle = !this.selectedGraphics
-      ? "solid"
-      : this.selectedGraphics[0].attributes.symbol.outline.style;
+    this.lineStyle = !this.selectedGraphics ? 'solid' : this.selectedGraphics[0].attributes.symbol.outline.style;
 
     this.lineColor = !this.selectedGraphics
       ? this.lineColor
       : RGBToHex(this.selectedGraphics[0].attributes.symbol.outline.color);
   }
 
-  startDrawingGraphics = (toolName: string = "polygon") => {
+  startDrawingGraphics = (toolName: string = 'polygon') => {
     const symbol = {
-      type: "simple-fill",
-      color: "transparent",
-      style: "solid",
+      type: 'simple-fill',
+      color: 'transparent',
+      style: 'solid',
       outline: {
         color: HexToRGBA(this.lineColor, this.lineOpacity),
         width: 2,
