@@ -3,7 +3,8 @@ import {
   Overlay,
   ConnectionPositionPair,
   PositionStrategy,
-  OverlayConfig
+  OverlayConfig,
+  FlexibleConnectedPositionStrategy
 } from "@angular/cdk/overlay";
 import {
   PortalInjector,
@@ -25,72 +26,128 @@ export class MenuContextualService {
 
   constructor(private overlay: Overlay) {}
 
-  open(
-    origin: any,
-    component: any,
-    viewContainerRef: ViewContainerRef,
-    data: any
-  ) {
-      if (this.isOpen) {
-        console.log('opne already')
-      this.close(null);
-      return;
-    }
-    this.isOpen = true;
-    this.close(null);
-    this.overlayRef = this.overlay.create(
-      this.getOverlayConfig({ origin: origin })
-    );
+  openRotiniPanel(origin: any, componentPortal: any, data: any) {
+    let config = new OverlayConfig({
+      positionStrategy: this.getOverlayPosition(origin),
+      scrollStrategy: this.overlay.scrollStrategies.close(),
+      hasBackdrop: true,
+      backdropClass: "transparentBackDropPopup"
+      // flexibleDimensions: true
+    });
 
-    const ref = this.overlayRef.attach(
-      new ComponentPortal(component, viewContainerRef)
-    );
+    this.overlayRef = this.overlay.create(config);
+
+    this.overlayRef.backdropClick().subscribe(() => {
+      this.overlayRef.dispose();
+    });
+
+    const ref = this.overlayRef.attach(componentPortal);
     for (let key in data) ref.instance[key] = data[key];
 
-    this.sub = fromEvent<MouseEvent>(document, "click")
-      .pipe(
-        filter(event => {
-          const clickTarget = event.target as any;
-          return (
-            clickTarget != origin &&
-            !!this.overlayRef &&
-            !this.overlayRef.overlayElement.contains(clickTarget)
-          );
-        }),
-        take(1)
-      )
-      .subscribe(() => {
-        this.close(null);
-      });
-    return this.onClosed.pipe(take(1));
+    //   this.sub = fromEvent<MouseEvent>(document, "click")
+    //     .pipe(
+    //       filter(event => {
+    //         const clickTarget = event.target as any;
+    //         return (
+    //           clickTarget != origin &&
+    //           !!this.overlayRef &&
+    //           !this.overlayRef.overlayElement.contains(clickTarget)
+    //         );
+    //       }),
+    //       take(1)
+    //     )
+    //     .subscribe(() => {
+    //       this.close(null);
+    //     });
+    return this.onClosed;//.pipe(take(1));
   }
 
-  close = (data: any) => {
-    this.isOpen = false;
-    this.sub && this.sub.unsubscribe();
-    if (this.overlayRef) {
-      this.overlayRef.dispose();
-      this.overlayRef = null;
-      this.afterClosed.next(data);
-    }
-  };
   private getOverlayPosition(origin: any): PositionStrategy {
-    const positionStrategy = this.overlay
+    const positionStrategy: FlexibleConnectedPositionStrategy = this.overlay
       .position()
       .flexibleConnectedTo(origin)
       .withPositions(this.getPositions())
-      .withPush(false);
+      .withFlexibleDimensions(true)
+      .withPush(true);
 
     return positionStrategy;
   }
-  private getOverlayConfig({ origin }): OverlayConfig {
-    return new OverlayConfig({
-      hasBackdrop: false,
-      backdropClass: "popover-backdrop",
-      positionStrategy: this.getOverlayPosition(origin),
-      
-    });
-  }
+
+  // open(
+  //   origin: any,
+  //   component: any,
+  //   viewContainerRef: ViewContainerRef,
+  //   data: any
+  // ) {
+  //   if (this.isOpen) {
+  //     console.log("opne already");
+  //     this.close(null);
+  //     return;
+  //   }
+  //   this.isOpen = true;
+  //   this.close(null);
+  //   this.overlayRef = this.overlay.create(
+  //     this.getOverlayConfig({ origin: origin })
+  //   );
+
+  //   const ref = this.overlayRef.attach(
+  //     new ComponentPortal(component, viewContainerRef)
+  //   );
+  //   for (let key in data) ref.instance[key] = data[key];
+
+  //   this.sub = fromEvent<MouseEvent>(document, "click")
+  //     .pipe(
+  //       filter(event => {
+  //         const clickTarget = event.target as any;
+  //         return (
+  //           clickTarget != origin &&
+  //           !!this.overlayRef &&
+  //           !this.overlayRef.overlayElement.contains(clickTarget)
+  //         );
+  //       }),
+  //       take(1)
+  //     )
+  //     .subscribe(() => {
+  //       this.close(null);
+  //     });
+  //   return this.onClosed.pipe(take(1));
+  // }
+
+  close = (data: any, closePopup = true) => {
+    if (!closePopup) {
+      // just send the data without closing the popup
+      console.log(1111)
+      this.afterClosed.next(data);
+    } else {
+
+      this.isOpen = false;
+    
+      console.log(this.overlayRef);
+      this.sub && this.sub.unsubscribe();
+      if (this.overlayRef) {
+        this.overlayRef.dispose();
+        this.overlayRef = null;
+        this.afterClosed.next(data);
+      }
+    }
+ 
+  };
+  // private getOverlayPosition(origin: any): PositionStrategy {
+  //   const positionStrategy = this.overlay
+  //     .position()
+  //     .flexibleConnectedTo(origin)
+  //     .withPositions(this.getPositions())
+  //     .withPush(false);
+
+  //   return positionStrategy;
+  // }
+  // private getOverlayConfig({ origin }): OverlayConfig {
+  //   return new OverlayConfig({
+  //     hasBackdrop: false,
+  //     backdropClass: "popover-backdrop",
+  //     positionStrategy: this.getOverlayPosition(origin)
+  //   });
+  // }
   private getPositions(): ConnectionPositionPair[] {
     return [
       {

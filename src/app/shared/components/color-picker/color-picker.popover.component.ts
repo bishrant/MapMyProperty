@@ -55,7 +55,10 @@ export class ColorPickerPopoverComponent {
   }
 
   public changeColorCustom(color: string): void {
+    console.log(color);
     this.color = color;
+    this.popupService.close(color, false);
+
   }
 
   /**
@@ -74,7 +77,8 @@ export class ColorPickerPopoverComponent {
     this.customColorInput.nativeElement.click();
   };
 
-  closePopupWithColor = (color:any) => {
+  closePopupWithColor = (color: any) => {
+    console.log(color);
     this.popupService.close(color);
   };
   constructor(public popupService: MenuContextualService) {}

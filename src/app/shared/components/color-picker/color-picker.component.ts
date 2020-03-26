@@ -29,66 +29,81 @@ export class ColorPickerComponent {
     //   this.popupService.close(null);
     // } else {
     // const temp = new TemplatePortal(this.hello, this.viewContainerRef);
-    this.popupService
-      .open(origin, ColorPickerPopoverComponent, this.viewContainerRef, {
-        color: this.color
-      })
+    // this.popupService
+    //   .open(origin, ColorPickerPopoverComponent, this.viewContainerRef, {
+    //     color: this.color
+    //   })
+    //   .subscribe(_color => {
+    //     if (_color) {
+    //       this.colorSelected.emit(_color);
+    //     }
+    //   });
+    // }
+  }
+
+  openRotiniPanel(origin: any) {
+    const componentPortal = new ComponentPortal(
+      ColorPickerPopoverComponent,
+      this.viewContainerRef
+    );
+    this.popupService.openRotiniPanel(origin, componentPortal, { color: this.color })
       .subscribe(_color => {
         if (_color) {
           this.colorSelected.emit(_color);
-        }
-      });
-    // }
-  }
-  nextPosition: number = 0;
-  private getOverlayPosition(origin: any): PositionStrategy {
-    const positionStrategy: FlexibleConnectedPositionStrategy = this.overlay
-      .position()
-      .flexibleConnectedTo(origin)
-      .withPositions(this.getPositions())
-      .withFlexibleDimensions(true)
-      .withPush(true);
-
-    return positionStrategy;
-  }
-  private getPositions(): ConnectionPositionPair[] {
-    return [
-      {
-        originX: "center",
-        originY: "bottom",
-        overlayX: "center",
-        overlayY: "top"
-      },
-      {
-        originX: "start",
-        originY: "bottom",
-        overlayX: "start",
-        overlayY: "top"
-      },
-      {
-        originX: "end",
-        originY: "bottom",
-        overlayX: "end",
-        overlayY: "top"
       }
-    ];
+    })
   }
-  openRotiniPanel(origin: any) {
-    let config = new OverlayConfig({
-      positionStrategy: this.getOverlayPosition(origin),
-      scrollStrategy: this.overlay.scrollStrategies.close(),
-      hasBackdrop: true,
-      // flexibleDimensions: true
-    });
 
-    let overlayRef = this.overlay.create(config);
+  nextPosition: number = 0;
+  // private getOverlayPosition(origin: any): PositionStrategy {
+  //   const positionStrategy: FlexibleConnectedPositionStrategy = this.overlay
+  //     .position()
+  //     .flexibleConnectedTo(origin)
+  //     .withPositions(this.getPositions())
+  //     .withFlexibleDimensions(true)
+  //     .withPush(true);
 
-    overlayRef.backdropClick().subscribe(() => {
-      overlayRef.dispose();
-    });
+  //   return positionStrategy;
+  // }
+  // private getPositions(): ConnectionPositionPair[] {
+  //   return [
+  //     {
+  //       originX: "center",
+  //       originY: "bottom",
+  //       overlayX: "center",
+  //       overlayY: "top"
+  //     },
+  //     {
+  //       originX: "start",
+  //       originY: "bottom",
+  //       overlayX: "start",
+  //       overlayY: "top"
+  //     },
+  //     {
+  //       originX: "end",
+  //       originY: "bottom",
+  //       overlayX: "end",
+  //       overlayY: "top"
+  //     }
+  //   ];
+  // }
+  // openRotiniPanel(origin: any) {
+  //   let config = new OverlayConfig({
+  //     positionStrategy: this.getOverlayPosition(origin),
+  //     scrollStrategy: this.overlay.scrollStrategies.close(),
+  //     hasBackdrop: true,
+  //     backdropClass: 'transparentBackDropPopup'
+  //     // flexibleDimensions: true
+  //   });
 
-    overlayRef.attach(
-      new ComponentPortal(ColorPickerPopoverComponent, this.viewContainerRef)
-    );
-  }
+  //   let overlayRef = this.overlay.create(config);
+
+  //   overlayRef.backdropClick().subscribe(() => {
+  //     overlayRef.dispose();
+  //   });
+
+  //   overlayRef.attach(
+  //     new ComponentPortal(ColorPickerPopoverComponent, this.viewContainerRef)
+  //   );
+  // }
 }
