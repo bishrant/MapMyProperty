@@ -29,9 +29,11 @@ export class ColorPickerComponent {
     );
     this.colorsPopoverService
       .openRotiniPanel(origin, componentPortal, { color: this.color, opacity: this.opacity })
-      .subscribe(_color => {
-        if (_color) {
-          this.colorSelected.emit(_color);
+      .subscribe((colorInfo) => {
+        if (colorInfo) {
+          this.color = colorInfo.color;
+          this.opacity = colorInfo.opacity;
+          this.colorSelected.emit(colorInfo);
         }
       });
   }

@@ -9,7 +9,7 @@ import {
 import { GraphicsState } from "src/app/shared/store/graphics.state";
 import { Store } from "@ngrx/store";
 import { updateGraphics } from "src/app/shared/store/graphics.actions";
-import { RGBToHex } from 'src/app/shared/utils/Colors';
+import { RGBToHex, HexToRGBA } from 'src/app/shared/utils/Colors';
 
 @Component({
   selector: "app-sidebar",
@@ -36,22 +36,15 @@ export class SidebarComponent implements OnInit, OnChanges {
   };
 
   lineColor = "#f9ac26";
-  lineColors: any = [
-    "#49483e",
-    "#6a81f9",
-    "#00cccc",
-    "#f9ac26",
-    "#ac26f9",
-    "#26f9ad",
-    "#f92672"
-  ];
+  lineOpacity = 40;
 
 
   constructor(private store: Store<GraphicsState>) {}
 
-  changeColor = (color: string) => {
-    this.lineColor = color;
-    this.changeStyle('lineColor', color);
+  changeColor = (colorInfo: any) => {
+    this.lineColor = colorInfo.color;
+    this.lineOpacity = colorInfo.opacity;
+    this.changeStyle('lineColor', colorInfo.color);
   }
   changeStyle = (type: string, event$: any) => {
     if (this.selectedGraphics) {
@@ -61,9 +54,10 @@ export class SidebarComponent implements OnInit, OnChanges {
         color: "transparent",
         style: "solid",
         outline: {
-          color: this.lineColor,
+          color: HexToRGBA(this.lineColor, this.lineOpacity),
           width: 2,
-          style: this.lineStyle
+          style: this.lineStyle,
+          // opacity: this.lineOpacity
         }
       };
       j.symbol = symbol;
@@ -74,6 +68,7 @@ export class SidebarComponent implements OnInit, OnChanges {
   ngOnChanges() {
     if (this.selectedGraphics) {
       // this.lineStyle.setValue(
+      console.log(this.selectedGraphics);
       this.lineStyle = this.lineStyles[
         this.selectedGraphics[0].attributes.symbol.outline.style
       ];
@@ -82,7 +77,15 @@ export class SidebarComponent implements OnInit, OnChanges {
         ? "red"
         : RGBToHex(
             this.selectedGraphics[0].attributes.symbol.outline.color
-          );
+        );
+      
+      this.lineOpacity = !this.selectedGraphics
+        ? 100
+        : parseInt(''+this.selectedGraphics[0].attributes.symbol.outline.color[3]*100/255);
+      console.log(
+        (this.selectedGraphics[0].attributes.symbol.outline.color[3] * 100) /
+          255
+      );
     }
   }
 
@@ -92,7 +95,7 @@ export class SidebarComponent implements OnInit, OnChanges {
       : this.selectedGraphics[0].attributes.symbol.outline.style;
 
     this.lineColor = !this.selectedGraphics
-      ? this.lineColors[4]
+      ? this.lineColor
       : RGBToHex(this.selectedGraphics[0].attributes.symbol.outline.color);
   }
 
@@ -102,11 +105,12 @@ export class SidebarComponent implements OnInit, OnChanges {
       color: "transparent",
       style: "solid",
       outline: {
-        color: this.lineColor,
+        color: HexToRGBA(this.lineColor, this.lineOpacity),
         width: 2,
         style: this.lineStyle
       }
     };
+    console.log(symbol);
     this.startDrawing.emit({ tool: toolName, symbol: symbol });
   };
 }

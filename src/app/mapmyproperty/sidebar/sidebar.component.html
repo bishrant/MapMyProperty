@@ -29,7 +29,8 @@
 
             </div>
             <div>
-                <app-color-picker [color]="lineColor" (colorSelected)="changeColor($event)"></app-color-picker>
+                <app-color-picker [color]="lineColor" [opacity]="lineOpacity" (colorSelected)="changeColor($event)">
+                </app-color-picker>
             </div>
 
 

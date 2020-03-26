@@ -22,8 +22,7 @@
             HEX
             <div class="g-input">
                 <input type="text" maxlength="7" [value]="color" (keyup)="changeColorManual(paintInput.value)"
-                    (keydown.enter)="closePopupWithColor(undefined)" #paintInput />
-
+                    (keydown.enter)="closePopupWithColor(true)" #paintInput />
             </div>
         </div>
 

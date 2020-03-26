@@ -8,8 +8,8 @@ import { ColorsPopoverService } from "../../services/ColorsPopover.service";
 })
 export class ColorPickerPopoverComponent {
   @Input() color: any;
-  @ViewChild("customColorInput") customColorInput: ElementRef;
   @Input() opacity: number = 100;
+  @ViewChild("customColorInput") customColorInput: ElementRef;
   public defaultColors: string[] = [
     "#c1800b",
     "#ffffff",
@@ -38,44 +38,36 @@ export class ColorPickerPopoverComponent {
     "#c97545"
   ];
 
-  /**
-   * Change color from default colors
-   * @param {string} color
-   */
   public changeColor(color: string): void {
     this.color = color;
-    this.closePopupWithColor(color);
+    this.closePopupWithColor(true);
   }
 
   public changeColorCustom(color: string): void {
     this.color = color;
-    this.colorsPopoverService.close(color, false);
+    this.colorsPopoverService.close(false);
   }
 
   public changeOpacity($event: any) {
     this.opacity = $event.value;
+    this.closePopupWithColor(false);
   }
 
-  /**
-   * Change color from input
-   * @param {string} color
-   */
   public changeColorManual(color: string): void {
     const isValid = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(color);
-
     if (isValid) {
       this.color = color;
-      this.colorsPopoverService.close(this.color, false);
-      //   this.colorSelected.emit(this.color);
+      this.closePopupWithColor(false);
     }
   }
   openColorPalettee = () => {
     this.customColorInput.nativeElement.click();
   };
 
-  closePopupWithColor = (color: any) => {
-    console.log(color);
-    this.colorsPopoverService.close(color);
+  closePopupWithColor = (closePopup) => {
+    const colorInfo = { color: this.color, opacity: this.opacity };
+    this.colorsPopoverService.close(colorInfo, closePopup);
   };
+
   constructor(public colorsPopoverService: ColorsPopoverService) {}
 }

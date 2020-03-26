@@ -31,7 +31,7 @@ export class ColorsPopoverService {
     this.overlayRef = this.overlay.create(config);
 
     this.overlayRef.backdropClick().subscribe(() => {
-      this.overlayRef.dispose();
+      this.close({ color: ref.instance['color'], opacity: ref.instance['opacity'] }, true);
     });
 
     const ref = this.overlayRef.attach(componentPortal);
@@ -107,8 +107,10 @@ export class ColorsPopoverService {
   // }
 
   close = (data: any, closePopup = true) => {
+    // console.log(data);
     if (!closePopup) {
       // just send the data without closing the popup
+      // console.log(data);
       this.afterClosed.next(data);
     } else {
       this.sub && this.sub.unsubscribe();
