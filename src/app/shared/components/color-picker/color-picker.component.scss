@@ -3,14 +3,12 @@ $radius: 5px;
 $size: 40px;
 .summary-info {
   $sizes: 40px;
-  box-shadow: 0 7px 13px 0 rgba(86, 95, 102, 0.07);
-  background: #fff;
   max-width: 240px;
   padding: 3px;
   border-radius: $radius;
   display: flex;
   cursor: pointer;
-
+  width: $size;
   .info {
     width: calc(100% - 40px); //40px is $size
     p.style {
@@ -35,7 +33,10 @@ $size: 40px;
   border: 1px solid #dadada;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
 }
-
+.smallCircle {
+  height: $size/1.2;
+  width: $size/1.2;
+}
 .opened {
   box-shadow: 0 7px 13px 0 rgba(86, 95, 102, 0.07);
   background: #fff;
@@ -71,24 +72,34 @@ $size: 40px;
   }
 
   .hex-code {
-    $height: 45px;
+    $height: 35px;
     display: flex;
-    margin-top: 20px;
+    margin-top: 10px;
+    align-items: center;
 
-    p {
-      width: 50%;
-      text-align: center;
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      line-height: $height;
+    .hexDiv {
+      flex: 1;
+      flex-grow: 1;
+      align-items: center;
+      display: flex;
+      justify-content: space-around;
+      div {
+        flex: 1;
+      }
     }
 
+    .customColorOpener {
+      text-align: right;
+      width: 80px;
+      input {
+        width: 0;
+      }
+    }
     .g-input {
       border: 1px solid #e8ebed;
       height: $height;
       border-radius: $radius;
-      width: 100px;
+      max-width: 100px;
 
       input {
         border: none;
@@ -109,8 +120,7 @@ $size: 40px;
 .opacitySliderContainer {
   position: relative;
   height: 40px;
-  // border: 2px dashed blue;
-  width: 200px;
+  width: 100%;
 }
 .opacitySliderBackground {
   background-image: linear-gradient(
@@ -128,11 +138,19 @@ $size: 40px;
 }
 .opacitySlider {
   height: 100%;
-  width: 100%;
+  width: 185px;
   position: absolute;
   z-index: 10;
 }
 // }
 .transparentBackDropPopup {
   opacity: 0.5;
+}
+.opacityLabel {
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-content: center;
+  height: 40px;
+  align-items: center;
 }

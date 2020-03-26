@@ -1,20 +1,33 @@
 <div class="opened">
+    Transparency
     <div class='opacitySliderContainer'>
-        <mat-slider [thumbLabel]="true" class="opacitySlider"></mat-slider>
+        <mat-slider [thumbLabel]="true" (change)="changeOpacity($event)" [value]="opacity" class="opacitySlider">
+        </mat-slider>
         <div class='opacitySliderBackground'></div>
+        <div class="opacityLabel">
+            <span>
+                {{opacity}}%
+            </span>
+        </div>
     </div>
 
-
+    Color
     <div class="colors">
         <div (click)="changeColor(paint)" *ngFor="let paint of defaultColors" class="circle"
             [ngStyle]="{'background': paint}"></div>
     </div>
 
     <div class="hex-code">
-        <p>Hex Code</p>
-        <div class="g-input">
-            <input type="text" maxlength="7" [value]="color" (keyup)="changeColorManual(paintInput.value)"
-                (keydown.enter)="closePopupWithColor(undefined)" #paintInput />
+        <div class="hexDiv">
+            HEX
+            <div class="g-input">
+                <input type="text" maxlength="7" [value]="color" (keyup)="changeColorManual(paintInput.value)"
+                    (keydown.enter)="closePopupWithColor(undefined)" #paintInput />
+
+            </div>
+        </div>
+
+        <div class="customColorOpener">
             <a (click)="openColorPalettee()"><u style="cursor: pointer;">Custom</u></a>
             <input type="color" #customColorInput style="visibility: hidden" [value]="color"
                 (change)="changeColorCustom($event.srcElement.value)">

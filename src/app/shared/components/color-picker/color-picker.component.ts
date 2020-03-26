@@ -12,6 +12,7 @@ import { ComponentPortal } from '@angular/cdk/portal';
 export class ColorPickerComponent {
   @Input() heading: string;
   @Input() color: string;
+  @Input() opacity: number = 100;
   @Output() colorSelected: EventEmitter<string> = new EventEmitter<string>();
 
   public show = true;
@@ -27,7 +28,7 @@ export class ColorPickerComponent {
       this.viewContainerRef
     );
     this.colorsPopoverService
-      .openRotiniPanel(origin, componentPortal, { color: this.color })
+      .openRotiniPanel(origin, componentPortal, { color: this.color, opacity: this.opacity })
       .subscribe(_color => {
         if (_color) {
           this.colorSelected.emit(_color);

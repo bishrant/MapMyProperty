@@ -9,6 +9,7 @@ import { ColorsPopoverService } from "../../services/ColorsPopover.service";
 export class ColorPickerPopoverComponent {
   @Input() color: any;
   @ViewChild("customColorInput") customColorInput: ElementRef;
+  @Input() opacity: number = 100;
   public defaultColors: string[] = [
     "#c1800b",
     "#ffffff",
@@ -49,6 +50,10 @@ export class ColorPickerPopoverComponent {
   public changeColorCustom(color: string): void {
     this.color = color;
     this.colorsPopoverService.close(color, false);
+  }
+
+  public changeOpacity($event: any) {
+    this.opacity = $event.value;
   }
 
   /**

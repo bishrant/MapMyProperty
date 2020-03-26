@@ -1,9 +1,3 @@
-<div class="color-picker" #colorsBtn>
-    <div class="summary-info" (click)="openRotiniPanel(colorsBtn)">
-        <div class="info">
-            <p class="style-value">{{ color }}</p>
-        </div>
-        <div class="circle" [ngStyle]="{'background': color}"></div>
-    </div>
-
+<div class="summary-info" (click)="openRotiniPanel(colorsBtn)" #colorsBtn>
+    <div class="circle smallCircle" [ngStyle]="{'background': color}"></div>
 </div>
