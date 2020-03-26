@@ -52,10 +52,8 @@ export class SidebarComponent implements OnInit, OnChanges {
   changeColor = (color: string) => {
     this.lineColor = color;
     this.changeStyle('lineColor', color);
-    // console.log('color selected ', $event);
   }
   changeStyle = (type: string, event$: any) => {
-    // console.log(type, event$.value);
     if (this.selectedGraphics) {
       const j = this.selectedGraphics[0];
       const symbol = {
@@ -85,8 +83,6 @@ export class SidebarComponent implements OnInit, OnChanges {
         : RGBToHex(
             this.selectedGraphics[0].attributes.symbol.outline.color
           );
-      console.log(this.lineColor);
-      // );
     }
   }
 
@@ -98,7 +94,6 @@ export class SidebarComponent implements OnInit, OnChanges {
     this.lineColor = !this.selectedGraphics
       ? this.lineColors[4]
       : RGBToHex(this.selectedGraphics[0].attributes.symbol.outline.color);
-    console.log(this.lineColor);
   }
 
   startDrawingGraphics = (toolName: string = "polygon") => {

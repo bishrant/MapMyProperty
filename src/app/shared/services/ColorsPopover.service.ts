@@ -1,4 +1,4 @@
-import { Injectable, ViewContainerRef, Host, Optional } from "@angular/core";
+import { Injectable } from "@angular/core";
 import {
   Overlay,
   ConnectionPositionPair,
@@ -6,21 +6,14 @@ import {
   OverlayConfig,
   FlexibleConnectedPositionStrategy
 } from "@angular/cdk/overlay";
-import {
-  PortalInjector,
-  ComponentPortal,
-  TemplatePortal
-} from "@angular/cdk/portal";
-import { fromEvent, Subscription, Subject } from "rxjs";
-import { filter, take } from "rxjs/operators";
+import { Subscription, Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root"
 })
-export class MenuContextualService {
+export class ColorsPopoverService {
   overlayRef: any;
   sub: Subscription;
-  isOpen = false;
   private afterClosed = new Subject<any>();
   onClosed = this.afterClosed.asObservable();
 
@@ -116,13 +109,8 @@ export class MenuContextualService {
   close = (data: any, closePopup = true) => {
     if (!closePopup) {
       // just send the data without closing the popup
-      console.log(1111)
       this.afterClosed.next(data);
     } else {
-
-      this.isOpen = false;
-    
-      console.log(this.overlayRef);
       this.sub && this.sub.unsubscribe();
       if (this.overlayRef) {
         this.overlayRef.dispose();
@@ -132,22 +120,7 @@ export class MenuContextualService {
     }
  
   };
-  // private getOverlayPosition(origin: any): PositionStrategy {
-  //   const positionStrategy = this.overlay
-  //     .position()
-  //     .flexibleConnectedTo(origin)
-  //     .withPositions(this.getPositions())
-  //     .withPush(false);
 
-  //   return positionStrategy;
-  // }
-  // private getOverlayConfig({ origin }): OverlayConfig {
-  //   return new OverlayConfig({
-  //     hasBackdrop: false,
-  //     backdropClass: "popover-backdrop",
-  //     positionStrategy: this.getOverlayPosition(origin)
-  //   });
-  // }
   private getPositions(): ConnectionPositionPair[] {
     return [
       {

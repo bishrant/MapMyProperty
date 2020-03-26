@@ -1,18 +1,10 @@
 import { Component, Input, ViewChild, ElementRef } from "@angular/core";
-
-import { MenuContextualService } from "../../services/Popover.service";
+import { ColorsPopoverService } from "../../services/ColorsPopover.service";
 
 @Component({
   selector: "app-color-popover",
   templateUrl: "./color-picker.popover.component.html",
   styleUrls: ["./color-picker.component.scss"]
-  // template: `
-  //   <div>
-  //     Hello {{ name }}
-  //     <button (click)="obj.count = obj.count + 1">click</button>
-  //     <button (click)="popupService.close(10)">close</button>
-  //   </div>
-  // `,
 })
 export class ColorPickerPopoverComponent {
   @Input() color: any;
@@ -55,10 +47,8 @@ export class ColorPickerPopoverComponent {
   }
 
   public changeColorCustom(color: string): void {
-    console.log(color);
     this.color = color;
-    this.popupService.close(color, false);
-
+    this.colorsPopoverService.close(color, false);
   }
 
   /**
@@ -70,6 +60,7 @@ export class ColorPickerPopoverComponent {
 
     if (isValid) {
       this.color = color;
+      this.colorsPopoverService.close(this.color, false);
       //   this.colorSelected.emit(this.color);
     }
   }
@@ -79,7 +70,7 @@ export class ColorPickerPopoverComponent {
 
   closePopupWithColor = (color: any) => {
     console.log(color);
-    this.popupService.close(color);
+    this.colorsPopoverService.close(color);
   };
-  constructor(public popupService: MenuContextualService) {}
+  constructor(public colorsPopoverService: ColorsPopoverService) {}
 }
