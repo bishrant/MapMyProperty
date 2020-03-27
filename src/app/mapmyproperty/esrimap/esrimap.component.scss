@@ -1,5 +1,6 @@
 @import url("https://js.arcgis.com/4.14/esri/css/main.css");
 @import "src/app/shared/styles/header.scss";
+
 .mapViewNode {
   height: 100%;
   width: 100%;
@@ -15,24 +16,24 @@
 
 .sidebarBlanket {
   width: 250px;
-  background-color: mat-color($app-primary, translucent);
+  background-color: mat-color($mmp-primary, translucent);
   padding: 5px 0 0px 5px;
 }
 
 .sidebar {
   width: 100%;
   height: 100%;
-  background-color: mat-color($app-accent);
+  background-color: mat-color($mmp-accent);
   border-radius: 5px 5px 0 0;
 }
 .translucentPadding {
   padding: 5px;
-  background-color: mat-color($app-primary, translucent);
+  background-color: mat-color($mmp-primary, translucent);
 }
 
 .headerBlanket {
   padding: 5px 0 0 5px;
-  background-color: mat-color($app-primary, translucent);
+  background-color: mat-color($mmp-primary, translucent);
 }
 
 .mapBlanket {

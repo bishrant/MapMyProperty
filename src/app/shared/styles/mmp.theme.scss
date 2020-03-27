@@ -66,13 +66,6 @@ $mmpSecondaryPalettee: (
   ),
 );
 
-$font-family: Roboto, "Helvetica Neue", sans-serif !default;
-$font-size: 10px !default;
-$layout-breakpoint-xs: 600px !default;
-$layout-breakpoint-sm: 960px !default;
-$layout-breakpoint-md: 1280px !default;
-$layout-breakpoint-lg: 1920px !default;
-
-$app-primary: mat-palette($mmpPrimaryPalettee);
-$app-accent: mat-palette($mmpSecondaryPalettee);
-$app-warn: mat-palette($mat-red);
+$mmp-primary: mat-palette($mmpPrimaryPalettee);
+$mmp-accent: mat-palette($mmpSecondaryPalettee);
+$mmp-warn: mat-palette($mat-red);

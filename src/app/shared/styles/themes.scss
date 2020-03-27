@@ -1,0 +1,25 @@
+@import "~@angular/material/theming";
+@include mat-core();
+@import "./mmp.theme";
+@import "./pmlo.theme";
+@import "./functions";
+@import "./_variables";
+
+$mmp-light-theme: mat-light-theme($mmp-primary, $mmp-accent, $mmp-warn);
+$mmp-foreground: my-mat-theme-foreground(mat-color($mmp-primary, 700));
+
+$mmp-theme: map-merge(
+  $mmp-light-theme,
+  (
+    foreground: $mmp-foreground,
+  )
+);
+
+$pmlo-theme: mat-light-theme($pmlo-primary, $pmlo-accent, $pmlo-warn);
+
+.mmp-theme {
+  @include angular-material-theme($mmp-theme);
+}
+.pmlo-theme {
+  @include angular-material-theme($pmlo-theme);
+}
