@@ -1,12 +1,12 @@
-@import "../../../styles.scss";
-@import "./variables.scss";
+// @import '../../../styles.scss';
+@import './MMPTheme.scss';
+
 .headerRow {
   height: 50px;
   align-items: center;
   background-color: mat-color($app-primary, translucent);
   color: black;
   padding-left: 10px;
-  
 }
 
 .secondary {
@@ -30,16 +30,12 @@
   flex: 1 1 auto;
 }
 
-.headerMenuLink{
-  padding:0;
+.headerMenuLink {
+  padding: 0;
   font-weight: 400;
 }
 
 @media screen and (max-width: $layout-breakpoint-sm) {
-  .reportDialogContainer {
-    max-width: 600px !important;
-    width: 100% !important;
-  }
   .smallLogo {
     display: inline-block;
     // height: 100%;

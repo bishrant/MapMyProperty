@@ -1,13 +1,6 @@
-@import "~@angular/material/theming";
+@import '~@angular/material/theming';
 @include mat-core();
-@import "./mmp.scss";
-
-$font-family: Roboto, "Helvetica Neue", sans-serif !default;
-$font-size: 10px !default;
-$layout-breakpoint-xs: 600px !default;
-$layout-breakpoint-sm: 960px !default;
-$layout-breakpoint-md: 1280px !default;
-$layout-breakpoint-lg: 1920px !default;
+@import './MMPTheme';
 
 // Foreground palette for light themes.
 @function my-mat-theme-foreground($color) {
@@ -28,9 +21,6 @@ $layout-breakpoint-lg: 1920px !default;
   );
 }
 
-$app-primary: mat-palette($mmpPrimaryPalettee);
-$app-accent: mat-palette($mmpSecondaryPalettee);
-$app-warn: mat-palette($mat-red);
 $mmp-light-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 $mmp-foreground: my-mat-theme-foreground(mat-color($app-primary, 700));
 
