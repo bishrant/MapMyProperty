@@ -15,7 +15,6 @@ export class ColorPickerComponent {
   @Input() opacity: number;
   @Output() colorSelected: EventEmitter<string> = new EventEmitter<string>();
 
-  public show = true;
   constructor(public colorsPopoverService: ColorsPopoverService, private viewContainerRef: ViewContainerRef) {}
 
   openColorSelector(origin: any) {
@@ -34,13 +33,9 @@ export class ColorPickerComponent {
   }
 
   getCircleColor = (color) => {
-    
-    if (color) {
+    if (color !== null) {
       const h = HexToRGBA(color, this.opacity);
       return `rgba(${h.r}, ${h.g}, ${h.b}, ${h.a})`;
     }
-    // } else {
-    //   return 'rgb(255, 255, 255)';
-    // }
   }
 }

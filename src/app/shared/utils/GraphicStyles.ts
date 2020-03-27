@@ -1,3 +1,5 @@
+import { HexToRGBA } from './Colors';
+
 const LineStyles = {
   esriSLSSolid: 'solid',
   esriSLSDash: 'dash',
@@ -19,6 +21,31 @@ const CheckIfColorIsHollow = (RGBAarray) => {
   } else {
     throw new Error('RGBA Expected');
   }
+}
+
+const CreatePolygonSymbol = (outline: any, fill: any) => {
+  // console.log(outline, fill)
+    return {
+      type: 'simple-fill',
+      color: fill.color,
+      style: fill.style,
+      outline: {
+        color: outline.color ? HexToRGBA(outline.color, outline.opacity) : 'transparent',
+        width: outline.width,
+        style: outline.style
+      }
+    };
+}
+
+const CreateLineSymbol = (outline: any) => {
+  return {
+      type: 'simple-line',
+      color: outline.color,
+      width: outline.width,
+      style: outline.style,
+      cap: 'round',
+      join: 'round'
+    };
 }
 
 const ColorSwatch = [
@@ -49,4 +76,4 @@ const ColorSwatch = [
   '#62382f',
   '#c97545'
 ];
-export { LineStyles, ColorSwatch, CheckIfColorIsHollow };
+export { LineStyles, ColorSwatch, CheckIfColorIsHollow, CreateLineSymbol, CreatePolygonSymbol };

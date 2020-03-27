@@ -10,6 +10,7 @@ import { GraphicsState } from 'src/app/shared/store/graphics.state';
 import Graphic from 'arcgis-js-api/Graphic';
 import { updateGraphics } from '../../shared/store/graphics.actions';
 import { StoreComponent } from '../../shared/store/GraphicsStore.component';
+import { CreateLineSymbol } from 'src/app/shared/utils/GraphicStyles';
 
 @Component({
   selector: 'app-esrimap',
@@ -21,6 +22,7 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('searchBar', { static: true }) private searchBarDiv: ElementRef;
   @ViewChild('graphicsStore', { static: true })
   private graphicsStoreEl: StoreComponent;
+  private graphicsSubcription$: any;
   mapView: E.MapView;
   sketchVM: any = new SketchViewModel();
   selectedGraphics: any[];
@@ -65,16 +67,12 @@ export class EsrimapComponent implements OnInit {
   };
 
   private initializeMap = async () => {
-    console.log(this.se);
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       this.mapView.map.add(this.polygonGraphicsLayer);
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
       this.sketchVM.on(['create'], evt => {
         if (evt.state === 'complete') {
-          console.log(evt);
-          // evt.graphic.symbol = this.symbolProps;
-          console.log(this.symbolProps);
           const _g = evt.graphic;
           evt.graphic.attributes = { gid: this.id(), symbol: _g.symbol };
           // this.polygonGraphicsLayer.add(Graphic.fromJSON(evt.graphic.toJSON()))
@@ -126,14 +124,12 @@ export class EsrimapComponent implements OnInit {
   };
 
   private listenToGraphicsStore = () => {
-    this.graphics$.subscribe(g => {
+    return this.graphics$.subscribe(g => {
       if (g.length > 0) {
-        // console.log(g)
         const graphicsArray = g.map(_g => {
           const __g = JSON.parse(_g);
           return Graphic.fromJSON(__g);
         });
-        // console.log('array', graphicsArray);
         this.polygonGraphicsLayer.graphics = graphicsArray;
       } else {
         this.polygonGraphicsLayer.removeAll();
@@ -142,21 +138,24 @@ export class EsrimapComponent implements OnInit {
   };
 
   startDrawing = ($event: any) => {
-    this.symbolProps = $event.symbol;
-    this.sketchVM.polygonSymbol = $event.symbol;
-    this.sketchVM.activeLineSymbol = {
-      type: 'simple-line',
-      color: $event.symbol.outline.color,
-      width: 2,
-      style: $event.symbol.outline.style,
-      cap: 'round',
-      join: 'round'
-    };
+    const _symbol = $event.symbol;
+    this.symbolProps = _symbol;
+    if ($event.tool === 'polygon') {
+      this.sketchVM.polygonSymbol = _symbol;
+    }
+    if ($event.tool === 'polygon' || $event.tool === 'polyline') {
+      this.sketchVM.activeLineSymbol = CreateLineSymbol(_symbol.outline);
+    }
+
     this.sketchVM.create($event.tool);
   };
 
   ngOnInit() {
     this.initializeMap();
-    this.listenToGraphicsStore();
+    this.graphicsSubcription$ = this.listenToGraphicsStore();
+  }
+
+  ngOnDestroy(): void {
+    this.graphicsSubcription$.unsubscribe();
   }
 }

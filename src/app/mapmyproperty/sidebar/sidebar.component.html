@@ -13,8 +13,7 @@
             <div style="flex-grow: 1;">
                 Line Style:<br>
 
-                <mat-select [(ngModel)]="lineStyle" class="matSelect"
-                    (selectionChange)="changeStyle('lineStyle', $event)">
+                <mat-select [(ngModel)]="lineStyle" class="matSelect" (selectionChange)="changeGraphicsStyle()">
                     <mat-select-trigger>
                         <svg-icon *ngIf="lineStyle !== 'none'" [src]="'assets/icons/symbols-sls-'+lineStyle+'.svg'"
                             [svgStyle]="{ 'width.px':150, 'fill':lineColor }"></svg-icon>
@@ -36,7 +35,7 @@
         <div>
             Width<br>
             0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="1" tickInterval="1"
-                (change)="changeLineStyle($event)" [(ngModel)]="lineWidth" min="0" max="10">
+                (change)="changeGraphicsStyle()" [(ngModel)]="lineWidth" min="0" max="10">
             </mat-slider> &nbsp;10
         </div>
 

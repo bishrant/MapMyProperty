@@ -2,8 +2,8 @@ import { Component, OnInit, Output, EventEmitter, Input, OnChanges } from '@angu
 import { GraphicsState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
 import { updateGraphics } from 'src/app/shared/store/graphics.actions';
-import { RGBToHex, HexToRGBA } from 'src/app/shared/utils/Colors';
-import { LineStyles, CheckIfColorIsHollow } from 'src/app/shared/utils/GraphicStyles';
+import { RGBToHex } from 'src/app/shared/utils/Colors';
+import { LineStyles, CheckIfColorIsHollow, CreatePolygonSymbol } from 'src/app/shared/utils/GraphicStyles';
 
 @Component({
   selector: 'app-sidebar',
@@ -14,8 +14,10 @@ export class SidebarComponent implements OnInit, OnChanges {
   @Output() startDrawing = new EventEmitter<any>();
   @Input() selectedGraphics: any[];
   lineStyle = 'solid';
-  lineColor = null;
+  lineColor = '#c1800b';
   lineOpacity = 40;
+  fillColor = 'transparent';
+  fillStyle = 'solid';
   lineStyles = LineStyles;
   lineWidth = 2;
 
@@ -24,16 +26,17 @@ export class SidebarComponent implements OnInit, OnChanges {
   changeColor = (colorInfo: any) => {
     this.lineColor = colorInfo.color;
     this.lineOpacity = colorInfo.opacity;
-    this.changeStyle('lineColor', colorInfo.color);
+    this.changeGraphicsStyle();
   };
-  changeLineStyle = ($event) => {
-    this.lineWidth = $event.value;
-    this.changeStyle('lineWidth', $event);
-  }
-  changeStyle = (type: string, event$: any) => {
+
+  changeGraphicsStyle = () => {
     if (this.selectedGraphics) {
       const j = this.selectedGraphics[0];
-      const symbol = this.createLineSymbol();
+      const symbol = CreatePolygonSymbol(
+        { color: this.lineColor, opacity: this.lineOpacity },
+        { color: this.fillColor, style: this.fillStyle, width: this.lineWidth, opacity: this.lineOpacity }
+      );
+    
       j.symbol = symbol;
       j.attributes.symbol = j.symbol;
       this.store.dispatch(updateGraphics({ graphics: JSON.stringify([j]) }));
@@ -57,7 +60,7 @@ export class SidebarComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.lineStyle = !this.selectedGraphics ? 'solid' : this.selectedGraphics[0].attributes.symbol.outline.style;
+    this.lineStyle = !this.selectedGraphics ? this.lineStyle : this.selectedGraphics[0].attributes.symbol.outline.style;
 
     this.lineColor = !this.selectedGraphics
       ? this.lineColor
@@ -65,20 +68,10 @@ export class SidebarComponent implements OnInit, OnChanges {
   }
 
   startDrawingGraphics = (toolName: string = 'polygon') => {
-    const symbol = this.createLineSymbol();
+    const symbol = CreatePolygonSymbol(
+      { color: this.lineColor, opacity: this.lineOpacity, width: this.lineWidth, style: this.lineStyle },
+      { color: this.fillColor, style: this.fillStyle }
+    );
     this.startDrawing.emit({ tool: toolName, symbol: symbol });
-  };
-
-  createLineSymbol = () => {
-    return {
-      type: 'simple-fill',
-      color: 'transparent',
-      style: 'solid',
-      outline: {
-        color: this.lineColor ? HexToRGBA(this.lineColor, this.lineOpacity) : 'transparent',
-        width: this.lineWidth,
-        style: this.lineStyle
-      }
-    };
   };
 }
