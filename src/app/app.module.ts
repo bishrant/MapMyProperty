@@ -6,18 +6,21 @@ import { AppComponent } from './app.component';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { GraphicsReducer } from './shared/store/graphics.reducer';
-import { MatIconModule } from "@angular/material/icon";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MatIconModule } from '@angular/material/icon';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from "@angular/material/tooltip";
-import { FlexLayoutModule } from "@angular/flex-layout";
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AngularSvgIconModule } from "angular-svg-icon";
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { HeaderModule } from './shared/components/header/header.module';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    HeaderModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
@@ -25,10 +28,10 @@ import { AngularSvgIconModule } from "angular-svg-icon";
     ReactiveFormsModule,
     StoreModule.forRoot({ app: GraphicsReducer }),
     AngularSvgIconModule.forRoot(),
-    environment.production ? [] : StoreDevtoolsModule.instrument()
+    environment.production ? [] : StoreDevtoolsModule.instrument(),
   ],
   providers: [],
   bootstrap: [AppComponent],
-  exports: [MatIconModule, MatButtonModule, MatTooltipModule, FlexLayoutModule]
+  exports: [HeaderModule, MatIconModule, MatButtonModule, MatTooltipModule, FlexLayoutModule],
 })
 export class AppModule {}

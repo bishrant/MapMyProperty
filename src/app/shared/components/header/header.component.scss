@@ -1,0 +1,75 @@
+@import "src/app/shared/styles/_variables";
+.title {
+  font-weight: 500;
+}
+.parent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.header .headerRow {
+  display: flex;
+  flex-direction: row;
+}
+.headerRow {
+  height: 50px;
+  align-items: center;
+  // background-color: mat-color($mmp-primary, translucent);
+  color: black;
+  padding-left: 10px;
+}
+
+.secondary {
+  // background-color: mat-color($mmp-accent);
+  color: white;
+  border-radius: 5px 0 0 5px;
+}
+.smallLogo {
+  display: none;
+  height: 100%;
+}
+.largeLogo {
+  height: 100%;
+}
+.logo {
+  height: 32px;
+  padding-right: 10px;
+  // display: inline-block;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+
+.headerMenuLink {
+  padding: 0;
+  font-weight: 400;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.headerRow > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+.menuBtn {
+  display: none;
+}
+
+@media screen and (max-width: $layout-breakpoint-sm) {
+  .smallLogo {
+    display: inline-block;
+    // height: 100%;
+  }
+  .largeLogo {
+    display: none;
+    // height: 100%;
+  }
+  .menuBtn {
+    display: inline-flex;
+  }
+}

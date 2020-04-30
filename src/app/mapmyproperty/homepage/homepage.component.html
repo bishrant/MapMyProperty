@@ -1,29 +1,4 @@
-<div class="parent mmp-theme" [class]="'mmp-theme'">
-  <header class='header'>
-    <div class="headerRow" fxLayout="row">
-      <a href="https://tfsweb.tamu.edu" target="_blank">
-        <img src="assets/TFS_Star_Maroon.png" class="logo smallLogo" />
-
-      </a>
-      <h2 style="font-weight: 500;">MAP MY PROPERTY</h2>
-      <span class="spacer"></span>
-      <div fxShow="true" fxHide.lt-md="true" fxLayout="row">
-        <!-- <button mat-icon-button color="accent" aria-label="Example icon-button with a heart icon">
-                <mat-icon svgIcon='facebook'></mat-icon>
-                <i class="fab fa-facebook-f"></i>
-            </button> -->
-        <a mat-button class="headerMenuLink"> TexasForestInfo.com </a>
-        <a mat-button class="headerMenuLink"> About </a>
-        <a href="https://texasforestinfo.tamu.edu/Contact" class="headerMenuLink" target="_blank" mat-button
-          class="headerMenuLink"> Contact </a>
-        <a mat-button class="headerMenuLink"> Help </a>
-        <img src="assets/TFS_Maroon.png" class="logo largeLogo" />
-      </div>
-      <button mat-icon-button fxShow="true" fxHide.gt-sm>
-        <mat-icon>menu</mat-icon>
-      </button>
-    </div>
-
-  </header>
+<div class="parent" [class]="'mmp-theme'">
+  <app-header [headerColor]="'rgba(97, 117, 19, 0.5)'" [title]="'MAP MY PROPERTY'"></app-header>
   <app-esrimap tabindex="1" class="esriMap"></app-esrimap>
 </div>

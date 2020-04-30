@@ -1,0 +1,86 @@
+.parent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.dashboardContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  flex: 1;
+  .dashEntry {
+    height: 80%;
+    border: 1px solid black;
+    width: 300px;
+    margin: 5px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    button {
+      width: 120px;
+      height: 40px;
+      margin: 5px;
+      font-size: 17px;
+      background-color: transparent;
+      border: 1px solid white;
+      color: white;
+    }
+    .tag {
+      border-radius: 30px;
+      font-size: 10px;
+      width: auto;
+      height: 25px;
+      background: #ffffff70;
+      color: black;
+    }
+  }
+
+  .mmp {
+    height: 90%;
+    width: 350px;
+    background: #617513;
+  }
+  .pmlo {
+    background: #8f8364;
+  }
+  .drawmyranch {
+    background: #292828;
+  }
+  .coverImage {
+    width: 100%;
+    height: auto;
+    margin: 20px 10px;
+  }
+  .description {
+    font-size: 11px;
+    text-align: center;
+    padding: 5px;
+    font-weight: 100;
+    margin-bottom: 10px;
+  }
+}
+@media screen and (max-width: 900px) {
+  .dashboardContainer {
+    flex-direction: column;
+    div {
+      width: 90%;
+    }
+    .mmp {
+      width: 95%;
+    }
+  }
+}
+
+footer {
+  color: darkolivegreen;
+  font-size: 10px;
+  justify-content: center;
+  text-align: center;
+}
