@@ -1,0 +1,15 @@
+@import "./_variables";
+@import "./mmp.theme.scss";
+
+.headerRow {
+  height: 50px;
+  align-items: center;
+  background-color: mat-color($mmp-primary, translucent);
+  color: black;
+  padding-left: 10px;
+}
+.secondary {
+  background-color: mat-color($mmp-accent);
+  color: white;
+  border-radius: 5px 0 0 5px;
+}
