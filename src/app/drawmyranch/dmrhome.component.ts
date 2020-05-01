@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { MatIconRegistry } from '@angular/material/icon';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatIconRegistry } from '@angular/material/icon';
 
 @Component({
   selector: 'app-dmrhome',

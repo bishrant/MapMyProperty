@@ -1,9 +1,9 @@
 @import url("https://js.arcgis.com/4.14/esri/css/main.css");
 @import "src/app/shared/styles/BodyFrame.scss";
-@import "src/app/shared/styles/themes/mmp.theme.scss";
+@import "src/app/shared/styles/themes/dmr.theme.scss";
 
-$translucent: mat-color($mmp-primary, translucent);
-$accent: mat-color($mmp-accent);
+$translucent: mat-color($primary, translucent);
+$accent: mat-color($accent);
 
 .headerRow {
   background-color: $translucent;
@@ -16,7 +16,7 @@ $accent: mat-color($mmp-accent);
 }
 
 .sidebar {
-  background-color: $accent;
+  background-color: mat-color($primary);
 }
 .translucentPadding {
   background-color: $translucent;
