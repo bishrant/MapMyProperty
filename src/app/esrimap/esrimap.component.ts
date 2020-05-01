@@ -1,16 +1,18 @@
-import { GraphicsStoreComponent } from './../../shared/store/GraphicsStore.component';
-import { Component, OnInit, ViewChild, ElementRef, HostListener, Input } from '@angular/core';
-import SketchViewModel from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
-import createMapView from 'src/app/shared/maputils/CreateMapView';
+import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+
+import { CreateLineSymbol } from 'src/app/shared/utils/GraphicStyles';
+import { CreatePolygonGraphicsLayer } from 'src/app/shared/maputils/CreateGraphicsLayer';
+import Graphic from 'arcgis-js-api/Graphic';
+import { GraphicsState } from 'src/app/shared/store/graphics.state';
+import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
 import { SetupSketchViewModel } from 'src/app/shared/maputils/SketchViewModelUitls';
-import { CreatePolygonGraphicsLayer } from '../../shared/maputils/CreateGraphicsLayer';
-import E = __esri;
+import { SketchViewModel } from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import { addGraphics } from 'src/app/shared/store/graphics.actions';
-import { GraphicsState } from 'src/app/shared/store/graphics.state';
-import Graphic from 'arcgis-js-api/Graphic';
+import createMapView from 'src/app/shared/maputils/CreateMapView';
 import { updateGraphics } from 'src/app/shared/store/graphics.actions';
-import { CreateLineSymbol } from 'src/app/shared/utils/GraphicStyles';
+
+import E = __esri;
 
 @Component({
   selector: 'app-esrimap',
