@@ -2,11 +2,11 @@ import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@
 
 import { CreateLineSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { CreatePolygonGraphicsLayer } from 'src/app/shared/maputils/CreateGraphicsLayer';
-import Graphic from 'arcgis-js-api/Graphic';
+import Graphic from 'esri/Graphic';
 import { GraphicsState } from 'src/app/shared/store/graphics.state';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
 import { SetupSketchViewModel } from 'src/app/shared/maputils/SketchViewModelUitls';
-import { SketchViewModel } from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
+import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import { addGraphics } from 'src/app/shared/store/graphics.actions';
 import createMapView from 'src/app/shared/maputils/CreateMapView';
@@ -20,14 +20,14 @@ import E = __esri;
   styleUrls: ['./esrimap.component.scss'],
 })
 export class EsrimapComponent implements OnInit {
-  @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
-  @ViewChild('searchBar', { static: true }) private searchBarDiv: ElementRef;
+  @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
+  @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true })
-  private graphicsStoreEl: GraphicsStoreComponent;
+  private graphicsStoreEl!: GraphicsStoreComponent;
   private graphicsSubcription$: any;
-  mapView: E.MapView;
+  mapView!: E.MapView;
   sketchVM: any = new SketchViewModel();
-  selectedGraphics: any[];
+  selectedGraphics!: any[] | undefined;
   mapCoords: any;
   symbolProps: any;
   readonly graphics$ = this.store.select((state) => state.app.graphics);
@@ -35,7 +35,7 @@ export class EsrimapComponent implements OnInit {
   id = (): string => Math.random().toString(36).substr(2, 9);
 
   constructor(private store: Store<GraphicsState>) {}
-  @Input('se') se: ElementRef;
+  @Input('se') se!: ElementRef;
   @HostListener('keydown.control.z') undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
@@ -70,7 +70,7 @@ export class EsrimapComponent implements OnInit {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       this.mapView.map.add(this.polygonGraphicsLayer);
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
-      this.sketchVM.on(['create'], (evt) => {
+      this.sketchVM.on(['create'], (evt: any) => {
         if (evt.state === 'complete') {
           const _g = evt.graphic;
           evt.graphic.attributes = { gid: this.id(), symbol: _g.symbol };

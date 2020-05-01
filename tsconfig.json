@@ -16,7 +16,7 @@
     "typeRoots": ["node_modules/@types"],
     "lib": ["DOM", "es5", "ES6","es2015.promise"]
   },
-  "types": ["bishrant-arcgis-js-api"],
+  "types": ["arcgis-js-api"],
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

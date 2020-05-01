@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "mapmyproperty": {
@@ -23,6 +23,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
+            "extractCss": true,
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -31,7 +32,17 @@
               "path": "./arcgis.webpack.config.js"
             },
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              {
+                "input": "src/app/shared/styles/themes/dmr.theme.scss",
+                "lazy": true,
+                "bundleName": "dmr-theme"
+              },
+              {
+                "input": "src/app/shared/styles/themes/pmlo.theme.scss",
+                "lazy": true,
+                "bundleName": "pmlo-theme"
+              }
             ],
             "scripts": []
           },
@@ -47,9 +58,9 @@
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
+              "namedChunks": true,
+              "extractLicenses": false,
+              "vendorChunk": true,
               "buildOptimizer": true,
               "budgets": [
                 {
