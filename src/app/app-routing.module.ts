@@ -8,7 +8,11 @@ const routes: Routes = [
   },
   {
     path: 'mapmyproperty',
-    loadChildren: () => import('./mapmyproperty/homepage/homepage.module').then((m) => m.HomepageModule),
+    loadChildren: () => import('./mapmyproperty/mmphome.module').then((m) => m.MMPHomepageModule),
+  },
+  {
+    path: 'drawmyranch',
+    loadChildren: () => import('./drawmyranch/dmrhome.module').then((d) => d.DMRHomepageModule),
   },
 ];
 

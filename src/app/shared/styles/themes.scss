@@ -4,6 +4,7 @@
 @import "./pmlo.theme";
 @import "./functions";
 @import "./_variables";
+@import "./layout";
 
 $mmp-light-theme: mat-light-theme($mmp-primary, $mmp-accent, $mmp-warn);
 $mmp-foreground: my-mat-theme-foreground(mat-color($mmp-primary, 700));

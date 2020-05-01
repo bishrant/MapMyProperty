@@ -3,11 +3,11 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
-  selector: "app-homepage",
-  templateUrl: "./homepage.component.html",
-  styleUrls: ["./homepage.component.scss"]
+  selector: 'app-mmphome',
+  templateUrl: './mmphome.component.html',
+  styleUrls: ['./mmphome.component.scss'],
 })
-export class HomepageComponent implements OnInit {
+export class MMPHomeComponent implements OnInit {
   // @ViewChild("se", { static: true }) private se: ElementRef;
   constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
     // iconRegistry.addSvgIconSet(sanitizer.bypassSecurityTrustResourceUrl('./assets'));
