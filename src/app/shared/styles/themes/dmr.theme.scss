@@ -1,5 +1,5 @@
-@import "~@angular/material/theming";
-@import "./theme-base";
+@import '~@angular/material/theming';
+// @import "./theme-base";
 
 $dmrPrimaryPalettee: (
   50: #ebf1ed,
@@ -72,11 +72,11 @@ $accent: mat-palette($dmrSecondaryPalettee);
 $warn: mat-palette($mat-red);
 $theme: mat-dark-theme($primary, $accent, $warn);
 
-$custom-typography: mat-typography-config(
-  $font-family: "Roboto, monospace",
-  $headline: mat-typography-level(26px, 40px, 700),
-  $title: mat-typography-level(24px, 40px, 600),
-  $body-1: mat-typography-level(16px, 24px, 500),
-);
+// $custom-typography: mat-typography-config(
+//   $font-family: "Roboto, monospace",
+//   $headline: mat-typography-level(26px, 40px, 700),
+//   $title: mat-typography-level(24px, 40px, 600),
+//   $body-1: mat-typography-level(16px, 24px, 500),
+// );
 
-@include theming($theme, $custom-typography);
+// @include theming($theme, $custom-typography);
