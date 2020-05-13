@@ -1,5 +1,7 @@
 # MapMyProperty
-![Build and Deploy](https://github.com/bishrant/MapMyProperty/workflows/Build%20and%20Deploy/badge.svg)
+![Deploy Status](https://github.com/bishrant/MapMyProperty/workflows/Run%20build%20test%20and%20deploy%20while%20using%20with%20NPM%20cache/badge.svg)
+
+
 
 A revised version of map my property that integrates Draw My Ranch, Plan My Land Operation and the existing map my property into a single one.
 
