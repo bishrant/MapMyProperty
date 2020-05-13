@@ -1,6 +1,6 @@
 // @import "./app/shared/styles/themes.scss";
-@import "./app/shared/styles/CustomSlider.scss";
-@import "./app/shared/styles/themes";
+@import './app/shared/styles/CustomSlider.scss';
+@import './app/shared/styles/themes/mmp.theme.scss';
 
 html,
 body {
@@ -8,7 +8,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 // .primaryBg {
 //   background: mat-color($mmp-primary);
