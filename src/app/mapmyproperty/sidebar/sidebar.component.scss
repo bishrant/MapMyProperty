@@ -1,13 +1,1 @@
 @import '../../shared/styles/sidebar.scss';
-
-.mat-option {
-  padding: 0 !important;
-}
-:host ::ng-deep mat-slider.mat-slider.mat-slider-horizontal .mat-slider-ticks {
-  // make ticks fill full height
-  height: 20px;
-  // this will force show the ticks
-  opacity: 1;
-  background-size: 10.101% 3px !important;
-  transform: translateZ(0px) translateX(5.05051%);
-}

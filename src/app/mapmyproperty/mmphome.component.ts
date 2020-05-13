@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 @Component({
   selector: 'app-mmphome',
   templateUrl: './mmphome.component.html',
-  styleUrls: ['./mmphome.component.scss'],
+  styleUrls: ['./mmphome.component.scss', '../shared/styles/themes/mmp.theme.scss'],
 })
 export class MMPHomeComponent implements OnInit {
   // @ViewChild("se", { static: true }) private se: ElementRef;

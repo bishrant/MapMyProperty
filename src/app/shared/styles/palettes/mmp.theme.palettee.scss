@@ -1,0 +1,6 @@
+@import '~@angular/material/theming';
+@import '../variables/mmp.theme.colors.scss';
+
+$mmp-primary: mat-palette($mmpPrimaryPalettee);
+$mmp-accent: mat-palette($mmpSecondaryPalettee);
+$mmp-warn: mat-palette($mat-red);

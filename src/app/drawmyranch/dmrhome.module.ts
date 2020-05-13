@@ -17,7 +17,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgModule } from '@angular/core';
-import { SidebarComponent } from './sidebar/sidebar.component';
 
 const routes: Routes = [
   {
@@ -27,7 +26,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [EsrimapComponent, DMRHomeComponent, SidebarComponent],
+  declarations: [EsrimapComponent, DMRHomeComponent],
   imports: [
     CommonModule,
     // BrowserAnimationsModule,
