@@ -1,6 +1,6 @@
 name: Run build test without deploying
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
