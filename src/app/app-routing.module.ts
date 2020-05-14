@@ -10,6 +10,7 @@ const routes: Routes = [
     path: 'mapmyproperty',
     loadChildren: './mapmyproperty/mmphome.module#MMPHomepageModule',
   },
+  { path: 'pmlo', loadChildren: () => import('./planmylandoperation/planmylandoperation.module').then(m => m.PlanmylandoperationModule) },
   {
     path: 'drawmyranch',
     loadChildren: './drawmyranch/dmrhome.module#DMRHomepageModule',
