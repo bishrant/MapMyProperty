@@ -40,6 +40,11 @@
             </mat-slider> &nbsp;10
         </div>
 
+        <mat-form-field appearance="outline">
+            <input matInput placeholder="Radius" type="number" [(ngModel)]="radius"
+                (ngModelChange)="_radiusChanged($event)">
+        </mat-form-field>
+        {{sketchVM.activeTool}} {{sketchVM.state}}
     </div>
     <!-- <div style="background: red; color:white">Works almost. not perfect !!!. Wait a day or so</div> -->
 </mat-expansion-panel>

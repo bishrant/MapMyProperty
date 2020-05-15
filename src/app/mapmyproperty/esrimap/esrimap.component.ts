@@ -5,7 +5,7 @@ import { CreatePolygonGraphicsLayer } from 'src/app/shared/maputils/CreateGraphi
 import Graphic from 'esri/Graphic';
 import { GraphicsState } from 'src/app/shared/store/graphics.state';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
-import { SetupSketchViewModel } from 'src/app/shared/maputils/SketchViewModelUitls';
+import { SetupSketchViewModel, CreateCircleWithGeometry } from 'src/app/shared/maputils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import { addGraphics } from 'src/app/shared/store/graphics.actions';
@@ -25,6 +25,7 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('graphicsStore', { static: true })
   private graphicsStoreEl!: GraphicsStoreComponent;
   private graphicsSubcription$: any;
+  private circleRadius: number;
   mapView!: E.MapView;
   sketchVM: any = new SketchViewModel();
   selectedGraphics!: any[] | undefined;
@@ -65,6 +66,10 @@ export class EsrimapComponent implements OnInit {
     }
   };
 
+  private radiusChanged = ($event: any) => {
+    this.circleRadius = $event;
+  };
+
   private initializeMap = async () => {
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
@@ -72,8 +77,11 @@ export class EsrimapComponent implements OnInit {
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
       this.sketchVM.on(['create'], (evt: any) => {
         if (evt.state === 'complete') {
-          const _g = evt.graphic;
-          evt.graphic.attributes = { gid: this.id(), symbol: _g.symbol };
+          let _g = evt.graphic;
+          _g.attributes = { gid: this.id(), symbol: _g.symbol };
+          if (evt.tool === 'circle') {
+            _g.geometry = CreateCircleWithGeometry(evt.graphic, this.circleRadius);
+          }
           // this.polygonGraphicsLayer.add(Graphic.fromJSON(evt.graphic.toJSON()))
           // this.store.dispatch({type: 'ADD'});
           this.store.dispatch(addGraphics({ payload: JSON.stringify(_g.toJSON()) }));
@@ -139,13 +147,15 @@ export class EsrimapComponent implements OnInit {
   startDrawing = ($event: any) => {
     const _symbol = $event.symbol;
     this.symbolProps = _symbol;
-    if ($event.tool === 'polygon') {
+    if ($event.tool === 'polygon' || $event.tool === 'circle') {
       this.sketchVM.polygonSymbol = _symbol;
     }
-    if ($event.tool === 'polygon' || $event.tool === 'polyline') {
-      this.sketchVM.activeLineSymbol = CreateLineSymbol(_symbol.outline);
+    if ($event.tool === 'polygon' || $event.tool === 'polyline' || $event.tool === 'circle') {
+      let y = CreateLineSymbol(_symbol.outline);
+      this.sketchVM.activeLineSymbol = y;
+      this.sketchVM.lineSymbol = y;
     }
-
+    this.circleRadius = $event.radius;
     this.sketchVM.create($event.tool);
   };
 
