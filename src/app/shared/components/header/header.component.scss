@@ -1,4 +1,4 @@
-@import "src/app/shared/styles/_variables";
+@import 'src/app/shared/styles/_variables';
 .title {
   font-weight: 500;
 }
@@ -51,6 +51,14 @@
 }
 .menuBtn {
   display: none;
+}
+.socialMediaIcon {
+  height: 20px;
+  margin-right: 10px;
+}
+
+.socialMediaIcon:hover {
+  filter: opacity(0.5) drop-shadow(2px 4px 6px black);
 }
 
 @media screen and (max-width: $layout-breakpoint-sm) {

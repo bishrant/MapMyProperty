@@ -46,7 +46,7 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
     }
   };
 
-  private _radiusChanged = ($event: any) => {
+  _radiusChanged = ($event: any) => {
     this.radiusChanged.emit($event);
   };
   ngOnChanges() {

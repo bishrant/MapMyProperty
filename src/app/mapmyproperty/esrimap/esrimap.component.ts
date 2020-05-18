@@ -66,7 +66,7 @@ export class EsrimapComponent implements OnInit {
     }
   };
 
-  private radiusChanged = ($event: any) => {
+  radiusChanged = ($event: any) => {
     this.circleRadius = $event;
   };
 
