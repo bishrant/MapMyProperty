@@ -7,10 +7,12 @@
     <h2>{{title}}</h2>
     <span class="spacer" role="grid"></span>
     <div fxShow="true" fxHide.lt-md="true" fxLayout="row">
-      <!-- <button mat-icon-button color="accent" aria-label="Example icon-button with a heart icon">
-                <mat-icon svgIcon='facebook'></mat-icon>
-                <i class="fab fa-facebook-f"></i>
-            </button> -->
+      <a class="flex"
+        href="javascript:window.open('https://twitter.com/intent/tweet?url='+ window.location.href+ '&hashtags=Maps,Landowner,%20Property', '_blank')"><img
+          src="assets/twitter.png" class="socialMediaIcon" /></a>
+      <a class="flex"
+        href="javascript:window.open('https://www.facebook.com/sharer/sharer.php?u='+ window.location.href, '_blank')"><img
+          src="assets/facebook.png" class="socialMediaIcon" /></a>
       <a mat-button class="headerMenuLink"> TexasForestInfo.com </a>
       <a mat-button class="headerMenuLink"> About </a>
       <a href="https://texasforestinfo.tamu.edu/Contact" class="headerMenuLink" target="_blank" mat-button

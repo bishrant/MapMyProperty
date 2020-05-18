@@ -12,7 +12,9 @@ import { LineStyles, CheckIfColorIsHollow, CreatePolygonSymbol } from 'src/app/s
 })
 export class DrawtoolsComponent implements OnInit, OnChanges {
   @Output() startDrawing = new EventEmitter<any>();
+  @Output() radiusChanged = new EventEmitter<any>();
   @Input() selectedGraphics: any[];
+  @Input() sketchVM: any;
   lineStyle = 'solid';
   lineColor = '#c1800b';
   lineOpacity = 40;
@@ -20,6 +22,7 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
   fillStyle = 'solid';
   lineStyles = LineStyles;
   lineWidth = 2;
+  radius: number;
 
   constructor(private store: Store<GraphicsState>) {}
 
@@ -43,6 +46,9 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
     }
   };
 
+  _radiusChanged = ($event: any) => {
+    this.radiusChanged.emit($event);
+  };
   ngOnChanges() {
     if (this.selectedGraphics) {
       if (this.selectedGraphics.length === 1) {
@@ -72,6 +78,6 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
       { color: this.lineColor, opacity: this.lineOpacity, width: this.lineWidth, style: this.lineStyle },
       { color: this.fillColor, style: this.fillStyle }
     );
-    this.startDrawing.emit({ tool: toolName, symbol: symbol });
+    this.startDrawing.emit({ tool: toolName, symbol: symbol, radius: this.radius });
   };
 }
