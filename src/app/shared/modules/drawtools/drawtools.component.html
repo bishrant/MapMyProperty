@@ -7,8 +7,38 @@
     </mat-expansion-panel-header>
 
     <div>
-        <button mat-raised-button class="graphicsControls1" (click)="startDrawingGraphics('polygon')">Polygon</button>
-        <button mat-raised-button class="graphicsControls1" (click)="startDrawingGraphics('circle')">Circle</button>
+        <mat-button-toggle-group #group="matButtonToggleGroup" (change)="startDrawingGraphicsFn($event)">
+            <mat-button-toggle value="circle" aria-label="Circle" class="toggleBtn">
+                <mat-icon>radio_button_unchecked</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="line" aria-label="Line" class="toggleBtn">
+                <mat-icon>show_chart</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="polygon" aria-label="Polygon" class="toggleBtn">
+                <i class="icon-untitled"></i>
+            </mat-button-toggle>
+            <mat-button-toggle value="point" aria-label="Point" class="toggleBtn">
+                <mat-icon>fiber_manual_record</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="text" aria-label="Text" class="toggleBtn">
+                Tt
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+        <!-- <div class="example-selected-value">Selected value: {{group.value}}</div> -->
+        <!-- <button mat-raised-button class="graphicsControls1" (click)="startDrawingGraphics('polygon')">Polygon</button>
+        <button mat-raised-button class="graphicsControls1" (click)="startDrawingGraphics('circle')">Circle</button> -->
+        <br>
+        <fieldset>
+            <legend>Drawing mode</legend>
+            <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [value]="drawingMode">
+                <mat-button-toggle value="click" class="drawModeBtn">Click</mat-button-toggle>
+                <mat-button-toggle value="freehand" class="drawModeBtn">FreeHand</mat-button-toggle>
+                <mat-button-toggle value="hybrid" class="drawModeBtn" [disabled]="group.value === 'circle'">Hybrid
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </fieldset>
+        <br>
+
         <br>
         <div style="display: flex;">
             <div style="flex-grow: 1;">

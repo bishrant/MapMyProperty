@@ -12,6 +12,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   declarations: [DrawtoolsComponent],
@@ -28,6 +29,7 @@ import { MatInputModule } from '@angular/material/input';
     MatIconModule,
     FlexLayoutModule,
     MatInputModule,
+    MatButtonToggleModule,
   ],
   exports: [DrawtoolsComponent],
 })
