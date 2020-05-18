@@ -23,6 +23,7 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
   lineStyles = LineStyles;
   lineWidth = 2;
   radius: number;
+  drawingMode = 'click';
 
   constructor(private store: Store<GraphicsState>) {}
 
@@ -79,5 +80,11 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
       { color: this.fillColor, style: this.fillStyle }
     );
     this.startDrawing.emit({ tool: toolName, symbol: symbol, radius: this.radius });
+  };
+
+  startDrawingGraphicsFn = ($evt: any) => {
+    if (['circle', 'polygon'].indexOf($evt.value) > -1) {
+      this.startDrawingGraphics($evt.value);
+    }
   };
 }

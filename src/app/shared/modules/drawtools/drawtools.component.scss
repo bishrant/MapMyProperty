@@ -9,3 +9,15 @@
   background-size: 10.101% 3px !important;
   transform: translateZ(0px) translateX(5.05051%);
 }
+
+.icon-untitled:before {
+  content: '\0042';
+}
+
+.toggleBtn {
+  width: 40px;
+}
+
+.drawModeBtn {
+  width: 65px;
+}
