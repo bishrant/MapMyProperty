@@ -10,9 +10,6 @@ body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
-// .primaryBg {
-//   background: mat-color($mmp-primary);
-// }
 
 [hidden] {
   display: none !important;
@@ -68,4 +65,19 @@ body {
 .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
   line-height: 34px !important;
   padding: 0 !important;
+}
+.mat-expansion-panel-header {
+  height: 50px !important;
+}
+.mat-expansion-panel-header-title {
+  color: white !important;
+}
+.mat-expansion-indicator::after {
+  color: white !important;
+}
+.ng-trigger-indicatorRotate {
+  transform: translateY(5px) rotate(180deg) !important;
+}
+.mat-form-field:not(.mat-form-field-has-label) .mat-form-field-infix {
+  border-top-width: 2px;
 }

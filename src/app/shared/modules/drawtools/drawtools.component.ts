@@ -23,7 +23,7 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
   lineStyles = LineStyles;
   lineWidth = 2;
   radius: number;
-  drawingMode = 'click';
+  drawingMode: string = 'click';
   drawingTool: string = '';
 
   constructor(private store: Store<GraphicsState>) {}
@@ -50,6 +50,9 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
 
   _radiusChanged = ($event: any) => {
     this.radiusChanged.emit($event);
+    if (this.drawingMode === 'click' && this.drawingTool === 'circle' && this.radius > 0) {
+      this.startDrawingGraphics('circle');
+    }
   };
   ngOnChanges() {
     if (this.selectedGraphics) {
@@ -91,12 +94,19 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
   }
 
   startDrawingGraphics = (toolName: string) => {
+    if (toolName === 'circle' && this.drawingMode === 'hybrid') {
+      this.drawingMode = 'click';
+    }
     if (['circle', 'polygon'].indexOf(toolName) > -1) {
       const symbol = CreatePolygonSymbol(
         { color: this.lineColor, opacity: this.lineOpacity, width: this.lineWidth, style: this.lineStyle },
         { color: this.fillColor, style: this.fillStyle }
       );
-      this.startDrawing.emit({ tool: toolName, symbol: symbol, radius: this.radius, mode: this.drawingMode });
+      if (toolName === 'circle' && !this.radius) {
+        console.log('no radius');
+      } else {
+        this.startDrawing.emit({ tool: toolName, symbol: symbol, radius: this.radius, mode: this.drawingMode });
+      }
     }
   };
 

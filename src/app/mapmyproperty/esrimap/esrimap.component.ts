@@ -5,7 +5,11 @@ import { CreatePolygonGraphicsLayer } from 'src/app/shared/maputils/CreateGraphi
 import Graphic from 'esri/Graphic';
 import { GraphicsState } from 'src/app/shared/store/graphics.state';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
-import { SetupSketchViewModel, CreateCircleWithGeometry } from 'src/app/shared/maputils/SketchViewModelUitls';
+import {
+  SetupSketchViewModel,
+  CreateCircleWithGeometry,
+  CreateCircleFromPoint,
+} from 'src/app/shared/maputils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import { addGraphics } from 'src/app/shared/store/graphics.actions';
@@ -82,6 +86,11 @@ export class EsrimapComponent implements OnInit {
           if (evt.tool === 'circle') {
             _g.geometry = CreateCircleWithGeometry(evt.graphic, this.circleRadius);
           }
+          if (this.sketchVM.createCircleFromPoint) {
+            _g.geometry = CreateCircleFromPoint(evt.graphic, this.circleRadius);
+            _g.attributes.symbol = this.sketchVM.polylineSymbol;
+            _g.symbol = this.sketchVM.polylineSymbol;
+          }
           // this.polygonGraphicsLayer.add(Graphic.fromJSON(evt.graphic.toJSON()))
           // this.store.dispatch({type: 'ADD'});
           this.store.dispatch(addGraphics({ payload: JSON.stringify(_g.toJSON()) }));
@@ -147,23 +156,31 @@ export class EsrimapComponent implements OnInit {
   startDrawing = ($event: any) => {
     const _symbol = $event.symbol;
     this.sketchVM.cancel();
-    this.sketchVM.defaultCreateOptions.mode = $event.mode;
+    const _tool = $event.tool;
+    // this.sketchVM.defaultCreateOptions.mode = $event.mode;
     this.symbolProps = _symbol;
-    if ($event.tool === 'polygon' || $event.tool === 'circle') {
+    if (_tool === 'polygon' || _tool === 'circle') {
       this.sketchVM.polygonSymbol = _symbol;
     }
-    if ($event.tool === 'polygon' || $event.tool === 'polyline' || $event.tool === 'circle') {
+    if (_tool === 'polygon' || _tool === 'polyline' || _tool === 'circle') {
       let y = CreateLineSymbol(_symbol.outline);
       // this.sketchVM.activeLineSymbol = y;
       this.sketchVM.polylineSymbol = y;
     }
     this.circleRadius = $event.radius;
-    this.sketchVM.create($event.tool);
+    console.log($event);
+    if (_tool === 'circle' && $event.mode === 'click') {
+      this.sketchVM.createCircleFromPoint = true;
+      this.sketchVM.create('point');
+    } else {
+      this.sketchVM.createCircleFromPoint = false;
+      this.sketchVM.create(_tool, { mode: $event.mode, type: 'circle' });
+    }
   };
 
   changeDrawingMode = (mode: string, drawEvent: any) => {
     this.sketchVM.cancel();
-    this.sketchVM.defaultCreateOptions.mode = mode;
+    // this.sketchVM.defaultCreateOptions.mode = mode;
     this.startDrawing(drawEvent);
   };
 

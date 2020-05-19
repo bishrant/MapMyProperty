@@ -17,6 +17,7 @@ $accent: mat-color($mmp-accent);
 
 .sidebar {
   background-color: $accent;
+  overflow-y: auto;
 }
 .translucentPadding {
   background-color: $translucent;
