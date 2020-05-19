@@ -2,7 +2,8 @@
     <div class="sidebar">
         <app-sidebar>
             <app-drawtools (startDrawing)="startDrawing($event)" [selectedGraphics]="selectedGraphics"
-                [sketchVM]="sketchVM" (radiusChanged)="radiusChanged($event)"></app-drawtools>
+                [sketchVM]="sketchVM" (radiusChanged)="radiusChanged($event)">
+            </app-drawtools>
         </app-sidebar>
     </div>
 

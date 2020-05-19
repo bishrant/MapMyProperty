@@ -24,6 +24,7 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
   lineWidth = 2;
   radius: number;
   drawingMode = 'click';
+  drawingTool: string = '';
 
   constructor(private store: Store<GraphicsState>) {}
 
@@ -72,19 +73,36 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
     this.lineColor = !this.selectedGraphics
       ? this.lineColor
       : RGBToHex(this.selectedGraphics[0].attributes.symbol.outline.color);
+
+    if (this.sketchVM) {
+      this.sketchVM.on('update', (event: any) => {
+        if (event.state === 'complete') {
+          this.drawingTool = '';
+          this.drawingMode = '';
+        }
+      });
+      this.sketchVM.on('create', (event: any) => {
+        if (event.state === 'complete') {
+          this.drawingTool = '';
+          this.drawingMode = '';
+        }
+      });
+    }
   }
 
-  startDrawingGraphics = (toolName: string = 'polygon') => {
-    const symbol = CreatePolygonSymbol(
-      { color: this.lineColor, opacity: this.lineOpacity, width: this.lineWidth, style: this.lineStyle },
-      { color: this.fillColor, style: this.fillStyle }
-    );
-    this.startDrawing.emit({ tool: toolName, symbol: symbol, radius: this.radius });
+  startDrawingGraphics = (toolName: string) => {
+    if (['circle', 'polygon'].indexOf(toolName) > -1) {
+      const symbol = CreatePolygonSymbol(
+        { color: this.lineColor, opacity: this.lineOpacity, width: this.lineWidth, style: this.lineStyle },
+        { color: this.fillColor, style: this.fillStyle }
+      );
+      this.startDrawing.emit({ tool: toolName, symbol: symbol, radius: this.radius, mode: this.drawingMode });
+    }
   };
 
-  startDrawingGraphicsFn = ($evt: any) => {
-    if (['circle', 'polygon'].indexOf($evt.value) > -1) {
-      this.startDrawingGraphics($evt.value);
+  changeDrawingMode = ($evt) => {
+    if (this.drawingTool !== '') {
+      this.startDrawingGraphics(this.drawingTool);
     }
   };
 }

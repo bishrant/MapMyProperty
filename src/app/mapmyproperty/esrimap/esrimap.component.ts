@@ -34,7 +34,7 @@ export class EsrimapComponent implements OnInit {
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
   id = (): string => Math.random().toString(36).substr(2, 9);
-
+  activeDrawingTool = '';
   constructor(private store: Store<GraphicsState>) {}
   @Input('se') se!: ElementRef;
   @HostListener('keydown.control.z') undoFromKeyboard() {
@@ -146,17 +146,25 @@ export class EsrimapComponent implements OnInit {
 
   startDrawing = ($event: any) => {
     const _symbol = $event.symbol;
+    this.sketchVM.cancel();
+    this.sketchVM.defaultCreateOptions.mode = $event.mode;
     this.symbolProps = _symbol;
     if ($event.tool === 'polygon' || $event.tool === 'circle') {
       this.sketchVM.polygonSymbol = _symbol;
     }
     if ($event.tool === 'polygon' || $event.tool === 'polyline' || $event.tool === 'circle') {
       let y = CreateLineSymbol(_symbol.outline);
-      this.sketchVM.activeLineSymbol = y;
-      this.sketchVM.lineSymbol = y;
+      // this.sketchVM.activeLineSymbol = y;
+      this.sketchVM.polylineSymbol = y;
     }
     this.circleRadius = $event.radius;
     this.sketchVM.create($event.tool);
+  };
+
+  changeDrawingMode = (mode: string, drawEvent: any) => {
+    this.sketchVM.cancel();
+    this.sketchVM.defaultCreateOptions.mode = mode;
+    this.startDrawing(drawEvent);
   };
 
   ngOnInit() {
