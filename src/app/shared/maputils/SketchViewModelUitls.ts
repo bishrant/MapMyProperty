@@ -16,7 +16,7 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): __esri.Sket
       enableScaling: false,
     },
     defaultCreateOptions: {
-      mode: 'hybrid',
+      mode: 'click',
     },
     // toggleToolOnClick: false
   });
@@ -39,4 +39,11 @@ const CreateCircleWithGeometry = (originalGraphic: any, radius: number) => {
   });
 };
 
-export { SetupSketchViewModel, CreateCircleWithGeometry };
+const CreateCircleFromPoint = (originalGraphic: any, radius: number) => {
+  return new Circle({
+    center: originalGraphic.geometry,
+    radius: radius,
+    radiusUnit: 'miles',
+  });
+};
+export { SetupSketchViewModel, CreateCircleWithGeometry, CreateCircleFromPoint };

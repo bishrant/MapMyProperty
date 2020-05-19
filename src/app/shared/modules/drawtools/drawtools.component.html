@@ -7,23 +7,25 @@
     </mat-expansion-panel-header>
 
     <div>
-        <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value)">
-            <mat-button-toggle value="circle" aria-label="Circle" class="toggleBtn">
-                <mat-icon>radio_button_unchecked</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="line" aria-label="Line" class="toggleBtn">
-                <mat-icon>show_chart</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="polygon" aria-label="Polygon" class="toggleBtn">
-                <i class="icon-untitled"></i>
-            </mat-button-toggle>
-            <mat-button-toggle value="point" aria-label="Point" class="toggleBtn">
-                <mat-icon>fiber_manual_record</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="text" aria-label="Text" class="toggleBtn">
-                Tt
-            </mat-button-toggle>
-        </mat-button-toggle-group>
+        <div class="centerAlign">
+            <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value)">
+                <mat-button-toggle value="circle" aria-label="Circle" class="toggleBtn">
+                    <mat-icon>radio_button_unchecked</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="line" aria-label="Line" class="toggleBtn">
+                    <mat-icon>show_chart</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="polygon" aria-label="Polygon" class="toggleBtn">
+                    <i class="icon-untitled"></i>
+                </mat-button-toggle>
+                <mat-button-toggle value="point" aria-label="Point" class="toggleBtn">
+                    <mat-icon>fiber_manual_record</mat-icon>
+                </mat-button-toggle>
+                <mat-button-toggle value="text" aria-label="Text" class="toggleBtn">
+                    Tt
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
         <!-- <div class="example-selected-value">Selected value: {{group.value}}</div> -->
         <!-- <button mat-raised-button class="graphicsControls1" (click)="startDrawingGraphics('polygon')">Polygon</button>
         <button mat-raised-button class="graphicsControls1" (click)="startDrawingGraphics('circle')">Circle</button> -->
@@ -43,8 +45,13 @@
                 <mat-button-toggle value="hybrid" class="drawModeBtn" [disabled]="drawingTool === 'circle'">Hybrid
                 </mat-button-toggle>
             </mat-button-toggle-group>
+            <mat-form-field appearance="outline" [hidden]="!((drawingTool === 'circle') && (drawingMode === 'click'))">
+                <input matInput placeholder="Radius" type="number" [(ngModel)]="radius"
+                    (ngModelChange)="_radiusChanged($event)">
+            </mat-form-field>
         </fieldset>
         <br>
+
 
         <br>
         <div style="display: flex;">
@@ -77,10 +84,7 @@
             </mat-slider> &nbsp;10
         </div>
 
-        <mat-form-field appearance="outline">
-            <input matInput placeholder="Radius" type="number" [(ngModel)]="radius"
-                (ngModelChange)="_radiusChanged($event)">
-        </mat-form-field>
+
         {{sketchVM.activeTool}} {{sketchVM.state}}
         {{drawingTool}}
     </div>
