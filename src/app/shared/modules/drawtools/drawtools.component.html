@@ -7,7 +7,7 @@
     </mat-expansion-panel-header>
 
     <div>
-        <mat-button-toggle-group #group="matButtonToggleGroup" (change)="startDrawingGraphicsFn($event)">
+        <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value)">
             <mat-button-toggle value="circle" aria-label="Circle" class="toggleBtn">
                 <mat-icon>radio_button_unchecked</mat-icon>
             </mat-button-toggle>
@@ -30,10 +30,17 @@
         <br>
         <fieldset>
             <legend>Drawing mode</legend>
-            <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [value]="drawingMode">
+            <button mat-icon-button
+                matTooltip="Specifies how vertices are added while the graphic can be created. Applies only while creating polygon, polyline and circle geometries."
+                aria-label="Button that shows a red tooltip" [matTooltipPosition]="'left'" class="infoBtn">
+                <mat-icon class="smallIcon">info</mat-icon>
+            </button>
+            <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [(ngModel)]="drawingMode"
+                (change)="changeDrawingMode($event)">
+
                 <mat-button-toggle value="click" class="drawModeBtn">Click</mat-button-toggle>
                 <mat-button-toggle value="freehand" class="drawModeBtn">FreeHand</mat-button-toggle>
-                <mat-button-toggle value="hybrid" class="drawModeBtn" [disabled]="group.value === 'circle'">Hybrid
+                <mat-button-toggle value="hybrid" class="drawModeBtn" [disabled]="drawingTool === 'circle'">Hybrid
                 </mat-button-toggle>
             </mat-button-toggle-group>
         </fieldset>
@@ -75,6 +82,7 @@
                 (ngModelChange)="_radiusChanged($event)">
         </mat-form-field>
         {{sketchVM.activeTool}} {{sketchVM.state}}
+        {{drawingTool}}
     </div>
     <!-- <div style="background: red; color:white">Works almost. not perfect !!!. Wait a day or so</div> -->
 </mat-expansion-panel>
