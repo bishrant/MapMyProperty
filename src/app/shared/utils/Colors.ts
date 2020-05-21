@@ -32,5 +32,10 @@ const HexToRGBA = (hex, alpha) => {
       }
     : null;
 };
-
-export { RGBToHex, HexToRGB, HexToRGBA };
+const HexToRGBAArray = (hex, alpha) => {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? "rgba("+parseInt(result[1], 16) + "," +parseInt(result[2], 16)+  ","+ parseInt(result[3], 16) + ","+ alpha / 100 +")"
+    : [0,0,0,0];
+};
+export { RGBToHex, HexToRGB, HexToRGBA, HexToRGBAArray };

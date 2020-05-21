@@ -1,4 +1,4 @@
-import { HexToRGBA } from './Colors';
+import { HexToRGBA, HexToRGBAArray } from './Colors';
 
 const LineStyles = {
   esriSLSSolid: 'solid',
@@ -32,8 +32,8 @@ const CreatePolygonSymbol = (outline: any, fill: any) => {
       outline: {
         color: outline.color ? HexToRGBA(outline.color, outline.opacity) : 'transparent',
         width: outline.width,
-        style: outline.style
-      }
+        style: outline.style,
+      },
     };
 }
 
