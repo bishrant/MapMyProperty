@@ -32,25 +32,31 @@
         <br>
         <fieldset>
             <legend>Drawing mode</legend>
-            <button mat-icon-button
-                matTooltip="Specifies how vertices are added while the graphic can be created. Applies only while creating polygon, polyline and circle geometries."
-                aria-label="Button that shows a red tooltip" [matTooltipPosition]="'left'" class="infoBtn">
-                <mat-icon class="smallIcon">info</mat-icon>
-            </button>
-            <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [(ngModel)]="drawingMode"
-                (change)="changeDrawingMode($event)">
+            <div class="centerAlign">
+                <button mat-icon-button
+                    matTooltip="Specifies how vertices are added while the graphic can be created. Applies only while creating polygon, polyline and circle geometries."
+                    aria-label="Button that shows a red tooltip" [matTooltipPosition]="'left'" class="infoBtn">
+                    <mat-icon class="smallIcon">info</mat-icon>
+                </button>
+                <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [(ngModel)]="drawingMode"
+                    (change)="changeDrawingMode($event)">
 
-                <mat-button-toggle value="click" class="drawModeBtn">Click</mat-button-toggle>
-                <mat-button-toggle value="freehand" class="drawModeBtn">FreeHand</mat-button-toggle>
-                <mat-button-toggle value="hybrid" class="drawModeBtn" [disabled]="drawingTool === 'circle'">Hybrid
-                </mat-button-toggle>
-            </mat-button-toggle-group>
-            <mat-form-field appearance="outline" [hidden]="!((drawingTool === 'circle') && (drawingMode === 'click'))">
-                <input matInput placeholder="Radius" type="number" [(ngModel)]="radius"
-                    (ngModelChange)="_radiusChanged($event)">
-            </mat-form-field>
+                    <mat-button-toggle value="click" class="drawModeBtn">Click</mat-button-toggle>
+                    <mat-button-toggle value="freehand" class="drawModeBtn">FreeHand</mat-button-toggle>
+                    <mat-button-toggle value="hybrid" class="drawModeBtn" [disabled]="drawingTool === 'circle'">Hybrid
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+                <div [hidden]="!((drawingTool === 'circle') && (drawingMode === 'click')) && !(selectedGraphicsGeometry === 'circle')">
+                    <mat-form-field appearance="outline" class="radiusInput">
+                        <input matInput placeholder="Radius" type="number" [(ngModel)]="radius" #radiusInput
+                        (keyup.enter)="radiusChangedEnter($event)"
+                            (blur)="radiusBlurred($event)">
+                    </mat-form-field>
+                    &nbsp; Miles
+                </div>
+            </div>
         </fieldset>
-        <br>
+
 
 
         <br>
@@ -85,7 +91,6 @@
         </div>
 
 
-        {{sketchVM.activeTool}} {{sketchVM.state}}
         {{drawingTool}}
     </div>
     <!-- <div style="background: red; color:white">Works almost. not perfect !!!. Wait a day or so</div> -->
