@@ -34,8 +34,8 @@ export class ColorPickerComponent {
 
   getCircleColor = (color) => {
     if (color !== null) {
-      const h = HexToRGBA(color, this.opacity);
-      return `rgba(${h.r}, ${h.g}, ${h.b}, ${h.a})`;
+      // const h = HexToRGBA(color, this.opacity);
+      return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
     }
   }
 }
