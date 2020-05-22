@@ -1,3 +1,4 @@
+import { RGBtoHEX } from './../../utils/Colors.pipe';
 import { MatButtonModule } from '@angular/material/button';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -16,7 +17,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
-  declarations: [DrawtoolsComponent],
+  declarations: [DrawtoolsComponent, RGBtoHEX],
   imports: [
     CommonModule,
     MatSliderModule,

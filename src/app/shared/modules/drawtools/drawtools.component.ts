@@ -2,7 +2,7 @@ import { updateGraphics, addGraphics } from './../../store/graphics.actions';
 import { Component, OnInit, Output, EventEmitter, Input, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import { GraphicsState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
-import { RGBToHex, RGBAToHexA } from 'src/app/shared/utils/Colors';
+import { RGBToHex, RGBAToHexA, RGBObjectToHex } from 'src/app/shared/utils/Colors';
 import { LineStyles, CheckIfColorIsHollow, CreatePolygonSymbol, CheckIfColorIsHollowRGBA } from 'src/app/shared/utils/GraphicStyles';
 import { CreateCircleFromPoint, CreateCircleWithGeometry } from '../../maputils/SketchViewModelUitls';
 
@@ -16,7 +16,11 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
   @Input() selectedGraphics: any[] = [];
   @Input() sketchVM: any;
   lineStyle = 'solid';
-  lineColor: any = {r: 100, g: 20, b: 5, a: 1};
+  lineColor: any = { r: 100, g: 20, b: 5, a: 1 };
+  lineSvgStyle = {
+    'width.px': 150,
+    'fill': RGBObjectToHex(this.lineColor)
+  }
   lineOpacity = 100;
   fillColor = 'transparent';
   fillStyle = 'solid';
@@ -32,6 +36,7 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
   changeColor = (colorInfo: any) => {
     this.lineColor = colorInfo.color;
     this.lineOpacity = colorInfo.opacity;
+    this.setLineSVGStyle();
     this.changeGraphicsStyle();
   };
   getPolygonSymbol = () => {
@@ -43,25 +48,20 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
   changeGraphicsStyle = () => {
     if (this.selectedGraphics) {
       if (this.selectedGraphics[0].attributes.geometryType === 'circle') {
-        let _g = this.selectedGraphics[0];
-        _g.geometry = CreateCircleWithGeometry(_g).asJSON();
-        _g = this.createPolygonGraphicWithSymbology(_g);
-        _g.attributes.radius = _g.geometry.radius;
-        this.store.dispatch(updateGraphics({ graphics: JSON.stringify([_g]) }));
+        let circleJSON = this.selectedGraphics[0].toJSON();
+        circleJSON = this.createPolygonGraphicWithSymbology(circleJSON);
+        circleJSON.toJSON = undefined;
+        circleJSON.geometry = CreateCircleWithGeometry(this.selectedGraphics[0]).asJSON();
+        circleJSON.attributes.radius = circleJSON.geometry.radius;
+        this.store.dispatch(updateGraphics({ graphics: JSON.stringify([circleJSON]) }));
         this.sketchVM.cancel();
       }
-      // let j = this.selectedGraphics[0].asJSON();
-      // j = this.createPolygonGraphicWithSymbology(j);
-      // const _symbol = this.getPolygonSymbol();
-
-      // j.symbol = _symbol;
-      // j.symbol.outline.color = _symbol.outline.color;
-      // j.attributes.symbol = _symbol;
-
-      
     }
   };
 
+  setLineSVGStyle = () => {
+    this.lineSvgStyle.fill = RGBObjectToHex(this.lineColor);
+  }
   createPolygonGraphicWithSymbology = (graphic: any) => {
     const _symbol = this.getPolygonSymbol();
     graphic.symbol = _symbol;
@@ -91,7 +91,6 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
           _g.attributes.geometryType = 'circle';
           _g.attributes.radius = _g.geometry.radius;
         }
-        // this.polygonGraphicsLayer.add(Graphic.fromJSON(evt.graphic.toJSON()))
         // this.store.dispatch({type: 'ADD'});
         const graphicString = JSON.stringify(_g);
         this.store.dispatch(addGraphics({ payload: graphicString }));
@@ -120,6 +119,7 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
   ngOnChanges() {
     if (this.selectedGraphics) {
       if (this.selectedGraphics.length === 1) {
+        this.setLineSVGStyle();
         const _g = this.selectedGraphics[0];
         this.selectedGraphicsGeometry =
           this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
@@ -128,19 +128,12 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
           this.lineStyle = _g.attributes.symbol.outline.style;
           const _graphicsOutlineColor = this.selectedGraphics[0].attributes.symbol.outline.color;
           this.lineColor = _graphicsOutlineColor;
-          // this.lineColor = CheckIfColorIsHollowRGBA(_graphicsOutlineColor) ? null : RGBAToHexA(_graphicsOutlineColor);
-          // console.log(this.lineColor);
+
           this.lineWidth = _g.attributes.symbol.outline.width;
-          this.lineOpacity = _graphicsOutlineColor*100;
+          this.lineOpacity = _graphicsOutlineColor.a * 100;
+          this.setLineSVGStyle();
         } else {
-          this.lineStyle = this.lineStyles[_g.attributes.symbol.outline.style];
-          const _graphicsOutlineColor = this.selectedGraphics[0].attributes.symbol.outline.color;
-          this.lineColor = _graphicsOutlineColor; //CheckIfColorIsHollowRGBA(_graphicsOutlineColor) ? null : RGBToHex(_graphicsOutlineColor);
-          // console.log(this.lineColor);
-          this.lineWidth = _g.attributes.symbol.outline.width;
-          this.lineOpacity = CheckIfColorIsHollowRGBA(_graphicsOutlineColor)
-            ? 100
-            : parseInt('' + (_g.attributes.symbol.outline.color[3] * 100) / 255);
+         
         }
       }
     }

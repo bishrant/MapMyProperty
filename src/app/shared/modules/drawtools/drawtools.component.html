@@ -67,16 +67,15 @@
                 <mat-select [(ngModel)]="lineStyle" class="matSelect" (selectionChange)="changeGraphicsStyle()">
                     <mat-select-trigger>
                         <svg-icon *ngIf="lineStyle !== 'none'" [src]="'assets/icons/symbols-sls-'+lineStyle+'.svg'"
-                            [svgStyle]="{ 'width.px':150, 'fill':lineColor }"></svg-icon>
+                            [svgStyle]="lineSvgStyle"></svg-icon>
                         <span *ngIf="lineStyle === 'none'">None</span>
                     </mat-select-trigger>
                     <mat-option *ngFor="let style of lineStyles | keyvalue" [value]="style.value">
                         <svg-icon *ngIf="style.value !== 'none'" [src]="'assets/icons/symbols-sls-'+style.value+'.svg'"
-                            [svgStyle]="{ 'width.px':150, 'fill':lineColor }"></svg-icon>
+                            [svgStyle]="lineSvgStyle"></svg-icon>
                         <span *ngIf="style.value === 'none'">None</span>
                     </mat-option>
                 </mat-select>
-
             </div>
             <div>
                 <app-color-picker [color]="lineColor" [opacity]="lineOpacity" (colorSelected)="changeColor($event)">

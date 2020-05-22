@@ -16,6 +16,8 @@ class TFSCircle extends declared(Circle) {
     cc.extent = this.extent;
     cc.type = this.type;
     cc.radius = this.radius;
+    // need to reset toJSON method so that it doesnot interfer with JSON.stringify
+    cc.toJSON = undefined;
     return cc;
   }
 }
