@@ -14,6 +14,7 @@ import { Store } from '@ngrx/store';
 import { addGraphics } from 'src/app/shared/store/graphics.actions';
 import createMapView from 'src/app/shared/maputils/CreateMapView';
 import { updateGraphics } from 'src/app/shared/store/graphics.actions';
+import Symbol from 'esri/symbols/Symbol';
 
 import E = __esri;
 
@@ -74,51 +75,7 @@ export class EsrimapComponent implements OnInit {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       this.mapView.map.add(this.polygonGraphicsLayer);
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
-      this.sketchVM.on(['create'], (evt: any) => {
-        if (evt.state === 'complete') {
-          let _g = evt.graphic.toJSON();
-          _g.attributes = { gid: this.id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
-          if (evt.tool === 'circle') {
-            _g.geometry = CreateCircleWithGeometry(evt.graphic, this.circleRadius).toJS();
-            _g.attributes.radius = _g.geometry.radius;
-            _g.symbol = this.sketchVM.polygonSymbol;
-            _g.attributes.symbol = this.sketchVM.polygonSymbol;
-          }
-          if (this.sketchVM.createCircleFromPoint) {
-            _g.geometry = CreateCircleFromPoint(evt.graphic.geometry, this.circleRadius).toJSON();
-            _g.attributes.symbol = this.sketchVM.polygonSymbol;
-            _g.symbol = this.sketchVM.polygonSymbol;
-            _g.attributes.geometryType = 'circle';
-            _g.attributes.radius = _g.geometry.radius;
-          } 
-          // this.polygonGraphicsLayer.add(Graphic.fromJSON(evt.graphic.toJSON()))
-          // this.store.dispatch({type: 'ADD'});
-          const graphicString = JSON.stringify(_g);
-          this.store.dispatch(addGraphics({ payload: graphicString }));
-          // polygonGraphicsLayer.add(evt.graphic);
-        }
-      });
-      // to know if a graphic is selected
-      // this.mapView.on('click', (evt) => {
-      //   // if (this.sketchVM.state !== 'active') {
-      //   this.mapView.hitTest(evt).then((r) => {
-      //     const _graphic = r.results.filter((result) => {
-      //       return result.graphic.layer === this.polygonGraphicsLayer;
-      //     });
-      //     this.selectedGraphics = _graphic;
-      //   })
-      // });
 
-      //       this.mapView.on('click', ['Shift'], (evt) => {
-      //         console.log('click shift')
-      //   // if (this.sketchVM.state !== 'active') {
-      //   this.mapView.hitTest(evt).then((r) => {
-      //     const _graphic = r.results.filter((result) => {
-      //       return result.graphic.layer === this.polygonGraphicsLayer;
-      //     });
-      //     this.selectedGraphics = this.selectedGraphics ? this.selectedGraphics.concat(_graphic): _graphic;
-      //   })
-      // })
 
       this.sketchVM.on('update', (gg: any) => {
         // console.log(gg);
@@ -144,13 +101,16 @@ export class EsrimapComponent implements OnInit {
   };
 
   private listenToGraphicsStore = () => {
-    return this.graphics$.subscribe((g) => {
+    return this.graphics$.subscribe((g: any) => {
+      // const allGraphics = JSON.parse(g);
       if (g.length > 0) {
         const graphicsArray = g.map((_g) => {
           const __g = JSON.parse(_g);
-          console.log(__g);
-          // return new Graphic(__g);
-          return Graphic.fromJSON(__g);
+          // console.log(__g);
+          const cc = new Graphic(__g);
+          const gr = Graphic.fromJSON(__g);
+          // gr.symbol = Symbol.fromJSON(__g.symbol);
+          return cc;
         });
         this.polygonGraphicsLayer.graphics = graphicsArray;
       } else {

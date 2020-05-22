@@ -1,19 +1,21 @@
+/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
+/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
 import MapView from 'arcgis-js-api/views/MapView';
 import SketchViewModel from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
 import { emptyPoint, hollowPolygon, bluePolygon } from '../../shared/maputils/Renderers';
 import Circle from 'esri/geometry/Circle';
 import geometryEngine from 'esri/geometry/geometryEngine';
-import Acccessor from 'esri/core/Accessor';
+import Accessor from 'esri/core/Accessor';
 import { subclass, declared } from 'esri/core/accessorSupport/decorators';
 
 @subclass('esri.geometry.Circle')
-class Circles extends declared(Circle) {
-  public toJS() {
+class TFSCircle extends declared(Circle) {
+  public asJSON() {
     const cc = this.toJSON();
     cc.centroid = this.centroid;
     cc.extent = this.extent;
     cc.type = this.type;
-    cc.new = Math.random();
+    cc.radius = this.radius;
     return cc;
   }
 }
@@ -39,23 +41,12 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): __esri.Sket
   });
 };
 
-const CircleToJSON = (geom: any) => {
-
-  const properties = ['type', 'geodesic', 'numberOfPoints', 'radius', ]
-}
-
-const CreateCircleWithGeometry = (originalGraphic: any, radius: number) => {
+const CreateCircleWithGeometry = (originalGraphic: any) => {
   // calculate area to get the radius
   const _area = geometryEngine.planarArea(originalGraphic.geometry, 'square-miles');
-  const _areaKM = geometryEngine.planarArea(originalGraphic.geometry, 'square-kilometers');
   const polygonRadius = Math.sqrt(_area / Math.PI);
-  const _polygonRadiusKM = Math.sqrt(_areaKM / Math.PI);
   const rr = Math.round((polygonRadius + Number.EPSILON) * 10 / 10)
-  // radius = typeof radius === 'undefined' ? 10 : radius;
-  // if (Math.abs(radius - polygonRadius) > 2) {
-  //   radius = polygonRadius;
-  // }
-  const c = new Circles({
+  const c = new TFSCircle({
     center: originalGraphic.geometry.centroid,
     radius: rr,
     radiusUnit: 'miles',
@@ -64,7 +55,7 @@ const CreateCircleWithGeometry = (originalGraphic: any, radius: number) => {
 };
 
 const CreateCircleFromPoint = (pointGeom: any, radius: number) => {
-  const c=  new Circle({
+  const c = new TFSCircle({
     center: pointGeom,
     radius: radius,
     radiusUnit: 'miles',
