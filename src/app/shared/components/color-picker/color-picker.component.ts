@@ -1,4 +1,4 @@
-import { HexToRGBA } from 'src/app/shared/utils/Colors';
+import { HexToRGBA, HexToRGB } from 'src/app/shared/utils/Colors';
 import { Component, EventEmitter, Input, Output, ViewContainerRef } from '@angular/core';
 import { ColorsPopoverService } from '../../services/ColorsPopover.service';
 import { ColorPickerPopoverComponent } from './color-picker.popover.component';
@@ -11,9 +11,9 @@ import { ComponentPortal } from '@angular/cdk/portal';
 })
 export class ColorPickerComponent {
   @Input() heading: string;
-  @Input() color: string;
+  @Input() color: any;
   @Input() opacity: number;
-  @Output() colorSelected: EventEmitter<string> = new EventEmitter<string>();
+  @Output() colorSelected: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(public colorsPopoverService: ColorsPopoverService, private viewContainerRef: ViewContainerRef) {}
 
@@ -23,19 +23,36 @@ export class ColorPickerComponent {
       .open(origin, componentPortal, { color: this.color, opacity: this.opacity })
       .subscribe(colorInfo => {
         if (colorInfo) {
+          //convert hex to rgb
+          console.log(colorInfo);
           this.color = colorInfo.color;
           this.opacity = colorInfo.opacity;
           if (colorInfo.closePopup) {
-            this.colorSelected.emit(colorInfo);
+            this.colorSelected.emit({ color: this.ConvertColorToRGB(this.color), opacity: this.opacity });
           }
         }
       });
   }
 
-  getCircleColor = (color) => {
-    if (color !== null) {
-      // const h = HexToRGBA(color, this.opacity);
+  GetCircleColor = (_color) => {
+    if (_color !== null) {
+      let color = _color;
+
+      if (typeof color.r === undefined) {
+        color = HexToRGB(_color);
+      }
+      color.a = this.opacity / 100;
       return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
     }
+  }
+
+  ConvertColorToRGB = (_color) => {
+     if (_color !== null) {
+       let color = _color;
+       if (typeof color.r === 'undefined') {
+         color = HexToRGB(_color);
+       }
+       return {r: color.r, g: color.g, b: color.b};
+     }
   }
 }

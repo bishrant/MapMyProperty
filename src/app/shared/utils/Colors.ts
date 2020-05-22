@@ -52,4 +52,17 @@ function RGBAToHexA(color) {
 
   return '#' + r + g + b + a;
 }
-export { RGBToHex, HexToRGB, HexToRGBA, HexToRGBAArray, RGBAToHexA };
+
+function RGBObjectToHex(color) {
+  let r = color.r.toString(16);
+  let g = color.g.toString(16);
+  let b = color.b.toString(16);
+ 
+  if (r.length == 1) r = '0' + r;
+  if (g.length == 1) g = '0' + g;
+  if (b.length == 1) b = '0' + b;
+  
+  return '#' + r + g + b;
+}
+
+export { RGBToHex, HexToRGB, HexToRGBA, HexToRGBAArray, RGBAToHexA, RGBObjectToHex };
