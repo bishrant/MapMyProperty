@@ -24,11 +24,10 @@ export class ColorPickerComponent {
       .subscribe(colorInfo => {
         if (colorInfo) {
           //convert hex to rgb
-          console.log(colorInfo);
           this.color = colorInfo.color;
           this.opacity = colorInfo.opacity;
           if (colorInfo.closePopup) {
-            this.colorSelected.emit({ color: this.ConvertColorToRGB(this.color), opacity: this.opacity });
+            this.colorSelected.emit(this.ConvertColorToRGBA(this.color, this.opacity));
           }
         }
       });
@@ -41,18 +40,19 @@ export class ColorPickerComponent {
       if (typeof color.r === undefined) {
         color = HexToRGB(_color);
       }
-      color.a = this.opacity / 100;
+      // color.a = this.opacity / 100;
       return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
     }
   }
 
-  ConvertColorToRGB = (_color) => {
+  ConvertColorToRGBA = (_color, opacity) => {
      if (_color !== null) {
        let color = _color;
        if (typeof color.r === 'undefined') {
          color = HexToRGB(_color);
        }
-       return {r: color.r, g: color.g, b: color.b};
+         color.a = opacity / 100;
+       return {r: color.r, g: color.g, b: color.b, a: color.a};
      }
   }
 }

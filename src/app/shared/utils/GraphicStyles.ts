@@ -1,5 +1,3 @@
-import { HexToRGBA, HexToRGBAArray } from './Colors';
-
 const LineStyles = {
   esriSLSSolid: 'solid',
   esriSLSDash: 'dash',
@@ -39,6 +37,16 @@ const CreatePolygonSymbol = (outline: any, fill: any) => {
       },
     };
 }
+
+const CreatePolylineSymbol = (outline: any) => {
+  // console.log(outline, fill)
+  return {
+    type: 'simple-line',
+    color: outline.color,
+    style: outline.style,
+    width: outline.width
+  };
+};
 
 const CreateLineSymbol = (outline: any) => {
   return {
@@ -86,4 +94,5 @@ export {
   CreateLineSymbol,
   CreatePolygonSymbol,
   CheckIfColorIsHollowRGBA,
+  CreatePolylineSymbol,
 };
