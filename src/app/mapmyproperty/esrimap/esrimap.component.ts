@@ -7,7 +7,6 @@ import { SetupSketchViewModel } from 'src/app/shared/maputils/SketchViewModelUit
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import createMapView from 'src/app/shared/maputils/CreateMapView';
-
 import E = __esri;
 
 @Component({
@@ -25,10 +24,8 @@ export class EsrimapComponent implements OnInit {
   sketchVM: any = new SketchViewModel();
   selectedGraphics!: any[] | undefined;
   mapCoords: any;
-  symbolProps: any;
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
-  activeDrawingTool = '';
   constructor(private store: Store<GraphicsState>) {}
   @Input('se') se!: ElementRef;
   @HostListener('keydown.control.z') undoFromKeyboard() {
@@ -73,15 +70,10 @@ export class EsrimapComponent implements OnInit {
 
   private listenToGraphicsStore = () => {
     return this.graphics$.subscribe((g: any) => {
-      // const allGraphics = JSON.parse(g);
       if (g.length > 0) {
         const graphicsArray = g.map((_g) => {
           const __g = JSON.parse(_g);
-          // console.log(__g);
-          const cc = new Graphic(__g);
-          const gr = Graphic.fromJSON(__g);
-          // gr.symbol = Symbol.fromJSON(__g.symbol);
-          return cc;
+          return new Graphic(__g);
         });
         this.polygonGraphicsLayer.graphics = graphicsArray;
       } else {
