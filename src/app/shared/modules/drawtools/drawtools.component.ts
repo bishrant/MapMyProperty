@@ -72,16 +72,25 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
   initSketchVMCreate = () => {
     this.sketchVM.on(['create'], (evt: any) => {
       if (evt.state === 'complete') {
-        let _g = evt.graphic.toJSON();
-        _g.attributes = { gid: this.id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
+        let _g;
+        
         if (evt.tool === 'circle') {
+          _g = evt.graphic.toJSON();
+          _g.attributes = { gid: this.id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
           _g.geometry = CreateCircleWithGeometry(evt.graphic).asJSON();
           _g = this.createPolygonGraphicWithSymbology(_g);
           _g.attributes.radius = _g.geometry.radius;
           // _g.symbol = this.sketchVM.polygonSymbol;
           // _g.attributes.symbol = this.sketchVM.polygonSymbol;
         }
+        if (evt.tool === 'polygon') {
+          _g = evt.graphic;
+          _g.attributes = { gid: this.id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
+          _g = _g.toJSON();
+        }
         if (this.sketchVM.createCircleFromPoint) {
+           _g = evt.graphic.toJSON();
+           _g.attributes = { gid: this.id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
           _g.geometry = CreateCircleFromPoint(evt.graphic.geometry, this.radius).asJSON();
           _g = this.createPolygonGraphicWithSymbology(_g);
           // const _symbol = this.getPolygonSymbol();
