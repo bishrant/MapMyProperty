@@ -1,5 +1,5 @@
 import { updateGraphics, addGraphics } from './../../store/graphics.actions';
-import { Component, OnInit, Output, EventEmitter, Input, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import { GraphicsState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
 import { RGBToHex, RGBObjectToHex } from 'src/app/shared/utils/Colors';
@@ -120,14 +120,15 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
         // send update to the store once the editing is complete
         if (gg.graphics[0].attributes.geometryType === 'circle') {
           // @todo fix this
-          let circleJSON = this.selectedGraphics[0].toJSON();
+          let circleJSON = gg.graphics[0].toJSON();
           circleJSON = this.createPolygonGraphicWithSymbology(circleJSON);
           circleJSON.toJSON = undefined;
           circleJSON.geometry = CreateCircleWithGeometry(this.selectedGraphics[0]).asJSON();
           circleJSON.attributes.radius = circleJSON.geometry.radius;
           this.store.dispatch(updateGraphics({ graphics: JSON.stringify([circleJSON]) }));
+        } else {
+          this.store.dispatch(updateGraphics({ graphics: JSON.stringify(gg.graphics) }));
         }
-        this.store.dispatch(updateGraphics({ graphics: JSON.stringify(gg.graphics) }));
         this.selectedGraphics = undefined;
       }
       // console.log(this.selectedGraphics, gg, ' enable editing for this');
