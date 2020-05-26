@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { PmloComponent } from './pmlo/pmlo.component';
+import { HeaderModule } from '../shared/components/header/header.module';
 
 const routes: Routes = [
   {
@@ -14,7 +15,8 @@ const routes: Routes = [
   declarations: [PmloComponent],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    HeaderModule
   ]
 })
 export class PlanmylandoperationModule { }
