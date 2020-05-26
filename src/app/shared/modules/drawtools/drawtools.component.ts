@@ -73,7 +73,7 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
     this.sketchVM.on(['create'], (evt: any) => {
       if (evt.state === 'complete') {
         let _g;
-        
+
         if (evt.tool === 'circle') {
           _g = evt.graphic.toJSON();
           _g.attributes = { gid: this.id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
@@ -89,8 +89,8 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
           _g = _g.toJSON();
         }
         if (this.sketchVM.createCircleFromPoint) {
-           _g = evt.graphic.toJSON();
-           _g.attributes = { gid: this.id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
+          _g = evt.graphic.toJSON();
+          _g.attributes = { gid: this.id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
           _g.geometry = CreateCircleFromPoint(evt.graphic.geometry, this.radius).asJSON();
           _g = this.createPolygonGraphicWithSymbology(_g);
           // const _symbol = this.getPolygonSymbol();
@@ -109,9 +109,7 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
 
   initSketchVMUpdate = () => {
     this.sketchVM.on('update', (gg: any) => {
-      // console.log(gg);
       if (gg.state === 'start' || gg.state === 'active') {
-        // gg.graphics.symbol =
         this.selectedGraphics = gg.graphics;
       } else if (gg.state === 'cancel') {
         this.selectedGraphics = undefined;
@@ -122,11 +120,11 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
         if (gg.graphics[0].attributes.geometryType === 'circle') {
           // @todo fix this
           let circleJSON = this.selectedGraphics[0].toJSON();
-        circleJSON = this.createPolygonGraphicWithSymbology(circleJSON);
-        circleJSON.toJSON = undefined;
-        circleJSON.geometry = CreateCircleWithGeometry(this.selectedGraphics[0]).asJSON();
-        circleJSON.attributes.radius = circleJSON.geometry.radius;
-        this.store.dispatch(updateGraphics({ graphics: JSON.stringify([circleJSON]) }));
+          circleJSON = this.createPolygonGraphicWithSymbology(circleJSON);
+          circleJSON.toJSON = undefined;
+          circleJSON.geometry = CreateCircleWithGeometry(this.selectedGraphics[0]).asJSON();
+          circleJSON.attributes.radius = circleJSON.geometry.radius;
+          this.store.dispatch(updateGraphics({ graphics: JSON.stringify([circleJSON]) }));
         }
         this.store.dispatch(updateGraphics({ graphics: JSON.stringify(gg.graphics) }));
         this.selectedGraphics = undefined;

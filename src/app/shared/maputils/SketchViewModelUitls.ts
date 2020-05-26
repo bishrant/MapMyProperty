@@ -22,9 +22,6 @@ class TFSCircle extends declared(Circle) {
   }
 }
 
-
-
-
 const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): __esri.SketchViewModel => {
   return new SketchViewModel({
     view: mapView,
@@ -47,7 +44,7 @@ const CreateCircleWithGeometry = (originalGraphic: any) => {
   // calculate area to get the radius
   const _area = geometryEngine.planarArea(originalGraphic.geometry, 'square-miles');
   const polygonRadius = Math.sqrt(_area / Math.PI);
-  const rr = Math.round((polygonRadius + Number.EPSILON) * 10 / 10)
+  const rr = Math.round(((polygonRadius + Number.EPSILON) * 10) / 10);
   const c = new TFSCircle({
     center: originalGraphic.geometry.centroid,
     radius: rr,
