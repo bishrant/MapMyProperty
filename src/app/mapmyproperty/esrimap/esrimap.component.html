@@ -1,7 +1,9 @@
 <div #sidebar class="sidebarBlanket">
     <div class="sidebar">
         <app-sidebar>
-            <app-drawtools (startDrawing)="startDrawing($event)" [selectedGraphics]="selectedGraphics"></app-drawtools>
+            <app-drawtools [selectedGraphics]="selectedGraphics"
+                [sketchVM]="sketchVM" >
+            </app-drawtools>
         </app-sidebar>
     </div>
 

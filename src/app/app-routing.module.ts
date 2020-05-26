@@ -8,12 +8,12 @@ const routes: Routes = [
   },
   {
     path: 'mapmyproperty',
-    loadChildren: './mapmyproperty/mmphome.module#MMPHomepageModule',
+    loadChildren: () => import('./mapmyproperty/mmphome.module').then((m) => m.MMPHomepageModule),
   },
   { path: 'pmlo', loadChildren: () => import('./planmylandoperation/planmylandoperation.module').then(m => m.PlanmylandoperationModule) },
   {
     path: 'drawmyranch',
-    loadChildren: './drawmyranch/dmrhome.module#DMRHomepageModule',
+    loadChildren: () => import('./drawmyranch/dmrhome.module').then((m) => m.DMRHomepageModule),
   },
 ];
 

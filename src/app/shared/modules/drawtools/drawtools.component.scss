@@ -9,3 +9,48 @@
   background-size: 10.101% 3px !important;
   transform: translateZ(0px) translateX(5.05051%);
 }
+
+.icon-untitled:before {
+  content: '\0042';
+}
+.radiusInput {
+  width: 80px;
+  height: 40px;
+}
+.toggleBtn {
+  width: 40px;
+}
+
+.drawModeBtn {
+  width: 65px;
+}
+
+.smallIcon {
+  font-size: 20px;
+  color: gray;
+}
+.smallIcon:hover {
+  color: black;
+}
+
+fieldset {
+  position: relative;
+}
+
+.infoBtn {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  right: 2px;
+  position: absolute;
+  top: -2px;
+}
+.centerAlign {
+  text-align: center;
+}
+.widthSlider {
+  width: 80%;
+}
+
+

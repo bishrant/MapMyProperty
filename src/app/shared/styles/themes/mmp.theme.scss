@@ -17,6 +17,10 @@ $mmp-theme: map-merge(
 // $pmlo-theme: mat-light-theme($pmlo-primary, $pmlo-accent, $pmlo-warn);
 
 .mmp-theme {
+  .mat-expansion-panel-header {
+    background-color: mat-color($mmp-primary, 900) !important;
+    color: white !important;
+  }
+
   @include angular-material-theme($mmp-theme);
 }
-@include angular-material-theme($mmp-theme);

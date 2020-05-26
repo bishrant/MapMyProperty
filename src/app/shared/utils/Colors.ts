@@ -32,5 +32,37 @@ const HexToRGBA = (hex, alpha) => {
       }
     : null;
 };
+const HexToRGBAArray = (hex, alpha) => {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? "rgba("+parseInt(result[1], 16) + "," +parseInt(result[2], 16)+  ","+ parseInt(result[3], 16) + ","+ alpha / 100 +")"
+    : [0,0,0,0];
+};
 
-export { RGBToHex, HexToRGB, HexToRGBA };
+function RGBAToHexA(color) {
+  let r = color.r.toString(16);
+  let g = color.g.toString(16);
+  let b = color.b.toString(16);
+  let a = Math.round(color.a * 255).toString(16);
+
+  if (r.length == 1) r = '0' + r;
+  if (g.length == 1) g = '0' + g;
+  if (b.length == 1) b = '0' + b;
+  if (a.length == 1) a = '0' + a;
+
+  return '#' + r + g + b + a;
+}
+
+function RGBObjectToHex(color) {
+  let r = color.r.toString(16);
+  let g = color.g.toString(16);
+  let b = color.b.toString(16);
+ 
+  if (r.length == 1) r = '0' + r;
+  if (g.length == 1) g = '0' + g;
+  if (b.length == 1) b = '0' + b;
+  
+  return '#' + r + g + b;
+}
+
+export { RGBToHex, HexToRGB, HexToRGBA, HexToRGBAArray, RGBAToHexA, RGBObjectToHex };

@@ -1,6 +1,4 @@
 import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
-
-import { CreateLineSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { CreatePolygonGraphicsLayer } from 'src/app/shared/maputils/CreateGraphicsLayer';
 import Graphic from 'esri/Graphic';
 import { GraphicsState } from 'src/app/shared/store/graphics.state';
@@ -8,10 +6,7 @@ import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.compo
 import { SetupSketchViewModel } from 'src/app/shared/maputils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
-import { addGraphics } from 'src/app/shared/store/graphics.actions';
 import createMapView from 'src/app/shared/maputils/CreateMapView';
-import { updateGraphics } from 'src/app/shared/store/graphics.actions';
-
 import E = __esri;
 
 @Component({
@@ -29,11 +24,8 @@ export class EsrimapComponent implements OnInit {
   sketchVM: any = new SketchViewModel();
   selectedGraphics!: any[] | undefined;
   mapCoords: any;
-  symbolProps: any;
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
-  id = (): string => Math.random().toString(36).substr(2, 9);
-
   constructor(private store: Store<GraphicsState>) {}
   @Input('se') se!: ElementRef;
   @HostListener('keydown.control.z') undoFromKeyboard() {
@@ -70,52 +62,6 @@ export class EsrimapComponent implements OnInit {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       this.mapView.map.add(this.polygonGraphicsLayer);
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
-      this.sketchVM.on(['create'], (evt: any) => {
-        if (evt.state === 'complete') {
-          const _g = evt.graphic;
-          evt.graphic.attributes = { gid: this.id(), symbol: _g.symbol };
-          // this.polygonGraphicsLayer.add(Graphic.fromJSON(evt.graphic.toJSON()))
-          // this.store.dispatch({type: 'ADD'});
-          this.store.dispatch(addGraphics({ payload: JSON.stringify(_g.toJSON()) }));
-          // polygonGraphicsLayer.add(evt.graphic);
-        }
-      });
-      // to know if a graphic is selected
-      // this.mapView.on('click', (evt) => {
-      //   // if (this.sketchVM.state !== 'active') {
-      //   this.mapView.hitTest(evt).then((r) => {
-      //     const _graphic = r.results.filter((result) => {
-      //       return result.graphic.layer === this.polygonGraphicsLayer;
-      //     });
-      //     this.selectedGraphics = _graphic;
-      //   })
-      // });
-
-      //       this.mapView.on('click', ['Shift'], (evt) => {
-      //         console.log('click shift')
-      //   // if (this.sketchVM.state !== 'active') {
-      //   this.mapView.hitTest(evt).then((r) => {
-      //     const _graphic = r.results.filter((result) => {
-      //       return result.graphic.layer === this.polygonGraphicsLayer;
-      //     });
-      //     this.selectedGraphics = this.selectedGraphics ? this.selectedGraphics.concat(_graphic): _graphic;
-      //   })
-      // })
-
-      this.sketchVM.on('update', (gg: any) => {
-        // console.log(gg);
-        if (gg.state === 'start' || gg.state === 'active') {
-          // gg.graphics.symbol =
-          this.selectedGraphics = gg.graphics;
-        } else if (gg.state === 'cancel') {
-          this.selectedGraphics = undefined;
-        } else if (gg.state === 'complete') {
-          // send update to the store once the editing is complete
-          this.store.dispatch(updateGraphics({ graphics: JSON.stringify(gg.graphics) }));
-          this.selectedGraphics = undefined;
-        }
-        // console.log(this.selectedGraphics, gg, ' enable editing for this');
-      });
       this.showMapCoordinates();
     } catch (error) {
       console.error('Map load error ', error);
@@ -123,30 +69,23 @@ export class EsrimapComponent implements OnInit {
   };
 
   private listenToGraphicsStore = () => {
-    return this.graphics$.subscribe((g) => {
+    return this.graphics$.subscribe((g: any) => {
       if (g.length > 0) {
         const graphicsArray = g.map((_g) => {
+          let geom = JSON.parse(_g);
+          if (geom.attributes.geometryType === 'circle') {
           const __g = JSON.parse(_g);
-          return Graphic.fromJSON(__g);
+          return new Graphic(__g);
+          } else {
+            return Graphic.fromJSON(geom);
+          }
+
         });
         this.polygonGraphicsLayer.graphics = graphicsArray;
       } else {
         this.polygonGraphicsLayer.removeAll();
       }
     });
-  };
-
-  startDrawing = ($event: any) => {
-    const _symbol = $event.symbol;
-    this.symbolProps = _symbol;
-    if ($event.tool === 'polygon') {
-      this.sketchVM.polygonSymbol = _symbol;
-    }
-    if ($event.tool === 'polygon' || $event.tool === 'polyline') {
-      this.sketchVM.activeLineSymbol = CreateLineSymbol(_symbol.outline);
-    }
-
-    this.sketchVM.create($event.tool);
   };
 
   ngOnInit() {

@@ -1,3 +1,4 @@
+import { RGBtoHEX } from './../../utils/Colors.pipe';
 import { MatButtonModule } from '@angular/material/button';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -11,9 +12,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
-  declarations: [DrawtoolsComponent],
+  declarations: [DrawtoolsComponent, RGBtoHEX],
   imports: [
     CommonModule,
     MatSliderModule,
@@ -26,6 +30,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatButtonModule,
     MatIconModule,
     FlexLayoutModule,
+    MatInputModule,
+    MatButtonToggleModule,
+    MatTooltipModule,
   ],
   exports: [DrawtoolsComponent],
 })
