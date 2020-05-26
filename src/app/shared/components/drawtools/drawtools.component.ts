@@ -1,10 +1,10 @@
-import { updateGraphics, addGraphics } from './../../store/graphics.actions';
+import { updateGraphics, addGraphics } from '../../store/graphics.actions';
 import { Component, OnInit, Input, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import { GraphicsState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
 import { RGBToHex, RGBObjectToHex } from 'src/app/shared/utils/Colors';
 import { LineStyles, CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
-import { CreateCircleFromPoint, CreateCircleWithGeometry } from '../../maputils/SketchViewModelUitls';
+import { CreateCircleFromPoint, CreateCircleWithGeometry } from 'src/app/shared/utils/SketchViewModelUitls';
 
 @Component({
   selector: 'app-drawtools',
@@ -109,13 +109,13 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
 
   initSketchVMUpdate = () => {
     this.sketchVM.on('update', (gg: any) => {
+      if (gg.state === 'cancel' || gg.aborted) {
+        this.selectedGraphics = undefined;
+        return;
+      }
       if (gg.state === 'start' || gg.state === 'active') {
         this.selectedGraphics = gg.graphics;
         this.selectedGraphicsChanged();
-      } else if (gg.state === 'cancel') {
-        this.selectedGraphics = undefined;
-      } else if (gg.aborted) {
-        this.selectedGraphics = undefined;
       } else if (gg.state === 'complete') {
         // send update to the store once the editing is complete
         if (gg.graphics[0].attributes.geometryType === 'circle') {
@@ -131,7 +131,6 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
         }
         this.selectedGraphics = undefined;
       }
-      // console.log(this.selectedGraphics, gg, ' enable editing for this');
     });
   };
 
@@ -152,27 +151,26 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
   };
 
   selectedGraphicsChanged = () => {
-      if (this.selectedGraphics.length === 1) {
-        this.setLineSVGStyle();
-        const _g = this.selectedGraphics[0];
-        this.selectedGraphicsGeometry =
-          this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
-        if (this.selectedGraphicsGeometry === 'circle') {
-          this.radius = _g.attributes.radius;
-          this.lineStyle = _g.attributes.symbol.outline.style;
-          const _graphicsOutlineColor = this.selectedGraphics[0].attributes.symbol.outline.color;
-          this.lineColor = _graphicsOutlineColor;
+    if (this.selectedGraphics.length === 1) {
+      this.setLineSVGStyle();
+      const _g = this.selectedGraphics[0];
+      this.selectedGraphicsGeometry =
+        this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
+      if (this.selectedGraphicsGeometry === 'circle') {
+        this.radius = _g.attributes.radius;
+        this.lineStyle = _g.attributes.symbol.outline.style;
+        const _graphicsOutlineColor = this.selectedGraphics[0].attributes.symbol.outline.color;
+        this.lineColor = _graphicsOutlineColor;
 
-          this.lineWidth = _g.attributes.symbol.outline.width;
-          this.lineOpacity = _graphicsOutlineColor.a * 100;
-          this.setLineSVGStyle();
-        } else {
-        }
+        this.lineWidth = _g.attributes.symbol.outline.width;
+        this.lineOpacity = _graphicsOutlineColor.a * 100;
+        this.setLineSVGStyle();
+      } else {
       }
-  }
+    }
+  };
   ngOnChanges() {
     if (this.selectedGraphics) {
-
     }
   }
 

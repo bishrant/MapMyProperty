@@ -1,12 +1,12 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
-import { CreatePolygonGraphicsLayer } from 'src/app/shared/maputils/CreateGraphicsLayer';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { CreatePolygonGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
 import Graphic from 'esri/Graphic';
 import { GraphicsState } from 'src/app/shared/store/graphics.state';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
-import { SetupSketchViewModel } from 'src/app/shared/maputils/SketchViewModelUitls';
+import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
-import createMapView from 'src/app/shared/maputils/CreateMapView';
+import createMapView from 'src/app/shared/utils/CreateMapView';
 import E = __esri;
 
 @Component({

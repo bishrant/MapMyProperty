@@ -2,10 +2,9 @@
 /// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
 import MapView from 'arcgis-js-api/views/MapView';
 import SketchViewModel from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
-import { emptyPoint, hollowPolygon, bluePolygon } from '../../shared/maputils/Renderers';
+import { emptyPoint, bluePolygon } from './Renderers';
 import Circle from 'esri/geometry/Circle';
 import geometryEngine from 'esri/geometry/geometryEngine';
-import Accessor from 'esri/core/Accessor';
 import { subclass, declared } from 'esri/core/accessorSupport/decorators';
 
 @subclass('esri.geometry.Circle')
