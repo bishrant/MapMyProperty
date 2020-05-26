@@ -136,24 +136,14 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
 
   updateCircleRadius = () => {
     if (this.selectedGraphics.length > 0) {
-
       let circleJSON = this.selectedGraphics[0].toJSON();
       circleJSON = this.createPolygonGraphicWithSymbology(circleJSON);
       circleJSON.toJSON = undefined;
-      
       circleJSON.geometry = CreateCircleFromPoint(this.selectedGraphics[0].geometry.centroid, this.radius).asJSON();
       circleJSON.attributes.radius = circleJSON.geometry.radius;
       this.store.dispatch(updateGraphics({ graphics: JSON.stringify([circleJSON]) }));
       this.sketchVM.cancel();
       this.radiusElmRef.nativeElement.blur();
-
-
-      // const j = this.selectedGraphics[0];
-      // const newCircle = CreateCircleFromPoint(j.geometry.centroid, this.radius).asJSON();
-      // j.attributes.radius = this.radius;
-      // j.geometry = newCircle;
-      // this.store.dispatch(updateGraphics({ graphics: JSON.stringify([j]) }));
-      // this.radiusElmRef.nativeElement.blur();
     }
   };
   radiusChangedEnter = ($event: any) => {
