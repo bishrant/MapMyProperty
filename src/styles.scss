@@ -1,6 +1,7 @@
 // @import "./app/shared/styles/themes.scss";
 @import './app/shared/styles/CustomSlider.scss';
 @import './app/shared/styles/themes/mmp.theme.scss';
+@import url('https://js.arcgis.com/4.15/esri/css/main.css');
 
 html,
 body {
@@ -53,7 +54,7 @@ body {
   font-weight: normal;
   font-style: normal;
 }
-[class*='icon-']:before {
+[class*='customicon-']:before {
   display: inline-block;
   font-family: 'Glyphter';
   font-style: normal;
