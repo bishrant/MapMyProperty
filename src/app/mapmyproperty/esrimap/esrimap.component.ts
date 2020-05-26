@@ -27,7 +27,6 @@ export class EsrimapComponent implements OnInit {
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
   constructor(private store: Store<GraphicsState>) {}
-  @Input('se') se!: ElementRef;
   @HostListener('keydown.control.z') undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
@@ -72,14 +71,8 @@ export class EsrimapComponent implements OnInit {
     return this.graphics$.subscribe((g: any) => {
       if (g.length > 0) {
         const graphicsArray = g.map((_g) => {
-          let geom = JSON.parse(_g);
-          if (geom.attributes.geometryType === 'circle') {
-          const __g = JSON.parse(_g);
-          return new Graphic(__g);
-          } else {
-            return Graphic.fromJSON(geom);
-          }
-
+          let gr = JSON.parse(_g);
+          return gr.attributes.geometryType === 'circle' ? new Graphic(gr) : Graphic.fromJSON(gr);
         });
         this.polygonGraphicsLayer.graphics = graphicsArray;
       } else {
