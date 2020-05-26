@@ -111,6 +111,7 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
     this.sketchVM.on('update', (gg: any) => {
       if (gg.state === 'start' || gg.state === 'active') {
         this.selectedGraphics = gg.graphics;
+        this.selectedGraphicsChanged();
       } else if (gg.state === 'cancel') {
         this.selectedGraphics = undefined;
       } else if (gg.aborted) {
@@ -135,19 +136,21 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
 
   updateCircleRadius = () => {
     if (this.selectedGraphics.length > 0) {
-      const j = this.selectedGraphics[0];
-      const newCircle = CreateCircleFromPoint(j.geometry.centroid, this.radius);
-      j.attributes.radius = this.radius;
-      j.geometry = newCircle;
-      this.store.dispatch(updateGraphics({ graphics: JSON.stringify([j]) }));
+      let circleJSON = this.selectedGraphics[0].toJSON();
+      circleJSON = this.createPolygonGraphicWithSymbology(circleJSON);
+      circleJSON.toJSON = undefined;
+      circleJSON.geometry = CreateCircleFromPoint(this.selectedGraphics[0].geometry.centroid, this.radius).asJSON();
+      circleJSON.attributes.radius = circleJSON.geometry.radius;
+      this.store.dispatch(updateGraphics({ graphics: JSON.stringify([circleJSON]) }));
+      this.sketchVM.cancel();
       this.radiusElmRef.nativeElement.blur();
     }
   };
   radiusChangedEnter = ($event: any) => {
     this.updateCircleRadius();
   };
-  ngOnChanges() {
-    if (this.selectedGraphics) {
+
+  selectedGraphicsChanged = () => {
       if (this.selectedGraphics.length === 1) {
         this.setLineSVGStyle();
         const _g = this.selectedGraphics[0];
@@ -165,6 +168,10 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
         } else {
         }
       }
+  }
+  ngOnChanges() {
+    if (this.selectedGraphics) {
+
     }
   }
 

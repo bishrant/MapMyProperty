@@ -1,5 +1,3 @@
-import { RouterModule, Routes } from '@angular/router';
-
 import { CommonModule } from '@angular/common';
 import { EsrimapComponent } from './esrimap.component';
 import { GraphicsStoreModule } from 'src/app/shared/store/GraphicsStore.module';
