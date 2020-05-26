@@ -119,7 +119,7 @@ export class DrawtoolsComponent implements OnInit, OnChanges {
       } else if (gg.state === 'complete') {
         // send update to the store once the editing is complete
         if (gg.graphics[0].attributes.geometryType === 'circle') {
-          // @todo fix this
+          // @todo fix this by separate into its own function
           let circleJSON = gg.graphics[0].toJSON();
           circleJSON = this.createPolygonGraphicWithSymbology(circleJSON);
           circleJSON.toJSON = undefined;
