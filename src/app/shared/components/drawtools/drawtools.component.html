@@ -59,42 +59,42 @@
         <br>
         <fieldset>
             <legend>Line Style</legend>
-            <div >
-                <button mat-icon-button matTooltip="Specifies how the outline of the geometry is styled."
-                    aria-label="info for line style" [matTooltipPosition]="'left'" class="infoBtn">
-                    <mat-icon class="smallIcon">info</mat-icon>
-                </button>
-                <div style="display: flex;">
-                    <div style="flex-grow: 1;">
-                        Line type:<br>
 
-                        <mat-select [(ngModel)]="lineStyle" class="matSelect" (selectionChange)="changeGraphicsStyle()">
-                            <mat-select-trigger>
-                                <svg-icon *ngIf="lineStyle !== 'none'"
-                                    [src]="'assets/icons/symbols-sls-'+lineStyle+'.svg'" [svgStyle]="lineSvgStyle">
-                                </svg-icon>
-                                <span *ngIf="lineStyle === 'none'">None</span>
-                            </mat-select-trigger>
-                            <mat-option *ngFor="let style of lineStyles | keyvalue" [value]="style.value">
-                                <svg-icon *ngIf="style.value !== 'none'"
-                                    [src]="'assets/icons/symbols-sls-'+style.value+'.svg'" [svgStyle]="lineSvgStyle">
-                                </svg-icon>
-                                <span *ngIf="style.value === 'none'">None</span>
-                            </mat-option>
-                        </mat-select>
-                    </div>
-                    <div>
-                        <app-color-picker [color]="lineColor" [opacity]="lineOpacity"
-                            (colorSelected)="changeColor($event)">
-                        </app-color-picker>
-                    </div>
+            <button mat-icon-button matTooltip="Specifies how the outline of the geometry is styled."
+                aria-label="info for line style" [matTooltipPosition]="'left'" class="infoBtn">
+                <mat-icon class="smallIcon">info</mat-icon>
+            </button>
+            <div style="display: flex;">
+                <div style="flex-grow: 1;">
+                    Line type:<br>
+
+                    <mat-select [(ngModel)]="lineProps.style" class="matSelect"
+                        (selectionChange)="changeGraphicsStyle()">
+                        <mat-select-trigger>
+                            <svg-icon *ngIf="lineProps.style !== 'none'"
+                                [src]="'assets/icons/symbols-sls-'+lineProps.style+'.svg'" [svgStyle]="lineSvgStyle">
+                            </svg-icon>
+                            <span *ngIf="lineProps.style === 'none'">None</span>
+                        </mat-select-trigger>
+                        <mat-option *ngFor="let style of lineStyles | keyvalue" [value]="style.value">
+                            <svg-icon *ngIf="style.value !== 'none'"
+                                [src]="'assets/icons/symbols-sls-'+style.value+'.svg'" [svgStyle]="lineSvgStyle">
+                            </svg-icon>
+                            <span *ngIf="style.value === 'none'">None</span>
+                        </mat-option>
+                    </mat-select>
                 </div>
                 <div>
-                    Width<br>
-                    0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="1"
-                        tickInterval="1" (change)="changeGraphicsStyle()" [(ngModel)]="lineWidth" min="0" max="10">
-                    </mat-slider> &nbsp;10
+                    <app-color-picker [color]="lineProps.color" [opacity]="lineProps.opacity"
+                        (colorSelected)="changeColor($event)">
+                    </app-color-picker>
                 </div>
+            </div>
+            <div>
+                Width<br>
+                0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="1"
+                    tickInterval="1" (change)="changeGraphicsStyle()" [(ngModel)]="lineProps.width" min="0" max="10">
+                </mat-slider> &nbsp;10
             </div>
         </fieldset>
     </div>
