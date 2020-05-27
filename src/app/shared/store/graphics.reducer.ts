@@ -16,6 +16,7 @@ const reducer = (state: any, action: any, listener?: PatchListener): any => {
     next => {
       switch (action.type) {
         case addGraphics.type:
+          
           next.graphics.push(action.payload);
           return;
         case removeGraphics.type:

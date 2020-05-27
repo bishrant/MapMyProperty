@@ -1,8 +1,10 @@
+import { selectGraphicsArray } from './store.selector';
 import { updateGraphics, addGraphics } from '../../store/graphics.actions';
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { GraphicsState } from 'src/app/shared/store/graphics.state';
-import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/shared/store/graphics.state';
+import { Store, select } from '@ngrx/store';
 import { RGBObjectToHex } from 'src/app/shared/utils/Colors';
+import { take } from 'rxjs/operators';
 import {
   CreatePolygonGraphicWithSymbology,
   CreateCircleFromEvent,
@@ -12,6 +14,7 @@ import {
 import { LineStyles, FillStyles, CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { CreateCircleFromPoint, CreateCircleWithGeometry } from 'src/app/shared/utils/SketchViewModelUitls';
 import { LineProps, FillProps } from './DrawTools.interface';
+import { equals } from 'esri/geometry/geometryEngine';
 
 @Component({
   selector: 'app-drawtools',
@@ -28,9 +31,9 @@ export class DrawtoolsComponent implements OnInit {
     width: 2,
   };
   fillProps: FillProps = {
-    color: {r:0, g: 0, b: 0, a: 0.5},
+    color: { r: 0, g: 0, b: 0, a: 0.5 },
     style: 'solid',
-    opacity: 50
+    opacity: 50,
   };
   lineSvgStyle = {
     'width.px': 150,
@@ -43,7 +46,7 @@ export class DrawtoolsComponent implements OnInit {
   drawingTool: string = '';
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
   @ViewChild('radiusInput') radiusElmRef: ElementRef;
-  constructor(private store: Store<GraphicsState>) {}
+  constructor(private store: Store<AppState>) {}
   id = (): string => Math.random().toString(36).substr(2, 9);
 
   changeColor = (colorInfo: any) => {
@@ -115,12 +118,27 @@ export class DrawtoolsComponent implements OnInit {
         this.selectedGraphics = gg.graphics;
         this.selectedGraphicsChanged();
       } else if (gg.state === 'complete') {
-        let updatedGraphics = gg.graphics;
+        let _updatedGraphics = gg.graphics;
         if (gg.graphics[0].attributes.geometryType === 'circle') {
-          updatedGraphics = CreateCircleFromGraphic(gg.graphics[0], this.lineProps, this.fillProps);
+          _updatedGraphics = CreateCircleFromGraphic(gg.graphics[0], this.lineProps, this.fillProps);
         }
-        this.store.dispatch(updateGraphics({ graphics: JSON.stringify(updatedGraphics) }));
-        this.selectedGraphics = undefined;
+
+        const graphicsStore$ = this.store.select((state) => state.app.graphics);
+        graphicsStore$.pipe(take(1)).subscribe((graphics) => {
+          if (graphics.length < 1) return;
+          let areEqual = false;
+          for (let i = 0; i < graphics.length; i++) {
+            const _existing = JSON.parse(graphics[i]);
+            if (_updatedGraphics[0].attributes.gid === _existing.attributes.gid) {
+              areEqual = equals(_updatedGraphics[0].geometry, _existing.geometry);
+              break;
+            }
+          }
+          if (!areEqual) {
+            this.store.dispatch(updateGraphics({ graphics: JSON.stringify(_updatedGraphics) }));
+          }
+          this.selectedGraphics = undefined;
+        });
       }
     });
   };

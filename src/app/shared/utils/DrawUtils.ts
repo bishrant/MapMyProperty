@@ -8,6 +8,7 @@ const CreateCircleFromGraphic = (graphic: any, lineProps: any, fillProps: any) =
   circleJSON.toJSON = undefined;
   circleJSON.geometry = CreateCircleWithGeometry(graphic).asJSON();
   circleJSON.attributes.radius = circleJSON.geometry.radius;
+  return [circleJSON];
 };
 
 const CreatePolygonGraphicWithSymbology = (graphic: any, lineProps: any, fillProps: any) => {
