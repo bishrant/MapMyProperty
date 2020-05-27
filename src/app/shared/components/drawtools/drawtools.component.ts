@@ -9,7 +9,7 @@ import {
   CreatecircleFromPoint,
   CreateCircleFromGraphic,
 } from 'src/app/shared/utils/DrawUtils';
-import { LineStyles, CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
+import { LineStyles, FillStyles, CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { CreateCircleFromPoint, CreateCircleWithGeometry } from 'src/app/shared/utils/SketchViewModelUitls';
 import { LineProps, FillProps } from './DrawTools.interface';
 
@@ -28,14 +28,16 @@ export class DrawtoolsComponent implements OnInit {
     width: 2,
   };
   fillProps: FillProps = {
-    color: 'transparent',
+    color: {r:0, g: 0, b: 0, a: 0.5},
     style: 'solid',
+    opacity: 50
   };
   lineSvgStyle = {
     'width.px': 150,
     fill: RGBObjectToHex(this.lineProps.color),
   };
   lineStyles = LineStyles;
+  fillStyles = FillStyles;
   radius: number;
   drawingMode: string = 'click';
   drawingTool: string = '';
@@ -51,6 +53,12 @@ export class DrawtoolsComponent implements OnInit {
     this.changeGraphicsStyle();
   };
 
+  changeFillColor = (colorInfo: any) => {
+    this.fillProps.color = colorInfo;
+    this.fillProps.opacity = colorInfo.a * 100;
+    this.setLineSVGStyle();
+    this.changeGraphicsStyle();
+  };
   changeGraphicsStyle = () => {
     if (!this.selectedGraphics) {
       return;
@@ -191,8 +199,8 @@ export class DrawtoolsComponent implements OnInit {
             this.sketchVM.create('point');
             return;
           }
-        } 
-      } 
+        }
+      }
       this.sketchVM.create(toolName, { mode: this.drawingMode, type: toolName });
     }
   };

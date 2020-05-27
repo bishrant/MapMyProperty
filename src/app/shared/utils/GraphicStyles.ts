@@ -8,10 +8,21 @@ const LineStyles = {
   esriSLSLongDash: 'long-dash',
   esriSLSLongDashDot: 'long-dash-dot',
   esriSLSShortDash: 'short-dash',
-  // esriSLSDashDotDot: "dash-dot-dot",
+  // esriSLSDashDotDot: 'dash-dot-dot',
   esriSLSShortDashDot: 'short-dash-dot',
   esriSLSNull: 'none'
 };
+
+const FillStyles = [
+  'none',
+  'solid',
+  'backward-diagonal',
+  'cross',
+  'diagonal-cross',
+  'forward-diagonal',
+  'horizontal',
+  'vertical',
+];
 
 const CheckIfColorIsHollow = (RGBAarray) => {
   if (RGBAarray.length === 4) {
@@ -89,6 +100,7 @@ const ColorSwatch = [
 ];
 export {
   LineStyles,
+  FillStyles,
   ColorSwatch,
   CheckIfColorIsHollow,
   CreateLineSymbol,

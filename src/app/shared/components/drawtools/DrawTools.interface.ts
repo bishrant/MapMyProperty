@@ -7,8 +7,9 @@ interface LineProps {
 }
 
 interface FillProps {
-  color: string;
+  color: any;
   style: string;
+  opacity: number;
 }
 
 export {LineProps, FillProps}
