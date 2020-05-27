@@ -3,7 +3,7 @@ import { updateGraphics, addGraphics } from '../../store/graphics.actions';
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store, select } from '@ngrx/store';
-import { RGBObjectToHex } from 'src/app/shared/utils/Colors';
+import { RGBObjectToHex, RGBObjectToHexA } from 'src/app/shared/utils/Colors';
 import { take } from 'rxjs/operators';
 import {
   CreatePolygonGraphicWithSymbology,
@@ -39,6 +39,10 @@ export class DrawtoolsComponent implements OnInit {
     'width.px': 150,
     fill: RGBObjectToHex(this.lineProps.color),
   };
+  fillSvgStyle = {
+    'width.px': 150,
+    fill: RGBObjectToHexA(this.fillProps.color),
+  };
   lineStyles = LineStyles;
   fillStyles = FillStyles;
   radius: number;
@@ -48,7 +52,12 @@ export class DrawtoolsComponent implements OnInit {
   @ViewChild('radiusInput') radiusElmRef: ElementRef;
   constructor(private store: Store<AppState>) {}
   id = (): string => Math.random().toString(36).substr(2, 9);
-
+  setLineSVGStyle = () => {
+    this.lineSvgStyle.fill = RGBObjectToHex(this.lineProps.color);
+  };
+  setFillSvgStyle = () => {
+    this.fillSvgStyle.fill = RGBObjectToHexA(this.fillProps.color);
+  };
   changeColor = (colorInfo: any) => {
     this.lineProps.color = colorInfo;
     this.lineProps.opacity = colorInfo.a * 100;
@@ -59,7 +68,7 @@ export class DrawtoolsComponent implements OnInit {
   changeFillColor = (colorInfo: any) => {
     this.fillProps.color = colorInfo;
     this.fillProps.opacity = colorInfo.a * 100;
-    this.setLineSVGStyle();
+    this.setFillSvgStyle();
     this.changeGraphicsStyle();
   };
   changeGraphicsStyle = () => {
@@ -77,10 +86,6 @@ export class DrawtoolsComponent implements OnInit {
         this.sketchVM.cancel();
       }
     }
-  };
-
-  setLineSVGStyle = () => {
-    this.lineSvgStyle.fill = RGBObjectToHex(this.lineProps.color);
   };
 
   initSketchVMCreate = () => {

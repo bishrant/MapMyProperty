@@ -52,7 +52,18 @@ function RGBAToHexA(color) {
 
   return '#' + r + g + b + a;
 }
+function RGBObjectToHexA(color) {
+  let r = color.r.toString(16);
+  let g = color.g.toString(16);
+  let b = color.b.toString(16);
+  let a = (color.a * 255).toString(16).substring(0, 2);
 
+  if (r.length == 1) r = '0' + r;
+  if (g.length == 1) g = '0' + g;
+  if (b.length == 1) b = '0' + b;
+
+  return '#' + r + g + b + a;
+}
 function RGBObjectToHex(color) {
   let r = color.r.toString(16);
   let g = color.g.toString(16);
@@ -65,4 +76,4 @@ function RGBObjectToHex(color) {
   return '#' + r + g + b;
 }
 
-export { RGBToHex, HexToRGB, HexToRGBA, HexToRGBAArray, RGBAToHexA, RGBObjectToHex };
+export { RGBToHex, HexToRGB, HexToRGBA, HexToRGBAArray, RGBAToHexA, RGBObjectToHex, RGBObjectToHexA };

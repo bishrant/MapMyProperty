@@ -1,28 +1,30 @@
-const LineStyles = {
-  esriSLSSolid: 'solid',
-  esriSLSDash: 'dash',
-  esriSLSShortDot: 'short-dot',
-  esriSLSDot: 'dot',
-  esriSLSDashDot: 'dash-dot',
-  esriSLSShortDashDotDot: 'short-dash-dot-dot',
-  esriSLSLongDash: 'long-dash',
-  esriSLSLongDashDot: 'long-dash-dot',
-  esriSLSShortDash: 'short-dash',
-  // esriSLSDashDotDot: 'dash-dot-dot',
-  esriSLSShortDashDot: 'short-dash-dot',
-  esriSLSNull: 'none'
-};
+const LineStyles = [
+  'none',
+  'solid',
+   'dash',
+ 'short-dot',
+ 'dot',
+  'dash-dot',
+ 'short-dash-dot-dot',
+  'long-dash',
+  'long-dash-dot',
+  'short-dash',
+  'short-dash-dot',
+
+]
+
 
 const FillStyles = [
   'none',
-  'solid',
+   'solid',
+  'forward-diagonal',
   'backward-diagonal',
   'cross',
   'diagonal-cross',
-  'forward-diagonal',
-  'horizontal',
   'vertical',
+  'horizontal'
 ];
+
 
 const CheckIfColorIsHollow = (RGBAarray) => {
   if (RGBAarray.length === 4) {

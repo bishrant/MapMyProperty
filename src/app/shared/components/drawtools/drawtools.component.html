@@ -76,11 +76,11 @@
                             </svg-icon>
                             <span *ngIf="lineProps.style === 'none'">None</span>
                         </mat-select-trigger>
-                        <mat-option *ngFor="let style of lineStyles | keyvalue" [value]="style.value">
-                            <svg-icon *ngIf="style.value !== 'none'"
-                                [src]="'assets/icons/symbols-sls-'+style.value+'.svg'" [svgStyle]="lineSvgStyle">
+                        <mat-option *ngFor="let style of lineStyles" [value]="style">
+                            <svg-icon *ngIf="style !== 'none'" [src]="'assets/icons/symbols-sls-'+style+'.svg'"
+                                [svgStyle]="lineSvgStyle">
                             </svg-icon>
-                            <span *ngIf="style.value === 'none'">None</span>
+                            <span *ngIf="style === 'none'">None</span>
                         </mat-option>
                     </mat-select>
                 </div>
@@ -98,43 +98,63 @@
             </div>
         </fieldset>
 
-                <fieldset>
-                    <legend>Fill Style</legend>
-                
-                    <button mat-icon-button matTooltip="Specifies how the inside(fill) of the geometry is styled."
-                        aria-label="info for fill style" [matTooltipPosition]="'left'" class="infoBtn">
-                        <mat-icon class="smallIcon">info</mat-icon>
-                    </button>
-                    <div style="display: flex;">
-                        <div style="flex-grow: 1;">
-                            Pattern  :<br>
-                
-                            <mat-select [(ngModel)]="fillProps.style" class="matSelect" (selectionChange)="changeGraphicsStyle()">
+        <fieldset>
+            <legend>Fill Style</legend>
+
+            <button mat-icon-button matTooltip="Specifies how the inside(fill) of the geometry is styled."
+                aria-label="info for fill style" [matTooltipPosition]="'left'" class="infoBtn">
+                <mat-icon class="smallIcon">info</mat-icon>
+            </button>
+            <div style="display: flex;">
+                <div style="flex-grow: 1;">
+
+
+                    <!-- <mat-select [(ngModel)]="fillProps.style" class="matSelect" (selectionChange)="changeGraphicsStyle()">
                                 <mat-select-trigger>
-                                    <!-- <svg-icon *ngIf="lineProps.style !== 'none'"
+                                    <svg-icon *ngIf="lineProps.style !== 'none'"
                                         [src]="'assets/icons/symbols-sls-'+lineProps.style+'.svg'" [svgStyle]="lineSvgStyle">
-                                    </svg-icon> -->
+                                    </svg-icon> 
                                    
                                         {{fillProps.style}}
                                    
                                 </mat-select-trigger>
                                 <mat-option *ngFor="let style of fillStyles" [value]="style">
-                                    <!-- <svg-icon *ngIf="style.value !== 'none'" [src]="'assets/icons/symbols-sls-'+style.value+'.svg'"
+                                    <svg-icon *ngIf="style.value !== 'none'" [src]="'assets/icons/symbols-sls-'+style.value+'.svg'"
                                         [svgStyle]="lineSvgStyle">
                                     </svg-icon>
-                                    <span *ngIf="style.value === 'none'">None</span> -->
+                                    <span *ngIf="style.value === 'none'">None</span> 
                                     <span>{{style}}</span>
                                 </mat-option>
-                            </mat-select>
-                        </div>
-                        <div>
-                            <app-color-picker [color]="fillProps.color" [opacity]="fillProps.opacity"
-                                (colorSelected)="changeFillColor($event)">
-                            </app-color-picker>
-                        </div>
-                    </div>
+                            </mat-select> -->
+                    <!-- <mat-form-field appearance="outline"> -->
+                    Pattern :<br>
+                    <mat-select [(ngModel)]="fillProps.style" class="matSelect"
+                        (selectionChange)="changeGraphicsStyle()">
+                        <mat-select-trigger>
+                            <svg-icon *ngIf="fillProps.style !== 'none'"
+                                [src]="'assets/icons/symbols-sfs-'+fillProps.style+'.svg'" [svgStyle]="fillSvgStyle">
+                            </svg-icon>
+                            <span *ngIf="fillProps.style === 'none'">None</span>
+                        </mat-select-trigger>
+                        <mat-option *ngFor="let style of fillStyles" [value]="style">
+                            <span *ngIf="style === 'none'">None</span>
+                            <svg-icon *ngIf="style !== 'none'" [src]="'assets/icons/symbols-sfs-'+style+'.svg'"
+                                [svgStyle]="fillSvgStyle">
+                            </svg-icon>
 
-                </fieldset>
+                        </mat-option>
+                    </mat-select>
+                    <!-- </mat-form-field> -->
+
+                </div>
+                <div>
+                    <app-color-picker [color]="fillProps.color" [opacity]="fillProps.opacity"
+                        (colorSelected)="changeFillColor($event)">
+                    </app-color-picker>
+                </div>
+            </div>
+
+        </fieldset>
     </div>
     <!-- <div style="background: red; color:white">Works almost. not perfect !!!. Wait a day or so</div> -->
 </mat-expansion-panel>

@@ -84,4 +84,5 @@ body {
 }
 .mat-select-panel {
   background-color: white;
+  min-width: calc(100% - 50px) !important;
 }
