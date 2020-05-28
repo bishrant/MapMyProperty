@@ -1,5 +1,5 @@
 import { CreatePolygonSymbol } from './GraphicStyles';
-import { CreateCircleWithGeometry, CreateCircleFromPoint } from './SketchViewModelUitls';
+import { CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon } from './SketchViewModelUitls';
 const id = (): string => Math.random().toString(36).substr(2, 9);
 
 const CreateCircleFromGraphic = (graphic: any, lineProps: any, fillProps: any) => {
@@ -8,7 +8,7 @@ const CreateCircleFromGraphic = (graphic: any, lineProps: any, fillProps: any) =
   circleJSON.toJSON = undefined;
   circleJSON.geometry = CreateCircleWithGeometry(graphic).asJSON();
   circleJSON.attributes.radius = circleJSON.geometry.radius;
-  return [circleJSON];
+  return circleJSON;
 };
 
 const CreatePolygonGraphicWithSymbology = (graphic: any, lineProps: any, fillProps: any) => {
@@ -17,6 +17,18 @@ const CreatePolygonGraphicWithSymbology = (graphic: any, lineProps: any, fillPro
   graphic.symbol.outline.color = _symbol.outline.color;
   graphic.attributes.symbol = _symbol;
   return graphic;
+};
+
+const CreatePolygonFromGraphic = (graphic: any, linePrrops: any, fillProps: any) => {
+  let polygonJSON = graphic.toJSON();
+  polygonJSON.symbol = CreatePolygonSymbol(linePrrops, fillProps);
+  polygonJSON.attributes.symbol = polygonJSON.symbol;
+  polygonJSON.toJSON = undefined;
+  polygonJSON.geometry = new TFSPolygon({
+    rings: graphic.geometry.rings,
+    spatialReference: graphic.geometry.spatialReference,
+  }).asJSON();
+  return polygonJSON;
 };
 
 const CreateCircleFromEvent = (evt: any, lineProps: any, fillProps: any) => {
@@ -37,4 +49,10 @@ const CreatecircleFromPoint = (evt: any, radius: number, lineProps: any, fillPro
   _g.attributes.radius = _g.geometry.radius;
   return _g;
 };
-export { CreateCircleFromGraphic, CreatecircleFromPoint, CreatePolygonGraphicWithSymbology, CreateCircleFromEvent };
+export {
+  CreateCircleFromGraphic,
+  CreatePolygonFromGraphic,
+  CreatecircleFromPoint,
+  CreatePolygonGraphicWithSymbology,
+  CreateCircleFromEvent,
+};

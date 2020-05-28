@@ -12,7 +12,7 @@
                 <mat-button-toggle value="circle" aria-label="Circle" class="toggleBtn">
                     <mat-icon>radio_button_unchecked</mat-icon>
                 </mat-button-toggle>
-                <mat-button-toggle value="line" aria-label="Line" class="toggleBtn">
+                <mat-button-toggle value="polyline" aria-label="Line" class="toggleBtn">
                     <mat-icon>show_chart</mat-icon>
                 </mat-button-toggle>
                 <mat-button-toggle value="polygon" aria-label="Polygon" class="toggleBtn">
@@ -86,7 +86,7 @@
                 </div>
                 <div>
                     <app-color-picker [color]="lineProps.color" [opacity]="lineProps.opacity"
-                        (colorSelected)="changeColor($event)">
+                        (colorSelected)="changeLineColor($event)">
                     </app-color-picker>
                 </div>
             </div>
@@ -97,7 +97,6 @@
                 </mat-slider> &nbsp;10
             </div>
         </fieldset>
-
         <fieldset>
             <legend>Fill Style</legend>
 
@@ -107,26 +106,6 @@
             </button>
             <div style="display: flex;">
                 <div style="flex-grow: 1;">
-
-
-                    <!-- <mat-select [(ngModel)]="fillProps.style" class="matSelect" (selectionChange)="changeGraphicsStyle()">
-                                <mat-select-trigger>
-                                    <svg-icon *ngIf="lineProps.style !== 'none'"
-                                        [src]="'assets/icons/symbols-sls-'+lineProps.style+'.svg'" [svgStyle]="lineSvgStyle">
-                                    </svg-icon> 
-                                   
-                                        {{fillProps.style}}
-                                   
-                                </mat-select-trigger>
-                                <mat-option *ngFor="let style of fillStyles" [value]="style">
-                                    <svg-icon *ngIf="style.value !== 'none'" [src]="'assets/icons/symbols-sls-'+style.value+'.svg'"
-                                        [svgStyle]="lineSvgStyle">
-                                    </svg-icon>
-                                    <span *ngIf="style.value === 'none'">None</span> 
-                                    <span>{{style}}</span>
-                                </mat-option>
-                            </mat-select> -->
-                    <!-- <mat-form-field appearance="outline"> -->
                     Pattern :<br>
                     <mat-select [(ngModel)]="fillProps.style" class="matSelect"
                         (selectionChange)="changeGraphicsStyle()">
@@ -144,8 +123,6 @@
 
                         </mat-option>
                     </mat-select>
-                    <!-- </mat-form-field> -->
-
                 </div>
                 <div>
                     <app-color-picker [color]="fillProps.color" [opacity]="fillProps.opacity"
