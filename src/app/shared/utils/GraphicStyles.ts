@@ -38,7 +38,6 @@ const CheckIfColorIsHollowRGBA = (c) => {
   return c.r === 0 && c.a === 0 && c.g === 0 && c.b === 0;
 }
 const CreatePolygonSymbol = (outline: any, fill: any) => {
-  // console.log(outline, fill)
     return {
       type: 'simple-fill',
       color: fill.color,
@@ -52,7 +51,6 @@ const CreatePolygonSymbol = (outline: any, fill: any) => {
 }
 
 const CreatePolylineSymbol = (outline: any) => {
-  // console.log(outline, fill)
   return {
     type: 'simple-line',
     color: outline.color,

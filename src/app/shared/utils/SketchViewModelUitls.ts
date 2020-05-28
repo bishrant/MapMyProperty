@@ -6,6 +6,7 @@ import { emptyPoint, bluePolygon } from './Renderers';
 import Circle from 'esri/geometry/Circle';
 import geometryEngine from 'esri/geometry/geometryEngine';
 import { subclass, declared } from 'esri/core/accessorSupport/decorators';
+import { Polygon } from 'esri/geometry';
 
 @subclass('esri.geometry.Circle')
 class TFSCircle extends declared(Circle) {
@@ -15,7 +16,23 @@ class TFSCircle extends declared(Circle) {
     cc.extent = this.extent;
     cc.type = this.type;
     cc.radius = this.radius;
+    cc.spatialReference = this.spatialReference;
     // need to reset toJSON method so that it doesnot interfer with JSON.stringify
+    cc.toJSON = undefined;
+    return cc;
+  }
+}
+
+@subclass('esri.geometry.Polygon')
+class TFSPolygon extends declared(Polygon) {
+  public asJSON() {
+    const cc = this.toJSON();
+    cc.extent = this.extent;
+    cc.type = this.type;
+    cc.spatialReference = this.spatialReference;
+    cc.rings = this.rings;
+    cc.hasM = this.hasM;
+    cc.hasZ = this.hasZ;
     cc.toJSON = undefined;
     return cc;
   }
@@ -60,4 +77,4 @@ const CreateCircleFromPoint = (pointGeom: any, radius: number) => {
   });
   return c;
 };
-export { SetupSketchViewModel, CreateCircleWithGeometry, CreateCircleFromPoint };
+export { SetupSketchViewModel, CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon };

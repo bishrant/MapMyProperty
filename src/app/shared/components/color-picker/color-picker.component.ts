@@ -17,20 +17,26 @@ export class ColorPickerComponent {
 
   constructor(public colorsPopoverService: ColorsPopoverService, private viewContainerRef: ViewContainerRef) {}
 
+  unsubscribeFromObservable = (colorObervable$) => {
+    colorObervable$.unsubscribe();
+  }
   openColorSelector(origin: any) {
     const componentPortal = new ComponentPortal(ColorPickerPopoverComponent, this.viewContainerRef);
-    this.colorsPopoverService
-      .open(origin, componentPortal, { color: RGBObjectToHex(this.color), opacity: this.opacity })
-      .subscribe((colorInfo) => {
-        if (colorInfo) {
-          //convert hex to rgb
-          this.color = colorInfo.color;
-          this.opacity = colorInfo.opacity;
-          if (colorInfo.closePopup) {
-            this.colorSelected.emit(this.ConvertColorToRGBA(this.color, this.opacity));
-          }
-        }
-      });
+    const colorsPopoverService$ = this.colorsPopoverService
+      .open(origin, componentPortal, { color: RGBObjectToHex(this.color), opacity: this.opacity });
+
+     const colorObervable$ = colorsPopoverService$.subscribe((colorInfo) => {
+       if (colorInfo) {
+         //convert hex to rgb
+         this.color = colorInfo.color;
+         this.opacity = colorInfo.opacity;
+         if (colorInfo.closePopup) {
+           this.colorSelected.emit(this.ConvertColorToRGBA(this.color, this.opacity));
+         }
+         // Needed to fix #52 
+         this.unsubscribeFromObservable(colorObervable$);
+       }
+     });
   }
 
   GetCircleColor = (_color) => {

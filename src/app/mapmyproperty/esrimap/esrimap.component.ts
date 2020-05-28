@@ -8,6 +8,7 @@ import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import createMapView from 'src/app/shared/utils/CreateMapView';
 import E = __esri;
+import Geometry = require('esri/geometry/Geometry');
 
 @Component({
   selector: 'app-esrimap',
@@ -72,7 +73,7 @@ export class EsrimapComponent implements OnInit {
       if (g.length > 0) {
         const graphicsArray = g.map((_g) => {
           let gr = JSON.parse(_g);
-          return gr.attributes.geometryType === 'circle' ? new Graphic(gr) : Graphic.fromJSON(gr);
+          return gr.attributes.geometryType === 'circle' ? new Graphic(gr) : new Graphic(gr);
         });
         this.polygonGraphicsLayer.graphics = graphicsArray;
       } else {
