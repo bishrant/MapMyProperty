@@ -1,4 +1,6 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { MapView } from 'arcgis-js-api/views/MapView';
+import { id } from './../../shared/store/todo';
+import { Component, ElementRef, HostListener, OnInit, ViewChild, Renderer2 } from '@angular/core';
 import { CreatePolygonGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
 import Graphic from 'esri/Graphic';
 import { AppState } from 'src/app/shared/store/graphics.state';
@@ -21,7 +23,8 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('graphicsStore', { static: true })
   private graphicsStoreEl!: GraphicsStoreComponent;
   private graphicsSubcription$: any;
-  mapView!: E.MapView;
+  mapView!: E.MapView // = createMapView(this.mapViewEl, this.searchBarDiv);
+  clickToAddText = false;
   sketchVM: any = new SketchViewModel();
   selectedGraphics!: any[] | undefined;
   mapCoords: any;
@@ -73,7 +76,7 @@ export class EsrimapComponent implements OnInit {
       if (g.length > 0) {
         const graphicsArray = g.map((_g) => {
           let gr = JSON.parse(_g);
-          return gr.attributes.geometryType === 'circle' ? new Graphic(gr) : new Graphic(gr);
+          return gr.attributes.geometryType === 'text' ?  Graphic.fromJSON(gr): new Graphic(gr);
         });
         this.polygonGraphicsLayer.graphics = graphicsArray;
       } else {
