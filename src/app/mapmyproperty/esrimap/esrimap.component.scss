@@ -7,6 +7,7 @@ $accent: mat-color($mmp-accent);
 
 .headerRow {
   background-color: $translucent;
+  display: flex;
 }
 .secondary {
   background-color: $accent;
