@@ -1,8 +1,7 @@
-import { selectGraphicsArray } from './store.selector';
 import { updateGraphics, addGraphics } from '../../store/graphics.actions';
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { AppState } from 'src/app/shared/store/graphics.state';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { RGBObjectToHex, RGBObjectToHexA } from 'src/app/shared/utils/Colors';
 import { take } from 'rxjs/operators';
 import {
@@ -11,9 +10,10 @@ import {
   CreatecircleFromPoint,
   CreateCircleFromGraphic,
   CreatePolygonFromGraphic,
+  CreatePolylineFromGraphic,
 } from 'src/app/shared/utils/DrawUtils';
 import { LineStyles, FillStyles, CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
-import { CreateCircleFromPoint, CreateCircleWithGeometry, TFSPolygon } from 'src/app/shared/utils/SketchViewModelUitls';
+import { CreateCircleFromPoint, } from 'src/app/shared/utils/SketchViewModelUitls';
 import { LineProps, FillProps } from './DrawTools.interface';
 import { equals } from 'esri/geometry/geometryEngine';
 
@@ -87,6 +87,8 @@ export class DrawtoolsComponent implements OnInit {
       }
       if (_geomType === 'polygon') {
         geomJSON = CreatePolygonFromGraphic(this.selectedGraphics[0], this.lineProps, this.fillProps);
+      } else if (_geomType === 'polyline') {
+        geomJSON = CreatePolylineFromGraphic(this.selectedGraphics[0], this.lineProps);
       }
 
       this.store.dispatch(updateGraphics({ graphics: JSON.stringify([geomJSON]) }));
@@ -112,7 +114,7 @@ export class DrawtoolsComponent implements OnInit {
           if (evt.tool === 'polygon') {
             createdGraphic = CreatePolygonFromGraphic(createdGraphic, this.lineProps, this.fillProps);
           } else {
-            createdGraphic = createdGraphic.toJSON();
+            createdGraphic = CreatePolylineFromGraphic(createdGraphic, this.lineProps);
           }
         }
         if (this.sketchVM.createCircleFromPoint) {
@@ -140,7 +142,9 @@ export class DrawtoolsComponent implements OnInit {
          if (_updatedGraphics[0].attributes.geometryType === 'polygon') {
            _updatedGraphics = [CreatePolygonFromGraphic(gg.graphics[0], this.lineProps, this.fillProps)];
          }
-
+         if (_updatedGraphics[0].attributes.geometryType === 'polyline') {
+           _updatedGraphics = [CreatePolylineFromGraphic(gg.graphics[0], this.lineProps)];
+         }
         const graphicsStore$ = this.store.select((state) => state.app.graphics);
         graphicsStore$.pipe(take(1)).subscribe((graphics) => {
           if (graphics.length < 1) return;

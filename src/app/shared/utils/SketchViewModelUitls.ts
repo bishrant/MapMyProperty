@@ -6,7 +6,7 @@ import { emptyPoint, bluePolygon } from './Renderers';
 import Circle from 'esri/geometry/Circle';
 import geometryEngine from 'esri/geometry/geometryEngine';
 import { subclass, declared } from 'esri/core/accessorSupport/decorators';
-import { Polygon } from 'esri/geometry';
+import { Polygon, Polyline } from 'esri/geometry';
 
 @subclass('esri.geometry.Circle')
 class TFSCircle extends declared(Circle) {
@@ -33,6 +33,20 @@ class TFSPolygon extends declared(Polygon) {
     cc.rings = this.rings;
     cc.hasM = this.hasM;
     cc.hasZ = this.hasZ;
+    cc.toJSON = undefined;
+    return cc;
+  }
+}
+
+@subclass('esri.geometry.Polyline')
+class TFSPolyline extends declared(Polyline) {
+  public asJSON() {
+    const cc = this.toJSON();
+    cc.extent = this.extent;
+    cc.type = this.type;
+    cc.spatialReference = this.spatialReference;
+    cc.paths = this.paths;
+   
     cc.toJSON = undefined;
     return cc;
   }
@@ -77,4 +91,4 @@ const CreateCircleFromPoint = (pointGeom: any, radius: number) => {
   });
   return c;
 };
-export { SetupSketchViewModel, CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon };
+export { SetupSketchViewModel, CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon, TFSPolyline };
