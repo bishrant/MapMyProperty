@@ -1,5 +1,5 @@
-import { CreatePolygonSymbol } from './GraphicStyles';
-import { CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon } from './SketchViewModelUitls';
+import { CreatePolygonSymbol, CreatePolylineSymbol } from './GraphicStyles';
+import { CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon, TFSPolyline } from './SketchViewModelUitls';
 const id = (): string => Math.random().toString(36).substr(2, 9);
 
 const CreateCircleFromGraphic = (graphic: any, lineProps: any, fillProps: any) => {
@@ -19,9 +19,9 @@ const CreatePolygonGraphicWithSymbology = (graphic: any, lineProps: any, fillPro
   return graphic;
 };
 
-const CreatePolygonFromGraphic = (graphic: any, linePrrops: any, fillProps: any) => {
+const CreatePolygonFromGraphic = (graphic: any, lineProps: any, fillProps: any) => {
   let polygonJSON = graphic.toJSON();
-  polygonJSON.symbol = CreatePolygonSymbol(linePrrops, fillProps);
+  polygonJSON.symbol = CreatePolygonSymbol(lineProps, fillProps);
   polygonJSON.attributes.symbol = polygonJSON.symbol;
   polygonJSON.toJSON = undefined;
   polygonJSON.geometry = new TFSPolygon({
@@ -29,6 +29,18 @@ const CreatePolygonFromGraphic = (graphic: any, linePrrops: any, fillProps: any)
     spatialReference: graphic.geometry.spatialReference,
   }).asJSON();
   return polygonJSON;
+};
+
+const CreatePolylineFromGraphic = (graphic: any, lineProps: any) => {
+  let polylineJSON = graphic.toJSON();
+  polylineJSON.symbol = CreatePolylineSymbol(lineProps);
+  polylineJSON.attributes.symbol = polylineJSON.symbol;
+  polylineJSON.toJSON = undefined;
+  polylineJSON.geometry = new TFSPolyline({
+    paths: graphic.geometry.paths,
+    spatialReference: graphic.geometry.spatialReference,
+  }).asJSON();
+  return polylineJSON;
 };
 
 const CreateCircleFromEvent = (evt: any, lineProps: any, fillProps: any) => {
@@ -52,6 +64,7 @@ const CreatecircleFromPoint = (evt: any, radius: number, lineProps: any, fillPro
 export {
   CreateCircleFromGraphic,
   CreatePolygonFromGraphic,
+  CreatePolylineFromGraphic,
   CreatecircleFromPoint,
   CreatePolygonGraphicWithSymbology,
   CreateCircleFromEvent,
