@@ -39,6 +39,17 @@ export class DrawtoolsComponent implements OnInit {
     style: 'solid',
     opacity: 50,
   };
+
+  fontProps: any = {
+      size: 12,
+      weight: 'normal',
+      decoration: 'none',
+      style: 'none'
+  }
+  textProps: any = {
+    color: { r: 100, g: 20, b: 5, a: 1 },
+    font: this.fontProps 
+  }
   lineSvgStyle = {
     'width.px': 150,
     fill: RGBObjectToHex(this.lineProps.color),
@@ -52,6 +63,7 @@ export class DrawtoolsComponent implements OnInit {
   radius: number;
   drawingMode: string = 'click';
   drawingTool: string = '';
+  bold:boolean = true;
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
   @ViewChild('radiusInput') radiusElmRef: ElementRef;
   constructor(private store: Store<AppState>, private renderer: Renderer2) {}
@@ -74,13 +86,9 @@ export class DrawtoolsComponent implements OnInit {
       haloColor: 'black',
       haloSize: '1px',
       text: 'test',
-      xoffset: 3,
-      yoffset: 3,
-      font: {
-        // autocasts as new Font()
-        size: 12,
-        weight: 'bold',
-      },
+      xoffset: 0,
+      yoffset: 0,
+      font: this.textProps.font
     };
 
   setLineSVGStyle = () => {
@@ -147,6 +155,7 @@ export class DrawtoolsComponent implements OnInit {
       const width = 200;
       const inputId = id();
       const input = this.renderer.createElement('input');
+      this.renderer.addClass(input, 'mapTextInput');
       input.setAttribute('id', inputId);
       input.setAttribute('mapX', mapEvt.mapPoint.x);
       input.setAttribute('mapY', mapEvt.mapPoint.y);
@@ -383,4 +392,9 @@ export class DrawtoolsComponent implements OnInit {
       this.startDrawingGraphics(this.drawingTool);
     }
   };
+
+  changeFontWeight = ($evt) => {
+    let _evtValue = $evt.source.value;
+    // if (_evtValue === '')
+  }
 }

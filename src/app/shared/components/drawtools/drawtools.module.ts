@@ -15,6 +15,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ToggleButtonModule } from '../togglebutton/togglebutton';
 
 @NgModule({
   declarations: [DrawtoolsComponent, RGBtoHEX],
@@ -33,6 +34,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatInputModule,
     MatButtonToggleModule,
     MatTooltipModule,
+    ToggleButtonModule
   ],
   exports: [DrawtoolsComponent],
 })
