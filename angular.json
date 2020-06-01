@@ -50,11 +50,6 @@
                 "input": "src/app/shared/styles/themes/dmr.theme.scss",
                 "lazy": true,
                 "bundleName": "dmr-theme"
-              },
-              {
-                "input": "src/app/shared/styles/themes/pmlo.theme.scss",
-                "lazy": true,
-                "bundleName": "pmlo-theme"
               }
             ],
             "scripts": []

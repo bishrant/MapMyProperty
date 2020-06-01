@@ -1,0 +1,36 @@
+@import url('https://js.arcgis.com/4.15/esri/css/main.css');
+@import 'src/app/shared/styles/BodyFrame.scss';
+@import 'src/app/shared/styles/palettes/pmlo.theme.palette.scss';
+
+$translucent: mat-color($pmlo-primary, translucent);
+$accent: mat-color($pmlo-accent);
+
+.headerRow {
+  background-color: $translucent;
+}
+.secondary {
+  background-color: $accent;
+}
+.sidebarBlanket {
+  background-color: $translucent;
+}
+
+.sidebar {
+  background-color: $accent;
+  overflow-y: auto;
+}
+.translucentPadding {
+  background-color: $translucent;
+}
+
+.headerBlanket {
+  background-color: $translucent;
+}
+
+.translucentPadding {
+  background-color: $translucent;
+}
+
+.headerBlanket {
+  background-color: $translucent;
+}
