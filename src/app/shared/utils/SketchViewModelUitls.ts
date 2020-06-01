@@ -2,11 +2,11 @@
 /// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
 import MapView from 'arcgis-js-api/views/MapView';
 import SketchViewModel from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
-import { emptyPoint, hollowPolygon, bluePolygon } from '../../shared/maputils/Renderers';
+import { emptyPoint, bluePolygon } from './Renderers';
 import Circle from 'esri/geometry/Circle';
 import geometryEngine from 'esri/geometry/geometryEngine';
-import Accessor from 'esri/core/Accessor';
 import { subclass, declared } from 'esri/core/accessorSupport/decorators';
+import { Polygon, Polyline } from 'esri/geometry';
 
 @subclass('esri.geometry.Circle')
 class TFSCircle extends declared(Circle) {
@@ -16,14 +16,41 @@ class TFSCircle extends declared(Circle) {
     cc.extent = this.extent;
     cc.type = this.type;
     cc.radius = this.radius;
+    cc.spatialReference = this.spatialReference;
     // need to reset toJSON method so that it doesnot interfer with JSON.stringify
     cc.toJSON = undefined;
     return cc;
   }
 }
 
+@subclass('esri.geometry.Polygon')
+class TFSPolygon extends declared(Polygon) {
+  public asJSON() {
+    const cc = this.toJSON();
+    cc.extent = this.extent;
+    cc.type = this.type;
+    cc.spatialReference = this.spatialReference;
+    cc.rings = this.rings;
+    cc.hasM = this.hasM;
+    cc.hasZ = this.hasZ;
+    cc.toJSON = undefined;
+    return cc;
+  }
+}
 
-
+@subclass('esri.geometry.Polyline')
+class TFSPolyline extends declared(Polyline) {
+  public asJSON() {
+    const cc = this.toJSON();
+    cc.extent = this.extent;
+    cc.type = this.type;
+    cc.spatialReference = this.spatialReference;
+    cc.paths = this.paths;
+   
+    cc.toJSON = undefined;
+    return cc;
+  }
+}
 
 const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): __esri.SketchViewModel => {
   return new SketchViewModel({
@@ -47,7 +74,7 @@ const CreateCircleWithGeometry = (originalGraphic: any) => {
   // calculate area to get the radius
   const _area = geometryEngine.planarArea(originalGraphic.geometry, 'square-miles');
   const polygonRadius = Math.sqrt(_area / Math.PI);
-  const rr = Math.round((polygonRadius + Number.EPSILON) * 10 / 10)
+  const rr = Math.round(((polygonRadius + Number.EPSILON) * 10) / 10);
   const c = new TFSCircle({
     center: originalGraphic.geometry.centroid,
     radius: rr,
@@ -64,4 +91,4 @@ const CreateCircleFromPoint = (pointGeom: any, radius: number) => {
   });
   return c;
 };
-export { SetupSketchViewModel, CreateCircleWithGeometry, CreateCircleFromPoint };
+export { SetupSketchViewModel, CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon, TFSPolyline };

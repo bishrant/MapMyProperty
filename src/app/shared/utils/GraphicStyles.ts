@@ -1,17 +1,30 @@
-const LineStyles = {
-  esriSLSSolid: 'solid',
-  esriSLSDash: 'dash',
-  esriSLSShortDot: 'short-dot',
-  esriSLSDot: 'dot',
-  esriSLSDashDot: 'dash-dot',
-  esriSLSShortDashDotDot: 'short-dash-dot-dot',
-  esriSLSLongDash: 'long-dash',
-  esriSLSLongDashDot: 'long-dash-dot',
-  esriSLSShortDash: 'short-dash',
-  // esriSLSDashDotDot: "dash-dot-dot",
-  esriSLSShortDashDot: 'short-dash-dot',
-  esriSLSNull: 'none'
-};
+const LineStyles = [
+  'none',
+  'solid',
+   'dash',
+ 'short-dot',
+ 'dot',
+  'dash-dot',
+ 'short-dash-dot-dot',
+  'long-dash',
+  'long-dash-dot',
+  'short-dash',
+  'short-dash-dot',
+
+]
+
+
+const FillStyles = [
+  'none',
+   'solid',
+  'forward-diagonal',
+  'backward-diagonal',
+  'cross',
+  'diagonal-cross',
+  'vertical',
+  'horizontal'
+];
+
 
 const CheckIfColorIsHollow = (RGBAarray) => {
   if (RGBAarray.length === 4) {
@@ -25,7 +38,6 @@ const CheckIfColorIsHollowRGBA = (c) => {
   return c.r === 0 && c.a === 0 && c.g === 0 && c.b === 0;
 }
 const CreatePolygonSymbol = (outline: any, fill: any) => {
-  // console.log(outline, fill)
     return {
       type: 'simple-fill',
       color: fill.color,
@@ -39,7 +51,6 @@ const CreatePolygonSymbol = (outline: any, fill: any) => {
 }
 
 const CreatePolylineSymbol = (outline: any) => {
-  // console.log(outline, fill)
   return {
     type: 'simple-line',
     color: outline.color,
@@ -89,6 +100,7 @@ const ColorSwatch = [
 ];
 export {
   LineStyles,
+  FillStyles,
   ColorSwatch,
   CheckIfColorIsHollow,
   CreateLineSymbol,

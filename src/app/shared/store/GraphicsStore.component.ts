@@ -1,6 +1,6 @@
 import { Component, Input, HostListener } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { GraphicsState } from './graphics.state';
+import { AppState } from './graphics.state';
 import { removeGraphics, removeAllGraphics } from './graphics.actions';
 
 @Component({
@@ -14,7 +14,7 @@ export class GraphicsStoreComponent {
   // readonly graphics$ = this.store.select(state => state.app.graphics);
   readonly disableUndo$ = this.store.select((state) => !state.app.canUndo);
   readonly disableRedo$ = this.store.select((state) => !state.app.canRedo);
-  constructor(private readonly store: Store<GraphicsState>) {}
+  constructor(private readonly store: Store<AppState>) {}
 
   undo(): void {
     this.sketchVM.undo();

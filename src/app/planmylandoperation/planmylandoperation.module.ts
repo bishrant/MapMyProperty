@@ -1,17 +1,10 @@
-import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Routes, RouterModule } from '@angular/router';
-
-import { PmloComponent } from './pmlo/pmlo.component';
-import { HeaderModule } from '../shared/components/header/header.module';
-import { EsrimapComponent } from './esrimap/esrimap.component';
-import { DrawtoolsModule } from '../shared/modules/drawtools/drawtools.module';
-import { SidebarModule } from '../mapmyproperty/sidebar/sidebar.module';
-import { GraphicsStoreModule } from '../shared/store/GraphicsStore.module';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { HeaderModule } from 'src/app/shared/components/header/header.module';
+import { PmloComponent } from './pmlo/pmlo.component';
+import { NgModule } from '@angular/core';
+import { EsriMapModule } from './esrimap/esrimap.module';
 
 const routes: Routes = [
   {
@@ -21,19 +14,13 @@ const routes: Routes = [
 ];
 @NgModule({
   declarations: [
-    PmloComponent,
-    EsrimapComponent],
+    PmloComponent],
   imports: [
     CommonModule,
+    EsriMapModule,
     RouterModule.forChild(routes),
-    MatIconModule,
-    MatButtonModule,
-    MatTooltipModule,
     FlexLayoutModule,
-    GraphicsStoreModule,
-    HeaderModule,
-    DrawtoolsModule,
-    SidebarModule,
+    HeaderModule
   ]
 })
 export class PlanmylandoperationModule { }

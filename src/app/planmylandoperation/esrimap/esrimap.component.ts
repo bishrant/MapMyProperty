@@ -1,12 +1,12 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
-import { CreatePolygonGraphicsLayer } from 'src/app/shared/maputils/CreateGraphicsLayer';
+import { Component, ElementRef, HostListener, OnInit, ViewChild, Renderer2 } from '@angular/core';
+import { CreatePolygonGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
 import Graphic from 'esri/Graphic';
-import { GraphicsState } from 'src/app/shared/store/graphics.state';
+import { AppState } from 'src/app/shared/store/graphics.state';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
-import { SetupSketchViewModel } from 'src/app/shared/maputils/SketchViewModelUitls';
+import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
-import createMapView from 'src/app/shared/maputils/CreateMapView';
+import createMapView from 'src/app/shared/utils/CreateMapView';
 import E = __esri;
 
 @Component({
@@ -21,14 +21,14 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('graphicsStore', { static: true })
   private graphicsStoreEl!: GraphicsStoreComponent;
   private graphicsSubcription$: any;
-  mapView!: E.MapView;
+  mapView!: E.MapView // = createMapView(this.mapViewEl, this.searchBarDiv);
+  clickToAddText = false;
   sketchVM: any = new SketchViewModel();
   selectedGraphics!: any[] | undefined;
   mapCoords: any;
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
-  constructor(private store: Store<GraphicsState>) {}
-  @Input('se') se!: ElementRef;
+  constructor(private store: Store<AppState>) {}
   @HostListener('keydown.control.z') undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
@@ -73,14 +73,8 @@ export class EsrimapComponent implements OnInit {
     return this.graphics$.subscribe((g: any) => {
       if (g.length > 0) {
         const graphicsArray = g.map((_g) => {
-          let geom = JSON.parse(_g);
-          if (geom.attributes.geometryType === 'circle') {
-          const __g = JSON.parse(_g);
-          return new Graphic(__g);
-          } else {
-            return Graphic.fromJSON(geom);
-          }
-
+          let gr = JSON.parse(_g);
+          return gr.attributes.geometryType === 'text' ?  Graphic.fromJSON(gr): new Graphic(gr);
         });
         this.polygonGraphicsLayer.graphics = graphicsArray;
       } else {
