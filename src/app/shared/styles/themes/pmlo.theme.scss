@@ -1,9 +1,24 @@
-@import '~@angular/material/theming';
-// @import "./theme-base";
+@import '../palettes/pmlo.theme.palette.scss';
+@include mat-core();
+@import '../functions';
+@import '../_variables';
+@import '../layout';
 
-$primary: mat-palette($mat-blue-grey);
-$accent: mat-palette($mat-purple, A200, A100, A400);
-$warn: mat-palette($mat-deep-orange);
-$theme: mat-dark-theme($primary, $accent, $warn);
+$pmlo-light-theme: mat-light-theme($pmlo-primary, $pmlo-accent, $pmlo-warn);
+$pmlo-foreground: my-mat-theme-foreground(mat-color($pmlo-primary, 700));
 
-// @include theming($theme);
+$pmlo-theme: map-merge(
+  $pmlo-light-theme,
+  (
+    foreground: $pmlo-foreground,
+  )
+);
+
+.pmlo-theme {
+  .mat-expansion-panel-header {
+    background-color: mat-color($pmlo-primary, 900) !important;
+    color: white !important;
+  }
+
+  @include angular-material-theme($pmlo-theme);
+}
