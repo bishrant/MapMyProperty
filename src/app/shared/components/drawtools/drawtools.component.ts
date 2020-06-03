@@ -18,6 +18,9 @@ import { LineProps, FillProps } from './DrawTools.interface';
 import { equals } from 'esri/geometry/geometryEngine';
 import Graphic from 'esri/Graphic';
 import { id } from '../../store/todo';
+import { dragElement } from './drag';
+import { createInput } from './TextUtils';
+import { id } from '../../store/todo';
 
 @Component({
   selector: 'app-drawtools',
@@ -41,15 +44,15 @@ export class DrawtoolsComponent implements OnInit {
   };
 
   fontProps: any = {
-      size: 12,
-      weight: 'normal',
-      decoration: 'none',
-      style: 'none'
-  }
+    size: 12,
+    weight: 'normal',
+    decoration: 'none',
+    style: 'none',
+  };
   textProps: any = {
     color: { r: 100, g: 20, b: 5, a: 1 },
-    font: this.fontProps 
-  }
+    font: this.fontProps,
+  };
   lineSvgStyle = {
     'width.px': 150,
     fill: RGBObjectToHex(this.lineProps.color),
@@ -63,7 +66,7 @@ export class DrawtoolsComponent implements OnInit {
   radius: number;
   drawingMode: string = 'click';
   drawingTool: string = '';
-  bold:boolean = true;
+  bold: boolean = true;
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
   @ViewChild('radiusInput') radiusElmRef: ElementRef;
   constructor(private store: Store<AppState>, private renderer: Renderer2) {}
@@ -80,16 +83,16 @@ export class DrawtoolsComponent implements OnInit {
     },
   };
 
-    _textSymbol = {
-      type: 'text', // autocasts as new TextSymbol()
-      color: 'white',
-      haloColor: 'black',
-      haloSize: '1px',
-      text: 'test',
-      xoffset: 0,
-      yoffset: 0,
-      font: this.textProps.font
-    };
+  _textSymbol = {
+    type: 'text', // autocasts as new TextSymbol()Tex
+    color: 'white',
+    haloColor: 'black',
+    haloSize: '1px',
+    text: 'test',
+    xoffset: 0,
+    yoffset: 0,
+    font: this.textProps.font,
+  };
 
   setLineSVGStyle = () => {
     this.lineSvgStyle.fill = RGBObjectToHex(this.lineProps.color);
@@ -149,21 +152,11 @@ export class DrawtoolsComponent implements OnInit {
     console.log(targetElement, mapX);
   };
 
+  
   private ClickToAddTextbox = () => {
     let clickHandler = this.mapView.on('click', (mapEvt: any) => {
-      console.log(mapEvt);
-      const width = 200;
-      const inputId = id();
-      const input = this.renderer.createElement('input');
-      this.renderer.addClass(input, 'mapTextInput');
-      input.setAttribute('id', inputId);
-      input.setAttribute('mapX', mapEvt.mapPoint.x);
-      input.setAttribute('mapY', mapEvt.mapPoint.y);
-      this.renderer.setStyle(input, 'position', 'absolute');
-      this.renderer.setStyle(input, 'width', '200px');
-      this.renderer.setStyle(input, 'left', mapEvt.x - width / 2 + 'px');
-      this.renderer.setStyle(input, 'top', mapEvt.y + 'px');
-      this.renderer.setStyle(input, 'z-index', 1000000000);
+      const input = createInput(this.renderer, mapEvt, false, id()); // this.renderer.createElement('input');
+     
       // let windowListener = this.renderer.listen('window', 'click', (e: Event) => {
       //   const ii = document.getElementById(inputId);
       //   if (e.target === ii) {
@@ -246,10 +239,16 @@ export class DrawtoolsComponent implements OnInit {
     this.sketchVM.on('update', (gg: any) => {
       console.log(gg);
 
-      
-      this.sketchVM.pointSymbol = this.textStyle;
+      // this.sketchVM.pointSymbol = this.textStyle;
       if (gg.state === 'cancel' || gg.aborted) {
         this.selectedGraphics = undefined;
+        return;
+      }
+      if (gg.graphics[0].attributes.geometryType === 'text') {
+        this.editMapText(gg.graphics[0]);
+        // this.selectedGraphics = gg.graphics[0];
+        this.sketchVM.cancel();
+        this.sketchVM.complete();
         return;
       }
       if (gg.state === 'start' || gg.state === 'active') {
@@ -258,6 +257,7 @@ export class DrawtoolsComponent implements OnInit {
         _temp.symbol = _temp.attributes.symbol;
         this.mapView.graphics.add(_temp);
         this.selectedGraphics = gg.graphics;
+        dragElement('mydiv', 'parent');
         this.selectedGraphicsChanged();
       } else if (gg.state === 'complete') {
         this.mapView.graphics.removeAll();
@@ -291,6 +291,9 @@ export class DrawtoolsComponent implements OnInit {
     });
   };
 
+  editMapText = (graphic: any) => {
+    console.log('need to edit this');
+  };
   updateCircleRadius = () => {
     if (this.selectedGraphics.length > 0) {
       let circleJSON = this.selectedGraphics[0].toJSON();
@@ -396,5 +399,5 @@ export class DrawtoolsComponent implements OnInit {
   changeFontWeight = ($evt) => {
     let _evtValue = $evt.source.value;
     // if (_evtValue === '')
-  }
+  };
 }

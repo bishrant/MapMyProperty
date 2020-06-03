@@ -53,10 +53,10 @@ fieldset {
   width: 80%;
 }
 
-.mapTextInput:focus {
+.mapTextInput input:focus {
   border: 2px solid cyan !important;
 }
-.mapTextInput {
+.mapTextInput input {
   text-align: center;
   background: rgba(255, 255, 255, 0.7);
   line-height: 30px;

@@ -17,10 +17,12 @@
         </div>
     </div>
     <div class="translucentPadding mapViewNodeBlanket">
-        <div #mapViewNode class="mapViewNode ">
+        <div #mapViewNode class="mapViewNode " id="parent">
             <div id="textboxes">
 
             </div>
+
+
         </div>
         <app-graphic-store #graphicsStore [sketchVM]="sketchVM" 
         [selectedGraphics]="selectedGraphics"

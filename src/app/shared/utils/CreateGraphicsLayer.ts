@@ -9,4 +9,10 @@ const CreatePolygonGraphicsLayer = (Id: string = 'userGraphicsLayer') => {
   return graphicsLayer;
 };
 
-export { CreatePolygonGraphicsLayer };
+const CreateTextGraphicsLayer = (Id: string = 'userTextGraphicsLayer') => {
+  return new GraphicsLayer({
+    id: Id,
+  });
+};
+
+export { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer };
