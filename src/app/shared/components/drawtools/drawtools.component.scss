@@ -11,7 +11,7 @@
 }
 
 .customicon-untitled:before {
-  content: "\0042";
+  content: '\0042';
 }
 .radiusInput {
   width: 80px;
@@ -53,20 +53,23 @@ fieldset {
   width: 80%;
 }
 
-.mapTextInput input:focus {
+.mapTextInput:focus {
   border: 2px solid cyan !important;
+  text-indent: -5px;
 }
-.mapTextInput input {
+.mapTextInput {
   text-align: center;
-  background: rgba(255, 255, 255, 0.7);
-  line-height: 30px;
-  font-size: 12px;
+  background: rgba(255, 255, 255, 0.3);
+  // line-height: 35px;
+  // font-size: 12px;
+  caret-color: red;
   // border: 2px solid black;
 }
+
 .buttonActive {
   background-color: lightgray;
-    border: 2px solid cyan;
-    color: black;
+  border: 2px solid cyan;
+  color: black;
 }
 .fontButtons {
   min-width: unset !important;
