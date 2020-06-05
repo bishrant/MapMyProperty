@@ -104,16 +104,19 @@ export class EsrimapComponent implements OnInit {
         if (response.results.length) {
           console.log(response);
           const textGraphic = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer)[0].graphic;
+          let graphicCenter = this.mapView.toScreen(textGraphic.geometry);
           const input = createInputWithFrame(
             this.renderer,
-            evt,
+            graphicCenter,
             true,
             textGraphic.attributes.id,
-            textGraphic.attributes.symbol.text
+            textGraphic.attributes.symbol
           );
+          
 
           const textboxes = document.getElementById('textboxes');
-          this.renderer.appendChild(textboxes, input);
+          textboxes.appendChild(input);
+          // this.renderer.appendChild(textboxes, input);
 
           // input.focus();
 

@@ -100,3 +100,22 @@ body {
   caret-color: red;
   // border: 2px solid black;
 }
+.mapTextInputContainer {
+  border: 3px dashed #00f8ff;
+  box-sizing: border-box;
+  z-index: 1000000;
+  position: absolute;
+}
+.mapTextInputContainer>input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.3);
+  text-align: center;
+}
+.textBoxHeaderDrag {
+  cursor: move;
+  height: 40px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  line-height: 40px;
+}

@@ -1,9 +1,13 @@
 import Graphic from 'esri/Graphic';
 import { addGraphics } from '../../store/graphics.actions';
+const WIDTH = 200;
+const PADDING = 10;
+
 
 const addTextToMap = (targetElement, store, textProps) => {
   const mapX = targetElement.getAttribute('mapX');
   const mapY = targetElement.getAttribute('mapY');
+  const fontSize = parseInt(textProps.font.size.split("px")[0]);
   var textSymbol = {
     type: 'text', // autocasts as new TextSymbol()
     color: textProps.color,
@@ -11,7 +15,7 @@ const addTextToMap = (targetElement, store, textProps) => {
     // haloSize: '1px',
     text: targetElement.value,
     // xoffset: 3,
-    yoffset: -textProps.font.size / 3,
+    yoffset: -fontSize / 3,
     font: textProps.font
   };
 
@@ -34,10 +38,10 @@ const addTextToMap = (targetElement, store, textProps) => {
 };
 
 const createInput = (mapEvt: any, inputId = '0', store,  textProps) => {
-  const width = 200;
-  const padding = 10;
+
   const color = textProps.color;
-  const height = textProps.font.size + 2 * padding;
+  const fontSize = parseInt(textProps.font.size.split("px")[0]);
+  const height = fontSize + 2 * PADDING;
   const _input = document.createElement('input');
   _input.classList.add('mapTextInput');
 
@@ -46,11 +50,11 @@ const createInput = (mapEvt: any, inputId = '0', store,  textProps) => {
   _input.setAttribute('mapY', mapEvt.mapPoint.y);
 
   _input.style.color = `rgba(${color.r},${color.g},${color.b},${color.a})`;
-  _input.style.fontSize = textProps.font.size + 'pt';
-  _input.style.lineHeight = textProps.font.size + 'pt';
-  _input.style.width = width + 'px';
+  _input.style.fontSize = textProps.font.size;
+  _input.style.lineHeight = textProps.font.size;
+  _input.style.width = WIDTH + 'px';
   _input.style.height = height + 'px';
-  _input.style.left = mapEvt.x - width / 2 + 'px';
+  _input.style.left = mapEvt.x - WIDTH / 2 + 'px';
   _input.style.top = mapEvt.y - height / 2 + 'px';
 
   //add event listeners
@@ -94,26 +98,47 @@ const createInput = (mapEvt: any, inputId = '0', store,  textProps) => {
   return _input;
 };
 
-const createInputWithFrame = (renderer: any, mapEvt: any, readonly = false, inputId = 0, text = '') => {
-  const width = 200;
+const createInputWithFrame = (renderer: any, graphicCenter: any, readonly = false, inputId = 0, textProps:any) => {
   const height = 40;
+  let frame = <HTMLElement>htmlToElement(`<div id="${inputId}" class="mapTextInputContainer">
+  <div class='textBoxHeaderDrag'>Drag</div>
+  </div>`);
 
-  let frame = htmlToElement('<div id="' + inputId + '" class="mapTextInputContainer smallIcon"><div>Drag</div></div><br/>');
+  const fontSize = parseInt(textProps.font.size.split("px")[0]);
+  const color = textProps.color;
+  const textHeight = fontSize + 2 * PADDING;
+  const _input = document.createElement('input');
+  _input.style.height = textHeight +'px';
+  _input.style.color = `rgba(${color.r},${color.g},${color.b},${color.a})`;
+  _input.value = textProps.text;
+  _input.style.fontSize = textProps.font.size;
+  _input.style.lineHeight = textProps.font.size;
+  frame.appendChild(_input);
+
+
+  frame.style.left = graphicCenter.x - WIDTH / 2 + PADDING/2+ 'px';
+  frame.style.width = WIDTH + 'px';
+  frame.style.top = graphicCenter.y - textHeight/2 - height + 'px';
+  // renderer.setStyle(frame, 'left', mapEvt.x - WIDTH / 2 + 'px');
+  // renderer.setStyle(frame, 'width', WIDTH + 'px');
+  // renderer.setStyle(frame, 'top', mapEvt.y - height / 2 + 'px');
+
   // frame.setAttribute('id', inputId);
-  const input = renderer.createElement('input');
-  // renderer.addClass(frame, 'mapTextInputContainer');
-  renderer.addClass(input, 'mapTextInput');
-  input.setAttribute('mapX', mapEvt.mapPoint.x);
-  input.setAttribute('mapY', mapEvt.mapPoint.y);
-  if (readonly) input.setAttribute('readonly', true);
-  renderer.setStyle(frame, 'position', 'absolute');
-  renderer.setStyle(input, 'width', width + 'px');
-  renderer.setStyle(input, 'height', height + 'px');
-  renderer.setStyle(frame, 'left', mapEvt.x - width / 2 + 'px');
-  renderer.setStyle(frame, 'top', mapEvt.y - height / 2 + 'px');
-  renderer.setStyle(frame, 'z-index', 1000000000);
-  input.setAttribute('value', text);
-  frame.appendChild(input);
+  // const input = renderer.createElement('input');
+  // // renderer.addClass(frame, 'mapTextInputContainer');
+  // renderer.addClass(input, 'mapTextInput');
+  // input.setAttribute('mapX', mapEvt.mapPoint.x);
+  // input.setAttribute('mapY', mapEvt.mapPoint.y);
+  // if (readonly) input.setAttribute('readonly', true);
+  // renderer.setStyle(frame, 'position', 'absolute');
+  // renderer.setStyle(input, 'width', WIDTH + 'px');
+  // renderer.setStyle(input, 'height', height + 'px');
+
+  // renderer.setStyle(frame, 'left', mapEvt.x - WIDTH / 2 + 'px');
+  // renderer.setStyle(frame, 'top', mapEvt.y - height / 2 + 'px');
+  // renderer.setStyle(frame, 'z-index', 1000000000);
+  // input.setAttribute('value', text);
+  // frame.appendChild(input);
   return frame;
 };
 
@@ -121,6 +146,7 @@ const htmlToElement = (html) => {
   var template = document.createElement('template');
   html = html.trim(); // Never return a text node of whitespace as the result
   template.innerHTML = html;
-  return template.content.firstChild;
+  return template.content.firstElementChild;
 };
+
 export { createInput, htmlToElement, createInputWithFrame };
