@@ -53,18 +53,7 @@ fieldset {
   width: 80%;
 }
 
-.mapTextInput:focus {
-  border: 2px solid cyan !important;
-  text-indent: -5px;
-}
-.mapTextInput {
-  text-align: center;
-  background: rgba(255, 255, 255, 0.3);
-  // line-height: 35px;
-  // font-size: 12px;
-  caret-color: red;
-  // border: 2px solid black;
-}
+
 
 .buttonActive {
   background-color: lightgray;
