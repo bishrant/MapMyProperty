@@ -141,17 +141,33 @@
                 <mat-icon class="smallIcon">info</mat-icon>
             </button>
 
+            <div>
+                Font:
+                <mat-select [(ngModel)]="textProps.font.family" class="matSelect"
+                    (selectionChange)="changeGraphicsStyle()">
+                    <mat-select-trigger>
+                        <span>{{textProps.font.family}}</span>
+                    </mat-select-trigger>
+                    <mat-option *ngFor="let fontFamily of fontFamilyOptions" [value]="fontFamily">
+                        {{fontFamily}}
+                    </mat-option>
+                </mat-select>
+            </div>
+            <br>
             <div style="display: flex; justify-content: center;">
-                <button class="fontButtons" mat-raised-button [ngClass]="{buttonActive: fontProps.weight === 'bold'}"
-                    (click)="fontProps.weight = fontProps.weight === 'bold' ? 'normal': 'bold'"><b>B</b></button>
-                <button class="fontButtons" mat-raised-button [ngClass]="{buttonActive: fontProps.decoration === 'underline'}"
-                    (click)="fontProps.decoration = fontProps.decoration === 'underline' ? 'none': 'underline'"><u>U</u></button>
-                <button class="fontButtons" mat-raised-button [ngClass]="{buttonActive: fontProps.style === 'italic'}"
-                    (click)="fontProps.style = fontProps.style === 'italic' ? 'none': 'italic'"><i>I</i></button>
+                <button class="fontButtons" mat-raised-button
+                    [ngClass]="{buttonActive: textProps.font.weight === 'bold'}"
+                    (click)="textProps.font.weight = textProps.font.weight === 'bold' ? 'normal': 'bold'"><b>B</b></button>
+                <button class="fontButtons" mat-raised-button
+                    [ngClass]="{buttonActive: textProps.font.decoration === 'underline'}"
+                    (click)="textProps.font.decoration = textProps.font.decoration === 'underline' ? 'none': 'underline'"><u>U</u></button>
+                <button class="fontButtons" mat-raised-button
+                    [ngClass]="{buttonActive: textProps.font.style === 'italic'}"
+                    (click)="textProps.font.style = textProps.font.style === 'italic' ? 'none': 'italic'"><i>I</i></button>
 
 
             </div>
-            <div>Color: 
+            <div>Color:
                 <app-color-picker [color]="fillProps.color" [opacity]="fillProps.opacity"
                     (colorSelected)="changeFillColor($event)">
                 </app-color-picker>
@@ -159,10 +175,10 @@
 
 
             <div>
-                Font Size<br>
+                Font Size: {{textProps.font.size}}pt<br>
                 0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5"
-                    (change)="changeGraphicsStyle()" [(ngModel)]="textProps.width" min="0" max="50">
-                </mat-slider> &nbsp;10
+                    (change)="changeGraphicsStyle()" [(ngModel)]="textProps.font.size" min="0" max="50">
+                </mat-slider> &nbsp;50
             </div>
         </fieldset>
     </div>

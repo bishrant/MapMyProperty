@@ -1,7 +1,7 @@
 import { MapView } from 'arcgis-js-api/views/MapView';
 import { id } from './../../shared/store/todo';
 import { Component, ElementRef, HostListener, OnInit, ViewChild, Renderer2 } from '@angular/core';
-import { CreatePolygonGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
+import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
 import Graphic from 'esri/Graphic';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
@@ -11,6 +11,8 @@ import { Store } from '@ngrx/store';
 import createMapView from 'src/app/shared/utils/CreateMapView';
 import E = __esri;
 import Geometry = require('esri/geometry/Geometry');
+import { createInput, htmlToElement, createInputWithFrame } from 'src/app/shared/components/drawtools/TextUtils';
+import { dragElement } from 'src/app/shared/components/drawtools/drag';
 
 @Component({
   selector: 'app-esrimap',
@@ -23,14 +25,15 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('graphicsStore', { static: true })
   private graphicsStoreEl!: GraphicsStoreComponent;
   private graphicsSubcription$: any;
-  mapView!: E.MapView // = createMapView(this.mapViewEl, this.searchBarDiv);
+  mapView!: E.MapView; // = createMapView(this.mapViewEl, this.searchBarDiv);
   clickToAddText = false;
   sketchVM: any = new SketchViewModel();
   selectedGraphics!: any[] | undefined;
   mapCoords: any;
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
-  constructor(private store: Store<AppState>) {}
+  textGraphicsLayer = CreateTextGraphicsLayer();
+  constructor(private store: Store<AppState>, private renderer: Renderer2) {}
   @HostListener('keydown.control.z') undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
@@ -63,7 +66,7 @@ export class EsrimapComponent implements OnInit {
   private initializeMap = async () => {
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
-      this.mapView.map.add(this.polygonGraphicsLayer);
+      this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer]);
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
       this.showMapCoordinates();
     } catch (error) {
@@ -76,9 +79,13 @@ export class EsrimapComponent implements OnInit {
       if (g.length > 0) {
         const graphicsArray = g.map((_g) => {
           let gr = JSON.parse(_g);
-          return gr.attributes.geometryType === 'text' ?  Graphic.fromJSON(gr): new Graphic(gr);
+          return gr.attributes.geometryType === 'text' ? Graphic.fromJSON(gr) : new Graphic(gr);
         });
-        this.polygonGraphicsLayer.graphics = graphicsArray;
+        const allExcepttext = graphicsArray.filter((graphic) => graphic.attributes.geometryType != 'text');
+
+        const textGraphicsArray = graphicsArray.filter((graphic) => graphic.attributes.geometryType === 'text');
+        this.polygonGraphicsLayer.graphics = allExcepttext;
+        this.textGraphicsLayer.graphics = textGraphicsArray;
       } else {
         this.polygonGraphicsLayer.removeAll();
       }
@@ -88,8 +95,33 @@ export class EsrimapComponent implements OnInit {
   ngOnInit() {
     this.initializeMap();
     this.graphicsSubcription$ = this.listenToGraphicsStore();
+    this.detectTextGraphics();
   }
 
+  private detectTextGraphics = () => {
+    this.mapView.on('click', (evt: any) => {
+      this.mapView.hitTest(evt).then((response: any) => {
+        if (response.results.length) {
+          console.log(response);
+          const textGraphic = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer)[0].graphic;
+          const input = createInputWithFrame(
+            this.renderer,
+            evt,
+            true,
+            textGraphic.attributes.id,
+            textGraphic.attributes.symbol.text
+          );
+
+          const textboxes = document.getElementById('textboxes');
+          this.renderer.appendChild(textboxes, input);
+
+          // input.focus();
+
+          dragElement(textGraphic.attributes.id, 'parent');
+        }
+      });
+    });
+  };
   ngOnDestroy(): void {
     this.graphicsSubcription$.unsubscribe();
   }

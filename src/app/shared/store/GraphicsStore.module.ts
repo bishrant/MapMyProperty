@@ -17,7 +17,6 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
   declarations: [GraphicsStoreComponent],
   imports: [
     CommonModule,
-
     AngularSvgIconModule,
     MatSelectModule,
     FormsModule,
