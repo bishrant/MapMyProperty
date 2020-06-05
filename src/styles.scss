@@ -87,3 +87,16 @@ body {
   background-color: white;
   min-width: calc(100% - 50px) !important;
 }
+
+.mapTextInput:focus {
+  border: 2px solid cyan !important;
+  text-indent: -5px;
+}
+.mapTextInput {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.3);
+  z-index: 1000000;
+  position: absolute;
+  caret-color: red;
+  // border: 2px solid black;
+}

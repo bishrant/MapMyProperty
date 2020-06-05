@@ -11,7 +11,7 @@ const addTextToMap = (targetElement, store, textProps) => {
     // haloSize: '1px',
     text: targetElement.value,
     // xoffset: 3,
-    yoffset: -textProps.font.size/3,
+    yoffset: -textProps.font.size / 3,
     font: textProps.font
   };
 
@@ -33,63 +33,76 @@ const addTextToMap = (targetElement, store, textProps) => {
   store.dispatch(addGraphics({ payload: JSON.stringify(gr.toJSON()) }));
 };
 
-const createInput = (renderer: any, mapEvt: any, readonly = false, inputId = '0', store, textboxes, textProps) => {
+const createInput = (mapEvt: any, inputId = '0', store,  textProps) => {
   const width = 200;
   const padding = 10;
-  const height = textProps.font.size + 2* padding;
-  const input = renderer.createElement('input');
-  renderer.addClass(input, 'mapTextInput');
-  input.setAttribute('id', inputId);
-  input.setAttribute('mapX', mapEvt.mapPoint.x);
-  input.setAttribute('mapY', mapEvt.mapPoint.y);
   const color = textProps.color;
-  renderer.setStyle(input, 'color', `rgba(${color.r},${color.g},${color.b},${color.a})`);
-  renderer.setStyle(input, 'font-size', textProps.font.size + 'pt');
-  renderer.setStyle(input, 'line-height', textProps.font.size + 'pt');
-  if (readonly) input.setAttribute('readonly', true);
-  renderer.setStyle(input, 'position', 'absolute');
-  renderer.setStyle(input, 'width', width + 'px');
-  renderer.setStyle(input, 'height', height + 'px');
-  renderer.setStyle(input, 'left', mapEvt.x - width / 2 + 'px');
-  renderer.setStyle(input, 'top', mapEvt.y - height / 2 + 'px');
-  renderer.setStyle(input, 'z-index', 1000000000);
+  const height = textProps.font.size + 2 * padding;
+  const _input = document.createElement('input');
+  _input.classList.add('mapTextInput');
+
+  _input.setAttribute('id', inputId);
+  _input.setAttribute('mapX', mapEvt.mapPoint.x);
+  _input.setAttribute('mapY', mapEvt.mapPoint.y);
+
+  _input.style.color = `rgba(${color.r},${color.g},${color.b},${color.a})`;
+  _input.style.fontSize = textProps.font.size + 'pt';
+  _input.style.lineHeight = textProps.font.size + 'pt';
+  _input.style.width = width + 'px';
+  _input.style.height = height + 'px';
+  _input.style.left = mapEvt.x - width / 2 + 'px';
+  _input.style.top = mapEvt.y - height / 2 + 'px';
+
+  //add event listeners
   let enterKeylistener: any;
   let windowListener: any;
+
   const cleanupListener = (target) => {
-    renderer.removeChild(textboxes, target);
-    enterKeylistener = undefined;
-    windowListener = undefined;
+    target.remove();
+    window.removeEventListener('click', windowListener);
+    _input.removeEventListener("keyup", enterKeylistener);
   };
+
   const AddTextToMap = (target: any) => {
     addTextToMap(target, store, textProps);
     cleanupListener(target);
   };
 
-  windowListener = renderer.listen('window', 'click', (e: Event) => {
-    const ii = document.getElementById(inputId);
-    if (e.target !== ii) {
-      if (ii) {
-        AddTextToMap(ii);
+
+
+  enterKeylistener = (evt) => {
+    if (evt.keyCode === 13) {
+      AddTextToMap(evt.target);
+    }
+  };
+
+  windowListener = (e) => {
+    if (typeof e === 'object') {
+      if (e.button === 0) {
+        const inputBox = document.getElementById(inputId);
+        if (e.target !== inputBox && ((e.target as any).classList.contains('esri-view-surface'))) {
+          if (inputBox) {
+            AddTextToMap(inputBox)
+          }
+        }
       }
     }
-  });
+  }
 
-  enterKeylistener = renderer.listen(input, 'keyup.enter', (ev: any) => {
-    AddTextToMap(ev.target);
-  });
-
-  return input;
+  _input.addEventListener("keyup", enterKeylistener);
+  window.addEventListener('click', windowListener)
+  return _input;
 };
 
 const createInputWithFrame = (renderer: any, mapEvt: any, readonly = false, inputId = 0, text = '') => {
   const width = 200;
   const height = 40;
 
-  let frame = htmlToElement('<div id="' + inputId + '" class="mapTextInputContainer"><div>Drag</div></div><br/>');
+  let frame = htmlToElement('<div id="' + inputId + '" class="mapTextInputContainer smallIcon"><div>Drag</div></div><br/>');
   // frame.setAttribute('id', inputId);
   const input = renderer.createElement('input');
   // renderer.addClass(frame, 'mapTextInputContainer');
-
+  renderer.addClass(input, 'mapTextInput');
   input.setAttribute('mapX', mapEvt.mapPoint.x);
   input.setAttribute('mapY', mapEvt.mapPoint.y);
   if (readonly) input.setAttribute('readonly', true);

@@ -117,8 +117,8 @@ export class DrawtoolsComponent implements OnInit {
   private ClickToAddTextbox = () => {
     let clickHandler = this.mapView.on('click', (mapEvt: any) => {
       const textboxes = document.getElementById('textboxes');
-      const input = createInput(this.renderer, mapEvt, false, id(), this.store, textboxes, this.textProps);
-      this.renderer.appendChild(textboxes, input);
+      const input = createInput(mapEvt, id(), this.store, this.textProps);
+      textboxes.appendChild(input);
       input.focus();
       clickHandler.remove();
       this.ResetDrawControls();
