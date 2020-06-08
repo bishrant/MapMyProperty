@@ -103,21 +103,25 @@ body {
   // border: 2px solid black;
 }
 .mapTextInputContainer {
-  border: 3px dashed #00f8ff;
+  // border: 3px dashed #00f8ff;
   box-sizing: border-box;
   z-index: 1000000;
   position: absolute;
 }
+$border-radius: 5px;
 .mapTextInputContainer>input {
   width: 100%;
   box-sizing: border-box;
   background: rgba(255, 255, 255, 0.3);
   text-align: center;
+  border-radius: 0 0 $border-radius $border-radius;
 }
 .textBoxHeaderDrag {
   cursor: move;
   height: 40px;
-  width: 100%;
+  width: auto;
   background: rgba(170, 183, 156, 0.7);
   line-height: 40px;
+  padding-left: 10px;
+  border-radius: $border-radius $border-radius 0 0;
 }
