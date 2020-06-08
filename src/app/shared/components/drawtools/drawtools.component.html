@@ -133,54 +133,9 @@
 
         </fieldset>
 
-        <fieldset>
-            <legend>Text Style</legend>
+        <app-textcontrols #textcontrols></app-textcontrols>
 
-            <button mat-icon-button matTooltip="Specifies how the text is styled." aria-label="info for fill style"
-                [matTooltipPosition]="'left'" class="infoBtn">
-                <mat-icon class="smallIcon">info</mat-icon>
-            </button>
-
-            <div>
-                Font:
-                <mat-select [(ngModel)]="textProps.font.family" class="matSelect"
-                    (selectionChange)="changeGraphicsStyle()">
-                    <mat-select-trigger>
-                        <span>{{textProps.font.family}}</span>
-                    </mat-select-trigger>
-                    <mat-option *ngFor="let fontFamily of fontFamilyOptions" [value]="fontFamily">
-                        {{fontFamily}}
-                    </mat-option>
-                </mat-select>
-            </div>
-            <br>
-            <div style="display: flex; justify-content: center;">
-                <button class="fontButtons" mat-raised-button
-                    [ngClass]="{buttonActive: textProps.font.weight === 'bold'}"
-                    (click)="textProps.font.weight = textProps.font.weight === 'bold' ? 'normal': 'bold'"><b>B</b></button>
-                <button class="fontButtons" mat-raised-button
-                    [ngClass]="{buttonActive: textProps.font.decoration === 'underline'}"
-                    (click)="textProps.font.decoration = textProps.font.decoration === 'underline' ? 'none': 'underline'"><u>U</u></button>
-                <button class="fontButtons" mat-raised-button
-                    [ngClass]="{buttonActive: textProps.font.style === 'italic'}"
-                    (click)="textProps.font.style = textProps.font.style === 'italic' ? 'none': 'italic'"><i>I</i></button>
-
-
-            </div>
-            <div>Color:
-                <app-color-picker [color]="fillProps.color" [opacity]="fillProps.opacity"
-                    (colorSelected)="changeFillColor($event)">
-                </app-color-picker>
-            </div>
-
-
-            <div>
-                Font Size: {{textProps.font.size}}<br>
-                0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5"
-                    (change)="changeFontSize()" [(ngModel)]="fontSize" min="0" max="50">
-                </mat-slider> &nbsp;50
-            </div>
-        </fieldset>
+      
     </div>
     <!-- <div style="background: red; color:white">Works almost. not perfect !!!. Wait a day or so</div> -->
 </mat-expansion-panel>

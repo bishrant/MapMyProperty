@@ -95,37 +95,10 @@ export class EsrimapComponent implements OnInit {
   ngOnInit() {
     this.initializeMap();
     this.graphicsSubcription$ = this.listenToGraphicsStore();
-    this.detectTextGraphics();
+    
   }
 
-  private detectTextGraphics = () => {
-    this.mapView.on('click', (evt: any) => {
-      if (this.sketchVM.state === 'active') return;
 
-      this.mapView.hitTest(evt).then((response: any) => {
-        if (response.results.length < 1) return;
-        const _textGraphics = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer);
-
-        if (_textGraphics.length > 0) {
-          const textGraphic = _textGraphics[0].graphic;
-          let graphicCenter = this.mapView.toScreen(textGraphic.geometry);
-          const input = createInputWithFrame(
-            graphicCenter,
-            textGraphic,
-            textGraphic.attributes.symbol,
-            this.store,
-            this.mapView
-          );
-
-          this.textGraphicsLayer.remove(textGraphic);
-          document.getElementById('textboxes').appendChild(input);
-          dragElement(textGraphic.attributes.id, 'parent');
-        }
-
-      });
-    });
-
-  };
   ngOnDestroy(): void {
     this.graphicsSubcription$.unsubscribe();
   }

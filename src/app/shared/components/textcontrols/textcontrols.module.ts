@@ -2,7 +2,6 @@ import { RGBtoHEX } from '../../utils/Colors.pipe';
 import { MatButtonModule } from '@angular/material/button';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DrawtoolsComponent } from './drawtools.component';
 import { MatSliderModule } from '@angular/material/slider';
 import { ColorPickerModule } from '../color-picker/color-picker.module';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -16,10 +15,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToggleButtonModule } from '../togglebutton/togglebutton';
-import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
+import { TextcontrolsComponent } from './textcontrols.component';
 
 @NgModule({
-  declarations: [DrawtoolsComponent, RGBtoHEX],
+  declarations: [TextcontrolsComponent],
   imports: [
     CommonModule,
     MatSliderModule,
@@ -35,9 +34,8 @@ import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
     MatInputModule,
     MatButtonToggleModule,
     MatTooltipModule,
-    ToggleButtonModule,
-    TextcontrolsModule
+    ToggleButtonModule
   ],
-  exports: [DrawtoolsComponent],
+  exports: [TextcontrolsComponent],
 })
-export class DrawtoolsModule {}
+export class TextcontrolsModule {}

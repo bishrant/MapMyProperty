@@ -5,14 +5,16 @@
 @import '../layout';
 
 $mmp-light-theme: mat-light-theme($mmp-primary, $mmp-accent, $mmp-warn);
-$mmp-foreground: my-mat-theme-foreground(mat-color($mmp-primary, 700));
+// $mmp-foreground: my-mat-theme-foreground(mat-color($mmp-primary, 700));
+// $mmp-foreground: mat-palette()
 
-$mmp-theme: map-merge(
-  $mmp-light-theme,
-  (
-    foreground: $mmp-foreground,
-  )
-);
+$mmp-theme: $mmp-light-theme;
+// map-merge(
+//   $mmp-light-theme,
+//   // (
+//   //   foreground: $mmp-foreground,
+//   // )
+// );
 
 // $pmlo-theme: mat-light-theme($pmlo-primary, $pmlo-accent, $pmlo-warn);
 
