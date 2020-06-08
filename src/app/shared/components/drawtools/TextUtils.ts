@@ -103,7 +103,7 @@ const createInput = (mapEvt: any, inputId = '0', store, textProps) => {
   return _input;
 };
 
-const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: any, store) => {
+const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: any, store, mapView) => {
   const height = 40;
   const inputId = textGraphic.attributes.id;
   let frame = <HTMLElement>htmlToElement(`<div id="${inputId}_container" class="mapTextInputContainer">
@@ -138,6 +138,12 @@ const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: a
   };
 
   const AddTextToMap = (target: any) => {
+    const container = document.getElementById(inputId + '_container');
+    const header = document.getElementById(inputId + '_header');
+    const _screenPt = {x: container.offsetLeft + target.clientWidth/2, y: container.offsetTop + header.clientHeight + target.clientHeight/2};
+    const _mapPoint = mapView.toMap(_screenPt);
+    target.setAttribute('mapX', _mapPoint.x);
+    target.setAttribute('mapY', _mapPoint.y);
     addTextToMap(target, store, textProps, true);
     cleanupListener(target);
   };

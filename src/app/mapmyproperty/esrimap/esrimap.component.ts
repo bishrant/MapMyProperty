@@ -33,7 +33,7 @@ export class EsrimapComponent implements OnInit {
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
-  constructor(private store: Store<AppState>, private renderer: Renderer2) {}
+  constructor(private store: Store<AppState>, private renderer: Renderer2) { }
   @HostListener('keydown.control.z') undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
@@ -100,32 +100,31 @@ export class EsrimapComponent implements OnInit {
 
   private detectTextGraphics = () => {
     this.mapView.on('click', (evt: any) => {
+      if (this.sketchVM.state === 'active') return;
+
       this.mapView.hitTest(evt).then((response: any) => {
-        if (response.results.length) {
-          console.log(response);
-          const textGraphic = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer)[0].graphic;
+        if (response.results.length < 1) return;
+        const _textGraphics = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer);
+
+        if (_textGraphics.length > 0) {
+          const textGraphic = _textGraphics[0].graphic;
           let graphicCenter = this.mapView.toScreen(textGraphic.geometry);
           const input = createInputWithFrame(
-           
             graphicCenter,
-           
             textGraphic,
             textGraphic.attributes.symbol,
-            this.store
+            this.store,
+            this.mapView
           );
-          
+
           this.textGraphicsLayer.remove(textGraphic);
-          const textboxes = document.getElementById('textboxes');
-          textboxes.appendChild(input);
-          
-          // this.renderer.appendChild(textboxes, input);
-
-          // input.focus();
-
-          // dragElement(textGraphic.attributes.id, 'parent');
+          document.getElementById('textboxes').appendChild(input);
+          dragElement(textGraphic.attributes.id, 'parent');
         }
+
       });
     });
+
   };
   ngOnDestroy(): void {
     this.graphicsSubcription$.unsubscribe();
