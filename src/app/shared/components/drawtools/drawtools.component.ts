@@ -35,7 +35,7 @@ export class DrawtoolsComponent implements OnInit {
 
   selectedGraphics: any[] = [];
   selectedTextGraphic: any;
-  
+
   lineProps: LineProps = {
     style: 'solid',
     color: { r: 100, g: 20, b: 5, a: 1 },
@@ -47,7 +47,6 @@ export class DrawtoolsComponent implements OnInit {
     style: 'solid',
     opacity: 50,
   };
-
 
   lineSvgStyle = {
     'width.px': 150,
@@ -62,13 +61,11 @@ export class DrawtoolsComponent implements OnInit {
   radius: number;
   drawingMode: string = 'click';
   drawingTool: string = '';
-  
+  clickToAddTextboxHandler: any;
+
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
-  
-  constructor(private store: Store<AppState>) {}
-  
 
-
+  constructor(private store: Store<AppState>) { }
 
   setLineSVGStyle = () => {
     this.lineSvgStyle.fill = RGBObjectToHex(this.lineProps.color);
@@ -91,12 +88,15 @@ export class DrawtoolsComponent implements OnInit {
   };
 
   private ClickToAddTextbox = () => {
-    let clickHandler = this.mapView.on('click', (mapEvt: any) => {
+    if (this.clickToAddTextboxHandler) {
+      this.clickToAddTextboxHandler = undefined;
+    }
+    this.clickToAddTextboxHandler = this.mapView.on('click', (mapEvt: any) => {
       const textboxes = document.getElementById('textboxes');
       const input = createInput(mapEvt, id(), this.store, this.textcontrolsElmRef.textProps);
       textboxes.appendChild(input);
       input.focus();
-      clickHandler.remove();
+      this.clickToAddTextboxHandler.remove();
       this.ResetDrawControls();
     });
   };
@@ -107,10 +107,9 @@ export class DrawtoolsComponent implements OnInit {
 
       this.mapView.hitTest(evt).then((response: any) => {
         if (response.results.length < 1) return;
-        const _textGraphics = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer);
 
+        const _textGraphics = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer);
         if (_textGraphics.length > 0) {
-          
           const textGraphic = _textGraphics[0].graphic;
           let graphicCenter = this.mapView.toScreen(textGraphic.geometry);
           const input = createInputWithFrame(
@@ -125,16 +124,13 @@ export class DrawtoolsComponent implements OnInit {
           document.getElementById('textboxes').appendChild(input);
           dragElement(textGraphic.attributes.id, 'parent');
         }
-
       });
     });
-
   };
 
   changeGraphicsStyle = () => {
-    if (!this.selectedGraphics) {
-      return;
-    }
+    if (!this.selectedGraphics) return;
+
     if (this.selectedGraphics.length > 0) {
       const _geomType = this.selectedGraphics[0].attributes.geometryType;
       let geomJSON;

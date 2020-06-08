@@ -42,25 +42,58 @@ const addTextToMap = (targetElement, store, textProps, isUpdate:boolean = false)
   }
 };
 
-const createInput = (mapEvt: any, inputId = '0', store, textProps) => {
-
+const SetInputStyle = (input, textProps) => {
   const color = textProps.color;
+  input.classList.add('mapTextInput');
+  input.style.fontWeight = textProps.font.weight;
+  input.style.fontStyle = textProps.font.style;
+  input.style.textDecoration = textProps.font.decoration;
+  input.style.fontFamily = textProps.font.family;
+  input.style.color = `rgba(${color.r},${color.g},${color.b},${color.a})`;
+  input.style.fontSize = textProps.font.size;
+  input.style.lineHeight = textProps.font.size;
+  return input;
+}
+
+const createInput = (mapEvt: any, inputId = '0', store, textProps) => {
   const fontSize = parseInt(textProps.font.size.split("px")[0]);
   const height = fontSize + 2 * PADDING;
-  const _input = document.createElement('input');
-  _input.classList.add('mapTextInput');
-
+  let _input = document.createElement('input');
+  _input = SetInputStyle(_input, textProps);
   _input.setAttribute('id', inputId);
   _input.setAttribute('mapX', mapEvt.mapPoint.x);
   _input.setAttribute('mapY', mapEvt.mapPoint.y);
 
-  _input.style.color = `rgba(${color.r},${color.g},${color.b},${color.a})`;
-  _input.style.fontSize = textProps.font.size;
-  _input.style.lineHeight = textProps.font.size;
   _input.style.width = 'auto'; //WIDTH + 'px';
   _input.style.height = height + 'px';
-  _input.style.left = mapEvt.x - WIDTH / 2 + 'px';
-  _input.style.top = mapEvt.y - height / 2 + 'px';
+
+  // need to take it out of bounds
+  const parentWidth = document.getElementById('parent').clientWidth;
+  const parentHeight = document.getElementById('parent').clientHeight;
+
+  const _x = mapEvt.x;
+  const _y = mapEvt.y;
+  if ((WIDTH/2 < _x) && _x < (parentWidth - WIDTH/2)) {
+    _input.style.left = (_x - WIDTH / 2) + 'px';
+  } else {
+    if (_x < WIDTH/2) {
+      _input.style.left = '0px';
+    } 
+    if (parentWidth < (_x + WIDTH/2) ) {
+      _input.style.right = '0px';
+    }
+  }
+
+  if ((height/2 < _y) && _y < (parentHeight - height/2)) {
+    _input.style.top = _y - height / 2 + 'px';
+  } else {
+    if (_y < height/2) {
+      _input.style.top = '0px';
+    } 
+    if (parentHeight < (_y + height/2)) {
+      _input.style.bottom = '0px';
+    }
+  }
 
   //add event listeners
   let enterKeylistener: any;
@@ -73,11 +106,11 @@ const createInput = (mapEvt: any, inputId = '0', store, textProps) => {
   };
 
   const AddTextToMap = (target: any) => {
-    addTextToMap(target, store, textProps, false);
+    if (target.value !== '') {
+      addTextToMap(target, store, textProps, false);
+    }
     cleanupListener(target);
   };
-
-
 
   enterKeylistener = (evt) => {
     if (evt.keyCode === 13) {
@@ -89,7 +122,7 @@ const createInput = (mapEvt: any, inputId = '0', store, textProps) => {
     if (typeof e === 'object') {
       if (e.button === 0) {
         const inputBox = document.getElementById(inputId);
-        if (e.target !== inputBox && ((e.target as any).classList.contains('esri-view-surface'))) {
+        if (e.target !== inputBox){// && ((e.target as any).classList.contains('esri-view-surface'))) {
           if (inputBox) {
             AddTextToMap(inputBox)
           }
@@ -113,11 +146,13 @@ const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: a
   const fontSize = parseInt(textProps.font.size.split("px")[0]);
   const color = textProps.color;
   const textHeight = fontSize + 2 * PADDING;
-  const _input = document.createElement('input');
+  let _input = document.createElement('input');
   _input.style.height = textHeight + 'px';
-  _input.style.color = `rgba(${color.r},${color.g},${color.b},${color.a})`;
+
+  _input = SetInputStyle(_input, textProps);
+
   _input.value = textProps.text;
-  _input.style.fontSize = textProps.font.size;
+ 
   _input.style.lineHeight = textProps.font.size;
 
   _input.setAttribute('id', inputId);
