@@ -43,10 +43,11 @@ export class DrawtoolsComponent implements OnInit {
     opacity: 50,
   };
 
+  fontSize: number = 18;
   textProps: any = {
     color: { r: 100, g: 20, b: 5, a: 1 },
     font: {
-      size: 18,
+      size: this.fontSize +'px',
       family: 'Arial',
       weight: 'normal',
       decoration: 'none',
@@ -83,6 +84,9 @@ export class DrawtoolsComponent implements OnInit {
     },
   };
 
+  changeFontSize = () => {
+    this.textProps.font.size = this.fontSize + 'px';
+  }
   _textSymbol = {
     type: 'text', // autocasts as new TextSymbol()Tex
     color: 'white',

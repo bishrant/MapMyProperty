@@ -175,9 +175,9 @@
 
 
             <div>
-                Font Size: {{textProps.font.size}}pt<br>
+                Font Size: {{textProps.font.size}}<br>
                 0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5"
-                    (change)="changeGraphicsStyle()" [(ngModel)]="textProps.font.size" min="0" max="50">
+                    (change)="changeFontSize()" [(ngModel)]="fontSize" min="0" max="50">
                 </mat-slider> &nbsp;50
             </div>
         </fieldset>

@@ -1,11 +1,9 @@
-import { Renderer2 } from '@angular/core';
-
-const dragElement = (elmntid, parent) => {
+const dragElement = (graphicsId, parent) => {
   var pos1 = 0,
     pos2 = 0,
     pos3 = 0,
-      pos4 = 0;
-    const elmnt = document.getElementById(elmntid);
+    pos4 = 0;
+  const elmnt = document.getElementById(graphicsId + '_container');
   const closeDragElement = () => {
     // stop moving when mouse button is released:
     document.onmouseup = null;
@@ -44,14 +42,16 @@ const dragElement = (elmntid, parent) => {
     // call a function whenever the cursor moves:
     document.onmousemove = elementDrag;
   };
-  if (document.getElementById(elmnt.id + 'header')) {
-    // if present, the header is where you move the DIV from:
-    document.getElementById(elmnt.id + 'header').onmousedown = dragMouseDown;
-  } else {
-    // otherwise, move the DIV from anywhere inside the DIV:
-    elmnt.onmousedown = dragMouseDown;
-  }
-};
 
+  if (document.getElementById(graphicsId + '_header')) {
+    // if present, the header is where you move the DIV from:
+    document.getElementById(graphicsId + '_header').onmousedown = dragMouseDown;
+  } 
+  // else {
+  //   console.log(' sdfsd s dfdsclisdfsdfsdcked other place ');
+  //   // otherwise, move the DIV from anywhere inside the DIV:
+  //   elmnt.onmousedown = dragMouseDown;
+  // }
+};
 
 export { dragElement };
