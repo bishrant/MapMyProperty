@@ -1,9 +1,9 @@
 import { updateGraphics, addGraphics } from '../../store/graphics.actions';
-import { Component, OnInit, Input, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
 import { RGBObjectToHex, RGBObjectToHexA } from 'src/app/shared/utils/Colors';
-import { take, map } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import {
   CreatePolygonGraphicWithSymbology,
   CreateCircleFromEvent,
@@ -16,10 +16,9 @@ import { LineStyles, FillStyles, CreatePolygonSymbol, CreatePolylineSymbol } fro
 import { CreateCircleFromPoint } from 'src/app/shared/utils/SketchViewModelUitls';
 import { LineProps, FillProps } from './DrawTools.interface';
 import { equals } from 'esri/geometry/geometryEngine';
-import Graphic from 'esri/Graphic';
 import { id } from '../../store/todo';
 import { dragElement } from './drag';
-import { createInput } from './TextUtils';
+import { createInput, createInputWithFrame } from './TextUtils';
 
 @Component({
   selector: 'app-drawtools',
@@ -29,8 +28,14 @@ import { createInput } from './TextUtils';
 export class DrawtoolsComponent implements OnInit {
   @Input() sketchVM: any;
   @Input() mapView: any;
+  @Input() textGraphicsLayer: any;
+  @ViewChild('radiusInput') radiusElmRef: ElementRef;
+  @ViewChild('textcontrols') textcontrolsElmRef: any;
+  id = (): string => Math.random().toString(36).substr(2, 9);
+
   selectedGraphics: any[] = [];
-  fontFamilyOptions: any[] = ['Arial', 'Montserrat'];
+  selectedTextGraphic: any;
+  
   lineProps: LineProps = {
     style: 'solid',
     color: { r: 100, g: 20, b: 5, a: 1 },
@@ -43,17 +48,7 @@ export class DrawtoolsComponent implements OnInit {
     opacity: 50,
   };
 
-  fontSize: number = 18;
-  textProps: any = {
-    color: { r: 100, g: 20, b: 5, a: 1 },
-    font: {
-      size: this.fontSize +'px',
-      family: 'Arial',
-      weight: 'normal',
-      decoration: 'none',
-      style: 'normal',
-    },
-  };
+
   lineSvgStyle = {
     'width.px': 150,
     fill: RGBObjectToHex(this.lineProps.color),
@@ -67,36 +62,13 @@ export class DrawtoolsComponent implements OnInit {
   radius: number;
   drawingMode: string = 'click';
   drawingTool: string = '';
-  bold: boolean = true;
+  
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
-  @ViewChild('radiusInput') radiusElmRef: ElementRef;
-  constructor(private store: Store<AppState>, private renderer: Renderer2) {}
-  id = (): string => Math.random().toString(36).substr(2, 9);
+  
+  constructor(private store: Store<AppState>) {}
+  
 
-  textStyle = {
-    type: 'simple-marker',
-    style: 'circle',
-    size: 6,
-    color: [0, 255, 255, 1],
-    outline: {
-      color: [50, 50, 50, 1],
-      width: 1,
-    },
-  };
 
-  changeFontSize = () => {
-    this.textProps.font.size = this.fontSize + 'px';
-  }
-  _textSymbol = {
-    type: 'text', // autocasts as new TextSymbol()Tex
-    color: 'white',
-    haloColor: 'black',
-    haloSize: '1px',
-    text: 'test',
-    xoffset: 0,
-    yoffset: 0,
-    font: this.textProps.font,
-  };
 
   setLineSVGStyle = () => {
     this.lineSvgStyle.fill = RGBObjectToHex(this.lineProps.color);
@@ -121,12 +93,42 @@ export class DrawtoolsComponent implements OnInit {
   private ClickToAddTextbox = () => {
     let clickHandler = this.mapView.on('click', (mapEvt: any) => {
       const textboxes = document.getElementById('textboxes');
-      const input = createInput(mapEvt, id(), this.store, this.textProps);
+      const input = createInput(mapEvt, id(), this.store, this.textcontrolsElmRef.textProps);
       textboxes.appendChild(input);
       input.focus();
       clickHandler.remove();
       this.ResetDrawControls();
     });
+  };
+
+  private detectTextGraphics = () => {
+    this.mapView.on('click', (evt: any) => {
+      if (this.sketchVM.state === 'active') return;
+
+      this.mapView.hitTest(evt).then((response: any) => {
+        if (response.results.length < 1) return;
+        const _textGraphics = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer);
+
+        if (_textGraphics.length > 0) {
+          
+          const textGraphic = _textGraphics[0].graphic;
+          let graphicCenter = this.mapView.toScreen(textGraphic.geometry);
+          const input = createInputWithFrame(
+            graphicCenter,
+            textGraphic,
+            textGraphic.attributes.symbol,
+            this.store,
+            this.mapView
+          );
+
+          this.textGraphicsLayer.remove(textGraphic);
+          document.getElementById('textboxes').appendChild(input);
+          dragElement(textGraphic.attributes.id, 'parent');
+        }
+
+      });
+    });
+
   };
 
   changeGraphicsStyle = () => {
@@ -184,14 +186,12 @@ export class DrawtoolsComponent implements OnInit {
   initSketchVMUpdate = () => {
     this.sketchVM.on('update', (gg: any) => {
       console.log(gg);
-
-      // this.sketchVM.pointSymbol = this.textStyle;
       if (gg.state === 'cancel' || gg.aborted) {
         this.selectedGraphics = undefined;
         return;
       }
       if (gg.graphics[0].attributes.geometryType === 'text') {
-        this.editMapText(gg.graphics[0]);
+        // this.editMapText(gg.graphics[0]);
         // this.selectedGraphics = gg.graphics[0];
         this.sketchVM.cancel();
         this.sketchVM.complete();
@@ -237,9 +237,7 @@ export class DrawtoolsComponent implements OnInit {
     });
   };
 
-  editMapText = (graphic: any) => {
-    console.log('need to edit this');
-  };
+
   updateCircleRadius = () => {
     if (this.selectedGraphics.length > 0) {
       let circleJSON = this.selectedGraphics[0].toJSON();
@@ -293,14 +291,15 @@ export class DrawtoolsComponent implements OnInit {
       });
       this.initSketchVMCreate();
       this.initSketchVMUpdate();
+      this.detectTextGraphics();
     }
   }
 
   startDrawingGraphics = (toolName: string) => {
     this.sketchVM.cancel();
     this.sketchVM.createCircleFromPoint = false;
-    this.sketchVM.pointSymbol = this.textStyle;
-    this.sketchVM.activePointSymbol = this.textStyle;
+    this.sketchVM.pointSymbol = this.textcontrolsElmRef.textStyle;
+    this.sketchVM.activePointSymbol = this.textcontrolsElmRef.textStyle;
     if (toolName === 'circle' && this.drawingMode === 'hybrid') {
       this.drawingMode = 'click';
     }
@@ -342,8 +341,4 @@ export class DrawtoolsComponent implements OnInit {
     }
   };
 
-  changeFontWeight = ($evt) => {
-    let _evtValue = $evt.source.value;
-    // if (_evtValue === '')
-  };
 }

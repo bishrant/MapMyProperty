@@ -1,7 +1,7 @@
 <div #sidebar class="sidebarBlanket">
     <div class="sidebar">
         <app-sidebar>
-            <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView">
+            <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer">
             </app-drawtools>
         </app-sidebar>
     </div>
@@ -18,11 +18,7 @@
     </div>
     <div class="translucentPadding mapViewNodeBlanket">
         <div #mapViewNode class="mapViewNode " id="parent">
-            <div id="textboxes">
-
-            </div>
-
-
+            <div id="textboxes"></div>
         </div>
         <app-graphic-store #graphicsStore [sketchVM]="sketchVM" 
         [selectedGraphics]="selectedGraphics"

@@ -1,3 +1,5 @@
+@import '../../styles/sidebar.scss';
+
 .mat-option {
   padding: 0 !important;
 }
@@ -25,43 +27,6 @@
   width: 65px;
 }
 
-.smallIcon {
-  font-size: 20px;
-  color: gray;
-}
-.smallIcon:hover {
-  color: black;
-}
-
-fieldset {
-  position: relative;
-}
-
-.infoBtn {
-  width: 20px;
-  height: 20px;
-  margin: 0;
-  padding: 0;
-  right: 2px;
-  position: absolute;
-  top: -2px;
-}
 .centerAlign {
   text-align: center;
-}
-.widthSlider {
-  width: 80%;
-}
-
-
-
-.buttonActive {
-  background-color: lightgray;
-  border: 2px solid cyan;
-  color: black;
-}
-.fontButtons {
-  min-width: unset !important;
-  width: 50px;
-  margin: 2px;
 }
