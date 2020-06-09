@@ -1,4 +1,4 @@
-import GraphicsLayer from 'arcgis-js-api/layers/GraphicsLayer';
+import GraphicsLayer from 'esri/layers/GraphicsLayer';
 
 const CreateSensAreasGL = (Id: string = 'sensAreasGL') => {
     const graphicsLayer = new GraphicsLayer({
