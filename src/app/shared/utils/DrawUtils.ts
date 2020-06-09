@@ -45,7 +45,7 @@ const CreatePolylineFromGraphic = (graphic: any, lineProps: any) => {
 
 const CreateCircleFromEvent = (evt: any, lineProps: any, fillProps: any) => {
   let _g = evt.graphic.toJSON();
-  _g.attributes = { gid: id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
+  _g.attributes = { id: id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
   _g.geometry = CreateCircleWithGeometry(evt.graphic).asJSON();
   _g = CreatePolygonGraphicWithSymbology(_g, lineProps, fillProps);
   _g.attributes.radius = _g.geometry.radius;
@@ -54,7 +54,7 @@ const CreateCircleFromEvent = (evt: any, lineProps: any, fillProps: any) => {
 
 const CreatecircleFromPoint = (evt: any, radius: number, lineProps: any, fillProps: any) => {
   let _g = evt.graphic.toJSON();
-  _g.attributes = { gid: id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
+  _g.attributes = { id: id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
   _g.geometry = CreateCircleFromPoint(evt.graphic.geometry, radius).asJSON();
   _g = CreatePolygonGraphicWithSymbology(_g, lineProps, fillProps);
   _g.attributes.geometryType = 'circle';
