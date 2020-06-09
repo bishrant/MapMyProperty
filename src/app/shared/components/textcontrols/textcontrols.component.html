@@ -6,10 +6,9 @@
         <mat-icon class="smallIcon">info</mat-icon>
     </button>
 
-    <div>
-        Font:
-        <mat-select [(ngModel)]="textProps.font.family" class="matSelect"
-            (selectionChange)="changeGraphicsStyle()">
+    <div class="flex verticalCenter">
+      <div>  Font:</div>
+        <mat-select [(ngModel)]="textProps.font.family" class="matSelect" (selectionChange)="changeFontFamily()">
             <mat-select-trigger>
                 <span>{{textProps.font.family}}</span>
             </mat-select-trigger>
@@ -18,26 +17,23 @@
             </mat-option>
         </mat-select>
     </div>
-    <br>
-    <div style="display: flex; justify-content: center;">
-        <button class="fontButtons" mat-raised-button
-            [ngClass]="{buttonActive: textProps.font.weight === 'bold'}"
-            (click)="textProps.font.weight = textProps.font.weight === 'bold' ? 'normal': 'bold'"><b>B</b></button>
+    <div class="flex fontStyle">
+        <button class="fontButtons" mat-raised-button [ngClass]="{buttonActive: textProps.font.weight === 'bold'}"
+            (click)="toggleFontWeight()"><b>B</b></button>
         <button class="fontButtons" mat-raised-button
             [ngClass]="{buttonActive: textProps.font.decoration === 'underline'}"
-            (click)="textProps.font.decoration = textProps.font.decoration === 'underline' ? 'none': 'underline'"><u>U</u></button>
-        <button class="fontButtons" mat-raised-button
-            [ngClass]="{buttonActive: textProps.font.style === 'italic'}"
-            (click)="textProps.font.style = textProps.font.style === 'italic' ? 'none': 'italic'"><i>I</i></button>
+            (click)="toggleFontDecoration()"><u>U</u></button>
+        <button class="fontButtons" mat-raised-button [ngClass]="{buttonActive: textProps.font.style === 'italic'}"
+            (click)="toggleFontStyle()"><i>I</i></button>
 
 
     </div>
-    <div>Color:
-        <app-color-picker [color]="textProps.color" [opacity]="textProps.opacity"
-            (colorSelected)="changeFillColor($event)">
+    <div class="flex colorDiv verticalCenter">Color:
+        <app-color-picker [color]="textProps.color" [opacity]="textProps.color.a * 100"
+            (colorSelected)="changeTextColor($event)">
         </app-color-picker>
     </div>
-    <div>
+    <div class="marginTop10px">
         Font Size: {{textProps.font.size}}<br>
         0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5"
             (change)="changeFontSize()" [(ngModel)]="fontSize" min="0" max="50">

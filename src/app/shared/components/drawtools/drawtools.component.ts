@@ -34,7 +34,7 @@ export class DrawtoolsComponent implements OnInit {
   id = (): string => Math.random().toString(36).substr(2, 9);
 
   selectedGraphics: any[] = [];
-  selectedTextGraphic: any;
+  selectedTextGraphics: any =[];
 
   lineProps: LineProps = {
     style: 'solid',
@@ -106,11 +106,14 @@ export class DrawtoolsComponent implements OnInit {
       if (this.sketchVM.state === 'active') return;
 
       this.mapView.hitTest(evt).then((response: any) => {
-        if (response.results.length < 1) return;
+        if (response.results.length < 1) {
+          this.selectedTextGraphics = [];
+          return;
+        };
 
-        const _textGraphics = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer);
-        if (_textGraphics.length > 0) {
-          const textGraphic = _textGraphics[0].graphic;
+        this.selectedTextGraphics = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer);
+        if (this.selectedTextGraphics.length > 0) {
+          const textGraphic = this.selectedTextGraphics[0].graphic;
           let graphicCenter = this.mapView.toScreen(textGraphic.geometry);
           const input = createInputWithFrame(
             graphicCenter,
@@ -160,7 +163,7 @@ export class DrawtoolsComponent implements OnInit {
         if (['polygon', 'polyline'].indexOf(evt.tool) > -1) {
           createdGraphic = evt.graphic;
           createdGraphic.attributes = {
-            gid: this.id(),
+            id: this.id(),
             symbol: createdGraphic.symbol,
             geometryType: evt.tool,
             radius: 0,
@@ -174,7 +177,7 @@ export class DrawtoolsComponent implements OnInit {
         if (this.sketchVM.createCircleFromPoint) {
           createdGraphic = CreatecircleFromPoint(evt, this.radius, this.lineProps, this.fillProps);
         }
-        this.store.dispatch(addGraphics({ payload: JSON.stringify(createdGraphic) }));
+        this.store.dispatch(addGraphics({ graphics: JSON.stringify(createdGraphic) }));
       }
     });
   };
@@ -219,7 +222,7 @@ export class DrawtoolsComponent implements OnInit {
           let areEqual = false;
           for (let i = 0; i < graphics.length; i++) {
             const _existing = JSON.parse(graphics[i]);
-            if (_updatedGraphics[0].attributes.gid === _existing.attributes.gid) {
+            if (_updatedGraphics[0].attributes.id === _existing.attributes.id) {
               areEqual = equals(_updatedGraphics[0].geometry, _existing.geometry);
               break;
             }
