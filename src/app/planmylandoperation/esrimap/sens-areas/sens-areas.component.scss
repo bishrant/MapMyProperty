@@ -1,0 +1,96 @@
+mat-slider {
+    width: calc(100% - 53px);
+}
+
+.d-flex {
+    display: flex;
+}
+
+.justify-space-between {
+    justify-content: space-between;
+}
+
+.right {
+    float: right;
+}
+
+.row {
+    display: flex;
+}
+
+.py-3 {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.mt-3 {
+    margin-top: 8px;
+}
+
+.plusSign {
+    margin-right: 8px;
+    font-size: 1.25rem;
+    width: 12px;
+    align-self: center;
+    cursor: pointer;
+}
+
+.saSymbol {
+    width: 30px;
+    margin-left: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin: 5px 10px 5px auto;
+    border: 1px solid black;
+}
+
+.streamLegend {
+    border: none !important;
+}
+
+.streamColor {
+    color: #005ce6;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.smzBack {
+    background-color: #ffff00;
+}
+
+.slopeBack {
+    background-color: #ff0000;
+}
+
+.wetBack {
+    background-color: #6699cd;
+}
+
+.wetBufferBack {
+    background-color: #444f89;
+    margin-top: 21px;
+    margin-bottom: 21px;
+}
+
+.subMenuContainer {
+    margin-left: 40px;
+}
+
+.subMenuContainer mat-form-field {
+    width: 40px;
+    margin-right: 10px;
+}
+
+.pmlo-button {
+    align-self: center;
+}
+
+.prefix-margin {
+    margin-right: 10px;
+}
+
+.generalBtn {
+    width: 100%;
+    margin-right: 10px;
+    margin-left: 10px;
+}

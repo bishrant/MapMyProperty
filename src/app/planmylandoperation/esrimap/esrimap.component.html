@@ -1,8 +1,11 @@
 <div #sidebar class="sidebarBlanket">
     <div class="sidebar">
         <app-sidebar>
-            <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView">
-            </app-drawtools>
+            <mat-accordion>
+                <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView">
+                </app-drawtools>
+                <pmlo-sens-areas [mapView]="mapView"></pmlo-sens-areas>
+            </mat-accordion>
         </app-sidebar>
     </div>
 
