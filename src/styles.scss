@@ -22,8 +22,17 @@ body {
     padding: 0 !important;
   }
 }
+
+.mat-expansion-panel {
+  margin-bottom: 8px !important;
+}
+
 .mat-expansion-panel-body {
   padding: 0 4px 6px !important;
+}
+
+.mat-expansion-panel-spacing {
+  margin: 0 !important;
 }
 
 .material-icons {
