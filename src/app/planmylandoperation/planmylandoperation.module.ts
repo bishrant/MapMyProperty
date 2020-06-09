@@ -6,7 +6,8 @@ import { PmloComponent } from './pmlo/pmlo.component';
 import { NgModule } from '@angular/core';
 import { EsriMapModule } from './esrimap/esrimap.module';
 import { DialogService } from '../shared/components/dialogs/dialog.service';
-import { MatDialog, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 const routes: Routes = [
   {
@@ -27,4 +28,8 @@ const routes: Routes = [
   ],
   providers:[DialogService, MatDialog, DecimalPipe]
 })
-export class PlanmylandoperationModule { }
+export class PlanmylandoperationModule { 
+  constructor(overlayContainer: OverlayContainer) {
+    overlayContainer.getContainerElement().classList.add('pmlo-theme');
+  }
+}
