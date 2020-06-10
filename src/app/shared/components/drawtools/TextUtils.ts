@@ -158,9 +158,13 @@ const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: a
   const height = 40;
   const inputId = textGraphic.attributes.id;
   let frame = <HTMLElement>htmlToElement(`<div id="${inputId}_container" class="mapTextInputContainer">
-  <div class='textBoxHeaderDrag' id="${inputId}_header">Drag</div>
+  
   </div>`);
-
+  const headerDiv = <HTMLElement>(
+    htmlToElement(
+      `<div class='textBoxHeaderDrag' id="${inputId}_header"><span class='sep'>|</span><span>..<br></span><span>..<br></span><span>..<br></span></div>`
+    )
+  );
   const fontSize = parseInt(textProps.font.size.split('px')[0]);
   const color = textProps.color;
   const textHeight = fontSize + 2 * PADDING;
@@ -194,7 +198,7 @@ const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: a
     const header = document.getElementById(inputId + '_header');
     const _screenPt = {
       x: container.offsetLeft + target.clientWidth / 2,
-      y: container.offsetTop + header.clientHeight + target.clientHeight / 2,
+      y: container.offsetTop  + target.clientHeight / 2,
     };
     const _mapPoint = mapView.toMap(_screenPt);
     target.setAttribute('mapX', _mapPoint.x);
@@ -226,10 +230,11 @@ const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: a
   window.addEventListener('click', windowListener);
 
   frame.appendChild(_input);
+  frame.appendChild(headerDiv);
 
-  frame.style.left = graphicCenter.x - WIDTH / 2 + PADDING / 2 + 'px';
+  frame.style.left = graphicCenter.x - WIDTH / 2 + PADDING + 'px';
   frame.style.width = WIDTH + 'px';
-  frame.style.top = graphicCenter.y - textHeight / 2 - height + 'px';
+  frame.style.top = graphicCenter.y - textHeight / 2  + 'px';
   // renderer.setStyle(frame, 'left', mapEvt.x - WIDTH / 2 + 'px');
   // renderer.setStyle(frame, 'width', WIDTH + 'px');
   // renderer.setStyle(frame, 'top', mapEvt.y - height / 2 + 'px');
