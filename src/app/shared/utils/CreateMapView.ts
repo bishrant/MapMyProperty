@@ -8,7 +8,7 @@ import Home from 'arcgis-js-api/widgets/Home';
 const createMapView = (mapViewEl: ElementRef, searchBarDiv: ElementRef): __esri.MapView => {
   // const fullExtent = new Extent({ xmin: -106.645646, ymin: 24.837377, xmax: -93.508292, ymax: 37.500704 }).expand(1.2);
   const mapProperties = {
-    basemap: 'streets',
+    basemap: 'hybrid',
     spatialReference: new SpatialReference({ wkid: 4326 })
   };
 
@@ -21,7 +21,10 @@ const createMapView = (mapViewEl: ElementRef, searchBarDiv: ElementRef): __esri.
     center: [-99.5, 31.2],
     zoom: 6.5,
     snapToZoom: false,
-    map
+    map,
+    constraints: {
+      rotationEnabled: false,
+    },
   };
   const view = new MapView(mapViewProperties);
   const search = new Search({ view: view, container: searchBarDiv.nativeElement });

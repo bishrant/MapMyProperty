@@ -1,13 +1,11 @@
 <fieldset>
     <legend>Text Style</legend>
 
-    <button mat-icon-button matTooltip="Specifies how the text is styled." aria-label="info for fill style"
-        [matTooltipPosition]="'left'" class="infoBtn">
-        <mat-icon class="smallIcon">info</mat-icon>
-    </button>
+    <app-infobutton [tooltip]="'Specifies how the text is styled.'" [ariaLabel]="'Show info about text styling'">
+    </app-infobutton>
 
     <div class="flex verticalCenter">
-      <div>  Font:</div>
+        <div> Font:</div>
         <mat-select [(ngModel)]="textProps.font.family" class="matSelect" (selectionChange)="changeFontFamily()">
             <mat-select-trigger>
                 <span>{{textProps.font.family}}</span>

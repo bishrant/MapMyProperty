@@ -1,5 +1,4 @@
-import { MapView } from 'arcgis-js-api/views/MapView';
-import { id } from './../../shared/store/todo';
+
 import { Component, ElementRef, HostListener, OnInit, ViewChild, Renderer2 } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
 import Graphic from 'esri/Graphic';
@@ -10,9 +9,6 @@ import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import createMapView from 'src/app/shared/utils/CreateMapView';
 import E = __esri;
-import Geometry = require('esri/geometry/Geometry');
-import { createInput, htmlToElement, createInputWithFrame } from 'src/app/shared/components/drawtools/TextUtils';
-import { dragElement } from 'src/app/shared/components/drawtools/drag';
 
 @Component({
   selector: 'app-esrimap',
@@ -95,9 +91,7 @@ export class EsrimapComponent implements OnInit {
   ngOnInit() {
     this.initializeMap();
     this.graphicsSubcription$ = this.listenToGraphicsStore();
-    
   }
-
 
   ngOnDestroy(): void {
     this.graphicsSubcription$.unsubscribe();

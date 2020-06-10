@@ -34,7 +34,7 @@ export class DrawtoolsComponent implements OnInit {
   id = (): string => Math.random().toString(36).substr(2, 9);
 
   selectedGraphics: any[] = [];
-  selectedTextGraphics: any =[];
+  selectedTextGraphics: any = [];
 
   lineProps: LineProps = {
     style: 'solid',
@@ -65,7 +65,7 @@ export class DrawtoolsComponent implements OnInit {
 
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
 
-  constructor(private store: Store<AppState>) { }
+  constructor(private store: Store<AppState>) {}
 
   setLineSVGStyle = () => {
     this.lineSvgStyle.fill = RGBObjectToHex(this.lineProps.color);
@@ -100,7 +100,20 @@ export class DrawtoolsComponent implements OnInit {
       this.ResetDrawControls();
     });
   };
+  private CreateDraggableTextbox = (textGraphic) => {
+    let graphicCenter = this.mapView.toScreen(textGraphic.geometry);
+    const input = createInputWithFrame(
+      graphicCenter,
+      textGraphic,
+      textGraphic.attributes.symbol,
+      this.store,
+      this.mapView
+    );
 
+    this.textGraphicsLayer.remove(textGraphic);
+    document.getElementById('textboxes').appendChild(input);
+    dragElement(textGraphic.attributes.id, 'parent');
+  };
   private detectTextGraphics = () => {
     this.mapView.on('click', (evt: any) => {
       if (this.sketchVM.state === 'active') return;
@@ -109,23 +122,21 @@ export class DrawtoolsComponent implements OnInit {
         if (response.results.length < 1) {
           this.selectedTextGraphics = [];
           return;
-        };
+        }
 
         this.selectedTextGraphics = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer);
         if (this.selectedTextGraphics.length > 0) {
           const textGraphic = this.selectedTextGraphics[0].graphic;
-          let graphicCenter = this.mapView.toScreen(textGraphic.geometry);
-          const input = createInputWithFrame(
-            graphicCenter,
-            textGraphic,
-            textGraphic.attributes.symbol,
-            this.store,
-            this.mapView
-          );
-
-          this.textGraphicsLayer.remove(textGraphic);
-          document.getElementById('textboxes').appendChild(input);
-          dragElement(textGraphic.attributes.id, 'parent');
+          const extent = this.mapView.extent.clone().expand(0.85);
+          const isPointInside = extent.contains(textGraphic.geometry);
+          if (!isPointInside) {
+            // @todo maake it so that the textbox just pans the map just enough to fit it in frame
+            this.mapView.goTo(textGraphic).then(() => {
+              this.CreateDraggableTextbox(textGraphic);
+            });
+          } else {
+            this.CreateDraggableTextbox(textGraphic);
+          }
         }
       });
     });
@@ -236,7 +247,6 @@ export class DrawtoolsComponent implements OnInit {
     });
   };
 
-
   updateCircleRadius = () => {
     if (this.selectedGraphics.length > 0) {
       let circleJSON = this.selectedGraphics[0].toJSON();
@@ -339,5 +349,4 @@ export class DrawtoolsComponent implements OnInit {
       this.startDrawingGraphics(this.drawingTool);
     }
   };
-
 }
