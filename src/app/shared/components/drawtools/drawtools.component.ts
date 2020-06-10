@@ -31,6 +31,7 @@ export class DrawtoolsComponent implements OnInit {
   @Input() textGraphicsLayer: any;
   @ViewChild('radiusInput') radiusElmRef: ElementRef;
   @ViewChild('textcontrols') textcontrolsElmRef: any;
+  @ViewChild('pointcontrol') pointControlElmRef: any;
   id = (): string => Math.random().toString(36).substr(2, 9);
 
   selectedGraphics: any[] = [];
@@ -185,6 +186,11 @@ export class DrawtoolsComponent implements OnInit {
             createdGraphic = CreatePolylineFromGraphic(createdGraphic, this.lineProps);
           }
         }
+        if (evt.tool === 'point') {
+          createdGraphic = evt.graphic;
+          createdGraphic.attributes = { id: 'test', geometryType: 'point', symbol: createdGraphic.symbol };
+          createdGraphic = createdGraphic.toJSON();
+        }
         if (this.sketchVM.createCircleFromPoint) {
           createdGraphic = CreatecircleFromPoint(evt, this.radius, this.lineProps, this.fillProps);
         }
@@ -307,8 +313,8 @@ export class DrawtoolsComponent implements OnInit {
   startDrawingGraphics = (toolName: string) => {
     this.sketchVM.cancel();
     this.sketchVM.createCircleFromPoint = false;
-    this.sketchVM.pointSymbol = this.textcontrolsElmRef.textStyle;
-    this.sketchVM.activePointSymbol = this.textcontrolsElmRef.textStyle;
+    this.sketchVM.pointSymbol = this.pointControlElmRef.markerProps;
+    // this.sketchVM.activePointSymbol = this.textcontrolsElmRef.textStyle;
     if (toolName === 'circle' && this.drawingMode === 'hybrid') {
       this.drawingMode = 'click';
     }
