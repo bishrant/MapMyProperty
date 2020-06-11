@@ -50,6 +50,15 @@ const CreatePolygonSymbol = (outline: any, fill: any) => {
     };
 }
 
+const CreatePointSymbol = (markerProps: any) => {
+  return {
+    type: 'simple-marker',
+    size: markerProps.size,
+    style: markerProps.style,
+    color: markerProps.color,
+  }
+}
+
 const CreatePolylineSymbol = (outline: any) => {
   return {
     type: 'simple-line',
@@ -107,4 +116,5 @@ export {
   CreatePolygonSymbol,
   CheckIfColorIsHollowRGBA,
   CreatePolylineSymbol,
+  CreatePointSymbol
 };

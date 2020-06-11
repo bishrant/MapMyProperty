@@ -9,10 +9,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+import { ColorPickerModule } from '../color-picker/color-picker.module';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { MatButtonToggle, MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   declarations: [PointcontrolComponent],
-  imports: [CommonModule, InfobuttonModule, MatSliderModule, FormsModule, MatFormFieldModule, MatInputModule],
+  imports: [CommonModule, InfobuttonModule, MatSliderModule, FormsModule, MatFormFieldModule, MatInputModule, 
+    ColorPickerModule, AngularSvgIconModule, MatButtonModule, MatButtonToggleModule],
   exports: [PointcontrolComponent],
 })
 export class PointcontrolModule {}

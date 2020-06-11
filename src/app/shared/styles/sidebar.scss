@@ -1,8 +1,6 @@
-
-
 fieldset {
     position: relative;
-    padding-top: 12px
+    padding-top: 12px;
 }
 
 .widthSlider {
@@ -19,4 +17,21 @@ fieldset {
     min-width: unset !important;
     width: 50px;
     margin: 2px;
+}
+.fontStyle {
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.verticalCenter {
+    align-items: center;
+}
+.matSelect {
+    margin-left: 10px;
+}
+.colorDiv {
+    margin-top: 10px;
+}
+.marginTop10px {
+    margin-top: 10px;
 }
