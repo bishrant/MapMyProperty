@@ -61,6 +61,10 @@ const CreatecircleFromPoint = (evt: any, radius: number, lineProps: any, fillPro
   _g.attributes.radius = _g.geometry.radius;
   return _g;
 };
+
+const CreatePointFromGraphic = (graphic: any, markerProps: any) => {
+  
+}
 export {
   CreateCircleFromGraphic,
   CreatePolygonFromGraphic,

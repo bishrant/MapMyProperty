@@ -1,3 +1,4 @@
+import { PointcontrolModule } from './../pointcontrol/pointcontrol.module';
 import { InfobuttonModule } from './../infobutton/infobutton.module';
 import { RGBtoHEX } from '../../utils/Colors.pipe';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,7 +37,8 @@ import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
     MatButtonToggleModule,
     ToggleButtonModule,
     TextcontrolsModule,
-    InfobuttonModule
+    InfobuttonModule,
+    PointcontrolModule
   ],
   exports: [DrawtoolsComponent],
 })
