@@ -11,6 +11,7 @@ import {
   CreateCircleFromGraphic,
   CreatePolygonFromGraphic,
   CreatePolylineFromGraphic,
+  CreatePointFromGraphic,
 } from 'src/app/shared/utils/DrawUtils';
 import { LineStyles, FillStyles, CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { CreateCircleFromPoint } from 'src/app/shared/utils/SketchViewModelUitls';
@@ -187,9 +188,7 @@ export class DrawtoolsComponent implements OnInit {
           }
         }
         if (evt.tool === 'point') {
-          createdGraphic = evt.graphic;
-          createdGraphic.attributes = { id: 'test', geometryType: 'point', symbol: createdGraphic.symbol };
-          createdGraphic = createdGraphic.toJSON();
+          createdGraphic = CreatePointFromGraphic(evt.graphic, this.pointControlElmRef.markerProps);
         }
         if (this.sketchVM.createCircleFromPoint) {
           createdGraphic = CreatecircleFromPoint(evt, this.radius, this.lineProps, this.fillProps);
@@ -232,6 +231,9 @@ export class DrawtoolsComponent implements OnInit {
         }
         if (_updatedGraphics[0].attributes.geometryType === 'polyline') {
           _updatedGraphics = [CreatePolylineFromGraphic(gg.graphics[0], this.lineProps)];
+        }
+        if (_updatedGraphics[0].attributes.geometryType === 'point') {
+          _updatedGraphics = [CreatePointFromGraphic(gg.graphics[0], this.pointControlElmRef.markerProps)];
         }
         const graphicsStore$ = this.store.select((state) => state.app.graphics);
         graphicsStore$.pipe(take(1)).subscribe((graphics) => {

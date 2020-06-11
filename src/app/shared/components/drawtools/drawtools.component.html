@@ -19,7 +19,8 @@
                     <i class="customicon-untitled"></i>
                 </mat-button-toggle>
                 <mat-button-toggle value="point" aria-label="Point" class="toggleBtn">
-                    <mat-icon>fiber_manual_record</mat-icon>
+                    <svg-icon [src]="'assets/icons/pointSymbol.svg'" [svgStyle]="{'width.px': 20, fill: 'black'}">
+                    </svg-icon>
                 </mat-button-toggle>
                 <mat-button-toggle value="text" aria-label="Text" class="toggleBtn">
                     Tt
@@ -27,9 +28,9 @@
             </mat-button-toggle-group>
         </div>
         <br>
-               
-                <app-pointcontrol #pointcontrol></app-pointcontrol>
-                <br>
+
+        <app-pointcontrol #pointcontrol></app-pointcontrol>
+        <br>
         <fieldset>
             <legend>Drawing Mode</legend>
             <app-infobutton
@@ -57,13 +58,10 @@
             </div>
         </fieldset>
 
-
-
         <br>
         <fieldset>
             <legend>Line Style</legend>
-            <app-infobutton
-                [tooltip]="'Specifies how the outline of the geometry is styled.'"
+            <app-infobutton [tooltip]="'Specifies how the outline of the geometry is styled.'"
                 [ariaLabel]="'info button for line style'">
             </app-infobutton>
             <div style="display: flex;">
@@ -94,8 +92,8 @@
             </div>
             <div>
                 Width: {{lineProps.width}}px<br>
-                0 &nbsp;<mat-slider class="widthSlider" [thumbLabel]="true" step="1"
-                     (change)="changeGraphicsStyle()" [(ngModel)]="lineProps.width" min="0" max="10">
+                0 &nbsp;<mat-slider class="widthSlider" [thumbLabel]="true" step="1" (change)="changeGraphicsStyle()"
+                    [(ngModel)]="lineProps.width" min="0" max="10">
                 </mat-slider> &nbsp;10
             </div>
         </fieldset>
@@ -133,7 +131,8 @@
 
         </fieldset>
 
-        <app-textcontrols #textcontrols [selectedTextGraphics]="selectedTextGraphics" [hidden]="!(selectedTextGraphics.length>0 || drawingTool === 'text')"></app-textcontrols>
+        <app-textcontrols #textcontrols [selectedTextGraphics]="selectedTextGraphics"
+            [hidden]="!(selectedTextGraphics.length>0 || drawingTool === 'text')"></app-textcontrols>
 
 
     </div>

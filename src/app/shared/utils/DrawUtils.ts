@@ -1,4 +1,4 @@
-import { CreatePolygonSymbol, CreatePolylineSymbol } from './GraphicStyles';
+import { CreatePolygonSymbol, CreatePolylineSymbol, CreatePointSymbol } from './GraphicStyles';
 import { CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon, TFSPolyline } from './SketchViewModelUitls';
 const id = (): string => Math.random().toString(36).substr(2, 9);
 
@@ -30,6 +30,8 @@ const CreatePolygonFromGraphic = (graphic: any, lineProps: any, fillProps: any) 
   }).asJSON();
   return polygonJSON;
 };
+
+
 
 const CreatePolylineFromGraphic = (graphic: any, lineProps: any) => {
   let polylineJSON = graphic.toJSON();
@@ -63,7 +65,13 @@ const CreatecircleFromPoint = (evt: any, radius: number, lineProps: any, fillPro
 };
 
 const CreatePointFromGraphic = (graphic: any, markerProps: any) => {
-  
+  let _g = graphic.toJSON();
+  _g.symbol = CreatePointSymbol(markerProps);
+  _g.symbol.type = "simple-marker";
+  const _id = _g.attributes.id ? _g.attributes.id : id();
+  _g.attributes = { id: _id, geometryType: 'point', symbol: _g.symbol };
+  _g.geometry.type = 'point';
+  return _g;
 }
 export {
   CreateCircleFromGraphic,
@@ -72,4 +80,5 @@ export {
   CreatecircleFromPoint,
   CreatePolygonGraphicWithSymbology,
   CreateCircleFromEvent,
+  CreatePointFromGraphic
 };
