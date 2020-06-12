@@ -28,8 +28,8 @@ export class GraphicsStoreComponent {
     this.store.dispatch(removeAllGraphics());
   }
   delete(): void {
-    const gids = this.selectedGraphics.map((gg) => gg.attributes.gid);
-    this.store.dispatch(removeGraphics({ gids }));
+    const ids = this.selectedGraphics.map((gg) => gg.attributes.id);
+    this.store.dispatch(removeGraphics({ ids }));
   }
   redo(): void {
     if (this.sketchVM.state === 'active') {
@@ -48,6 +48,4 @@ export class GraphicsStoreComponent {
       });
     }
   };
-
-
 }

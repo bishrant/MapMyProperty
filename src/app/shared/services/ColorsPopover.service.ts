@@ -48,9 +48,9 @@ export class ColorsPopoverService {
   }
 
   close = (data: any, closePopup = true) => {
-    if (!closePopup) {
-      this.afterClosed.next(data);
-    } else {
+    if (closePopup) {
+    //   this.afterClosed.next(data);
+    // } else {
       this.sub && this.sub.unsubscribe();
       if (this.overlayRef) {
         this.overlayRef.dispose();

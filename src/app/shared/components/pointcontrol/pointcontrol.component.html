@@ -1,0 +1,29 @@
+<fieldset>
+    <legend>Point Style</legend>
+    <app-infobutton [tooltip]="'Specifies how the point marker is styled.'"
+        [ariaLabel]="'info button for point marker style'">
+    </app-infobutton>
+    <div class="marginTop10px">
+        Shape <br>
+        <mat-button-toggle-group name="markerProps.style" aria-label="Point Shape" [(ngModel)]="markerProps.style"
+            (change)="changePointShape($event)">
+            <mat-button-toggle *ngFor="let symbol of markerStyles" [value]="symbol" class="drawModeBtn">
+                <svg-icon [src]="'assets/icons/symbols-sms-'+symbol+'.svg'" class="toggleBtn" [svgStyle]="fillSvgStyle">
+                </svg-icon>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+
+
+    </div>
+    <div class="flex colorDiv verticalCenter">Color:
+        <app-color-picker [color]="markerProps.color" [opacity]="markerProps.color.a * 100"
+            (colorSelected)="changePointColor($event)">
+        </app-color-picker>
+    </div>
+    <div class="marginTop10px">
+        Size: {{markerProps.size}}<br>
+        0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5"
+            (change)="changeMarkerSize()" [(ngModel)]="markerSize" min="5" max="50">
+        </mat-slider> &nbsp;50
+    </div>
+</fieldset>

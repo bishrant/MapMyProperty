@@ -11,6 +11,7 @@ import {
   CreateCircleFromGraphic,
   CreatePolygonFromGraphic,
   CreatePolylineFromGraphic,
+  CreatePointFromGraphic,
 } from 'src/app/shared/utils/DrawUtils';
 import { LineStyles, FillStyles, CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { CreateCircleFromPoint } from 'src/app/shared/utils/SketchViewModelUitls';
@@ -31,10 +32,11 @@ export class DrawtoolsComponent implements OnInit {
   @Input() textGraphicsLayer: any;
   @ViewChild('radiusInput') radiusElmRef: ElementRef;
   @ViewChild('textcontrols') textcontrolsElmRef: any;
+  @ViewChild('pointcontrol') pointControlElmRef: any;
   id = (): string => Math.random().toString(36).substr(2, 9);
 
   selectedGraphics: any[] = [];
-  selectedTextGraphic: any;
+  selectedTextGraphics: any = [];
 
   lineProps: LineProps = {
     style: 'solid',
@@ -65,7 +67,7 @@ export class DrawtoolsComponent implements OnInit {
 
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
 
-  constructor(private store: Store<AppState>) { }
+  constructor(private store: Store<AppState>) {}
 
   setLineSVGStyle = () => {
     this.lineSvgStyle.fill = RGBObjectToHex(this.lineProps.color);
@@ -100,29 +102,43 @@ export class DrawtoolsComponent implements OnInit {
       this.ResetDrawControls();
     });
   };
+  private CreateDraggableTextbox = (textGraphic) => {
+    let graphicCenter = this.mapView.toScreen(textGraphic.geometry);
+    const input = createInputWithFrame(
+      graphicCenter,
+      textGraphic,
+      textGraphic.attributes.symbol,
+      this.store,
+      this.mapView
+    );
 
+    this.textGraphicsLayer.remove(textGraphic);
+    document.getElementById('textboxes').appendChild(input);
+    dragElement(textGraphic.attributes.id, 'parent');
+  };
   private detectTextGraphics = () => {
     this.mapView.on('click', (evt: any) => {
       if (this.sketchVM.state === 'active') return;
 
       this.mapView.hitTest(evt).then((response: any) => {
-        if (response.results.length < 1) return;
+        if (response.results.length < 1) {
+          this.selectedTextGraphics = [];
+          return;
+        }
 
-        const _textGraphics = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer);
-        if (_textGraphics.length > 0) {
-          const textGraphic = _textGraphics[0].graphic;
-          let graphicCenter = this.mapView.toScreen(textGraphic.geometry);
-          const input = createInputWithFrame(
-            graphicCenter,
-            textGraphic,
-            textGraphic.attributes.symbol,
-            this.store,
-            this.mapView
-          );
-
-          this.textGraphicsLayer.remove(textGraphic);
-          document.getElementById('textboxes').appendChild(input);
-          dragElement(textGraphic.attributes.id, 'parent');
+        this.selectedTextGraphics = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer);
+        if (this.selectedTextGraphics.length > 0) {
+          const textGraphic = this.selectedTextGraphics[0].graphic;
+          const extent = this.mapView.extent.clone().expand(0.85);
+          const isPointInside = extent.contains(textGraphic.geometry);
+          if (!isPointInside) {
+            // @todo maake it so that the textbox just pans the map just enough to fit it in frame
+            this.mapView.goTo(textGraphic).then(() => {
+              this.CreateDraggableTextbox(textGraphic);
+            });
+          } else {
+            this.CreateDraggableTextbox(textGraphic);
+          }
         }
       });
     });
@@ -160,7 +176,7 @@ export class DrawtoolsComponent implements OnInit {
         if (['polygon', 'polyline'].indexOf(evt.tool) > -1) {
           createdGraphic = evt.graphic;
           createdGraphic.attributes = {
-            gid: this.id(),
+            id: this.id(),
             symbol: createdGraphic.symbol,
             geometryType: evt.tool,
             radius: 0,
@@ -171,10 +187,13 @@ export class DrawtoolsComponent implements OnInit {
             createdGraphic = CreatePolylineFromGraphic(createdGraphic, this.lineProps);
           }
         }
+        if (evt.tool === 'point') {
+          createdGraphic = CreatePointFromGraphic(evt.graphic, this.pointControlElmRef.markerProps);
+        }
         if (this.sketchVM.createCircleFromPoint) {
           createdGraphic = CreatecircleFromPoint(evt, this.radius, this.lineProps, this.fillProps);
         }
-        this.store.dispatch(addGraphics({ payload: JSON.stringify(createdGraphic) }));
+        this.store.dispatch(addGraphics({ graphics: JSON.stringify(createdGraphic) }));
       }
     });
   };
@@ -213,13 +232,16 @@ export class DrawtoolsComponent implements OnInit {
         if (_updatedGraphics[0].attributes.geometryType === 'polyline') {
           _updatedGraphics = [CreatePolylineFromGraphic(gg.graphics[0], this.lineProps)];
         }
+        if (_updatedGraphics[0].attributes.geometryType === 'point') {
+          _updatedGraphics = [CreatePointFromGraphic(gg.graphics[0], this.pointControlElmRef.markerProps)];
+        }
         const graphicsStore$ = this.store.select((state) => state.app.graphics);
         graphicsStore$.pipe(take(1)).subscribe((graphics) => {
           if (graphics.length < 1) return;
           let areEqual = false;
           for (let i = 0; i < graphics.length; i++) {
             const _existing = JSON.parse(graphics[i]);
-            if (_updatedGraphics[0].attributes.gid === _existing.attributes.gid) {
+            if (_updatedGraphics[0].attributes.id === _existing.attributes.id) {
               areEqual = equals(_updatedGraphics[0].geometry, _existing.geometry);
               break;
             }
@@ -232,7 +254,6 @@ export class DrawtoolsComponent implements OnInit {
       }
     });
   };
-
 
   updateCircleRadius = () => {
     if (this.selectedGraphics.length > 0) {
@@ -294,8 +315,8 @@ export class DrawtoolsComponent implements OnInit {
   startDrawingGraphics = (toolName: string) => {
     this.sketchVM.cancel();
     this.sketchVM.createCircleFromPoint = false;
-    this.sketchVM.pointSymbol = this.textcontrolsElmRef.textStyle;
-    this.sketchVM.activePointSymbol = this.textcontrolsElmRef.textStyle;
+    this.sketchVM.pointSymbol = this.pointControlElmRef.markerProps;
+    // this.sketchVM.activePointSymbol = this.textcontrolsElmRef.textStyle;
     if (toolName === 'circle' && this.drawingMode === 'hybrid') {
       this.drawingMode = 'click';
     }
@@ -336,5 +357,4 @@ export class DrawtoolsComponent implements OnInit {
       this.startDrawingGraphics(this.drawingTool);
     }
   };
-
 }

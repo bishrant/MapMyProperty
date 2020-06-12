@@ -97,18 +97,25 @@ body {
   min-width: calc(100% - 50px) !important;
 }
 
+
+$alignment: center;
+$border-radius: 5px;
+$textboxFrameColor: white;
 .mapTextInput:focus {
-  border: 2px solid cyan !important;
-  text-indent: -5px;
+  border: 2px solid $textboxFrameColor !important;
+  outline: none;
+  // text-indent: -5px;
 }
 .mapTextInput {
-  text-align: center;
+  text-align: $alignment;
   background: rgba(255, 255, 255, 0.3);
-  z-index: 1000000;
+  z-index: 1000;
   position: absolute;
   caret-color: red;
   max-width: 500px;
   min-width: 200px;
+  border: 2px solid $textboxFrameColor;
+  border-radius: $border-radius;
   // border: 2px solid black;
 }
 .mapTextInputContainer {
@@ -117,20 +124,72 @@ body {
   z-index: 1000000;
   position: absolute;
 }
-$border-radius: 5px;
-.mapTextInputContainer>input {
+
+.mapTextInputContainer > input {
   width: 100%;
   box-sizing: border-box;
   background: rgba(255, 255, 255, 0.3);
-  text-align: center;
-  border-radius: 0 0 $border-radius $border-radius;
+  text-align: $alignment;
+  border: 2px solid $textboxFrameColor;
+  border-radius: $border-radius;
+  padding-right: 25px;
 }
 .textBoxHeaderDrag {
   cursor: move;
-  height: 40px;
-  width: auto;
-  background: rgba(170, 183, 156, 0.7);
-  line-height: 40px;
-  padding-left: 10px;
-  border-radius: $border-radius $border-radius 0 0;
+  height: 36px;
+  position: absolute;
+  right: 0;
+  width: 20px;
+  // background: rgba(170, 183, 156, 0.7);
+  z-index: 2000;
+  // line-height: 40px;
+  line-height: 7px;
+  color: $textboxFrameColor;
+  font-size: 30px;
+  // padding-left: 10px;
+  // border-radius: $border-radius $border-radius 0 0;
+}
+
+.sep {
+  position: absolute;
+  left: -5px;
+  height: 100%;
+  width: 8px;
+  /* top: 13px; */
+  font-weight: lighter;
+  line-height: 34px;
+  /* font-size: 25px; */
+  color: $textboxFrameColor;
+}
+.infoToolTip {
+  color: white !important;
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+$sliderBase: 6px;
+.mat-slider.mat-slider-horizontal .mat-slider-wrapper {
+  top: $sliderBase;
+}
+.mat-slider.mat-slider-horizontal .mat-slider-track-wrapper {
+  height: $sliderBase;
+  border-radius: 5px
+}
+.mat-slider.mat-slider-horizontal .mat-slider-track-background,
+.mat-slider.mat-slider-horizontal .mat-slider-track-fill {
+  height: 100%;
+}
+.mat-slider.mat-slider-horizontal .mat-slider-track-fill {
+  // background-color: blue;
+}
+.mat-accent .mat-slider-thumb {
+  height: 16px;
+  width: 16px;
+  background-color: white;
+  border: solid 2px gray;
+  bottom: -10px;
+  right: -10px;
+}
+.mat-slider-min-value:not(.mat-slider-thumb-label-showing) .mat-slider-thumb {
+  background-color: white;
 }

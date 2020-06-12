@@ -1,3 +1,5 @@
+import { PointcontrolModule } from './../pointcontrol/pointcontrol.module';
+import { InfobuttonModule } from './../infobutton/infobutton.module';
 import { RGBtoHEX } from '../../utils/Colors.pipe';
 import { MatButtonModule } from '@angular/material/button';
 import { NgModule } from '@angular/core';
@@ -14,7 +16,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToggleButtonModule } from '../togglebutton/togglebutton';
 import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
 
@@ -34,9 +35,10 @@ import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
     FlexLayoutModule,
     MatInputModule,
     MatButtonToggleModule,
-    MatTooltipModule,
     ToggleButtonModule,
-    TextcontrolsModule
+    TextcontrolsModule,
+    InfobuttonModule,
+    PointcontrolModule
   ],
   exports: [DrawtoolsComponent],
 })

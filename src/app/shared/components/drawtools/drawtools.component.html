@@ -19,7 +19,8 @@
                     <i class="customicon-untitled"></i>
                 </mat-button-toggle>
                 <mat-button-toggle value="point" aria-label="Point" class="toggleBtn">
-                    <mat-icon>fiber_manual_record</mat-icon>
+                    <svg-icon [src]="'assets/icons/pointSymbol.svg'" [svgStyle]="{'width.px': 20, fill: 'black'}">
+                    </svg-icon>
                 </mat-button-toggle>
                 <mat-button-toggle value="text" aria-label="Text" class="toggleBtn">
                     Tt
@@ -27,14 +28,17 @@
             </mat-button-toggle-group>
         </div>
         <br>
+
+        <app-pointcontrol #pointcontrol></app-pointcontrol>
+        <br>
         <fieldset>
-            <legend>Drawing mode</legend>
+            <legend>Drawing Mode</legend>
+            <app-infobutton
+                [tooltip]="'Specifies how vertices are added while the graphic can be created. Applies only while creating polygon, polyline and circle geometries'"
+                [ariaLabel]="'info button for drawing mode'">
+            </app-infobutton>
+
             <div class="centerAlign">
-                <button mat-icon-button
-                    matTooltip="Specifies how vertices are added while the graphic can be created. Applies only while creating polygon, polyline and circle geometries."
-                    aria-label="info button" [matTooltipPosition]="'left'" class="infoBtn">
-                    <mat-icon class="smallIcon">info</mat-icon>
-                </button>
                 <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [(ngModel)]="drawingMode"
                     (change)="changeDrawingMode($event)">
 
@@ -54,16 +58,12 @@
             </div>
         </fieldset>
 
-
-
         <br>
         <fieldset>
             <legend>Line Style</legend>
-
-            <button mat-icon-button matTooltip="Specifies how the outline of the geometry is styled."
-                aria-label="info for line style" [matTooltipPosition]="'left'" class="infoBtn">
-                <mat-icon class="smallIcon">info</mat-icon>
-            </button>
+            <app-infobutton [tooltip]="'Specifies how the outline of the geometry is styled.'"
+                [ariaLabel]="'info button for line style'">
+            </app-infobutton>
             <div style="display: flex;">
                 <div style="flex-grow: 1;">
                     Line type:<br>
@@ -91,19 +91,17 @@
                 </div>
             </div>
             <div>
-                Width<br>
-                0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="1"
-                    tickInterval="1" (change)="changeGraphicsStyle()" [(ngModel)]="lineProps.width" min="0" max="10">
+                Width: {{lineProps.width}}px<br>
+                0 &nbsp;<mat-slider class="widthSlider" [thumbLabel]="true" step="1" (change)="changeGraphicsStyle()"
+                    [(ngModel)]="lineProps.width" min="0" max="10">
                 </mat-slider> &nbsp;10
             </div>
         </fieldset>
         <fieldset>
             <legend>Fill Style</legend>
-
-            <button mat-icon-button matTooltip="Specifies how the inside(fill) of the geometry is styled."
-                aria-label="info for fill style" [matTooltipPosition]="'left'" class="infoBtn">
-                <mat-icon class="smallIcon">info</mat-icon>
-            </button>
+            <app-infobutton [tooltip]="'Specifies how the inside(fill) of the geometry is styled.'"
+                [ariaLabel]="'info button for fill style'">
+            </app-infobutton>
             <div style="display: flex;">
                 <div style="flex-grow: 1;">
                     Pattern :<br>
@@ -133,9 +131,10 @@
 
         </fieldset>
 
-        <app-textcontrols #textcontrols></app-textcontrols>
+        <app-textcontrols #textcontrols [selectedTextGraphics]="selectedTextGraphics"
+            [hidden]="!(selectedTextGraphics.length>0 || drawingTool === 'text')"></app-textcontrols>
 
-      
+
     </div>
     <!-- <div style="background: red; color:white">Works almost. not perfect !!!. Wait a day or so</div> -->
 </mat-expansion-panel>
