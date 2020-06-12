@@ -1,8 +1,9 @@
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 
-const CreateSensAreasGL = (Id: string = 'sensAreasGL') => {
+const CreateSensAreasGL = (id: string, opacity: number) => {
     const graphicsLayer = new GraphicsLayer({
-      id: Id
+      id: id,
+      opacity: opacity
     });
     return graphicsLayer;
   };

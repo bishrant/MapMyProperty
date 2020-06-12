@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from './dialog.component';
 import { DialogService } from './dialog.service';
+import { MatButtonModule, MatButton } from '@angular/material/button';
 
 
 
@@ -10,10 +11,11 @@ import { DialogService } from './dialog.service';
   declarations: [DialogComponent],
   imports: [
     CommonModule,
-    MatDialogModule
+    MatDialogModule,
+    MatButtonModule
   ],
   exports: [DialogComponent],
   entryComponents: [DialogComponent],
-  providers: [DialogService, MatDialog]
+  providers: [DialogService, MatDialog, MatButton]
 })
 export class DialogsModule { }

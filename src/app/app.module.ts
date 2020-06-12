@@ -16,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HeaderModule } from './shared/components/header/header.module';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,7 +30,8 @@ import { HeaderModule } from './shared/components/header/header.module';
     ReactiveFormsModule,
     StoreModule.forRoot({ app: GraphicsReducer }),
     AngularSvgIconModule.forRoot(),
-    environment.production ? [] : StoreDevtoolsModule.instrument(),
+    NgxSpinnerModule,
+    environment.production ? [] : StoreDevtoolsModule.instrument()
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -29,6 +29,7 @@
     "bishrant-arcgis-js-api": "github:bishrant/arcgis-js-types#master",
     "fp-ts": "^2.6.3",
     "immer": "^6.0.9",
+    "ngx-spinner": "^9.0.2",
     "rxjs": "^6.5.5",
     "tslib": "^1.10.0",
     "zone.js": "^0.10.3"
