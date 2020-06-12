@@ -57,7 +57,6 @@ export class SensAreasService {
 
       gp.submitJob(params).then((jobInfo) => {
         gp.waitForJobCompletion(jobInfo.jobId).then((jobInfo2) => {
-          console.log(jobInfo2.jobStatus);
           if (jobInfo2.jobStatus === 'job-succeeded') {
             Promise.all([
               gp.getResultData(jobInfo2.jobId, 'outputWetlands'),
@@ -127,10 +126,7 @@ export class SensAreasService {
       }
 
       this.addGraphicsToGL(gl, area.value, index, symbol, origin);
-      // this.updateState.emit("clipped");
     });
-
-    // this.spinner.hide();
   }
 
   private addGraphicsToGL(gl: GraphicsLayer, fs: FeatureSet, index: number, symbol: any, origin:string): void {
@@ -142,7 +138,6 @@ export class SensAreasService {
         element.attributes.origin = origin;
         if (index === 1)
         {
-          debugger
           if (element.attributes.gridcode === 1)
           {
             graphicsCollection.push(element);
