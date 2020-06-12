@@ -1,4 +1,4 @@
-<mat-expansion-panel (opened)="opened()">
+<mat-expansion-panel #sensAreaToolHeader (opened)="opened()">
     <mat-expansion-panel-header>
         <mat-panel-title>
             Sensitive Areas
@@ -20,11 +20,11 @@
             <div>
                 Transparency<br>    
             </div>
-            <div>0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5" min="0" max="100">
+            <div>0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" [value]="sliderValue" (input)="updateSliderValue($event.value)" step="5" min="0" max="100">
             </mat-slider> &nbsp;100</div>
             <div class="row">
                 <div class="plusSign"></div>
-                <mat-checkbox>Streams</mat-checkbox>
+                <mat-checkbox [checked]= "streamsChkboxValue" (change)="updateGraphicOpacity($event.checked, 'streams')">Streams</mat-checkbox>
                 <div class="saSymbol streamLegend">
                     <div class="streamColor">&ndash;&ndash;&ndash;</div>
                 </div>
@@ -34,7 +34,7 @@
                     <span *ngIf="streamCollapsed">+</span>
                     <span *ngIf="!streamCollapsed">&ndash;</span>
                 </div>
-                <mat-checkbox>Streams Buffers (SMZ)</mat-checkbox>
+                <mat-checkbox [checked]= "smzChkboxValue" (change)="updateGraphicOpacity($event.checked, 'smz')">Streams Buffers (SMZ)</mat-checkbox>
                 <div class="saSymbol smzBack"></div>
             </div>
             <div class="row" *ngIf="!streamCollapsed">
@@ -51,7 +51,7 @@
                     <span *ngIf="slopeCollapsed">+</span>
                     <span *ngIf="!slopeCollapsed">&ndash;</span>
                 </div>
-                <mat-checkbox>Severe Slopes (>8%)</mat-checkbox>
+                <mat-checkbox [checked]= "slopesChkboxValue" (change)="updateGraphicOpacity($event.checked, 'slopes')">Severe Slopes (>8%)</mat-checkbox>
                 <div class="saSymbol slopeBack"></div>
             </div>
             <div class="row" *ngIf="!slopeCollapsed">
@@ -69,7 +69,7 @@
                     <span *ngIf="wetCollapsed">+</span>
                     <span *ngIf="!wetCollapsed">&ndash;</span>
                 </div>
-                <mat-checkbox>Wet Areas</mat-checkbox>
+                <mat-checkbox [checked]= "wetAreasChkboxValue" (change)="updateGraphicOpacity($event.checked, 'wetlands')">Wet Areas</mat-checkbox>
                 <div class="saSymbol wetBack"></div>
             </div>
             <div class="row" *ngIf="!wetCollapsed">
