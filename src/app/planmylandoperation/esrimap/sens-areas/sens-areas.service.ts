@@ -1,5 +1,5 @@
 import { GetTxStateUrl, GetSensAreasGpUrl } from '../../pmloUtils/arcgisURLs';
-import { Injectable, Output, EventEmitter } from '@angular/core';
+import { Injectable, Output, EventEmitter, Directive } from '@angular/core';
 import { Geometry } from 'esri/geometry';
 import Query from 'esri/tasks/support/Query';
 import QueryTask from 'esri/tasks/QueryTask';
@@ -11,6 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { LineProps, FillProps } from 'src/app/shared/components/DrawTools/DrawTools.interface';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 
+@Directive()
 @Injectable({
   providedIn: 'root',
 })
