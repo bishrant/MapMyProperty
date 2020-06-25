@@ -73,6 +73,7 @@ const CreatePointFromGraphic = (graphic: any, markerProps: any) => {
   _g.geometry.type = 'point';
   return _g;
 }
+
 export {
   CreateCircleFromGraphic,
   CreatePolygonFromGraphic,
