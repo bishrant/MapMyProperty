@@ -213,8 +213,18 @@ export class DrawtoolsComponent implements OnInit {
         return;
       }
       if (gg.state === 'start' || gg.state === 'active') {
+        console.log(this.sketchVM.activePointSymbol);
+
         this.mapView.graphics.removeAll();
         let _temp = gg.graphics[0].clone();
+        // this.sketchVM.activePointSymbol = _temp.attributes.symbol;
+        // this.sketchVM.updatePointSymbol = _temp.attributes.symbol;
+
+        // if (_temp.attributes.geometryType === 'point') {
+        //   let existng = this.sketchVM.activePointSymbol;
+        //   this.sketchVM.activePointSymbol = _temp.attributes.symbol;
+        // }
+
         _temp.symbol = _temp.attributes.symbol;
         this.mapView.graphics.add(_temp);
         this.selectedGraphics = gg.graphics;
