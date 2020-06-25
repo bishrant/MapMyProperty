@@ -41,10 +41,10 @@
                 <div class="subMenuContainer">
                     <mat-form-field class="example-form-field">
                         <mat-label>Feet</mat-label>
-                        <input matInput type="number" value="50">
+                        <input matInput type="number" min="0" [value]="smzBufferValue" (input)="smzBufferValue = $event.target.value">
                       </mat-form-field>
                 </div>
-                <button mat-raised-button color="accent" class="pmlo-button">Buffer</button>
+                <button mat-raised-button color="accent" class="pmlo-button" (click)="bufferGraphic('smz')">Buffer</button>
             </div>
             <div class="row">
                 <div class="plusSign" (click)="slopeCollapsed = !slopeCollapsed">
@@ -59,10 +59,10 @@
                     <span class="prefix-margin">&lt;</span>
                     <mat-form-field class="example-form-field">
                         <mat-label>Percent</mat-label>
-                        <input matInput type="number" value="8">
+                        <input matInput type="number" [value]="slopeValue" (input)="slopeValue = $event.target.value">
                       </mat-form-field>
                 </div>
-                <button mat-raised-button color="accent" class="pmlo-button">Set</button>
+                <button mat-raised-button color="accent" class="pmlo-button"(click)="setSlope('slopes')">Set</button>
             </div>
             <div class="row">
                 <div class="plusSign" (click)="wetCollapsed = !wetCollapsed">
@@ -76,15 +76,15 @@
                 <div class="subMenuContainer">
                     <mat-form-field class="example-form-field">
                         <mat-label>Feet</mat-label>
-                        <input matInput type="number" value="50">
+                        <input matInput type="number" min="0" [value]="wetlandsBufferValue" (input)="wetlandsBufferValue = $event.target.value">
                       </mat-form-field>
                 </div>
-                <button mat-raised-button color="accent" class="pmlo-button">Buffer</button>
+                <button mat-raised-button color="accent" class="pmlo-button" (click)="bufferGraphic('wetlandsBuffer')">Buffer</button>
                 <div class="saSymbol wetBufferBack"></div>
             </div>
     
             <div class="row mt-3">
-                <button mat-raised-button class="pmlo-button generalBtn">Clear Layer</button>
+                <button mat-raised-button class="pmlo-button generalBtn" (click)="clearSMZGraphics()">Clear Layer</button>
             </div>
             <div class="row mt-3">
                 <button mat-raised-button color="accent" class="pmlo-button generalBtn">Create a Report</button>

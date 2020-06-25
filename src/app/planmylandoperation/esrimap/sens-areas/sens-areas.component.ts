@@ -27,11 +27,18 @@ export class SensAreasComponent implements OnInit {
   smzChkboxValue: boolean = true;
   slopesChkboxValue: boolean = true;
   wetAreasChkboxValue: boolean = true;
+  smzBufferValue: number = 50;
+  wetlandsBufferValue:number = 0;
+  slopeValue:number = 8;
 
   @Input() mapView: any;
 
   private boundaryLayer: GraphicsLayer;
-  private sensAreaGL: GraphicsLayer = CreateSensAreasGL('sensAreasGL', 0.5);
+  private sensAreaGL: GraphicsLayer = CreateSensAreasGL('sensAreasGL', 1);
+
+  private opt = {
+    message: '',
+  };
 
   constructor(
     private dialogService: DialogService, 
@@ -54,21 +61,18 @@ export class SensAreasComponent implements OnInit {
   }
 
   opened(): void {
-    const opt = {
-      message: '',
-    };
     const maxAcres: number = 10000;
 
     if (this.boundaryLayer.graphics.length === 0) {
       this.state = 'noBoundary';
     } else if (this.boundaryLayer.graphics.length > 1) {
       this.sensAreaToolHeader.close();
-      opt.message = 'You can only display sensitive areas from one polygon at a time.';
-      this.dialogService.open(opt);
+      this.opt.message = 'You can only display sensitive areas from one polygon at a time.';
+      this.dialogService.open(this.opt);
     } else if (GreaterThanMaxArea(this.boundaryLayer.graphics.getItemAt(0).geometry, maxAcres, 'acres')) {
       this.sensAreaToolHeader.close();
-      opt.message = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(maxAcres) + ' acres';
-      this.dialogService.open(opt);
+      this.opt.message = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(maxAcres) + ' acres';
+      this.dialogService.open(this.opt);
     } else if (this.sensAreaGL.graphics.length === 0) {
       this.state = 'clipping';
       this.spinner.show();
@@ -83,10 +87,10 @@ export class SensAreasComponent implements OnInit {
             {
               this.spinner.hide();
               this.sensAreaToolHeader.close();
-              opt.message = 'There was an error calculating "Sensitive Areas". Please try again and, if the problem persists, contact the administrator.';
-              this.dialogService.open(opt);
+              this.opt.message = 'There was an error calculating "Sensitive Areas". Please try again and, if the problem persists, contact the administrator.';
+              this.dialogService.open(this.opt);
             } else {
-              this.sensAreasService.addSensAreasToMap(this.sensAreaGL, result);
+              this.sensAreasService.addSensAreasToMap(this.sensAreaGL, result, this.sliderValue);
               this.state = "clipped";
               this.spinner.hide();
             }
@@ -94,8 +98,8 @@ export class SensAreasComponent implements OnInit {
         } else {
           this.spinner.hide();
           this.sensAreaToolHeader.close();
-          opt.message = 'Please make sure that your project area is totally within Texas.';
-          this.dialogService.open(opt);
+          this.opt.message = 'Please make sure that your project area is totally within Texas.';
+          this.dialogService.open(this.opt);
         }
       });
     } else {
@@ -104,10 +108,49 @@ export class SensAreasComponent implements OnInit {
   }
 
   updateSliderValue(value: number):void {
-    this.sensAreaGL.opacity = (100 - value) / 100;
+    // this.sensAreaGL.opacity = (100 - value) / 100;
+    this.sensAreasService.updateGraphicsOpacity(this.sensAreaGL, value);
   }
 
   updateGraphicOpacity(isChecked: boolean, origin: string) {
     this.sensAreasService.updateOpacity(this.sensAreaGL, origin, isChecked);
+  }
+
+  bufferGraphic(origin: string):void {
+    this.spinner.show();
+    const inputBoundary: Graphic = this.boundaryLayer.graphics.getItemAt(0);
+    const inputFeet: number = origin === 'smz' ? this.smzBufferValue : this.wetlandsBufferValue;
+    this.sensAreasService.bufferGraphic(origin, inputBoundary, inputFeet).then(result => {
+      if (result === null)
+      {
+        this.spinner.hide();
+        this.opt.message = 'There was an error creating the buffer. Please try again and, if the problem persists, contact the administrator.';
+        this.dialogService.open(this.opt);
+      } else {
+        this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue);
+        this.spinner.hide();
+      }
+    });
+  }
+
+  setSlope(origin: string):void {
+    this.spinner.show();
+    const inputBoundary: Graphic = this.boundaryLayer.graphics.getItemAt(0);
+    this.sensAreasService.setSlope(inputBoundary, this.slopeValue).then(result => {
+      if (result === null)
+      {
+        this.spinner.hide();
+        this.opt.message = 'There was an error setting the severe slope. Please try again and, if the problem persists, contact the administrator.';
+        this.dialogService.open(this.opt);
+      } else {
+        this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue);
+        this.spinner.hide();
+      }
+    });
+  }
+
+  clearSMZGraphics(): void {
+    this.sensAreaGL.removeAll();
+    this.sensAreaToolHeader.close();
   }
 }

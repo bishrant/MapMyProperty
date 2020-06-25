@@ -1,4 +1,4 @@
-import { GetTxStateUrl, GetSensAreasGpUrl } from '../../pmloUtils/arcgisURLs';
+import { GetTxStateUrl, GetSensAreasGpUrl, GetBufferSensAreasGpUrl, GetSevereSlopesGpUrl } from '../../pmloUtils/arcgisURLs';
 import { Injectable, Output, EventEmitter } from '@angular/core';
 import { Geometry } from 'esri/geometry';
 import Query from 'esri/tasks/support/Query';
@@ -7,20 +7,24 @@ import FeatureSet from 'esri/tasks/support/FeatureSet';
 import Graphic from 'esri/Graphic';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
 import GraphicsLayer from 'arcgis-js-api/layers/GraphicsLayer';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { LineProps, FillProps } from 'src/app/shared/components/DrawTools/DrawTools.interface';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
+import {
+  GetWetlandsProps,
+  GetSlopeProps,
+  GetStreamsLineProps,
+  GetDefaultLineProps,
+  GetWetlandsBufferProps,
+  GetSMZProps
+} from '../../pmloUtils/sensAreasStyles';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SensAreasService {
-
   @Output() updateState: EventEmitter<string> = new EventEmitter();
 
-  constructor(
-    private spinner: NgxSpinnerService
-  ) {}
+  constructor() {}
 
   isWithinTexas(geo: Geometry): Promise<boolean> {
     return new Promise((resolve) => {
@@ -33,7 +37,7 @@ export class SensAreasService {
       query.returnGeometry = false;
       query.geometry = geo;
 
-      -_queryTask.execute(query).then((results) => {
+      _queryTask.execute(query).then((results) => {
         if (results.features.length === 0) {
           resolve(false);
         } else {
@@ -56,107 +60,255 @@ export class SensAreasService {
       });
 
       gp.submitJob(params).then((jobInfo) => {
-        gp.waitForJobCompletion(jobInfo.jobId).then((jobInfo2) => {
-          if (jobInfo2.jobStatus === 'job-succeeded') {
-            Promise.all([
-              gp.getResultData(jobInfo2.jobId, 'outputWetlands'),
-              gp.getResultData(jobInfo2.jobId, 'outputSevereSlopes'),
-              gp.getResultData(jobInfo2.jobId, 'outputSMZ'),
-              gp.getResultData(jobInfo2.jobId, 'outputStreams')
-            ]).then((value) => {
-              resolve(value);
-            });
+        gp.waitForJobCompletion(jobInfo.jobId).then(
+          (jobInfo2) => {
+            if (jobInfo2.jobStatus === 'job-succeeded') {
+              Promise.all([
+                gp.getResultData(jobInfo2.jobId, 'outputWetlands'),
+                gp.getResultData(jobInfo2.jobId, 'outputSevereSlopes'),
+                gp.getResultData(jobInfo2.jobId, 'outputSMZ'),
+                gp.getResultData(jobInfo2.jobId, 'outputStreams'),
+              ]).then((value) => {
+                resolve(value);
+              });
+            }
+          },
+          (error) => {
+            resolve([]);
           }
-        },
-        (error) => {
-          resolve([]);
-        });
+        );
       });
     });
   }
 
-  addSensAreasToMap(gl: GraphicsLayer, areas: any[]): void {
+  addSensAreasToMap(gl: GraphicsLayer, areas: any[], sliderValue: number): void {
+    const graphicTransparency:number = (100 - sliderValue) / 100;
     areas.forEach((area, index) => {
       let symbol: any;
       let fillProps: FillProps;
-      let lineProps: LineProps = {
-        style: 'dash',
-        color: null,
-        opacity: 100,
-        width: 0,
-      };
-      let origin = "";
+      let lineProps: LineProps = GetDefaultLineProps();
+      let origin = '';
+      let isSlope: boolean = false;
+
       switch (index) {
         case 0:
-          fillProps = {
-            color: { r: 102, g: 153, b: 205, a: 1 },
-            style: 'solid',
-            opacity: 100,
-          };
+          fillProps = GetWetlandsProps(graphicTransparency);
           symbol = CreatePolygonSymbol(lineProps, fillProps);
-          origin = "wetlands";
+          origin = 'wetlands';
           break;
 
         case 1:
-          fillProps = {
-            color: { r: 255, g: 0, b: 0, a: 1 },
-            style: 'solid',
-            opacity: 100,
-          };
+          fillProps = GetSlopeProps(graphicTransparency);
           symbol = CreatePolygonSymbol(lineProps, fillProps);
-          origin = "slopes";
+          origin = 'slopes';
+          isSlope = true;
           break;
 
         case 2:
-          fillProps = {
-            color: { r: 255, g: 255, b: 0, a: 1 },
-            style: 'solid',
-            opacity: 100,
-          };
+          fillProps = GetSMZProps(graphicTransparency);
           symbol = CreatePolygonSymbol(lineProps, fillProps);
-          origin = "smz";
+          origin = 'smz';
           break;
 
         case 3:
-          lineProps.color = { r: 51, g: 102, b: 255, a: 1 };
-          lineProps.width = 3;
-          symbol = CreatePolylineSymbol(lineProps); 
-          origin = "streams";         
+          lineProps = GetStreamsLineProps(graphicTransparency);
+          symbol = CreatePolylineSymbol(lineProps);
+          origin = 'streams';
           break;
       }
 
-      this.addGraphicsToGL(gl, area.value, index, symbol, origin);
+      this.addGraphicsToGL(gl, area.value, isSlope, symbol, origin, index, false);
     });
   }
 
-  private addGraphicsToGL(gl: GraphicsLayer, fs: FeatureSet, index: number, symbol: any, origin:string): void {
-    if (fs.features.length > 0)
-    {
-      const graphicsCollection: Graphic[] = [];
-      fs.features.forEach(element => {
-        element.symbol = symbol;
-        element.attributes.origin = origin;
-        if (index === 1)
-        {
-          if (element.attributes.gridcode === 1)
-          {
-            graphicsCollection.push(element);
-          }
-        } else {
-          graphicsCollection.push(element);
-        }
-        
-      });
-      gl.addMany(graphicsCollection);
-    }
-  }
-
-  updateOpacity(gl: GraphicsLayer, origin:string, visible:boolean):void {
-    gl.graphics.forEach(g => {
-      if (g.attributes.origin === origin)
+  updateOpacity(gl: GraphicsLayer, origin: string, visible: boolean): void {
+    gl.graphics.forEach((g) => {
+      if (g.attributes.origin === origin) {
+        g.visible = visible;
+      }
+      if (origin === 'wetlands' && g.attributes.origin === 'wetlandsBuffer')
       {
         g.visible = visible;
       }
     });
+  }
+
+  bufferGraphic(origin: string, graph: Graphic, inputFeet: number): Promise<any> {
+    return new Promise((resolve) => {
+      const featureSet: FeatureSet = new FeatureSet();
+      featureSet.features = [graph];
+      const params = {
+        inputPolygon: featureSet,
+        origin: origin,
+        inputFeet: inputFeet.toString()
+      };
+
+      const gp: Geoprocessor = new Geoprocessor({
+        url: GetBufferSensAreasGpUrl(),
+      });
+
+      gp.submitJob(params).then((jobInfo) => {
+        gp.waitForJobCompletion(jobInfo.jobId).then(
+          (jobInfo2) => {
+            if (jobInfo2.jobStatus === 'job-succeeded') {
+              gp.getResultData(jobInfo2.jobId, 'outputBufferFeatures').then((value) => {
+                resolve(value);
+              });
+            }
+          },
+          (error) => {
+            resolve(null);
+          }
+        );
+      });
+    });
+  }
+
+  addBuffersOrSlopeToMap(gl: GraphicsLayer, fs: FeatureSet, origin: string, sliderValue: number): void {
+    const graphicTransparency:number = (100 - sliderValue) / 100;
+    let fillProps: FillProps;
+    let lineProps: LineProps = GetDefaultLineProps();
+    let isSlope: boolean = false;
+    let groupOrder: number = 0;
+
+    if (origin === 'smz') {
+      fillProps = GetSMZProps(graphicTransparency);
+      groupOrder = 2;
+    } else if (origin === 'wetlandsBuffer') {
+      fillProps = GetWetlandsBufferProps(graphicTransparency);
+      groupOrder = 0;
+    } else if (origin === 'slopes') {
+      fillProps = GetSlopeProps(graphicTransparency);
+      groupOrder = 1;
+      isSlope = true;
+    }
+
+    const symbol: any = CreatePolygonSymbol(lineProps, fillProps);
+
+    this.addGraphicsToGL(gl, fs, isSlope, symbol, origin, groupOrder, true);
+  }
+
+  updateGraphicsOpacity(gl: GraphicsLayer, sliderValue: number): void {
+    const graphicTransparency:number = (100 - sliderValue) / 100;
+    gl.graphics.forEach(g => {
+      let symbol: any;
+      let fillProps: FillProps;
+      let lineProps: LineProps = GetDefaultLineProps();
+
+      switch (g.attributes.origin) {
+        case 'wetlands':
+          fillProps = GetWetlandsProps(graphicTransparency);
+          symbol = CreatePolygonSymbol(lineProps, fillProps);
+          break;
+
+        case 'wetlandsBuffer':
+          fillProps = GetWetlandsBufferProps(graphicTransparency);
+          symbol = CreatePolygonSymbol(lineProps, fillProps);
+          break;
+
+        case 'slopes':
+          fillProps = GetSlopeProps(graphicTransparency);
+          symbol = CreatePolygonSymbol(lineProps, fillProps);
+          break;
+
+        case 'smz':
+          fillProps = GetSMZProps(graphicTransparency);
+          symbol = CreatePolygonSymbol(lineProps, fillProps);
+          break;
+
+        case 'streams':
+          lineProps = GetStreamsLineProps(graphicTransparency);
+          symbol = CreatePolylineSymbol(lineProps);
+          break;
+      }
+      g.symbol = symbol;
+    });
+  }
+
+  setSlope(graph: Graphic, inputSlope: number): Promise<any>  {
+    return new Promise((resolve) => {
+      const featureSet: FeatureSet = new FeatureSet();
+      featureSet.features = [graph];
+      const params = {
+         inputPolygon: featureSet,
+         minSlopeValue: inputSlope.toString()
+       };
+
+      const gp: Geoprocessor = new Geoprocessor({
+        url: GetSevereSlopesGpUrl(),
+      });
+
+      gp.submitJob(params).then((jobInfo) => {
+        gp.waitForJobCompletion(jobInfo.jobId).then(
+          (jobInfo2) => {
+            if (jobInfo2.jobStatus === 'job-succeeded') {
+              gp.getResultData(jobInfo2.jobId, 'outputSevereSlopes').then((value) => {
+                resolve(value);
+              });
+            }
+          },
+          (error) => {
+            resolve(null);
+          }
+        );
+      });
+    });
+  }
+
+  private addGraphicsToGL(
+    gl: GraphicsLayer,
+    fs: FeatureSet,
+    isSlope: boolean,
+    symbol: any,
+    origin: string,
+    groupOrder: number,
+    isFromBufferOrSlope: boolean
+  ): void {
+    if (isFromBufferOrSlope) {
+      if (origin === 'smz' || origin === 'wetlandsBuffer' || origin === 'slopes') {
+        this.removeGraphicsByAttribute(gl, origin);
+      }
+    }
+
+    if (fs.features.length > 0) {
+      const graphicsCollection: Graphic[] = [];
+        fs.features.forEach((element) => {
+          element.symbol = symbol;
+          element.attributes.origin = origin;
+          element.attributes.groupOrder = groupOrder;
+          if (isSlope) {
+            if (element.attributes.gridcode === 1) {
+              graphicsCollection.push(element);
+            }
+          } else {
+            graphicsCollection.push(element);
+          }
+        });
+
+      gl.addMany(graphicsCollection);
+
+      if (isFromBufferOrSlope)
+      {
+        gl.graphics.sort((a, b) => {
+          if(a.attributes.groupOrder > b.attributes.groupOrder){
+            return 1;
+          }
+          else if (a.attributes.groupOrder < b.attributes.groupOrder){
+            return -1;
+          }
+          else {
+            return 0;
+          }
+        });
+      }
+    }
+  }
+
+  private removeGraphicsByAttribute(gl: GraphicsLayer, attribute: string): void {
+    const graphicsToRemove: Graphic[] = gl.graphics.filter((gra: Graphic) => {
+      return (gra.attributes.origin === attribute);
+    });
+
+    gl.removeMany(graphicsToRemove);
   }
 }
