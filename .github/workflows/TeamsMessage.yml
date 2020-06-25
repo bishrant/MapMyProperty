@@ -1,7 +1,8 @@
 name: Send Message on Teams
 on:
     push:
-        branches: [ master ]
+        branches-ignore:
+            - '**'
 
 jobs:
     deployment:
