@@ -8,7 +8,7 @@ import Graphic from 'esri/Graphic';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
 import GraphicsLayer from 'arcgis-js-api/layers/GraphicsLayer';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { LineProps, FillProps } from 'src/app/shared/components/DrawTools/DrawTools.interface';
+import { LineProps, FillProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 
 @Directive()
