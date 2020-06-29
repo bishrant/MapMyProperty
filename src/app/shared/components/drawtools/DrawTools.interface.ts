@@ -1,4 +1,3 @@
-
 interface LineProps {
   style: string;
   color: any;

@@ -31,8 +31,6 @@ const CreatePolygonFromGraphic = (graphic: any, lineProps: any, fillProps: any) 
   return polygonJSON;
 };
 
-
-
 const CreatePolylineFromGraphic = (graphic: any, lineProps: any) => {
   let polylineJSON = graphic.toJSON();
   polylineJSON.symbol = CreatePolylineSymbol(lineProps);

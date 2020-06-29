@@ -1,6 +1,6 @@
 <header class="headerClass">
   <div class="headerRow" [ngStyle]="headerStyle">
-    <a href="https://tfsweb.tamu.edu" target="_blank" aria-label="tfs logo" aria-labelledby="tfs logo">
+    <a href="https://tfsweb.tamu.edu" rel="noopener noreferrer" target="_blank" aria-label="tfs logo" aria-label="tfs logo">
       <img src="assets/TFS_Star_Maroon.png" alt="tfs logo" class="logo smallLogo" />
 
     </a>
@@ -9,13 +9,13 @@
     <div fxShow="true" fxHide.lt-md="true" fxLayout="row">
       <a class="flex"
         href="javascript:window.open('https://twitter.com/intent/tweet?url='+ window.location.href+ '&hashtags=Maps,Landowner,%20Property', '_blank')"><img
-          src="assets/twitter.png" class="socialMediaIcon" /></a>
+          src="assets/twitter.png" class="socialMediaIcon" alt="share with twitter"/></a>
       <a class="flex"
         href="javascript:window.open('https://www.facebook.com/sharer/sharer.php?u='+ window.location.href, '_blank')"><img
-          src="assets/facebook.png" class="socialMediaIcon" /></a>
+          src="assets/facebook.png" class="socialMediaIcon" alt="share with facebook"/></a>
       <a mat-button class="headerMenuLink"> TexasForestInfo.com </a>
       <a mat-button class="headerMenuLink"> About </a>
-      <a href="https://texasforestinfo.tamu.edu/Contact" class="headerMenuLink" target="_blank" mat-button
+      <a rel="noopener noreferrer" href="https://texasforestinfo.tamu.edu/Contact" class="headerMenuLink" target="_blank" mat-button
         > Contact </a>
       <a mat-button class="headerMenuLink"> Help </a>
       <img src="assets/TFS_Maroon.png" alt="Tfs logo" class="logo largeLogo" />
