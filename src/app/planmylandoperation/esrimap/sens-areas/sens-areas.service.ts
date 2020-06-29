@@ -1,5 +1,5 @@
 import { GetTxStateUrl, GetSensAreasGpUrl, GetBufferSensAreasGpUrl, GetSevereSlopesGpUrl } from '../../pmloUtils/arcgisURLs';
-import { Injectable, Output, EventEmitter } from '@angular/core';
+import { Injectable, Output, EventEmitter, Directive } from '@angular/core';
 import { Geometry } from 'esri/geometry';
 import Query from 'esri/tasks/support/Query';
 import QueryTask from 'esri/tasks/QueryTask';
@@ -7,7 +7,7 @@ import FeatureSet from 'esri/tasks/support/FeatureSet';
 import Graphic from 'esri/Graphic';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
 import GraphicsLayer from 'arcgis-js-api/layers/GraphicsLayer';
-import { LineProps, FillProps } from 'src/app/shared/components/DrawTools/DrawTools.interface';
+import { LineProps, FillProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 import {
   GetWetlandsProps,
@@ -18,6 +18,7 @@ import {
   GetSMZProps
 } from '../../pmloUtils/sensAreasStyles';
 
+@Directive()
 @Injectable({
   providedIn: 'root',
 })

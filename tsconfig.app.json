@@ -1,8 +1,8 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": ["bishrant-arcgis-js-api"]
+    "types": ["arcgis-js-api"]
   },
   "files": [
     "src/main.ts",
@@ -10,5 +10,8 @@
   ],
   "include": [
     "src/**/*.d.ts"
+  ],
+    "exclude": [
+    "src/**/*.ngtypecheck.ts"
   ]
 }

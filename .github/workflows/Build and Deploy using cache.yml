@@ -2,8 +2,8 @@ name: Run build test and deploy while using with NPM cache
 
 on:
   push:
-    branches: 
-      - master
+    branches-ignore: 
+      - '**'
 
 jobs:
   build:

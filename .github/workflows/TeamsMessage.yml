@@ -1,7 +1,8 @@
 name: Send Message on Teams
 on:
     push:
-        branches: [ master ]
+        branches-ignore:
+            - '**'
 
 jobs:
     deployment:
@@ -12,4 +13,4 @@ jobs:
           with:
               url: ${{ secrets.TEAMS_WEBHOOK }}
               method: POST
-              payload: '{"text": "New Commit on master by ${{ github.actor }} of https://github.com/bishrant/MapMyProperty. Make sure you download the latest version."}'
+              payload: '{"text": "New commit on master by ${{ github.actor }} for github repo https://github.com/bishrant/MapMyProperty. Make sure you download the latest version."}'

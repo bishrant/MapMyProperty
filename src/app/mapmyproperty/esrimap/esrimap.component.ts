@@ -64,6 +64,8 @@ export class EsrimapComponent implements OnInit {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer]);
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
+      this.sketchVM.updatePointSymbol = undefined;
+      this.sketchVM.activePointSymbol = undefined;
       this.showMapCoordinates();
     } catch (error) {
       console.error('Map load error ', error);

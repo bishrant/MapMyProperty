@@ -5,11 +5,15 @@
     </app-infobutton>
     <div class="marginTop10px">
         Shape <br>
-        <mat-button-toggle-group name="markerProps.style" aria-label="Point Shape" [(ngModel)]="markerProps.style"
+        <mat-button-toggle-group name="markerProps.style" aria-label="Point Shape" [(ngModel)]="markerProps.style" class="ptStyletoggleGroup"
             (change)="changePointShape($event)">
             <mat-button-toggle *ngFor="let symbol of markerStyles" [value]="symbol" class="drawModeBtn">
-                <svg-icon [src]="'assets/icons/symbols-sms-'+symbol+'.svg'" class="toggleBtn" [svgStyle]="fillSvgStyle">
+                
+                <svg-icon  [src]="'assets/icons/symbols-sms-'+symbol+'.svg'" class="toggleBtn" [svgStyle]="fillSvgStyle">
                 </svg-icon>
+            </mat-button-toggle>
+            <mat-button-toggle *ngFor="let sv of pictureMarkerStyles" class="drawModeBtn faToggleBtn">
+            <fa-icon [icon]="sv" class="faToggleIcon" [styles]="{'color': fillSvgStyle.fill}"></fa-icon>
             </mat-button-toggle>
         </mat-button-toggle-group>
 

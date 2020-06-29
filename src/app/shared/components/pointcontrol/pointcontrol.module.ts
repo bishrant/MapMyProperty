@@ -12,10 +12,12 @@ import { FormsModule } from '@angular/forms';
 import { ColorPickerModule } from '../color-picker/color-picker.module';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MatButtonToggle, MatButtonToggleModule } from '@angular/material/button-toggle';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [PointcontrolComponent],
   imports: [CommonModule, InfobuttonModule, MatSliderModule, FormsModule, MatFormFieldModule, MatInputModule, 
+    FontAwesomeModule,
     ColorPickerModule, AngularSvgIconModule, MatButtonModule, MatButtonToggleModule],
   exports: [PointcontrolComponent],
 })
