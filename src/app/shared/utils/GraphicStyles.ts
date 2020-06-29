@@ -56,10 +56,6 @@ const CreatePointSymbol = (markerProps: any) => {
     size: markerProps.size,
     style: markerProps.style,
     color: markerProps.color,
-    outline: {
-     join: 'round',
-      
-    }
   }
 }
 
