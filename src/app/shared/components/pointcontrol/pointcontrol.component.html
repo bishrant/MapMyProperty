@@ -7,7 +7,7 @@
         Shape <br>
         <mat-button-toggle-group name="markerProps.style" aria-label="Point Shape" 
         [(ngModel)]="pointSymbol" class="ptStyletoggleGroup"
-            (change)="changePointShape($event)">
+            (change)="changePointShapeEvt($event)">
             <mat-button-toggle *ngFor="let symbol of markerStyles" [value]="symbol" 
             class="drawModeBtn" [ngClass]="{faToggleBtn: symbol.type === 'picture-marker'}">
                 
