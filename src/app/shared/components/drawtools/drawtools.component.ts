@@ -34,7 +34,7 @@ export class DrawtoolsComponent implements OnInit {
   @ViewChild('textcontrols') textcontrolsElmRef: any;
   @ViewChild('pointcontrol') pointControlElmRef: any;
   id = (): string => Math.random().toString(36).substr(2, 9);
-
+  // window["svm"] = this.sketchVM;
   selectedGraphics: any[] = [];
   selectedTextGraphics: any = [];
 
@@ -213,10 +213,27 @@ export class DrawtoolsComponent implements OnInit {
         return;
       }
       if (gg.state === 'start' || gg.state === 'active') {
-        console.log(this.sketchVM.activePointSymbol);
-
-        this.mapView.graphics.removeAll();
+        // console.log(this.sketchVM.activePointSymbol);
+        let __g = gg.graphics[0];
         let _temp = gg.graphics[0].clone();
+        const p = {
+          type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+          style: "square",
+          color: "transparent",
+          size: _temp.attributes.symbol.size,  // pixels
+          outline: {  // autocasts as new SimpleLineSymbol()
+            color: [ 255, 0, 255 ],
+            width: 3  // points
+          }
+        };
+        // let ss = _temp.attributes.symbol;
+        // ss.outline = {
+        //   color: [ 0, 255, 0 ],
+        //   width: 3  // points
+        // }
+        console.log(p, _temp);
+        // this.sketchVM.updatePointSymbol = p;
+        // this.sketchVM.activePointSymbol = p;
         // this.sketchVM.activePointSymbol = _temp.attributes.symbol;
         // this.sketchVM.updatePointSymbol = _temp.attributes.symbol;
 
@@ -224,9 +241,10 @@ export class DrawtoolsComponent implements OnInit {
         //   let existng = this.sketchVM.activePointSymbol;
         //   this.sketchVM.activePointSymbol = _temp.attributes.symbol;
         // }
-
-        _temp.symbol = _temp.attributes.symbol;
-        this.mapView.graphics.add(_temp);
+        // this.sketchVM.activePointSymbol = _temp.attributes.symbol;
+        // _temp.symbol = _temp.attributes.symbol;
+        // this.mapView.graphics.removeAll();
+        // this.mapView.graphics.add(_temp);
         this.selectedGraphics = gg.graphics;
         dragElement('mydiv', 'parent');
         this.selectedGraphicsChanged();

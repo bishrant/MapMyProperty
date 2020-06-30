@@ -31,8 +31,6 @@ const CreatePolygonFromGraphic = (graphic: any, lineProps: any, fillProps: any) 
   return polygonJSON;
 };
 
-
-
 const CreatePolylineFromGraphic = (graphic: any, lineProps: any) => {
   let polylineJSON = graphic.toJSON();
   polylineJSON.symbol = CreatePolylineSymbol(lineProps);
@@ -66,8 +64,8 @@ const CreatecircleFromPoint = (evt: any, radius: number, lineProps: any, fillPro
 
 const CreatePointFromGraphic = (graphic: any, markerProps: any) => {
   let _g = graphic.toJSON();
-  _g.symbol = CreatePointSymbol(markerProps);
-  _g.symbol.type = "simple-marker";
+  _g.symbol = markerProps; //CreatePointSymbol(markerProps);
+  _g.symbol.type = markerProps.type;
   const _id = _g.attributes.id ? _g.attributes.id : id();
   _g.attributes = { id: _id, geometryType: 'point', symbol: _g.symbol };
   _g.geometry.type = 'point';
