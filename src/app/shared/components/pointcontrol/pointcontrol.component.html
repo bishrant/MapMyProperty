@@ -14,13 +14,10 @@
                 <svg-icon *ngIf="symbol.type === 'simple-marker'"  [src]="'assets/icons/symbols-sms-'+symbol.name+'.svg'"
                  class="toggleBtn" [svgStyle]="fillSvgStyle">
                 </svg-icon>
-                <fa-icon *ngIf="symbol.type === 'picture-marker'"[icon]="symbol.name" class="faToggleIcon" 
+                <fa-icon *ngIf="symbol.type === 'picture-marker'" [icon]="pictureMarkers[symbol.name]" class="faToggleIcon" 
                 [styles]="{'color': fillSvgStyle.fill}"></fa-icon>
             </mat-button-toggle>
-
         </mat-button-toggle-group>
-
-
     </div>
     <div class="flex colorDiv verticalCenter">Color:
         <app-color-picker [color]="markerProps.color" [opacity]="markerProps.color.a * 100"
@@ -28,7 +25,7 @@
         </app-color-picker>
     </div>
     <div class="marginTop10px">
-        Size: {{markerProps.size}}<br>
+        Size: {{markerSize}}px<br>
         0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5"
             (change)="changeMarkerSize()" [(ngModel)]="markerSize" min="5" max="50">
         </mat-slider> &nbsp;50

@@ -64,8 +64,7 @@ const CreatecircleFromPoint = (evt: any, radius: number, lineProps: any, fillPro
 
 const CreatePointFromGraphic = (graphic: any, markerProps: any) => {
   let _g = graphic.toJSON();
-  _g.symbol = markerProps; //CreatePointSymbol(markerProps);
-  _g.symbol.type = markerProps.type;
+  _g.symbol = markerProps;
   const _id = _g.attributes.id ? _g.attributes.id : id();
   _g.attributes = { id: _id, geometryType: 'point', symbol: _g.symbol };
   _g.geometry.type = 'point';
