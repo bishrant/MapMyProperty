@@ -1,5 +1,4 @@
 const ArcGISPlugin = require("@arcgis/webpack-plugin");
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   plugins: [
@@ -7,8 +6,7 @@ module.exports = {
       features: {
         '3d': false
       }
-    }),
-    new BundleAnalyzerPlugin({analyzerPort: 9999})
+    })
   ],
   node: {
     process: false,

@@ -9,7 +9,7 @@
     "lint": "eslint -c .eslintrc.js --ext .ts ./src",
     "e2e": "ng e2e",
     "build:stats": "ng build --prod --stats-json",
-    "bundle-report": "webpack-bundle-analyzer dist/mapmyproperty/stats.json"
+    "bundle-report": "npm run build:stats; webpack-bundle-analyzer dist/mapmyproperty/stats.json"
   },
   "private": true,
   "dependencies": {

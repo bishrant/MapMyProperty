@@ -5,10 +5,21 @@ interface LineProps {
   width: number;
 }
 
+interface LinePropsRGBA {
+  style: string;
+  color: any;
+  width: number;
+}
+
 interface FillProps {
   color: any;
   style: string;
   opacity: number;
 }
 
-export {LineProps, FillProps}
+interface FillPropsRGBA {
+  color: any,
+  style: string
+}
+
+export { LineProps, FillProps, FillPropsRGBA, LinePropsRGBA };
