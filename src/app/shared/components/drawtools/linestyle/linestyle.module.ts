@@ -3,7 +3,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { InfobuttonModule } from '../../infobutton/infobutton.module';
 import { MatButtonModule } from '@angular/material/button';
-import {LinestyleComponent } from './Linestyle.component';
+import { LinestyleComponent } from './linestyle.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
