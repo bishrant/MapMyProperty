@@ -2,28 +2,22 @@ import { Component, Input } from '@angular/core';
 import { RGBObjectToHexA } from '../../utils/Colors';
 import { faTree, faFlag, faParking,  faExclamationTriangle, faTint, faThumbtack, faToriiGate, faHome } from '@fortawesome/free-solid-svg-icons';
 import { getPointSvg } from './pointSymbols';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../store/graphics.state';
-import { CreatePointFromGraphic } from '../../utils/DrawUtils';
+
 @Component({
   selector: 'app-pointcontrol',
   templateUrl: './pointcontrol.component.html',
   styleUrls: ['./pointcontrol.component.scss'],
 })
 export class PointcontrolComponent {
-  @Input() sketchVM: any;
-  @Input() mapView: any;
   _selectedGraphics: any;
   @Input('selectedGraphics')
   get selectedGraphics():any {
     return this._selectedGraphics
   }
   set selectedGraphics(value: any) {
-    console.log(value);
     this._selectedGraphics = value;
     if (typeof value === 'undefined') return;
     if (value.length < 1) return;
-
     if (value[0].geometry.type !== 'point') return;
 
     let s = value[0].attributes.symbol;
@@ -32,10 +26,9 @@ export class PointcontrolComponent {
     this.markerProps.name = s.name;
     this.markerSize = parseInt(s.size.split('px')[0]);
     this.pointSymbol = this.markerStyles.filter((m) => m.name === s.name)[0];
-    console.log(this.markerSize);
   }
 
-  constructor(private store: Store<AppState>) {}
+  constructor() {}
 
   markerStyles = [
     { name: 'circle', type: 'simple-marker', asp: 1 },
@@ -86,24 +79,12 @@ export class PointcontrolComponent {
     fill: RGBObjectToHexA(this.markerProps.color),
   };
 
-  sendUpdateToStore = () => {
-    if (this.selectedGraphics) {
-      let c = CreatePointFromGraphic(this.selectedGraphics[0], this.markerProps);
-      console.log(c);
-    }
-    
-
-    
-  };
-
   changeMarkerSize = () => {
     const size = this.markerSize + 'px';
     this.markerProps.size = size;
     this.markerProps.width = size;
     this.markerProps.height = this.markerSize / this.pointSymbol.asp + 'px';
-    console.log(this.markerProps);
     this.updateMarkerShape();
-    this.sendUpdateToStore();
   };
 
   updateMarkerShape = () => {
@@ -115,7 +96,6 @@ export class PointcontrolComponent {
 
   changePointShapeEvt = (evt: any) => {
     this.pointSymbol = evt.value;
-    console.log(evt.value);
     this.markerProps.type = evt.value.type;
     if (evt.value.type === 'picture-marker') {
       this.markerProps.height = this.markerSize / this.pointSymbol.asp + 'px';
@@ -130,6 +110,7 @@ export class PointcontrolComponent {
 
   changePointColor = (colorInfo: any) => {
     this.markerProps.color = colorInfo;
+    this.updateMarkerShape();
     this.fillSvgStyle.fill = RGBObjectToHexA(this.markerProps.color);
   };
 }

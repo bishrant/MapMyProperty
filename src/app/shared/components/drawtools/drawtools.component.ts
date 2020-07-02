@@ -2,7 +2,6 @@ import { updateGraphics, addGraphics } from '../../store/graphics.actions';
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
-import { RGBObjectToHex, RGBObjectToHexA } from 'src/app/shared/utils/Colors';
 import { take } from 'rxjs/operators';
 import {
   CreatePolygonGraphicWithSymbology,
@@ -13,13 +12,12 @@ import {
   CreatePolylineFromGraphic,
   CreatePointFromGraphic,
 } from 'src/app/shared/utils/DrawUtils';
-import { LineStyles, FillStyles, CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
+import { CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { CreateCircleFromPoint } from 'src/app/shared/utils/SketchViewModelUitls';
-import { LineProps, FillProps } from './DrawTools.interface';
-import { equals } from 'esri/geometry/geometryEngine';
 import { id } from '../../store/todo';
 import { dragElement } from './drag';
 import { createInput, createInputWithFrame } from './TextUtils';
+import { AreGraphicsEqual } from '../../utils/GeometryEngine';
 
 @Component({
   selector: 'app-drawtools',
@@ -33,61 +31,18 @@ export class DrawtoolsComponent implements OnInit {
   @ViewChild('radiusInput') radiusElmRef: ElementRef;
   @ViewChild('textcontrols') textcontrolsElmRef: any;
   @ViewChild('pointcontrol') pointControlElmRef: any;
+  @ViewChild('fillstyle') fillStyleElmRef: any;
+  @ViewChild('linestyle') lineStyleElmRef: any;
   id = (): string => Math.random().toString(36).substr(2, 9);
-  // window["svm"] = this.sketchVM;
   selectedGraphics: any[] = [];
   selectedTextGraphics: any = [];
-
-  lineProps: LineProps = {
-    style: 'solid',
-    color: { r: 100, g: 20, b: 5, a: 1 },
-    opacity: 100,
-    width: 2,
-  };
-  fillProps: FillProps = {
-    color: { r: 0, g: 0, b: 0, a: 0.5 },
-    style: 'solid',
-    opacity: 50,
-  };
-
-  lineSvgStyle = {
-    'width.px': 150,
-    fill: RGBObjectToHex(this.lineProps.color),
-  };
-  fillSvgStyle = {
-    'width.px': 150,
-    fill: RGBObjectToHexA(this.fillProps.color),
-  };
-  lineStyles = LineStyles;
-  fillStyles = FillStyles;
   radius: number;
   drawingMode: string = 'click';
   drawingTool: string = '';
   clickToAddTextboxHandler: any;
-
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
 
   constructor(private store: Store<AppState>) {}
-
-  setLineSVGStyle = () => {
-    this.lineSvgStyle.fill = RGBObjectToHex(this.lineProps.color);
-  };
-  setFillSvgStyle = () => {
-    this.fillSvgStyle.fill = RGBObjectToHexA(this.fillProps.color);
-  };
-  changeLineColor = (colorInfo: any) => {
-    this.lineProps.color = colorInfo;
-    this.lineProps.opacity = colorInfo.a * 100;
-    this.setLineSVGStyle();
-    this.changeGraphicsStyle();
-  };
-
-  changeFillColor = (colorInfo: any) => {
-    this.fillProps.color = colorInfo;
-    this.fillProps.opacity = colorInfo.a * 100;
-    this.setFillSvgStyle();
-    this.changeGraphicsStyle();
-  };
 
   private ClickToAddTextbox = () => {
     if (this.clickToAddTextboxHandler) {
@@ -143,7 +98,9 @@ export class DrawtoolsComponent implements OnInit {
       });
     });
   };
-
+  onGraphicsStyleChange = () => {
+    this.changeGraphicsStyle();
+  }
   changeGraphicsStyle = () => {
     if (!this.selectedGraphics) return;
 
@@ -151,14 +108,14 @@ export class DrawtoolsComponent implements OnInit {
       const _geomType = this.selectedGraphics[0].attributes.geometryType;
       let geomJSON;
       if (_geomType === 'circle') {
-        geomJSON = CreateCircleFromGraphic(this.selectedGraphics[0], this.lineProps, this.fillProps);
+        geomJSON = CreateCircleFromGraphic(this.selectedGraphics[0], this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
       }
       if (['polygon', 'polyline'].indexOf(_geomType) > -1) {
       }
       if (_geomType === 'polygon') {
-        geomJSON = CreatePolygonFromGraphic(this.selectedGraphics[0], this.lineProps, this.fillProps);
+        geomJSON = CreatePolygonFromGraphic(this.selectedGraphics[0], this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
       } else if (_geomType === 'polyline') {
-        geomJSON = CreatePolylineFromGraphic(this.selectedGraphics[0], this.lineProps);
+        geomJSON = CreatePolylineFromGraphic(this.selectedGraphics[0], this.lineStyleElmRef.lineProps);
       }
 
       this.store.dispatch(updateGraphics({ graphics: JSON.stringify([geomJSON]) }));
@@ -171,7 +128,7 @@ export class DrawtoolsComponent implements OnInit {
       if (evt.state === 'complete') {
         let createdGraphic;
         if (evt.tool === 'circle') {
-          createdGraphic = CreateCircleFromEvent(evt, this.lineProps, this.fillProps);
+          createdGraphic = CreateCircleFromEvent(evt, this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
         }
         if (['polygon', 'polyline'].indexOf(evt.tool) > -1) {
           createdGraphic = evt.graphic;
@@ -182,16 +139,16 @@ export class DrawtoolsComponent implements OnInit {
             radius: 0,
           };
           if (evt.tool === 'polygon') {
-            createdGraphic = CreatePolygonFromGraphic(createdGraphic, this.lineProps, this.fillProps);
+            createdGraphic = CreatePolygonFromGraphic(createdGraphic, this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
           } else {
-            createdGraphic = CreatePolylineFromGraphic(createdGraphic, this.lineProps);
+            createdGraphic = CreatePolylineFromGraphic(createdGraphic, this.lineStyleElmRef.lineProps);
           }
         }
         if (evt.tool === 'point') {
           createdGraphic = CreatePointFromGraphic(evt.graphic, this.pointControlElmRef.markerProps);
         }
         if (this.sketchVM.createCircleFromPoint) {
-          createdGraphic = CreatecircleFromPoint(evt, this.radius, this.lineProps, this.fillProps);
+          createdGraphic = CreatecircleFromPoint(evt, this.radius, this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
         }
         this.store.dispatch(addGraphics({ graphics: JSON.stringify(createdGraphic) }));
       }
@@ -202,7 +159,7 @@ export class DrawtoolsComponent implements OnInit {
     this.sketchVM.on('update', (gg: any) => {
       console.log(gg);
       if (gg.state === 'cancel' || gg.aborted) {
-        this.selectedGraphics = undefined;
+        this.selectedGraphics = [];
         return;
       }
       if (gg.graphics[0].attributes.geometryType === 'text') {
@@ -217,14 +174,15 @@ export class DrawtoolsComponent implements OnInit {
         let __g = gg.graphics[0];
         let _temp = gg.graphics[0].clone();
         const p = {
-          type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
-          style: "square",
-          color: "transparent",
-          size: _temp.attributes.symbol.size,  // pixels
-          outline: {  // autocasts as new SimpleLineSymbol()
-            color: [ 255, 0, 255 ],
-            width: 3  // points
-          }
+          type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
+          style: 'square',
+          color: 'transparent',
+          size: _temp.attributes.symbol.size, // pixels
+          outline: {
+            // autocasts as new SimpleLineSymbol()
+            color: [255, 0, 255],
+            width: 3, // points
+          },
         };
         // let ss = _temp.attributes.symbol;
         // ss.outline = {
@@ -252,13 +210,13 @@ export class DrawtoolsComponent implements OnInit {
         this.mapView.graphics.removeAll();
         let _updatedGraphics = gg.graphics;
         if (_updatedGraphics[0].attributes.geometryType === 'circle') {
-          _updatedGraphics = [CreateCircleFromGraphic(gg.graphics[0], this.lineProps, this.fillProps)];
+          _updatedGraphics = [CreateCircleFromGraphic(gg.graphics[0], this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps)];
         }
         if (_updatedGraphics[0].attributes.geometryType === 'polygon') {
-          _updatedGraphics = [CreatePolygonFromGraphic(gg.graphics[0], this.lineProps, this.fillProps)];
+          _updatedGraphics = [CreatePolygonFromGraphic(gg.graphics[0], this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps)];
         }
         if (_updatedGraphics[0].attributes.geometryType === 'polyline') {
-          _updatedGraphics = [CreatePolylineFromGraphic(gg.graphics[0], this.lineProps)];
+          _updatedGraphics = [CreatePolylineFromGraphic(gg.graphics[0], this.lineStyleElmRef.lineProps)];
         }
         if (_updatedGraphics[0].attributes.geometryType === 'point') {
           _updatedGraphics = [CreatePointFromGraphic(gg.graphics[0], this.pointControlElmRef.markerProps)];
@@ -270,14 +228,14 @@ export class DrawtoolsComponent implements OnInit {
           for (let i = 0; i < graphics.length; i++) {
             const _existing = JSON.parse(graphics[i]);
             if (_updatedGraphics[0].attributes.id === _existing.attributes.id) {
-              areEqual = equals(_updatedGraphics[0].geometry, _existing.geometry);
+              areEqual = AreGraphicsEqual(_existing, _updatedGraphics[0]);
               break;
             }
           }
           if (!areEqual) {
             this.store.dispatch(updateGraphics({ graphics: JSON.stringify(_updatedGraphics) }));
           }
-          this.selectedGraphics = undefined;
+          this.selectedGraphics = [];
         });
       }
     });
@@ -286,7 +244,7 @@ export class DrawtoolsComponent implements OnInit {
   updateCircleRadius = () => {
     if (this.selectedGraphics.length > 0) {
       let circleJSON = this.selectedGraphics[0].toJSON();
-      circleJSON = CreatePolygonGraphicWithSymbology(circleJSON, this.lineProps, this.fillProps);
+      circleJSON = CreatePolygonGraphicWithSymbology(circleJSON, this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
       circleJSON.toJSON = undefined;
       circleJSON.geometry = CreateCircleFromPoint(this.selectedGraphics[0].geometry.centroid, this.radius).asJSON();
       circleJSON.attributes.radius = circleJSON.geometry.radius;
@@ -306,13 +264,13 @@ export class DrawtoolsComponent implements OnInit {
         this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
       if (this.selectedGraphicsGeometry === 'circle') {
         this.radius = _g.attributes.radius;
-        this.lineProps.style = _g.attributes.symbol.outline.style;
+        this.lineStyleElmRef.lineProps.style = _g.attributes.symbol.outline.style;
         const _graphicsOutlineColor = this.selectedGraphics[0].attributes.symbol.outline.color;
-        this.lineProps.color = _graphicsOutlineColor;
+        this.lineStyleElmRef.lineProps.color = _graphicsOutlineColor;
 
-        this.lineProps.width = _g.attributes.symbol.outline.width;
-        this.lineProps.opacity = _graphicsOutlineColor.a * 100;
-        this.setLineSVGStyle();
+        this.lineStyleElmRef.lineProps.width = _g.attributes.symbol.outline.width;
+        this.lineStyleElmRef.lineProps.opacity = _graphicsOutlineColor.a * 100;
+        // this.setLineSVGStyle();
       } else {
       }
     }
@@ -349,10 +307,10 @@ export class DrawtoolsComponent implements OnInit {
       this.drawingMode = 'click';
     }
     if (['circle', 'polygon', 'polyline'].indexOf(toolName) > -1) {
-      this.sketchVM.polylineSymbol = CreatePolylineSymbol(this.lineProps);
+      this.sketchVM.polylineSymbol = CreatePolylineSymbol(this.lineStyleElmRef.lineProps);
     }
     if (['circle', 'polygon'].indexOf(toolName) > -1) {
-      const polygonSymbol = CreatePolygonSymbol(this.lineProps, this.fillProps);
+      const polygonSymbol = CreatePolygonSymbol(this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
       this.sketchVM.polygonSymbol = polygonSymbol;
       if (toolName === 'circle') {
         if (this.drawingMode === 'click') {

@@ -1,3 +1,5 @@
+import { LinestyleModule } from './linestyle/linestyle.module';
+import { FillstyleModule } from './fillstyle/fillstyle.module';
 import { PointcontrolModule } from './../pointcontrol/pointcontrol.module';
 import { InfobuttonModule } from './../infobutton/infobutton.module';
 import { RGBtoHEX } from '../../utils/Colors.pipe';
@@ -38,7 +40,9 @@ import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
     ToggleButtonModule,
     TextcontrolsModule,
     InfobuttonModule,
-    PointcontrolModule
+    PointcontrolModule,
+    FillstyleModule,
+    LinestyleModule
   ],
   exports: [DrawtoolsComponent],
 })

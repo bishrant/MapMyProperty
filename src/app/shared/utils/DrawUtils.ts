@@ -71,6 +71,14 @@ const CreatePointFromGraphic = (graphic: any, markerProps: any) => {
   return _g;
 }
 
+const CreatePointWithAttributeUpates = (graphic: any, markerProps: any) => {
+  let _g = graphic.toJSON();
+  let _a = _g.attributes;
+  let _symbol = _a.symbol;
+
+  const _id = _g.attributes.id;
+}
+
 export {
   CreateCircleFromGraphic,
   CreatePolygonFromGraphic,
@@ -78,5 +86,6 @@ export {
   CreatecircleFromPoint,
   CreatePolygonGraphicWithSymbology,
   CreateCircleFromEvent,
-  CreatePointFromGraphic
+  CreatePointFromGraphic,
+  CreatePointWithAttributeUpates,
 };
