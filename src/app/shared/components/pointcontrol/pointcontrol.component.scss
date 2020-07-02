@@ -24,7 +24,7 @@
     border: 1px solid lightgray;
 }
 .faToggleBtn {
-    width: 30px;
+    width: 33px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -35,8 +35,8 @@
 }
 .ptStyletoggleGroup {
   display: grid;
-//   width: 210px;
-  grid-template-columns: 32px 32px 32px 32px 32px 32px;
+  width: 210px;
+  grid-template-columns: 34px 34px 34px 34px 34px 34px;
   box-sizing: border-box;
 //   gap: 1px;
   border: none !important;
