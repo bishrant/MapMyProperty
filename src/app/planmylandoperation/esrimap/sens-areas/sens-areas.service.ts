@@ -153,7 +153,7 @@ export class SensAreasService {
   }
 
   updateOpacity(gl: GraphicsLayer, origin:string, visible:boolean):void {
-    gl.graphics.forEach(g => {
+    gl.graphics.forEach((g: any) => {
       if (g.attributes.origin === origin)
       {
         g.visible = visible;

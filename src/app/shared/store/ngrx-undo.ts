@@ -5,7 +5,7 @@ import { fromNullable, map as maps, getOrElse, filter } from 'fp-ts/lib/Option';
 import {defaultConfig, PatchActionReducer, Patches, WiederConfig} from './model';
 import {pipe} from 'fp-ts/lib/pipeable';
 
-const undoReducer = <T>(reducer: PatchActionReducer<T>, config: WiederConfig = {}): ActionReducer<T> => {
+const undoReducer = <T>(reducer: PatchActionReducer<T>, config: WiederConfig = {maxBufferSize: 32}): ActionReducer<T> => {
     enablePatches();
     const {
         allowedActionTypes,
@@ -21,14 +21,14 @@ const undoReducer = <T>(reducer: PatchActionReducer<T>, config: WiederConfig = {
 
     let undoable: Patches[] = [];
     let undone: Patches[] = [];
-    let lastAction: Action;
+    let lastAction: Action | null;
     let mergeBroken = false;
 
-    const isUndoable = (action: Action) => !allowedActionTypes.length || allowedActionTypes.some(type => type === action.type);
+    const isUndoable = (action: Action) => !allowedActionTypes?.length || allowedActionTypes.some(type => type === action.type);
     const shouldMerge = (a: Action, b: Action): boolean => {
         return !mergeBroken && a.type === b.type
-          && (mergeActionTypes.indexOf(a.type) !== -1
-            || pipe(fromNullable(mergeRules.get(a.type)), maps(r => r(a, b)), getOrElse(() => false))
+          && (mergeActionTypes?.indexOf(a.type) !== -1
+            || pipe(fromNullable(mergeRules?.get(a.type)), maps((r: any) => r(a, b)), getOrElse(() => false))
           );
       };
     const applyTracking = (state: T): T => {
@@ -42,7 +42,7 @@ const undoReducer = <T>(reducer: PatchActionReducer<T>, config: WiederConfig = {
         return state;
       };
 
-    return (state: T, action) => {
+    const reducerFunction = (state: T, action: any) => {
         switch (action.type) {
           case undoActionType: {
             return pipe(fromNullable(undoable.shift()), // take patches from last undone action
@@ -86,7 +86,7 @@ const undoReducer = <T>(reducer: PatchActionReducer<T>, config: WiederConfig = {
                     getOrElse(() => [
                       // remember differences while dropping at buffer max-size
                       {patches, inversePatches},
-                      ...undoable.slice(0, maxBufferSize - 1)
+                      ...undoable.slice(0, maxBufferSize-1)
                     ])
                   );
                   undone = []; // clear redo stack
@@ -99,6 +99,8 @@ const undoReducer = <T>(reducer: PatchActionReducer<T>, config: WiederConfig = {
           }
         }
       };
+
+      return reducerFunction;
     };
 
     /**

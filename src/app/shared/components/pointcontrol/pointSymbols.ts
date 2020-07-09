@@ -1,6 +1,6 @@
 import { RGBObjectToHexA } from '../../utils/Colors';
 
-const getPointSvg = (name: string, _color) => {
+const getPointSvg = (name: string, _color: any) => {
     let bs = '';
     const color = RGBObjectToHexA(_color);
     const id = Math.random();

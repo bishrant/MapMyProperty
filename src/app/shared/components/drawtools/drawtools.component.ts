@@ -49,7 +49,7 @@ export class DrawtoolsComponent implements OnInit {
       this.clickToAddTextboxHandler = undefined;
     }
     this.clickToAddTextboxHandler = this.mapView.on('click', (mapEvt: any) => {
-      const textboxes = document.getElementById('textboxes');
+      const textboxes = document.getElementById('textboxes') as any;
       const input = createInput(mapEvt, id(), this.store, this.textcontrolsElmRef.textProps);
       textboxes.appendChild(input);
       input.focus();
@@ -57,7 +57,7 @@ export class DrawtoolsComponent implements OnInit {
       this.ResetDrawControls();
     });
   };
-  private CreateDraggableTextbox = (textGraphic) => {
+  private CreateDraggableTextbox = (textGraphic: any) => {
     let graphicCenter = this.mapView.toScreen(textGraphic.geometry);
     const input = createInputWithFrame(
       graphicCenter,
@@ -68,7 +68,7 @@ export class DrawtoolsComponent implements OnInit {
     );
 
     this.textGraphicsLayer.remove(textGraphic);
-    document.getElementById('textboxes').appendChild(input);
+    (document.getElementById('textboxes') as any).appendChild(input);
     dragElement(textGraphic.attributes.id, 'parent');
   };
   private detectTextGraphics = () => {
@@ -81,7 +81,7 @@ export class DrawtoolsComponent implements OnInit {
           return;
         }
 
-        this.selectedTextGraphics = response.results.filter((res) => res.graphic.layer === this.textGraphicsLayer);
+        this.selectedTextGraphics = response.results.filter((res: any) => res.graphic.layer === this.textGraphicsLayer);
         if (this.selectedTextGraphics.length > 0) {
           const textGraphic = this.selectedTextGraphics[0].graphic;
           const extent = this.mapView.extent.clone().expand(0.85);
@@ -330,7 +330,7 @@ export class DrawtoolsComponent implements OnInit {
     }
   };
 
-  radiusBlurred = ($evt) => {
+  radiusBlurred = ($evt: any) => {
     if (this.selectedGraphics) {
       this.updateCircleRadius();
     }
@@ -338,7 +338,7 @@ export class DrawtoolsComponent implements OnInit {
       this.startDrawingGraphics('circle');
     }
   };
-  changeDrawingMode = ($evt) => {
+  changeDrawingMode = ($evt: any) => {
     if (this.drawingTool !== '') {
       this.startDrawingGraphics(this.drawingTool);
     }

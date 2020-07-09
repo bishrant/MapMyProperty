@@ -26,15 +26,15 @@ const FillStyles = [
 ];
 
 
-const CheckIfColorIsHollow = (RGBAarray) => {
+const CheckIfColorIsHollow = (RGBAarray: any) => {
   if (RGBAarray.length === 4) {
-    return RGBAarray.filter(c => c === 0).length === 4;
+    return RGBAarray.filter((c: any) => c === 0).length === 4;
   } else {
     throw new Error('RGBA Expected');
   }
 }
 
-const CheckIfColorIsHollowRGBA = (c) => {
+const CheckIfColorIsHollowRGBA = (c: any) => {
   return c.r === 0 && c.a === 0 && c.g === 0 && c.b === 0;
 }
 const CreatePolygonSymbol = (outline: any, fill: any) => {

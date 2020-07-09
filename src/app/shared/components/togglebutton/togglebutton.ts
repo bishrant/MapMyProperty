@@ -109,11 +109,11 @@ export class ToggleButton implements ControlValueAccessor,AfterViewInit {
     }
     
     get hasOnLabel():boolean {
-        return this.onLabel && this.onLabel.length > 0;
+        return (this.onLabel.length > 0);
     }
     
     get hasOffLabel():boolean {
-        return this.onLabel && this.onLabel.length > 0;
+        return this.onLabel.length > 0;
     }
 }
 

@@ -3,7 +3,7 @@ import { addGraphics, updateGraphics } from '../../store/graphics.actions';
 const WIDTH = 200;
 const PADDING = 10;
 
-const addTextToMap = (targetElement, store, textProps, isUpdate: boolean = false) => {
+const addTextToMap = (targetElement: any, store: any, textProps: any, isUpdate: boolean = false) => {
   const mapX = targetElement.getAttribute('mapX');
   const mapY = targetElement.getAttribute('mapY');
   if (targetElement.getAttribute('fontSize') !== null) {
@@ -59,7 +59,7 @@ const addTextToMap = (targetElement, store, textProps, isUpdate: boolean = false
   }
 };
 
-const SetInputStyle = (input, textProps) => {
+const SetInputStyle = (input: any, textProps: any) => {
   const color = textProps.color;
   input.classList.add('mapTextInput');
   input.style.fontWeight = textProps.font.weight;
@@ -72,7 +72,7 @@ const SetInputStyle = (input, textProps) => {
   return input;
 };
 
-const createInput = (mapEvt: any, inputId = '0', store, textProps) => {
+const createInput = (mapEvt: any, inputId = '0', store: any, textProps: any) => {
   const fontSize = parseInt(textProps.font.size.split('px')[0]);
   const height = fontSize + 2 * PADDING;
   let _input = document.createElement('input');
@@ -85,8 +85,8 @@ const createInput = (mapEvt: any, inputId = '0', store, textProps) => {
   _input.style.height = height + 'px';
 
   // need to take it out of bounds
-  const parentWidth = document.getElementById('parent').clientWidth;
-  const parentHeight = document.getElementById('parent').clientHeight;
+  const parentWidth = (document.getElementById('parent') as any).clientWidth;
+  const parentHeight = (document.getElementById('parent') as any).clientHeight;
 
   const _x = mapEvt.x;
   const _y = mapEvt.y;
@@ -116,7 +116,7 @@ const createInput = (mapEvt: any, inputId = '0', store, textProps) => {
   let enterKeylistener: any;
   let windowListener: any;
 
-  const cleanupListener = (target) => {
+  const cleanupListener = (target: any) => {
     target.remove();
     window.removeEventListener('click', windowListener);
     _input.removeEventListener('keyup', enterKeylistener);
@@ -129,13 +129,13 @@ const createInput = (mapEvt: any, inputId = '0', store, textProps) => {
     cleanupListener(target);
   };
 
-  enterKeylistener = (evt) => {
+  enterKeylistener = (evt: any) => {
     if (evt.keyCode === 13) {
       AddTextToMap(evt.target);
     }
   };
 
-  windowListener = (e) => {
+  windowListener = (e: any) => {
     if (typeof e === 'object') {
       if (e.button === 0) {
         const inputBox = document.getElementById(inputId);
@@ -154,7 +154,7 @@ const createInput = (mapEvt: any, inputId = '0', store, textProps) => {
   return _input;
 };
 
-const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: any, store, mapView) => {
+const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: any, store: any, mapView: any) => {
   const height = 40;
   const inputId = textGraphic.attributes.id;
   let frame = <HTMLElement>htmlToElement(`<div id="${inputId}_container" class="mapTextInputContainer">
@@ -185,16 +185,16 @@ const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: a
   let enterKeylistener: any;
   let windowListener: any;
 
-  const cleanupListener = (target) => {
+  const cleanupListener = (target: any) => {
     // remove parent div
-    document.getElementById(target.id + '_container').remove();
+    (document.getElementById(target.id + '_container') as any).remove();
     target.remove();
     window.removeEventListener('click', windowListener);
     _input.removeEventListener('keyup', enterKeylistener);
   };
 
   const AddTextToMap = (target: any) => {
-    const container = document.getElementById(inputId + '_container');
+    const container = document.getElementById(inputId + '_container') as any;
     const header = document.getElementById(inputId + '_header');
     const _screenPt = {
       x: container.offsetLeft + target.clientWidth / 2,
@@ -207,13 +207,13 @@ const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: a
     cleanupListener(target);
   };
 
-  enterKeylistener = (evt) => {
+  enterKeylistener = (evt: any) => {
     if (evt.keyCode === 13) {
       AddTextToMap(evt.target);
     }
   };
 
-  windowListener = (e) => {
+  windowListener = (e: any) => {
     if (typeof e === 'object') {
       if (e.button === 0) {
         const inputBox = document.getElementById(inputId);
@@ -259,7 +259,7 @@ const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: a
   return frame;
 };
 
-const htmlToElement = (html) => {
+const htmlToElement = (html: any) => {
   var template = document.createElement('template');
   html = html.trim(); // Never return a text node of whitespace as the result
   template.innerHTML = html;

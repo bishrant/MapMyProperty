@@ -39,7 +39,7 @@ export class ColorPickerPopoverComponent {
     this.customColorInput.nativeElement.click();
   };
 
-  closePopupWithColor = closePopup => {
+  closePopupWithColor = (closePopup: any) => {
     const colorInfo = { color: this.color, opacity: this.opacity, closePopup: closePopup };
     this.colorsPopoverService.close(colorInfo, closePopup);
   };
