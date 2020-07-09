@@ -40,11 +40,11 @@ export class SensAreasComponent implements OnInit {
     private spinner: NgxSpinnerService) {}
 
   ngOnInit(): void {
-    this.sensAreasService.updateState.subscribe(st => {
+    this.sensAreasService.updateState.subscribe((st: any) => {
       this.state = st;
     });
     this.boundaryLayer = this.mapView.map.findLayerById('userGraphicsLayer');
-    this.boundaryLayer.graphics.on('change', function (evt: any) {
+    this.boundaryLayer.graphics.on('change', (evt: any) => {
       const graphNumber: number = evt.target.length;
       if (graphNumber === 0) {
         this.state = 'noBoundary';

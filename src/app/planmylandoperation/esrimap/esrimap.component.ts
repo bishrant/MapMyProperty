@@ -72,7 +72,7 @@ export class EsrimapComponent implements OnInit {
   private listenToGraphicsStore = () => {
     return this.graphics$.subscribe((g: any) => {
       if (g.length > 0) {
-        const graphicsArray = g.map((_g) => {
+        const graphicsArray = g.map((_g: any) => {
           let gr = JSON.parse(_g);
           return gr.attributes.geometryType === 'text' ?  Graphic.fromJSON(gr): new Graphic(gr);
         });
