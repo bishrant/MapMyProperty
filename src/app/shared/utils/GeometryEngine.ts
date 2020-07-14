@@ -2,7 +2,7 @@ import { Polygon, Point, Polyline } from 'esri/geometry';
 import { geodesicArea, equals  } from 'esri/geometry/geometryEngine';
 
 // Only works with WGS84 (wkid: 4326) and Web Mercator spatial references
-const GreaterThanMaxArea = (geometry : Polygon, maxArea : number = 10000, unit : string) => {
+const GreaterThanMaxArea = (geometry : Polygon, maxArea : number = 10000, unit : any) => {
 
     let area:number = geodesicArea(geometry, unit);
 

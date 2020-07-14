@@ -1,0 +1,37 @@
+<mat-expansion-panel [expanded]="true" color="black">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            Import | Export
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div>
+
+        <br>
+        <mat-radio-group aria-label="Select an import/export option">
+            <div class="importExportFormat">
+                <mat-radio-button value="MMP" checked>MMP</mat-radio-button>
+                <mat-radio-button value="SHP">SHP</mat-radio-button>
+            </div>
+            <div class="importExportFormat">
+
+                <mat-radio-button value="KML">KML</mat-radio-button>
+                <mat-radio-button value="GPX">GPX</mat-radio-button>
+            </div>
+        </mat-radio-group>
+        <!-- [disabled]="(sketchVM.state === 'ready') && (disableUndo$ | async)" -->
+
+        <div class="importExportFormat">
+            <button mat-raised-button color="accent">
+                <mat-icon>publish</mat-icon>
+                Import
+            </button>
+
+            <button mat-raised-button color="accent" (click)="export()">
+                <mat-icon>get_app</mat-icon>
+                Export
+            </button>
+        </div>
+
+    </div>
+</mat-expansion-panel>
