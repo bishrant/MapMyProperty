@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { take } from 'rxjs/internal/operators/take';
 import { Point } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
-import { pointGraphicsToKML, mergePlacemarkToKML } from './KMLUtils';
+import { mergePlacemarksToKML, pointGraphicToKML, lineGraphicsToKML, areaGraphicsToKML } from './KMLUtils';
 
 @Component({
   selector: "app-import-export",
@@ -60,22 +60,20 @@ export class ImportExportComponent implements OnInit {
 
   export() {
     const graphics$: any = this.store.select((state: any) => state.app.graphics);
-    let ptArray = []
-    const storeGraphics = graphics$.pipe(take(1)).subscribe(dt => {
-      const gArray = [];
+    let placeMarksArray = [];
+    graphics$.pipe(take(1)).subscribe(dt => {
       dt.forEach((g: any) => {
         const _gJson = JSON.parse(g);
         switch (_gJson.geometry.type) {
           case 'point':
-            const geom = new Point(_gJson.geometry);
-            const g = new Graphic({
-              geometry: geom,
-              attributes: _gJson.attributes,
-              symbol: _gJson.attributes.symbol
-            });
-            ptArray.push(pointGraphicsToKML(g, ""));
+            placeMarksArray.push(pointGraphicToKML(_gJson));
             break;
-
+          case 'polyline':
+            placeMarksArray.push(lineGraphicsToKML(_gJson));
+            break;
+          case 'polygon':
+            placeMarksArray.push(areaGraphicsToKML(_gJson));
+            break;
           default:
             break;
         }
@@ -83,7 +81,7 @@ export class ImportExportComponent implements OnInit {
 
       switch (this.format) {
         case 'kml':
-          this.downloadFile("userGraphics.kml", mergePlacemarkToKML(ptArray), "application/xml");
+          this.downloadFile("userGraphics.kml", mergePlacemarksToKML(placeMarksArray), "application/xml");
           break;
         case 'mmp':
           this.downloadFile("UserGraphics.mmp", JSON.stringify(dt), "application/json");
@@ -91,7 +89,7 @@ export class ImportExportComponent implements OnInit {
         default:
           break;
       }
-      
+
     });
   }
 }
