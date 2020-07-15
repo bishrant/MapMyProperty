@@ -1,15 +1,13 @@
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
 import MapView from 'arcgis-js-api/views/MapView';
 import SketchViewModel from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
 import { emptyPoint, bluePolygon } from './Renderers';
 import Circle from 'esri/geometry/Circle';
-import geometryEngine from 'esri/geometry/geometryEngine';
-import { subclass, declared } from 'esri/core/accessorSupport/decorators';
+import {planarArea} from 'esri/geometry/geometryEngine';
+import { subclass } from 'esri/core/accessorSupport/decorators';
 import { Polygon, Polyline } from 'esri/geometry';
 
 @subclass('esri.geometry.Circle')
-class TFSCircle extends declared(Circle) {
+class TFSCircle extends Circle {
   public asJSON() {
     const cc = this.toJSON();
     cc.centroid = this.centroid;
@@ -24,7 +22,7 @@ class TFSCircle extends declared(Circle) {
 }
 
 @subclass('esri.geometry.Polygon')
-class TFSPolygon extends declared(Polygon) {
+class TFSPolygon extends Polygon {
   public asJSON() {
     const cc = this.toJSON();
     cc.extent = this.extent;
@@ -39,7 +37,7 @@ class TFSPolygon extends declared(Polygon) {
 }
 
 @subclass('esri.geometry.Polyline')
-class TFSPolyline extends declared(Polyline) {
+class TFSPolyline extends Polyline {
   public asJSON() {
     const cc = this.toJSON();
     cc.extent = this.extent;
@@ -72,7 +70,7 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): __esri.Sket
 
 const CreateCircleWithGeometry = (originalGraphic: any) => {
   // calculate area to get the radius
-  const _area = geometryEngine.planarArea(originalGraphic.geometry, 'square-miles');
+  const _area = planarArea(originalGraphic.geometry, 'square-miles');
   const polygonRadius = Math.sqrt(_area / Math.PI);
   const rr = Math.round(((polygonRadius + Number.EPSILON) * 10) / 10);
   const c = new TFSCircle({

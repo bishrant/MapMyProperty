@@ -1,7 +1,11 @@
-import { updateGraphics, addGraphics } from '../../store/graphics.actions';
+import { addGraphics } from '../../store/graphics.actions';
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
+import { take } from 'rxjs/internal/operators/take';
+import { Point } from 'esri/geometry';
+import Graphic from 'esri/Graphic';
+import { pointGraphicsToKML, mergePlacemarkToKML } from './KMLUtils';
 
 @Component({
   selector: "app-import-export",
@@ -9,14 +13,85 @@ import { Store } from '@ngrx/store';
   styleUrls: ["./ImportExport.component.scss"],
 })
 export class ImportExportComponent implements OnInit {
+  @ViewChild("fileInput", { static: false }) fileInput: ElementRef;
+  files = [];
+  format = 'mmp';
   constructor(private store: Store<AppState>) { }
   ngOnInit() { }
 
+  downloadFile(name, contents, mime_type) {
+    mime_type = mime_type || "text/plain";
+    var blob = new Blob([contents], { type: mime_type });
+    var dlink = document.createElement('a');
+    dlink.download = name;
+    dlink.href = window.URL.createObjectURL(blob);
+    dlink.onclick = function (e) {
+      // revokeObjectURL needs a delay to work properly
+      setTimeout(function () {
+        window.URL.revokeObjectURL(dlink.href);
+      }, 100);
+    };
+    dlink.click();
+    dlink.remove();
+  }
+
+  parseUploadedFiles(file) {
+    let fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      const r = fileReader.result as any;
+      this.store.dispatch(addGraphics({ graphics: JSON.parse(r) }))
+    }
+    fileReader.readAsText(file);
+
+  }
+
+  chooseFile() {
+    const fileInput = this.fileInput.nativeElement;
+    fileInput.onchange = () => {
+      for (let index = 0; index < fileInput.files.length; index++) {
+        const file = fileInput.files[index];
+        this.files.push(file);
+      }
+      this.fileInput.nativeElement.value = '';
+      this.parseUploadedFiles(this.files[0]);
+    };
+    fileInput.click();
+  }
+
   export() {
-    console.log('export');
-    const graphics$ = this.store.select((state: any) => state.app.graphics);
-    this.store.select(s => {
-      console.log(s);
-    })
+    const graphics$: any = this.store.select((state: any) => state.app.graphics);
+    let ptArray = []
+    const storeGraphics = graphics$.pipe(take(1)).subscribe(dt => {
+      const gArray = [];
+      dt.forEach((g: any) => {
+        const _gJson = JSON.parse(g);
+        switch (_gJson.geometry.type) {
+          case 'point':
+            const geom = new Point(_gJson.geometry);
+            const g = new Graphic({
+              geometry: geom,
+              attributes: _gJson.attributes,
+              symbol: _gJson.attributes.symbol
+            });
+            ptArray.push(pointGraphicsToKML(g, ""));
+            break;
+
+          default:
+            break;
+        }
+      });
+
+      switch (this.format) {
+        case 'kml':
+          this.downloadFile("userGraphics.kml", mergePlacemarkToKML(ptArray), "application/xml");
+          break;
+        case 'mmp':
+          this.downloadFile("UserGraphics.mmp", JSON.stringify(dt), "application/json");
+          break;
+        default:
+          break;
+      }
+      
+    });
   }
 }

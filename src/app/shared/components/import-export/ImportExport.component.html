@@ -8,25 +8,25 @@
     <div>
 
         <br>
-        <mat-radio-group aria-label="Select an import/export option">
+        <mat-radio-group aria-label="Select an import/export option" [(ngModel)]="format">
             <div class="importExportFormat">
-                <mat-radio-button value="MMP" checked>MMP</mat-radio-button>
-                <mat-radio-button value="SHP">SHP</mat-radio-button>
+                <mat-radio-button value="mmp">MMP</mat-radio-button>
+                <mat-radio-button value="shp">SHP</mat-radio-button>
             </div>
             <div class="importExportFormat">
 
-                <mat-radio-button value="KML">KML</mat-radio-button>
-                <mat-radio-button value="GPX">GPX</mat-radio-button>
+                <mat-radio-button value="kml">KML</mat-radio-button>
+                <mat-radio-button value="gpx">GPX</mat-radio-button>
             </div>
         </mat-radio-group>
         <!-- [disabled]="(sketchVM.state === 'ready') && (disableUndo$ | async)" -->
 
         <div class="importExportFormat">
-            <button mat-raised-button color="accent">
+            <button mat-raised-button color="accent" (click)="chooseFile()">
                 <mat-icon>publish</mat-icon>
                 Import
             </button>
-
+            <input type="file" #fileInput id="fileUpload" name="fileUpload" multiple="multiple" accept="*" style="display:none;" />
             <button mat-raised-button color="accent" (click)="export()">
                 <mat-icon>get_app</mat-icon>
                 Export

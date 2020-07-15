@@ -55,7 +55,7 @@ const addTextToMap = (targetElement: any, store: any, textProps: any, isUpdate: 
   if (isUpdate) {
     store.dispatch(updateGraphics({ graphics: JSON.stringify([gr.toJSON()]) }));
   } else {
-    store.dispatch(addGraphics({ graphics: JSON.stringify(gr.toJSON()) }));
+    store.dispatch(addGraphics({ graphics: [JSON.stringify(gr.toJSON())] }));
   }
 };
 
