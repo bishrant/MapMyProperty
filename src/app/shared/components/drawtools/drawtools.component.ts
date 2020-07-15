@@ -150,7 +150,7 @@ export class DrawtoolsComponent implements OnInit {
         if (this.sketchVM.createCircleFromPoint) {
           createdGraphic = CreatecircleFromPoint(evt, this.radius, this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
         }
-        this.store.dispatch(addGraphics({ graphics: JSON.stringify(createdGraphic) }));
+        this.store.dispatch(addGraphics({ graphics: [JSON.stringify(createdGraphic)] }));
       }
     });
   };

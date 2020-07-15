@@ -11,7 +11,10 @@ const reducer = (state: any, action: any, listener?: PatchListener): any => {
     (next) => {
       switch (action.type) {
         case addGraphics.type:
-          next.graphics.push(action.graphics);
+          action.graphics.forEach(g => {
+            next.graphics.push(g);
+          })
+          // next.graphics.push(action.graphics);
           return;
         case removeGraphics.type:
           const jj = JSON.parse(JSON.stringify(next.graphics));
