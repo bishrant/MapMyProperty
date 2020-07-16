@@ -4,7 +4,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ImportExportComponent } from './ImportExport.component';
-import { MatRadioModule } from "@angular/material/radio";
+import { MatRadioModule } from '@angular/material/radio';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
@@ -15,8 +15,8 @@ import { FormsModule } from '@angular/forms';
     MatIconModule,
     MatButtonModule,
     MatRadioModule,
-    FormsModule,
+    FormsModule
   ],
-  exports: [ImportExportComponent],
+  exports: [ImportExportComponent]
 })
 export class ImportExportModule {}

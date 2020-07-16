@@ -44,6 +44,6 @@ import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
     FillstyleModule,
     LinestyleModule
   ],
-  exports: [DrawtoolsComponent],
+  exports: [DrawtoolsComponent]
 })
 export class DrawtoolsModule {}
