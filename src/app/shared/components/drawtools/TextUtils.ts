@@ -26,7 +26,7 @@ const addTextToMap = (targetElement: any, store: any, textProps: any, isUpdate: 
     textProps.color = JSON.parse(targetElement.getAttribute('fontColor'));
   }
   const fontSize = parseInt(textProps.font.size.split('px')[0]);
-  var textSymbol = {
+  const textSymbol = {
     type: 'text', // autocasts as new TextSymbol()
     color: textProps.color,
     // haloColor: 'black',
@@ -116,7 +116,7 @@ const createInput = (mapEvt: any, inputId = '0', store: any, textProps: any) => 
     }
   }
 
-  //add event listeners
+  // add event listeners
   let enterKeylistener: any;
   let windowListener: any;
 

@@ -1,28 +1,26 @@
 import { addGraphics } from '../../store/graphics.actions';
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/internal/operators/take';
-import { Point } from 'esri/geometry';
-import Graphic from 'esri/Graphic';
-import { mergePlacemarksToKML, pointGraphicToKML, lineGraphicsToKML, areaGraphicsToKML, kmlToGeoJson } from './KMLUtils';
+import { kmlToGeoJson, createKMLForExport } from './KMLUtils';
+import { createGPXForExport } from './GPXUtils';
 
 @Component({
-  selector: "app-import-export",
-  templateUrl: "./ImportExport.component.html",
-  styleUrls: ["./ImportExport.component.scss"],
+  selector: 'app-import-export',
+  templateUrl: './ImportExport.component.html',
+  styleUrls: ['./ImportExport.component.scss']
 })
-export class ImportExportComponent implements OnInit {
-  @ViewChild("fileInput", { static: false }) fileInput: ElementRef;
-  files = [];
+export class ImportExportComponent {
+  @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
+  files: any = [];
   format = 'mmp';
-  constructor(private store: Store<AppState>) { }
-  ngOnInit() { }
+  constructor (private store: Store<AppState>) { }
 
-  downloadFile(name, contents, mime_type) {
-    mime_type = mime_type || "text/plain";
-    var blob = new Blob([contents], { type: mime_type });
-    var dlink = document.createElement('a');
+  downloadFile (name: any, contents: any, mime_type: string) {
+    mime_type = mime_type || 'text/plain';
+    const blob = new Blob([contents], { type: mime_type });
+    const dlink = document.createElement('a');
     dlink.download = name;
     dlink.href = window.URL.createObjectURL(blob);
     dlink.onclick = function (e) {
@@ -35,9 +33,9 @@ export class ImportExportComponent implements OnInit {
     dlink.remove();
   }
 
-  parseUploadedFiles(file) {
-    let fileReader = new FileReader();
-    fileReader.onload = (e) => {
+  parseUploadedFiles (file: any) {
+    const fileReader: any = new FileReader();
+    fileReader.onload = (e: any) => {
       const r = fileReader.result as any;
       if (this.format === 'kml') {
         const graphicArray = kmlToGeoJson(r);
@@ -46,17 +44,15 @@ export class ImportExportComponent implements OnInit {
       } else {
         this.store.dispatch(addGraphics({ graphics: JSON.parse(r) }))
       }
-      
     }
     fileReader.readAsText(file);
-
   }
 
-  chooseFile() {
+  chooseFile () {
     const fileInput = this.fileInput.nativeElement;
     fileInput.onchange = () => {
       for (let index = 0; index < fileInput.files.length; index++) {
-        const file = fileInput.files[index];
+        const file: any = fileInput.files[index];
         this.files.push(file);
       }
       this.fileInput.nativeElement.value = '';
@@ -65,44 +61,22 @@ export class ImportExportComponent implements OnInit {
     fileInput.click();
   }
 
-  export() {
+  export () {
     const graphics$: any = this.store.select((state: any) => state.app.graphics);
-    let placeMarksArray = [];
-    graphics$.pipe(take(1)).subscribe(dt => {
-      dt.forEach((g: any) => {
-        const _gJson = JSON.parse(g);
-        switch (_gJson.attributes.geometryType) {
-          case 'point':
-            placeMarksArray.push(pointGraphicToKML(_gJson));
-            break;
-          case 'text':
-            placeMarksArray.push(pointGraphicToKML(_gJson));
-            break;
-          case 'polyline':
-            placeMarksArray.push(lineGraphicsToKML(_gJson));
-            break;
-          case 'polygon':
-            placeMarksArray.push(areaGraphicsToKML(_gJson));
-            break;
-          case 'circle':
-            placeMarksArray.push(areaGraphicsToKML(_gJson));
-            break;
-          default:
-            break;
-        }
-      });
-
+    graphics$.pipe(take(1)).subscribe((dt: any) => {
       switch (this.format) {
         case 'kml':
-          this.downloadFile("userGraphics.kml", mergePlacemarksToKML(placeMarksArray), "application/xml");
+          this.downloadFile('userGraphics.kml', createKMLForExport(dt), 'application/xml');
           break;
         case 'mmp':
-          this.downloadFile("UserGraphics.mmp", JSON.stringify(dt), "application/json");
+          this.downloadFile('UserGraphics.mmp', JSON.stringify(dt), 'application/json');
+          break;
+        case 'gpx':
+          this.downloadFile('userGraphics.gpx', createGPXForExport(dt), 'application/xml');
           break;
         default:
           break;
       }
-
     });
   }
 }
