@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { take } from 'rxjs/internal/operators/take';
 import { Point } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
-import { mergePlacemarksToKML, pointGraphicToKML, lineGraphicsToKML, areaGraphicsToKML } from './KMLUtils';
+import { mergePlacemarksToKML, pointGraphicToKML, lineGraphicsToKML, areaGraphicsToKML, kmlToGeoJson } from './KMLUtils';
 
 @Component({
   selector: "app-import-export",
@@ -39,7 +39,12 @@ export class ImportExportComponent implements OnInit {
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
       const r = fileReader.result as any;
-      this.store.dispatch(addGraphics({ graphics: JSON.parse(r) }))
+      if (this.format === 'kml') {
+        kmlToGeoJson(r);
+      } else {
+        this.store.dispatch(addGraphics({ graphics: JSON.parse(r) }))
+      }
+      
     }
     fileReader.readAsText(file);
 
@@ -64,14 +69,20 @@ export class ImportExportComponent implements OnInit {
     graphics$.pipe(take(1)).subscribe(dt => {
       dt.forEach((g: any) => {
         const _gJson = JSON.parse(g);
-        switch (_gJson.geometry.type) {
+        switch (_gJson.attributes.geometryType) {
           case 'point':
+            placeMarksArray.push(pointGraphicToKML(_gJson));
+            break;
+          case 'text':
             placeMarksArray.push(pointGraphicToKML(_gJson));
             break;
           case 'polyline':
             placeMarksArray.push(lineGraphicsToKML(_gJson));
             break;
           case 'polygon':
+            placeMarksArray.push(areaGraphicsToKML(_gJson));
+            break;
+          case 'circle':
             placeMarksArray.push(areaGraphicsToKML(_gJson));
             break;
           default:

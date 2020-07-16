@@ -29,6 +29,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.13.1",
     "@ngrx/store": "^9.2.0",
     "@ngrx/store-devtools": "^9.2.0",
+    "@tmcw/togeojson": "^4.1.0",
     "angular-svg-icon": "^10.0.0",
     "arcgis-js-api": "^4.16.0",
     "fp-ts": "^2.6.6",
