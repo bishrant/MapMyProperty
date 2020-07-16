@@ -10,5 +10,14 @@ const defaultPointSymbol: any = {
     "height": "12px", "style": "circle", "contentType": "image/svg", "name": "circle",
     "color": { "r": 100, "g": 20, "b": 5, "a": 1 }
 };
+const defaultLineSymbol: any = {
+    "type": "simple-line", "color": { "r": 100, "g": 20, "b": 5, "a": 1 },
+    "style": "solid", "width": 2
+};
 
-export {defaultTextSymbol, defaultPointSymbol}
+const defaultPolygonSymbol: any = {
+    "type": "simple-fill", "color": { "r": 0, "g": 0, "b": 0, "a": 0.5 },
+    "style": "solid",
+    "outline": { "color": { "r": 100, "g": 20, "b": 5, "a": 1 }, "width": 2, "style": "solid" }};
+
+export { defaultTextSymbol, defaultPointSymbol, defaultLineSymbol, defaultPolygonSymbol }

@@ -1,10 +1,9 @@
 import webMercatorUtils = require("esri/geometry/support/webMercatorUtils")
 import { Point, Polyline, Polygon } from 'esri/geometry';
-import Graphic = require('esri/Graphic');
+import  Graphic = require('esri/Graphic');
 import { RGBAObjectToABGR } from '../../utils/Colors';
 import { kml } from './kml';
-import { id } from '../../store/todo';
-import { defaultTextSymbol, defaultPointSymbol } from './DefaultSymbols';
+import { convertFeatureCollectionToGraphics } from './FeatureCollectionUtils';
 
 const pointGraphicToKML = (gJson: any) => {
     var name = gJson.attributes.geometryType === 'text' ? gJson.attributes.symbol.text : "";
@@ -78,59 +77,7 @@ const mergePlacemarksToKML = (placeMarks: any[]) => {
 const kmlToGeoJson = (xml: any) => {
     const _xml = new DOMParser().parseFromString(xml, "text/xml");
     const featureCollection = kml(_xml, { styles: true });
-    let graphicArray = [];
-    featureCollection.features.forEach((f: any) => {
-        switch (f.geometry.type.toLowerCase()) {
-            case 'point':
-                const attributes = {
-                    id: id(), 
-                    geometryType: "point",
-                    symbol: defaultPointSymbol
-                };
-                const coords = f.geometry.coordinates;
-                let geom: any = new Point({
-                    longitude: coords[0],
-                    latitude: coords[1],
-                    spatialReference: { wkid: 4326 }
-                });
-                geom = webMercatorUtils.geographicToWebMercator(geom);
-                const _graphicJson = new Graphic({
-                    geometry: geom,
-                    attributes: attributes,
-                    symbol: defaultPointSymbol
-                });
-                const graphicJson = _graphicJson.toJSON();
-                graphicJson.symbol = defaultPointSymbol;
-                graphicJson.geometry.type = 'point';
-                graphicArray.push(JSON.stringify(graphicJson));
-
-                if(typeof f.properties !== undefined) {
-                    if(typeof f.properties.name !== 'undefined' && f.properties.name !== '') {
-                        let textSymbol = defaultTextSymbol;
-                        textSymbol.text = f.properties.name;
-                        graphicJson.attributes = {id: id(), symbol: textSymbol, geometryType: 'text'}
-                        graphicJson.symbol = textSymbol;
-                        graphicArray.push(JSON.stringify(graphicJson));
-                    }
-                }
-                
-                break;
-
-            case 'linestring':
-                const lineAttributes = {
-                    id: id(),
-                    geometryType: 'polyline',
-                    symbol: null
-                }
-                break;
-
-            default:
-                break;
-        }
-        console.log(graphicArray);
-    });
-    return graphicArray;
-
+    return convertFeatureCollectionToGraphics(featureCollection); 
 }
 
 export { pointGraphicToKML, mergePlacemarksToKML, lineGraphicsToKML, areaGraphicsToKML, kmlToGeoJson };
