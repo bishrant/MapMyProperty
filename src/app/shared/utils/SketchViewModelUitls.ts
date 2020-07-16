@@ -48,6 +48,9 @@ class TFSPolyline extends Polyline {
     cc.toJSON = undefined;
     return cc;
   }
+  constructor(props) {
+    super(props);
+  }
 }
 
 const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): __esri.SketchViewModel => {
