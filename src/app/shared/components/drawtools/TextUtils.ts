@@ -1,5 +1,6 @@
 import Graphic from 'esri/Graphic';
 import { addGraphics, updateGraphics } from '../../store/graphics.actions';
+import { text } from '@fortawesome/fontawesome-svg-core';
 const WIDTH = 200;
 const PADDING = 10;
 
@@ -52,10 +53,13 @@ const addTextToMap = (targetElement: any, store: any, textProps: any, isUpdate: 
       geometryType: 'text',
     },
   });
+  const _g = gr.toJSON();
+  _g.symbol = textSymbol;
+  _g.geometry.type = 'point';
   if (isUpdate) {
-    store.dispatch(updateGraphics({ graphics: JSON.stringify([gr.toJSON()]) }));
+    store.dispatch(updateGraphics({ graphics: JSON.stringify([_g]) }));
   } else {
-    store.dispatch(addGraphics({ graphics: [JSON.stringify(gr.toJSON())] }));
+    store.dispatch(addGraphics({ graphics: [JSON.stringify(_g)] }));
   }
 };
 

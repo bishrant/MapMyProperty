@@ -40,7 +40,9 @@ export class ImportExportComponent implements OnInit {
     fileReader.onload = (e) => {
       const r = fileReader.result as any;
       if (this.format === 'kml') {
-        kmlToGeoJson(r);
+        const graphicArray = kmlToGeoJson(r);
+        console.log(graphicArray);
+        this.store.dispatch(addGraphics({ graphics: graphicArray }))
       } else {
         this.store.dispatch(addGraphics({ graphics: JSON.parse(r) }))
       }

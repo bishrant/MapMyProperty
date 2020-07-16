@@ -87,7 +87,7 @@ export class EsrimapComponent implements OnInit {
       if (g.length > 0) {
         const graphicsArray = g.map((_g: any) => {
           let gr = JSON.parse(_g);
-          return gr.attributes.geometryType === 'text' ? Graphic.fromJSON(gr) : new Graphic(gr);
+          return new Graphic(gr);
         });
         const allExcepttext = graphicsArray.filter((graphic: any) => graphic.attributes.geometryType != 'text');
 
@@ -96,6 +96,7 @@ export class EsrimapComponent implements OnInit {
         this.textGraphicsLayer.graphics = textGraphicsArray;
       } else {
         this.polygonGraphicsLayer.removeAll();
+        this.textGraphicsLayer.removeAll();
       }
     });
   };
