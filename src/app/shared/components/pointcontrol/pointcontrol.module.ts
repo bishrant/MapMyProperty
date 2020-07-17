@@ -14,9 +14,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [PointcontrolComponent],
-  imports: [CommonModule, InfobuttonModule, MatSliderModule, FormsModule, MatFormFieldModule, MatInputModule, 
+  imports: [CommonModule, InfobuttonModule, MatSliderModule, FormsModule, MatFormFieldModule, MatInputModule,
     FontAwesomeModule,
     ColorPickerModule, AngularSvgIconModule, MatButtonModule, MatButtonToggleModule],
-  exports: [PointcontrolComponent],
+  exports: [PointcontrolComponent]
 })
 export class PointcontrolModule {}

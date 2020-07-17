@@ -29,8 +29,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatButtonModule,
     MatSelectModule,
     MatExpansionModule,
-    MatButtonToggleModule,
+    MatButtonToggleModule
   ],
-  exports: [LinestyleComponent],
+  exports: [LinestyleComponent]
 })
 export class LinestyleModule {}

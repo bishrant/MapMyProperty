@@ -16,10 +16,10 @@ export class ColorsPopoverService {
   private afterClosed = new Subject<any>();
   onClosed = this.afterClosed.asObservable();
 
-  constructor(private overlay: Overlay) {}
+  constructor (private overlay: Overlay) {}
 
-  open(origin: any, componentPortal: any, data: any) {
-    let config = new OverlayConfig({
+  open (origin: any, componentPortal: any, data: any) {
+    const config = new OverlayConfig({
       positionStrategy: this.getOverlayPosition(origin),
       scrollStrategy: this.overlay.scrollStrategies.close(),
       hasBackdrop: true,
@@ -29,15 +29,15 @@ export class ColorsPopoverService {
     this.overlayRef = this.overlay.create(config);
 
     this.overlayRef.backdropClick().subscribe(() => {
-      this.close({ color: ref.instance['color'], opacity: ref.instance['opacity'], closePopup: true }, true);
+      this.close({ color: ref.instance.color, opacity: ref.instance.opacity, closePopup: true }, true);
     });
 
     const ref = this.overlayRef.attach(componentPortal);
-    for (let key in data) ref.instance[key] = data[key];
+    for (const key in data) ref.instance[key] = data[key];
     return this.onClosed;
   }
 
-  private getOverlayPosition(origin: any): any {
+  private getOverlayPosition (origin: any): any {
     const positionStrategy: FlexibleConnectedPositionStrategy = this.overlay
       .position()
       .flexibleConnectedTo(origin)
@@ -60,7 +60,7 @@ export class ColorsPopoverService {
     }
   };
 
-  private getPositions(): ConnectionPositionPair[] {
+  private getPositions (): ConnectionPositionPair[] {
     return [
       {
         originX: 'center',

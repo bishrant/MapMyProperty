@@ -21,8 +21,8 @@ import { NgModule } from '@angular/core';
     MatButtonModule,
     MatExpansionModule,
     MatFormFieldModule,
-    MatSelectModule,
+    MatSelectModule
   ],
-  exports: [FillstyleComponent],
+  exports: [FillstyleComponent]
 })
 export class FillstyleModule {}

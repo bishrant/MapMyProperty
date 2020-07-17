@@ -1,5 +1,5 @@
 import { addGraphics } from '../../store/graphics.actions';
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/internal/operators/take';
@@ -11,11 +11,13 @@ import { createGPXForExport, gpxToGeoJson } from './GPXUtils';
   templateUrl: './ImportExport.component.html',
   styleUrls: ['./ImportExport.component.scss']
 })
-export class ImportExportComponent {
+export class ImportExportComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
   files: any = [];
   format = 'mmp';
-  constructor (private store: Store<AppState>) { }
+  graphicsSub$: any;
+  exportEnabled: boolean = false;
+  constructor (private store: Store<AppState>) {}
 
   downloadFile (name: any, contents: any, mime_type: string) {
     mime_type = mime_type || 'text/plain';
@@ -23,7 +25,7 @@ export class ImportExportComponent {
     const dlink = document.createElement('a');
     dlink.download = name;
     dlink.href = window.URL.createObjectURL(blob);
-    dlink.onclick = function (e) {
+    dlink.onclick = function () {
       // revokeObjectURL needs a delay to work properly
       setTimeout(function () {
         window.URL.revokeObjectURL(dlink.href);
@@ -33,9 +35,17 @@ export class ImportExportComponent {
     dlink.remove();
   }
 
+  ngOnInit () {
+    this.graphicsSub$ = this.store
+      .select((state: any) => state.app.graphics)
+      .subscribe((x: any) => {
+        this.exportEnabled = x.length > 0;
+      });
+  }
+
   parseUploadedFiles (file: any) {
     const fileReader: any = new FileReader();
-    fileReader.onload = (e: any) => {
+    fileReader.onload = () => {
       const r = fileReader.result as any;
       switch (this.format) {
         case 'kml':
@@ -67,6 +77,7 @@ export class ImportExportComponent {
   export () {
     const graphics$: any = this.store.select((state: any) => state.app.graphics);
     graphics$.pipe(take(1)).subscribe((dt: any) => {
+      // @todo need to check whether there are any features or not before proceeding
       switch (this.format) {
         case 'kml':
           this.downloadFile('userGraphics.kml', createKMLForExport(dt), 'application/xml');
@@ -81,5 +92,9 @@ export class ImportExportComponent {
           break;
       }
     });
+  }
+
+  ngOnDestroy () {
+    this.graphicsSub$.unsubscribe();
   }
 }

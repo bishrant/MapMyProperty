@@ -27,8 +27,8 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     FlexLayoutModule,
     MatInputModule,
     MatButtonToggleModule,
-    MatTooltipModule,
+    MatTooltipModule
   ],
-  exports: [GraphicsStoreComponent],
+  exports: [GraphicsStoreComponent]
 })
 export class GraphicsStoreModule {}

@@ -26,8 +26,9 @@
                 <mat-icon>publish</mat-icon>
                 Import
             </button>
-            <input type="file" #fileInput id="fileUpload" name="fileUpload" multiple="multiple" accept="*" style="display:none;" />
-            <button mat-raised-button color="accent" (click)="export()">
+            <input type="file" #fileInput id="fileUpload" name="fileUpload" multiple="multiple" accept="*"
+                style="display:none;" />
+            <button mat-raised-button color="accent" (click)="export()" [disabled]="!exportEnabled">
                 <mat-icon>get_app</mat-icon>
                 Export
             </button>

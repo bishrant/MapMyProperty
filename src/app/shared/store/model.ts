@@ -80,4 +80,3 @@ export const defaultConfig: WiederConfig = {
   clearActionType: 'CLEAR',
   track: false
 };
-

@@ -3,12 +3,12 @@ import { Component, OnInit, Input } from '@angular/core';
 @Component({
   selector: 'app-textcontrols',
   templateUrl: './textcontrols.component.html',
-  styleUrls: ['./textcontrols.component.scss'],
+  styleUrls: ['./textcontrols.component.scss']
 })
 export class TextcontrolsComponent implements OnInit {
   private _selectedTextGraphics: any[];
 
-  @Input() set selectedTextGraphics(value: any[]) {
+  @Input() set selectedTextGraphics (value: any[]) {
     this._selectedTextGraphics = value;
     if (value.length > 0) {
       const _symbol = value[0].graphic.attributes.symbol;
@@ -20,7 +20,8 @@ export class TextcontrolsComponent implements OnInit {
       this.textProps.color = _symbol.color;
     }
   }
-  get selectedTextGraphics(): any[] {
+
+  get selectedTextGraphics (): any[] {
     return this._selectedTextGraphics;
   }
 
@@ -33,9 +34,10 @@ export class TextcontrolsComponent implements OnInit {
       family: 'Arial',
       weight: 'normal',
       decoration: 'none',
-      style: 'normal',
-    },
+      style: 'normal'
+    }
   };
+
   public textStyle = {
     type: 'simple-marker',
     style: 'circle',
@@ -43,9 +45,10 @@ export class TextcontrolsComponent implements OnInit {
     color: [0, 255, 255, 1],
     outline: {
       color: [50, 50, 50, 1],
-      width: 1,
-    },
+      width: 1
+    }
   };
+
   bold: boolean = true;
 
   changeFontSize = () => {
@@ -65,14 +68,15 @@ export class TextcontrolsComponent implements OnInit {
     text: 'test',
     xoffset: 0,
     yoffset: 0,
-    font: this.textProps.font,
+    font: this.textProps.font
   };
+
   changeFontFamily = () => {
-        if (this.selectedTextGraphics.length > 0) {
-          const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id) as any;
-          _input.setAttribute('fontFamily', this.textProps.font.family);
-          _input.style.fontFamily = this.textProps.font.family;
-        }
+    if (this.selectedTextGraphics.length > 0) {
+      const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id) as any;
+      _input.setAttribute('fontFamily', this.textProps.font.family);
+      _input.style.fontFamily = this.textProps.font.family;
+    }
   };
 
   changeTextColor = (colorInfo: any) => {
@@ -112,7 +116,7 @@ export class TextcontrolsComponent implements OnInit {
     }
   };
 
-  constructor() {}
+  constructor () {}
 
-  ngOnInit(): void {}
+  ngOnInit (): void {}
 }

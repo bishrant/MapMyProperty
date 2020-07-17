@@ -8,10 +8,10 @@ import { SensAreasComponent } from './sens-areas/sens-areas.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -31,6 +31,6 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MatButtonModule,
     MatProgressBarModule
   ],
-  exports: [EsrimapComponent],
+  exports: [EsrimapComponent]
 })
 export class EsriMapModule {}

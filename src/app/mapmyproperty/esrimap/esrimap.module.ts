@@ -9,6 +9,6 @@ import { DrawtoolsModule } from 'src/app/shared/components/drawtools/drawtools.m
 @NgModule({
   declarations: [EsrimapComponent],
   imports: [CommonModule, GraphicsStoreModule, SidebarModule, DrawtoolsModule, ImportExportModule],
-  exports: [EsrimapComponent],
+  exports: [EsrimapComponent]
 })
 export class EsriMapModule {}

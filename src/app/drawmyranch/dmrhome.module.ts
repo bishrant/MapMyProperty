@@ -21,8 +21,8 @@ import { NgModule } from '@angular/core';
 const routes: Routes = [
   {
     path: '',
-    component: DMRHomeComponent,
-  },
+    component: DMRHomeComponent
+  }
 ];
 
 @NgModule({
@@ -43,8 +43,8 @@ const routes: Routes = [
     AngularSvgIconModule,
     ColorPickerModule,
     GraphicsStoreModule,
-    HeaderModule,
+    HeaderModule
   ],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class DMRHomepageModule {}

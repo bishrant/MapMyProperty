@@ -1,5 +1,4 @@
 import { InfobuttonModule } from './../infobutton/infobutton.module';
-import { RGBtoHEX } from '../../utils/Colors.pipe';
 import { MatButtonModule } from '@angular/material/button';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -38,6 +37,6 @@ import { TextcontrolsComponent } from './textcontrols.component';
     ToggleButtonModule,
     InfobuttonModule
   ],
-  exports: [TextcontrolsComponent],
+  exports: [TextcontrolsComponent]
 })
 export class TextcontrolsModule {}

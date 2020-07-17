@@ -4,14 +4,14 @@ import { hollowPolygon } from './Renderers';
 const CreatePolygonGraphicsLayer = (Id: string = 'userGraphicsLayer') => {
   const graphicsLayer = new GraphicsLayer({
     id: Id,
-    symbol: hollowPolygon,
+    symbol: hollowPolygon
   });
   return graphicsLayer;
 };
 
 const CreateTextGraphicsLayer = (Id: string = 'userTextGraphicsLayer') => {
   return new GraphicsLayer({
-    id: Id,
+    id: Id
   });
 };
 

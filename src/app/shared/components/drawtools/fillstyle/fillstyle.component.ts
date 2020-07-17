@@ -1,12 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { RGBObjectToHexA } from '../../../utils/Colors';
-import {  FillPropsRGBA } from '../DrawTools.interface';
+import { FillPropsRGBA } from '../DrawTools.interface';
 import { FillStyles } from 'src/app/shared/utils/GraphicStyles';
 
 @Component({
   selector: 'app-fillstyle',
   templateUrl: './fillstyle.component.html',
-  styleUrls: ['./fillstyle.component.scss'],
+  styleUrls: ['./fillstyle.component.scss']
 })
 export class FillstyleComponent {
   _selectedGraphics: any;
@@ -15,17 +15,18 @@ export class FillstyleComponent {
   @Input('drawingTool') drawingTool: any;
   @Output() changedGraphicsStyle = new EventEmitter();
   @Input('selectedGraphics')
-  get selectedGraphics(): any {
+  get selectedGraphics (): any {
     return this._selectedGraphics;
   }
-  set selectedGraphics(value: any) {
+
+  set selectedGraphics (value: any) {
     this._selectedGraphics = value;
     if (typeof value === 'undefined') return;
     if (value.length < 1) return;
     this.geomType = value[0].geometry.type;
     if (this.geomType !== 'circle' && this.geomType !== 'polygon') return;
 
-    let s = value[0].attributes.symbol;
+    const s = value[0].attributes.symbol;
     this.fillProps.style = s.style;
     this.fillProps.color = s.color;
     this.setFillSvgStyle();
@@ -33,14 +34,14 @@ export class FillstyleComponent {
 
   public fillProps: FillPropsRGBA = {
     color: { r: 0, g: 0, b: 0, a: 0.5 },
-    style: 'solid',
+    style: 'solid'
   };
 
   fillSvgStyle = {
     'width.px': 150,
-    fill: RGBObjectToHexA(this.fillProps.color),
+    fill: RGBObjectToHexA(this.fillProps.color)
   };
-  
+
   setFillSvgStyle = () => {
     this.fillSvgStyle.fill = RGBObjectToHexA(this.fillProps.color);
   };
@@ -55,5 +56,5 @@ export class FillstyleComponent {
     this.changedGraphicsStyle.emit();
   };
 
-  constructor() {}
+  constructor () {}
 }
