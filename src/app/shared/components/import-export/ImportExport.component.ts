@@ -4,7 +4,7 @@ import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/internal/operators/take';
 import { kmlToGeoJson, createKMLForExport } from './KMLUtils';
-import { createGPXForExport } from './GPXUtils';
+import { createGPXForExport, gpxToGeoJson } from './GPXUtils';
 
 @Component({
   selector: 'app-import-export',
@@ -37,12 +37,15 @@ export class ImportExportComponent {
     const fileReader: any = new FileReader();
     fileReader.onload = (e: any) => {
       const r = fileReader.result as any;
-      if (this.format === 'kml') {
-        const graphicArray = kmlToGeoJson(r);
-        console.log(graphicArray);
-        this.store.dispatch(addGraphics({ graphics: graphicArray }))
-      } else {
-        this.store.dispatch(addGraphics({ graphics: JSON.parse(r) }))
+      switch (this.format) {
+        case 'kml':
+          this.store.dispatch(addGraphics({ graphics: kmlToGeoJson(r) }));
+          break;
+        case 'gpx':
+          this.store.dispatch(addGraphics({ graphics: gpxToGeoJson(r) }));
+          break;
+        default:
+          break;
       }
     }
     fileReader.readAsText(file);
