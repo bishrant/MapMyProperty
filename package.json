@@ -4,9 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
+    "super": "node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve",
     "build": "ng build --base-href ./ --prod",
     "test": "ng test",
-    "lint": "eslint -c .eslintrc.js --ext .ts ./src",
+    "lint": "eslint -c .eslintrc.json --ext .ts ./src",
     "e2e": "ng e2e",
     "build:stats": "ng build --prod --stats-json",
     "bundle-report": "npm run build:stats; webpack-bundle-analyzer dist/mapmyproperty/stats.json"
@@ -72,6 +73,7 @@
     "prettier-eslint": "^11.0.0",
     "protractor": "~7.0.0",
     "sass-loader": "^9.0.2",
+    "standardx": "^3.0.0",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5",
     "uglifyjs-webpack-plugin": "^2.2.0",

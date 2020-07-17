@@ -1,36 +1,37 @@
 import { Component, Input } from '@angular/core';
 import { RGBObjectToHexA } from '../../utils/Colors';
-import { faTree, faFlag, faParking,  faExclamationTriangle, faTint, faThumbtack, faToriiGate, faHome } from '@fortawesome/free-solid-svg-icons';
+import { faTree, faFlag, faParking, faExclamationTriangle, faTint, faThumbtack, faToriiGate, faHome } from '@fortawesome/free-solid-svg-icons';
 import { getPointSvg } from './pointSymbols';
 
 @Component({
   selector: 'app-pointcontrol',
   templateUrl: './pointcontrol.component.html',
-  styleUrls: ['./pointcontrol.component.scss'],
+  styleUrls: ['./pointcontrol.component.scss']
 })
 export class PointcontrolComponent {
   _selectedGraphics: any;
   @Input('selectedGraphics')
-  get selectedGraphics():any {
+  get selectedGraphics ():any {
     return this._selectedGraphics
   }
-  set selectedGraphics(value: any) {
+
+  set selectedGraphics (value: any) {
     this._selectedGraphics = value;
     if (typeof value === 'undefined') return;
     if (value.length < 1) return;
     if (value[0].geometry.type !== 'point') return;
 
-    let s = value[0].attributes.symbol;
+    const s = value[0].attributes.symbol;
     this.markerProps.type = s.type;
     this.markerProps.style = s.style;
     this.markerProps.name = s.name;
     this.markerSize = parseInt(s.size.split('px')[0]);
-    this.pointSymbol = this.markerStyles.filter((m) => m.name === s.name)[0];
+    this.pointSymbol = this.markerStyles.filter((m : any) => m.name === s.name)[0];
   }
 
-  constructor() {}
+  constructor () {}
 
-  markerStyles = [
+  markerStyles: any = [
     { name: 'circle', type: 'simple-marker', asp: 1 },
     { name: 'cross', type: 'simple-marker', asp: 1 },
     { name: 'triangle', type: 'simple-marker', asp: 1 },
@@ -44,10 +45,10 @@ export class PointcontrolComponent {
     { name: 'tint', type: 'picture-marker', asp: 0.687 },
     { name: 'thumbtack', type: 'picture-marker', asp: 0.75 },
     { name: 'torii-gate', type: 'picture-marker', asp: 1 },
-    { name: 'home', type: 'picture-marker', asp: 1.125 },
+    { name: 'home', type: 'picture-marker', asp: 1.125 }
   ];
 
-  pictureMarkers = {
+  pictureMarkers: any = {
     flag: faFlag,
     tree: faTree,
     'exclamation-triangle': faExclamationTriangle,
@@ -55,7 +56,7 @@ export class PointcontrolComponent {
     tint: faTint,
     thumbtack: faThumbtack,
     'torii-gate': faToriiGate,
-    home: faHome,
+    home: faHome
   };
 
   iconName: any;
@@ -71,12 +72,12 @@ export class PointcontrolComponent {
     style: 'circle',
     contentType: 'image/svg',
     name: 'circle',
-    color: { r: 100, g: 20, b: 5, a: 1 },
+    color: { r: 100, g: 20, b: 5, a: 1 }
   };
 
   fillSvgStyle = {
     'width.px': 30,
-    fill: RGBObjectToHexA(this.markerProps.color),
+    fill: RGBObjectToHexA(this.markerProps.color)
   };
 
   changeMarkerSize = () => {

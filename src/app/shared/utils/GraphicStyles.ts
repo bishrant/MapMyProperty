@@ -1,22 +1,20 @@
 const LineStyles = [
   'none',
   'solid',
-   'dash',
- 'short-dot',
- 'dot',
+  'dash',
+  'short-dot',
+  'dot',
   'dash-dot',
- 'short-dash-dot-dot',
+  'short-dash-dot-dot',
   'long-dash',
   'long-dash-dot',
   'short-dash',
-  'short-dash-dot',
-
+  'short-dash-dot'
 ]
-
 
 const FillStyles = [
   'none',
-   'solid',
+  'solid',
   'forward-diagonal',
   'backward-diagonal',
   'cross',
@@ -24,7 +22,6 @@ const FillStyles = [
   'vertical',
   'horizontal'
 ];
-
 
 const CheckIfColorIsHollow = (RGBAarray: any) => {
   if (RGBAarray.length === 4) {
@@ -38,16 +35,16 @@ const CheckIfColorIsHollowRGBA = (c: any) => {
   return c.r === 0 && c.a === 0 && c.g === 0 && c.b === 0;
 }
 const CreatePolygonSymbol = (outline: any, fill: any) => {
-    return {
-      type: 'simple-fill',
-      color: fill.color,
-      style: fill.style,
-      outline: {
-        color: outline.color ? outline.color : 'transparent',
-        width: outline.width,
-        style: outline.style,
-      },
-    };
+  return {
+    type: 'simple-fill',
+    color: fill.color,
+    style: fill.style,
+    outline: {
+      color: outline.color ? outline.color : 'transparent',
+      width: outline.width,
+      style: outline.style
+    }
+  };
 }
 
 const CreatePointSymbol = (markerProps: any) => {
@@ -55,7 +52,7 @@ const CreatePointSymbol = (markerProps: any) => {
     type: 'simple-marker',
     size: markerProps.size,
     style: markerProps.style,
-    color: markerProps.color,
+    color: markerProps.color
   }
 }
 
@@ -70,13 +67,13 @@ const CreatePolylineSymbol = (outline: any) => {
 
 const CreateLineSymbol = (outline: any) => {
   return {
-      type: 'simple-line',
-      color: outline.color,
-      width: outline.width,
-      style: outline.style,
-      cap: 'round',
-      join: 'round'
-    };
+    type: 'simple-line',
+    color: outline.color,
+    width: outline.width,
+    style: outline.style,
+    cap: 'round',
+    join: 'round'
+  };
 }
 
 const ColorSwatch = [
