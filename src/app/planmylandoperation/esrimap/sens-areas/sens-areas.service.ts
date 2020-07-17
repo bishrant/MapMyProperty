@@ -1,32 +1,33 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable space-before-function-paren */
+/* eslint-disable no-useless-constructor */
+/* eslint-disable no-unused-vars */
 import { GetTxStateUrl, GetSensAreasGpUrl } from '../../pmloUtils/arcgisURLs';
 import { Injectable, Output, EventEmitter, Directive } from '@angular/core';
-import { Geometry } from 'esri/geometry';
 import Query from 'esri/tasks/support/Query';
 import QueryTask from 'esri/tasks/QueryTask';
 import FeatureSet from 'esri/tasks/support/FeatureSet';
 import Graphic from 'esri/Graphic';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
-import GraphicsLayer from 'arcgis-js-api/layers/GraphicsLayer';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { LineProps, FillProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 
 @Directive()
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class SensAreasService {
-
   @Output() updateState: EventEmitter<string> = new EventEmitter();
 
   constructor(
     private spinner: NgxSpinnerService
   ) {}
 
-  isWithinTexas(geo: Geometry): Promise<boolean> {
+  isWithinTexas(geo: __esri.Geometry): Promise<boolean> {
     return new Promise((resolve) => {
       const _queryTask = new QueryTask({
-        url: GetTxStateUrl(),
+        url: GetTxStateUrl()
       });
 
       const query = new Query();
@@ -49,11 +50,11 @@ export class SensAreasService {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
       const params = {
-        inputPolygon: featureSet,
+        inputPolygon: featureSet
       };
 
       const gp: Geoprocessor = new Geoprocessor({
-        url: GetSensAreasGpUrl(),
+        url: GetSensAreasGpUrl()
       });
 
       gp.submitJob(params).then((jobInfo) => {
@@ -69,60 +70,60 @@ export class SensAreasService {
             });
           }
         },
-        (error) => {
+        (_error: any) => {
           resolve([]);
         });
       });
     });
   }
 
-  addSensAreasToMap(gl: GraphicsLayer, areas: any[]): void {
+  addSensAreasToMap(gl: __esri.GraphicsLayer, areas: any[]): void {
     areas.forEach((area, index) => {
       let symbol: any;
       let fillProps: FillProps;
-      let lineProps: LineProps = {
+      const lineProps: LineProps = {
         style: 'dash',
         color: null,
         opacity: 100,
-        width: 0,
+        width: 0
       };
-      let origin = "";
+      let origin = '';
       switch (index) {
         case 0:
           fillProps = {
             color: { r: 102, g: 153, b: 205, a: 1 },
             style: 'solid',
-            opacity: 100,
+            opacity: 100
           };
           symbol = CreatePolygonSymbol(lineProps, fillProps);
-          origin = "wetlands";
+          origin = 'wetlands';
           break;
 
         case 1:
           fillProps = {
             color: { r: 255, g: 0, b: 0, a: 1 },
             style: 'solid',
-            opacity: 100,
+            opacity: 100
           };
           symbol = CreatePolygonSymbol(lineProps, fillProps);
-          origin = "slopes";
+          origin = 'slopes';
           break;
 
         case 2:
           fillProps = {
             color: { r: 255, g: 255, b: 0, a: 1 },
             style: 'solid',
-            opacity: 100,
+            opacity: 100
           };
           symbol = CreatePolygonSymbol(lineProps, fillProps);
-          origin = "smz";
+          origin = 'smz';
           break;
 
         case 3:
           lineProps.color = { r: 51, g: 102, b: 255, a: 1 };
           lineProps.width = 3;
-          symbol = CreatePolylineSymbol(lineProps); 
-          origin = "streams";         
+          symbol = CreatePolylineSymbol(lineProps);
+          origin = 'streams';
           break;
       }
 
@@ -130,32 +131,27 @@ export class SensAreasService {
     });
   }
 
-  private addGraphicsToGL(gl: GraphicsLayer, fs: FeatureSet, index: number, symbol: any, origin:string): void {
-    if (fs.features.length > 0)
-    {
+  private addGraphicsToGL(gl: __esri.GraphicsLayer, fs: FeatureSet, index: number, symbol: any, origin:string): void {
+    if (fs.features.length > 0) {
       const graphicsCollection: Graphic[] = [];
       fs.features.forEach(element => {
         element.symbol = symbol;
         element.attributes.origin = origin;
-        if (index === 1)
-        {
-          if (element.attributes.gridcode === 1)
-          {
+        if (index === 1) {
+          if (element.attributes.gridcode === 1) {
             graphicsCollection.push(element);
           }
         } else {
           graphicsCollection.push(element);
         }
-        
       });
       gl.addMany(graphicsCollection);
     }
   }
 
-  updateOpacity(gl: GraphicsLayer, origin:string, visible:boolean):void {
+  updateOpacity(gl: __esri.GraphicsLayer, origin:string, visible:boolean):void {
     gl.graphics.forEach((g: any) => {
-      if (g.attributes.origin === origin)
-      {
+      if (g.attributes.origin === origin) {
         g.visible = visible;
       }
     });

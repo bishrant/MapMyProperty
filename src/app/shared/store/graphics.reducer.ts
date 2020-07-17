@@ -1,8 +1,13 @@
 import { produce, PatchListener } from 'immer';
-import { addGraphics, Actions, removeGraphics, updateGraphics } from './graphics.actions';
+import {
+  addGraphics,
+  Actions,
+  removeGraphics,
+  updateGraphics,
+  removeAllGraphics
+} from './graphics.actions';
 import { undoRedo } from './ngrx-undo';
 import { initialGraphicState } from './graphics.state';
-import { removeAllGraphics } from './graphics.actions';
 
 const reducer = (state: any, action: any, listener?: PatchListener): any => {
   // console.log(action);
@@ -11,7 +16,7 @@ const reducer = (state: any, action: any, listener?: PatchListener): any => {
     (next) => {
       switch (action.type) {
         case addGraphics.type:
-          action.graphics.forEach(g => {
+          action.graphics.forEach((g: any) => {
             next.graphics.push(g);
           })
           // next.graphics.push(action.graphics);
@@ -44,9 +49,8 @@ const reducer = (state: any, action: any, listener?: PatchListener): any => {
 
         case removeAllGraphics.type:
           next.graphics = [];
-          return;
+
         default:
-          return;
       }
     },
     listener
