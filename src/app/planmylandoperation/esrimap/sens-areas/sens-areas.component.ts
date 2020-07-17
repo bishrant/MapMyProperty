@@ -8,6 +8,7 @@ import { DecimalPipe } from '@angular/common';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { SensAreasService } from './sens-areas.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { PrintTaskService } from 'src/app/shared/services/PrintTask.service';
 
 @Component({
   selector: 'pmlo-sens-areas',
@@ -44,7 +45,9 @@ export class SensAreasComponent implements OnInit {
     private dialogService: DialogService, 
     private decimalPipe: DecimalPipe,
     private sensAreasService: SensAreasService,
-    private spinner: NgxSpinnerService) {}
+    private spinner: NgxSpinnerService,
+    private printTaskService: PrintTaskService
+    ) {}
 
   ngOnInit(): void {
     this.sensAreasService.updateState.subscribe(st => {
@@ -91,7 +94,7 @@ export class SensAreasComponent implements OnInit {
               this.dialogService.open(this.opt);
             } else {
               this.sensAreasService.addSensAreasToMap(this.sensAreaGL, result, this.sliderValue);
-              this.state = "clipped";
+              this.state = 'clipped';
               this.spinner.hide();
             }
           });
@@ -152,5 +155,20 @@ export class SensAreasComponent implements OnInit {
   clearSMZGraphics(): void {
     this.sensAreaGL.removeAll();
     this.sensAreaToolHeader.close();
+  }
+
+  buildSMZReport(): void {
+    this.spinner.show();
+    this.printTaskService.exportWebMap(this.mapView, 'SensAreasTemplate', 'jpg').then((url) => {
+      if (url === 'error')
+      {
+        this.spinner.hide();
+        this.opt.message = 'There was an error creating the report. Please try again and, if the problem persists, contact the administrator.';
+        this.dialogService.open(this.opt);
+      } else {
+        console.log(url);
+        this.spinner.hide();
+      }
+    });
   }
 }
