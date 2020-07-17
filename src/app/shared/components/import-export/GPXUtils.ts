@@ -1,16 +1,17 @@
-import webMercatorUtils from 'esri/geometry/support/webMercatorUtils'
 import { Point } from 'esri/geometry'
-import { createWebMercatorPolygonFromGraphic } from './sharedUtils'
+import { createWebMercatorPolygonFromGraphic, createWebMercatorLineFromGraphic, createWebMercatorPointFromGraphic } from './sharedUtils'
+import { gpx } from './gpx';
+import { convertFeatureCollectionToGraphics } from './FeatureCollectionUtils';
 
-const areaGraphicsToGPX = (gJson: any) => {
+const areaGraphicsToGPX = (gJson: any, name: string = 'area') => {
   const _g = createWebMercatorPolygonFromGraphic(gJson);
   let _gpx = '';
   for (let gpxi2 = 0; gpxi2 < _g.rings.length; gpxi2++) {
-    _gpx = _gpx + '<trk>\n<name>area</name><number>1</number>\n<trkseg>\n'
+    _gpx = _gpx + `<trk>\n<name>${name}</name><number>1</number>\n<trkseg>\n`
     for (let gpxi1 = 0; gpxi1 < _g.rings.length; gpxi1++) {
       for (let gpxj = 0; gpxj < _g.rings[gpxi1].length; gpxj++) {
         const gpxmp = new Point(_g.getPoint(gpxi1, gpxj))
-        _gpx = _gpx + '<trkpt lat="' + gpxmp.y.toString() + '" lon="' + gpxmp.x.toString() + '"/>\n'
+        _gpx = _gpx + `<trkpt lat="${gpxmp.y}" lon="${gpxmp.x}"/>\n`;
       }
     }
     _gpx += '</trkseg>\n</trk>\n'
@@ -18,52 +19,72 @@ const areaGraphicsToGPX = (gJson: any) => {
   return _gpx
 }
 
-const pointGraphicsToGPX = (feature: any) => {
-  const gpxgeographicGeometry = webMercatorUtils.webMercatorToGeographic(feature.geometry) as any
-  return '<wpt lat="' + gpxgeographicGeometry.y.toString() + '" lon="' + gpxgeographicGeometry.x.toString() + '"></wpt><name>pt</name>\n'
-}
+const pointGraphicsToGPX = (gJson: any) => {
+  const _g = createWebMercatorPointFromGraphic(gJson);
+  return `<wpt lat="${_g.y}" lon="${_g.x}"></wpt><name>pt</name>\n`;
+};
 
-const lineGraphicsToGPX = (feature: any) => {
-  let _gpx = '<trk>\n<name>Line</name>\n<trkseg>\n'
-  const gpxgeographicGeometry: any = webMercatorUtils.webMercatorToGeographic(feature.geometry)
-  for (let j = 0; j < gpxgeographicGeometry.paths[0].length; j++) {
-    const gpxpointx = gpxgeographicGeometry.paths[0][j][0]
-    const gpxpointy = gpxgeographicGeometry.paths[0][j][1]
-    _gpx = _gpx + '<trkpt lat="' + gpxpointy.toString() + '" lon="' + gpxpointx.toString() + '"/>\n'
+const textGraphicsToGPX = (gJson: any) => {
+  const _g = createWebMercatorPointFromGraphic(gJson);
+  return `<wpt lat="${_g.y}" lon="${_g.x}"></wpt><name>${gJson.attributes.symbol.text}</name>\n`;
+};
+
+const lineGraphicsToGPX = (gJson: any) => {
+  const _g = createWebMercatorLineFromGraphic(gJson);
+  let _gpx = '<trk>\n<name>Line</name>\n<trkseg>\n';
+  for (let j = 0; j < _g.paths[0].length; j++) {
+    const x = _g.paths[0][j][0];
+    const y = _g.paths[0][j][1];
+    _gpx = _gpx + `<trkpt lat="${y}" lon="${x}"/>\n`;
   }
-  _gpx += '</trkseg>\n</trk>\n'
-  return _gpx
-}
+  _gpx += '</trkseg>\n</trk>\n';
+  return _gpx;
+};
 
 const mergeWayPtsToGPX = (waypts: any) => {
-  const GPX = '<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="TexasForestInfo.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">\n<name>MMP</name>'
-  const places = waypts.join('\n')
-  return GPX + places + ' </gpx>'
+  const GPX = `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="TexasForestInfo.com" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1"
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">\n<name>MMP</name>`;
+  const places = waypts.join('\n');
+  return GPX + places + ' </gpx>';
 }
+
+const gpxToGeoJson = (xml: any) => {
+  const _xml = new DOMParser().parseFromString(xml, 'text/xml');
+  const featureCollection = gpx(_xml, { styles: true });
+  return convertFeatureCollectionToGraphics(featureCollection);
+};
 
 const createGPXForExport = (graphicsArray: any) => {
   const placeMarksArray: any = []
   graphicsArray.forEach((g: any) => {
     const _gJson = JSON.parse(g)
     switch (_gJson.attributes.geometryType) {
-      case 'point':
-        placeMarksArray.push(pointGraphicsToGPX(_gJson))
+      case 'text':
+        placeMarksArray.push(textGraphicsToGPX(_gJson));
         break;
-
+      case 'point':
+        placeMarksArray.push(pointGraphicsToGPX(_gJson));
+        break;
       case 'polyline':
-        placeMarksArray.push(lineGraphicsToGPX(_gJson))
+        placeMarksArray.push(lineGraphicsToGPX(_gJson));
         break;
       case 'polygon':
-        placeMarksArray.push(areaGraphicsToGPX(_gJson))
+        placeMarksArray.push(areaGraphicsToGPX(_gJson));
         break;
       case 'circle':
-        placeMarksArray.push(areaGraphicsToGPX(_gJson))
+        placeMarksArray.push(areaGraphicsToGPX(_gJson, 'circle'));
         break;
       default:
-        break
+        break;
     }
   })
   return mergeWayPtsToGPX(placeMarksArray)
 }
 
-export { areaGraphicsToGPX, pointGraphicsToGPX, lineGraphicsToGPX, createGPXForExport }
+export {
+  gpxToGeoJson, areaGraphicsToGPX,
+  pointGraphicsToGPX,
+  lineGraphicsToGPX,
+  createGPXForExport
+};
