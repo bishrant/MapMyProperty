@@ -5,6 +5,6 @@ import { CommonModule } from '@angular/common';
 @NgModule({
   declarations: [SidebarComponent],
   imports: [CommonModule],
-  exports: [SidebarComponent],
+  exports: [SidebarComponent]
 })
 export class SidebarModule {}

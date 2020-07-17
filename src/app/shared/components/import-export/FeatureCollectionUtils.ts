@@ -67,6 +67,7 @@ const convertFeatureCollectionToGraphics = (featureCollection: any) => {
         graphicArray.push(JSON.stringify(lineGraphicJson));
         break;
       }
+
       case 'polygon': {
         const polygonAttributes: any = {
           id: id(),

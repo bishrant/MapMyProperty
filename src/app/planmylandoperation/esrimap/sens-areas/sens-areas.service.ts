@@ -35,7 +35,7 @@ export class SensAreasService {
       query.returnGeometry = false;
       query.geometry = geo;
 
-      -_queryTask.execute(query).then((results) => {
+      -_queryTask.execute(query).then((results: any) => {
         if (results.features.length === 0) {
           resolve(false);
         } else {
@@ -45,7 +45,7 @@ export class SensAreasService {
     });
   }
 
-  getSensAreas(graph: Graphic): Promise<any[]> {
+  getSensAreas(graph: __esri.Graphic): Promise<any[]> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
@@ -53,12 +53,12 @@ export class SensAreasService {
         inputPolygon: featureSet
       };
 
-      const gp: Geoprocessor = new Geoprocessor({
+      const gp: __esri.Geoprocessor = new Geoprocessor({
         url: GetSensAreasGpUrl()
       });
 
-      gp.submitJob(params).then((jobInfo) => {
-        gp.waitForJobCompletion(jobInfo.jobId).then((jobInfo2) => {
+      gp.submitJob(params).then((jobInfo: any) => {
+        gp.waitForJobCompletion(jobInfo.jobId).then((jobInfo2: any) => {
           if (jobInfo2.jobStatus === 'job-succeeded') {
             Promise.all([
               gp.getResultData(jobInfo2.jobId, 'outputWetlands'),
@@ -71,6 +71,7 @@ export class SensAreasService {
           }
         },
         (_error: any) => {
+          console.log(_error);
           resolve([]);
         });
       });
@@ -78,7 +79,7 @@ export class SensAreasService {
   }
 
   addSensAreasToMap(gl: __esri.GraphicsLayer, areas: any[]): void {
-    areas.forEach((area, index) => {
+    areas.forEach((area: any, index: any) => {
       let symbol: any;
       let fillProps: FillProps;
       const lineProps: LineProps = {
@@ -133,8 +134,8 @@ export class SensAreasService {
 
   private addGraphicsToGL(gl: __esri.GraphicsLayer, fs: FeatureSet, index: number, symbol: any, origin:string): void {
     if (fs.features.length > 0) {
-      const graphicsCollection: Graphic[] = [];
-      fs.features.forEach(element => {
+      const graphicsCollection: __esri.Graphic[] = [];
+      fs.features.forEach((element: any) => {
         element.symbol = symbol;
         element.attributes.origin = origin;
         if (index === 1) {

@@ -8,13 +8,12 @@ import { HeaderModule } from '../../shared/components/header/header.module';
 const routes: Routes = [
   {
     path: '',
-    component: DashboardComponent,
-    // loadChildren: () => import('../esrimap/esrimap.module').then(m => m.EsrimapModule)
-  },
+    component: DashboardComponent
+  }
 ];
 @NgModule({
   declarations: [DashboardComponent],
   imports: [CommonModule, RouterModule.forChild(routes), MatIconModule, HeaderModule],
-  exports: [DashboardComponent],
+  exports: [DashboardComponent]
 })
 export class DashboardModule {}

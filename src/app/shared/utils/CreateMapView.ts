@@ -23,12 +23,13 @@ const createMapView = (mapViewEl: ElementRef, searchBarDiv: ElementRef): __esri.
     snapToZoom: false,
     map,
     constraints: {
-      rotationEnabled: false,
-    },
+      rotationEnabled: false
+    }
   };
   const view = new MapView(mapViewProperties);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const search = new Search({ view: view, container: searchBarDiv.nativeElement });
-  const homeWidget = new Home({view});
+  const homeWidget = new Home({ view });
   // view.ui.add(search);
   view.ui.move('zoom', 'bottom-right');
   view.ui.add(homeWidget, 'bottom-right');

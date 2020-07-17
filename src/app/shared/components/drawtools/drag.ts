@@ -1,8 +1,8 @@
 const dragElement = (graphicsId: any, parent: any) => {
-  var pos1 = 0,
-    pos2 = 0,
-    pos3 = 0,
-    pos4 = 0;
+  let pos1 = 0;
+  let pos2 = 0;
+  let pos3 = 0;
+  let pos4 = 0;
   const elmnt = document.getElementById(graphicsId + '_container') as any;
   const closeDragElement = () => {
     // stop moving when mouse button is released:
@@ -18,9 +18,9 @@ const dragElement = (graphicsId: any, parent: any) => {
     pos3 = e.clientX;
     pos4 = e.clientY;
     // set the element's new position:
-    let aX = elmnt.offsetLeft - pos1;
-    let aY = elmnt.offsetTop - pos2;
-    var boundry = document.getElementById(parent) as any;
+    const aX = elmnt.offsetLeft - pos1;
+    const aY = elmnt.offsetTop - pos2;
+    const boundry = document.getElementById(parent) as any;
 
     if (
       aX > 0 &&
@@ -46,12 +46,7 @@ const dragElement = (graphicsId: any, parent: any) => {
   if (document.getElementById(graphicsId + '_header')) {
     // if present, the header is where you move the DIV from:
     (document.getElementById(graphicsId + '_header') as any).onmousedown = dragMouseDown;
-  } 
-  // else {
-  //   console.log(' sdfsd s dfdsclisdfsdfsdcked other place ');
-  //   // otherwise, move the DIV from anywhere inside the DIV:
-  //   elmnt.onmousedown = dragMouseDown;
-  // }
+  }
 };
 
 export { dragElement };

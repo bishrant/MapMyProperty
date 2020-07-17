@@ -12,8 +12,8 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 const routes: Routes = [
   {
     path: '',
-    component: PmloComponent,
-  },
+    component: PmloComponent
+  }
 ];
 @NgModule({
   declarations: [
@@ -26,10 +26,10 @@ const routes: Routes = [
     HeaderModule,
     MatDialogModule
   ],
-  providers:[DialogService, MatDialog, DecimalPipe]
+  providers: [DialogService, MatDialog, DecimalPipe]
 })
-export class PlanmylandoperationModule { 
-  constructor(overlayContainer: OverlayContainer) {
+export class PlanmylandoperationModule {
+  constructor (overlayContainer: OverlayContainer) {
     overlayContainer.getContainerElement().classList.add('pmlo-theme');
   }
 }

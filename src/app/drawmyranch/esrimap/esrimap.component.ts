@@ -1,8 +1,8 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-esrimap',
   templateUrl: './esrimap.component.html',
-  styleUrls: ['./esrimap.component.scss'],
+  styleUrls: ['./esrimap.component.scss']
 })
 export class EsrimapComponent {}
