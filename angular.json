@@ -39,7 +39,12 @@
             "extractCss": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "src/assets/lib/zip",
+                "output": "./scripts/"
+              }
             ],
             "customWebpackConfig": {
               "path": "./arcgis.webpack.config.js"
