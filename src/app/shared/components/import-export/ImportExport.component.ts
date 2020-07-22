@@ -13,7 +13,7 @@ import * as shp from 'shpjs';
 @Component({
   selector: 'app-import-export',
   templateUrl: './ImportExport.component.html',
-  styleUrls: ['./ImportExport.component.scss'],
+  styleUrls: ['./ImportExport.component.scss']
 })
 export class ImportExportComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
@@ -22,13 +22,13 @@ export class ImportExportComponent implements OnInit {
   graphicsSub$: any;
   exportEnabled: boolean = false;
   fileUploadError = '';
-  constructor(
+  constructor (
     private store: Store<AppState>,
     private zipService: ZipService,
     private http: HttpClient
-  ) {}
+  ) { }
 
-  downloadFile(name: any, contents: any, mime_type: string) {
+  downloadFile (name: any, contents: any, mime_type: string) {
     mime_type = mime_type || 'text/plain';
     const blob = new Blob([contents], { type: mime_type });
     const dlink = document.createElement('a');
@@ -44,7 +44,7 @@ export class ImportExportComponent implements OnInit {
     dlink.remove();
   }
 
-  ngOnInit() {
+  ngOnInit () {
     this.graphicsSub$ = this.store
       .select((state: any) => state.app.graphics)
       .subscribe((x: any) => {
@@ -62,36 +62,58 @@ export class ImportExportComponent implements OnInit {
       reader.readAsArrayBuffer(file);
     });
 
+    features: any = [];
   pp = (s: any) => {
     const y = shp.parseZip(s);
-    console.log(y);
+    this.features.push(y.features);
   };
 
-  parseSHPZip = (file: any) => {
+  parseSHPZip = async (file: any) => {
     const that = this;
     // count the number of nested zip folders
-    this.zipService.getEntries(file).subscribe((entries: any) => {
+    this.zipService.getEntries(file).subscribe(async (entries: any) => {
       const nestedZips = entries.filter((e: any) =>
         /^.*\.(zip)$/gi.test(e.filename)
       );
 
       if (nestedZips.length > 0) {
-        const nestedZip = nestedZips[0];
-
-        const createFile: ZipTask = this.zipService.getData(nestedZip);
-        createFile.data.subscribe((blob) => {
+        // const nestedZip = nestedZips[0];
+        for (let i = 0; i < nestedZips.length; i++) {
+          const nestedZip = nestedZips[i];
+          const blob: any = await this.zipService.getWriter(nestedZip);
           const _file = new File([blob], nestedZip.filename, {
             type: 'application/zip',
             lastModified: Date.now()
           });
-          that.downloadFile('test.zip', _file, 'application/zip');
-          this.fileToArrayBuffer(_file).then((s: any) => {
-            console.log(s);
-            that.pp(s);
-            // const y = shp.parseZip(s);
-            // console.log(y);
-          });
-        });
+          const s = await this.fileToArrayBuffer(_file);
+          const y = shp.parseZip(s);
+          that.features.push(y);
+
+          if (i >= nestedZips.length) {
+            console.log(that.features);
+          }
+        }
+        // nestedZips.forEach(async (nestedZip: any) => {
+
+        //   if ()
+        //   console.log(s);
+        //   that.pp(s);
+        // });
+
+        // const createFile: ZipTask = this.zipService.getData(nestedZip);
+        // createFile.data.subscribe((blob) => {
+        //   const _file = new File([blob], nestedZip.filename, {
+        //     type: 'application/zip',
+        //     lastModified: Date.now()
+        //   });
+
+        //   this.fileToArrayBuffer(_file).then((s: any) => {
+        //     console.log(s);
+        //     that.pp(s);
+        //   });
+        // });
+        // });
+        console.log(this.features);
       } else {
         this.fileToArrayBuffer(file).then((s: any) => {
           console.log(s);
@@ -152,7 +174,7 @@ export class ImportExportComponent implements OnInit {
       targetSR: { wkid: 102100 },
       maxRecordCount: 1000,
       enforceInputFileSizeLimit: true,
-      enforceOutputJsonSizeLimit: true,
+      enforceOutputJsonSizeLimit: true
     };
     publishParams.generalize = false;
     publishParams.reducePrecision = false;
@@ -196,7 +218,7 @@ export class ImportExportComponent implements OnInit {
       );
   };
 
-  parseUploadedFiles(file: any) {
+  parseUploadedFiles (file: any) {
     const fileReader: any = new FileReader();
     fileReader.onload = () => {
       const r = fileReader.result as any;
@@ -217,7 +239,7 @@ export class ImportExportComponent implements OnInit {
     fileReader.readAsText(file);
   }
 
-  chooseFile() {
+  chooseFile () {
     const fileInput = this.fileInput.nativeElement;
     fileInput.onchange = () => {
       for (let index = 0; index < fileInput.files.length; index++) {
@@ -230,7 +252,7 @@ export class ImportExportComponent implements OnInit {
     fileInput.click();
   }
 
-  export() {
+  export () {
     const graphics$: any = this.store.select(
       (state: any) => state.app.graphics
     );
@@ -264,7 +286,7 @@ export class ImportExportComponent implements OnInit {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy () {
     this.graphicsSub$.unsubscribe();
   }
 }

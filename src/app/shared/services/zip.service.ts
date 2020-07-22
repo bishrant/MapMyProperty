@@ -51,6 +51,19 @@ export class ZipService {
     return { progress, data };
   }
 
+  getWriter = (entry: ZipEntry) => {
+    const writer = new zip.BlobWriter();
+    return new Promise(function (resolve: any, reject: any) {
+      try {
+        (entry as any).getData(writer, (blob: any) => {
+          resolve(blob);
+        });
+      } catch (e) {
+        reject(e);
+      }
+    })
+  }
+
   createFile (blob: any, fileName: any): File {
     blob.lastModifiedDate = new Date();
     blob.name = fileName;
