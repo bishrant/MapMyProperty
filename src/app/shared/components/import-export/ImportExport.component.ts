@@ -1,4 +1,3 @@
-import { ZipService } from './../../services/zip.service';
 import { addGraphics } from '../../store/graphics.actions';
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { AppState } from 'src/app/shared/store/graphics.state';
@@ -6,9 +5,7 @@ import { Store } from '@ngrx/store';
 import { take } from 'rxjs/internal/operators/take';
 import { kmlToGeoJson, createKMLForExport } from './KMLUtils';
 import { createGPXForExport, gpxToGeoJson } from './GPXUtils';
-import { ZipTask } from '../../interfaces/zip.interface';
-import { HttpClient } from '@angular/common/http';
-import * as shp from 'shpjs';
+import { convertSHPToGraphics } from './SHPUtils';
 
 @Component({
   selector: 'app-import-export',
@@ -18,15 +15,11 @@ import * as shp from 'shpjs';
 export class ImportExportComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
   files: any = [];
-  format = 'mmp';
+  format = 'shp';
   graphicsSub$: any;
   exportEnabled: boolean = false;
   fileUploadError = '';
-  constructor (
-    private store: Store<AppState>,
-    private zipService: ZipService,
-    private http: HttpClient
-  ) { }
+  constructor (private store: Store<AppState>) { }
 
   downloadFile (name: any, contents: any, mime_type: string) {
     mime_type = mime_type || 'text/plain';
@@ -62,162 +55,6 @@ export class ImportExportComponent implements OnInit {
       reader.readAsArrayBuffer(file);
     });
 
-    features: any = [];
-  pp = (s: any) => {
-    const y = shp.parseZip(s);
-    this.features.push(y.features);
-  };
-
-  parseSHPZip = async (file: any) => {
-    const that = this;
-    // count the number of nested zip folders
-    this.zipService.getEntries(file).subscribe(async (entries: any) => {
-      const nestedZips = entries.filter((e: any) =>
-        /^.*\.(zip)$/gi.test(e.filename)
-      );
-
-      if (nestedZips.length > 0) {
-        // const nestedZip = nestedZips[0];
-        for (let i = 0; i < nestedZips.length; i++) {
-          const nestedZip = nestedZips[i];
-          const blob: any = await this.zipService.getWriter(nestedZip);
-          const _file = new File([blob], nestedZip.filename, {
-            type: 'application/zip',
-            lastModified: Date.now()
-          });
-          const s = await this.fileToArrayBuffer(_file);
-          const y = shp.parseZip(s);
-          that.features.push(y);
-
-          if (i >= nestedZips.length) {
-            console.log(that.features);
-          }
-        }
-        // nestedZips.forEach(async (nestedZip: any) => {
-
-        //   if ()
-        //   console.log(s);
-        //   that.pp(s);
-        // });
-
-        // const createFile: ZipTask = this.zipService.getData(nestedZip);
-        // createFile.data.subscribe((blob) => {
-        //   const _file = new File([blob], nestedZip.filename, {
-        //     type: 'application/zip',
-        //     lastModified: Date.now()
-        //   });
-
-        //   this.fileToArrayBuffer(_file).then((s: any) => {
-        //     console.log(s);
-        //     that.pp(s);
-        //   });
-        // });
-        // });
-        console.log(this.features);
-      } else {
-        this.fileToArrayBuffer(file).then((s: any) => {
-          console.log(s);
-          const y = shp.parseZip(s);
-          console.log(y);
-        });
-      }
-      //   if (mmpAreaPolygons.length > 0) {
-      //     const createFile: ZipTask = this.zipService.getData(mmpAreaPolygons[0]);
-      //     createFile.data.subscribe((blob) => {
-      //       _file = new File([blob], mmpAreaPolygons[0].filename, {
-      //         lastModified: Date.now()
-      //       });
-      //       this.generateGraphicsFromSHP(_file);
-      //     });
-      //   } else {
-      //     this.generateGraphicsFromSHP(_file);
-      //   }
-      // });
-    });
-  };
-  // if there are any recursively convert them to feature collection and store them in array
-
-  // else: convert in batch and add to the same master array
-
-  // this.fileToArrayBuffer(file).then((s: any) => {
-  //   console.log(s);
-  //   const y = shp.parseZip(s);
-  //   console.log(y);
-  // });
-  // console.log(shp);
-
-  // const t = shp.parseZip(file);
-  // shp.parseZip(file).then((g: any) => {
-  //   console.log(g);
-  // });
-  // return;
-  // this.zipService.getEntries(file).subscribe((entries: any) => {
-  //   const mmpAreaPolygons = entries.filter(
-  //     (e: any) => e.filename.toLowerCase().indexOf('.zip') > -1
-  //   );
-  //   if (mmpAreaPolygons.length > 0) {
-  //     const createFile: ZipTask = this.zipService.getData(mmpAreaPolygons[0]);
-  //     createFile.data.subscribe((blob) => {
-  //       _file = new File([blob], mmpAreaPolygons[0].filename, {
-  //         lastModified: Date.now()
-  //       });
-  //       this.generateGraphicsFromSHP(_file);
-  //     });
-  //   } else {
-  //     this.generateGraphicsFromSHP(_file);
-  //   }
-  // });
-
-  generateGraphicsFromSHP = (file: File) => {
-    const form = new FormData();
-    const publishParams: any = {
-      targetSR: { wkid: 102100 },
-      maxRecordCount: 1000,
-      enforceInputFileSizeLimit: true,
-      enforceOutputJsonSizeLimit: true
-    };
-    publishParams.generalize = false;
-    publishParams.reducePrecision = false;
-    publishParams.numberOfDigitsAfterDecimal = 0;
-    form.append('publishParameters', JSON.stringify(publishParams));
-    form.append('filetype', 'shapefile');
-    form.append('f', 'json');
-    form.append('file', file);
-
-    this.http
-      .post(
-        'https://www.arcgis.com/sharing/rest/content/features/generate',
-        form
-      )
-      .subscribe(
-        (result: any) => {
-          if (typeof result.error !== 'undefined') {
-            this.fileUploadError = 'Error parsing shapefile.';
-          } else {
-            this.fileUploadError = '';
-            const features: any[] = [];
-            result.featureCollection.layers.forEach((layer: any) => {
-              const type = layer.layerDefinition.geometryType;
-              if (type === 'esriGeometryPolygon') {
-                layer.featureSet.features.forEach((feature: any) => {
-                  features.push(feature);
-                });
-              }
-            });
-            if (features.length > 0) {
-              console.log(features);
-            } else {
-              this.fileUploadError =
-                'Error parsing shapefile. Please make sure the zipped file consists valid polygon geometry.';
-            }
-          }
-        },
-        (e: any) => {
-          this.fileUploadError = 'Error parsing shapefile.';
-        }
-      );
-  };
-
   parseUploadedFiles (file: any) {
     const fileReader: any = new FileReader();
     fileReader.onload = () => {
@@ -230,7 +67,7 @@ export class ImportExportComponent implements OnInit {
           this.store.dispatch(addGraphics({ graphics: gpxToGeoJson(r) }));
           break;
         case 'shp':
-          this.parseSHPZip(file);
+          convertSHPToGraphics(file, this.store);
           break;
         default:
           break;
@@ -241,6 +78,7 @@ export class ImportExportComponent implements OnInit {
 
   chooseFile () {
     const fileInput = this.fileInput.nativeElement;
+    this.files = [];
     fileInput.onchange = () => {
       for (let index = 0; index < fileInput.files.length; index++) {
         const file: any = fileInput.files[index];
