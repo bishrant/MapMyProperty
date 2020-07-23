@@ -32,4 +32,12 @@ const defaultPolygonSymbol: any = {
   outline: { color: { r: 100, g: 20, b: 5, a: 1 }, width: 2, style: 'solid' }
 };
 
-export { defaultTextSymbol, defaultPointSymbol, defaultLineSymbol, defaultPolygonSymbol }
+const getDefaultSymbol: any = (geometryType: string) => {
+  return geometryType === 'polygon'
+    ? defaultPolygonSymbol
+    : geometryType === 'polyline'
+      ? defaultLineSymbol
+      : defaultPointSymbol;
+}
+
+export { defaultTextSymbol, defaultPointSymbol, defaultLineSymbol, defaultPolygonSymbol, getDefaultSymbol }

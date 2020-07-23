@@ -37,7 +37,11 @@ const convertFeatureCollectionToGraphics = (featureCollection: any) => {
           if (typeof f.properties.name !== 'undefined' && f.properties.name !== '') {
             const textSymbol = defaultTextSymbol;
             textSymbol.text = f.properties.name;
-            graphicJson.attributes = { id: id(), symbol: textSymbol, geometryType: 'text' }
+            graphicJson.attributes = {
+              id: id(),
+              symbol: textSymbol,
+              geometryType: 'text'
+            };
             graphicJson.symbol = textSymbol;
             graphicArray.push(JSON.stringify(graphicJson));
           }
@@ -95,6 +99,6 @@ const convertFeatureCollectionToGraphics = (featureCollection: any) => {
     }
   });
   return graphicArray;
-}
+};
 
-export { convertFeatureCollectionToGraphics }
+export { convertFeatureCollectionToGraphics };
