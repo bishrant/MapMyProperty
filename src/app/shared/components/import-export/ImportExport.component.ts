@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { take } from 'rxjs/internal/operators/take';
 import { kmlToGeoJson, createKMLForExport } from './KMLUtils';
 import { createGPXForExport, gpxToGeoJson } from './GPXUtils';
+import { convertSHPToGraphics } from './SHPUtils';
 
 @Component({
   selector: 'app-import-export',
@@ -14,10 +15,11 @@ import { createGPXForExport, gpxToGeoJson } from './GPXUtils';
 export class ImportExportComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
   files: any = [];
-  format = 'mmp';
+  format = 'shp';
   graphicsSub$: any;
   exportEnabled: boolean = false;
-  constructor (private store: Store<AppState>) {}
+  fileUploadError = '';
+  constructor (private store: Store<AppState>) { }
 
   downloadFile (name: any, contents: any, mime_type: string) {
     mime_type = mime_type || 'text/plain';
@@ -43,6 +45,16 @@ export class ImportExportComponent implements OnInit {
       });
   }
 
+  fileToArrayBuffer = (file: any) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+
   parseUploadedFiles (file: any) {
     const fileReader: any = new FileReader();
     fileReader.onload = () => {
@@ -54,15 +66,19 @@ export class ImportExportComponent implements OnInit {
         case 'gpx':
           this.store.dispatch(addGraphics({ graphics: gpxToGeoJson(r) }));
           break;
+        case 'shp':
+          convertSHPToGraphics(file, this.store);
+          break;
         default:
           break;
       }
-    }
+    };
     fileReader.readAsText(file);
   }
 
   chooseFile () {
     const fileInput = this.fileInput.nativeElement;
+    this.files = [];
     fileInput.onchange = () => {
       for (let index = 0; index < fileInput.files.length; index++) {
         const file: any = fileInput.files[index];
@@ -75,18 +91,32 @@ export class ImportExportComponent implements OnInit {
   }
 
   export () {
-    const graphics$: any = this.store.select((state: any) => state.app.graphics);
+    const graphics$: any = this.store.select(
+      (state: any) => state.app.graphics
+    );
     graphics$.pipe(take(1)).subscribe((dt: any) => {
       // @todo need to check whether there are any features or not before proceeding
       switch (this.format) {
         case 'kml':
-          this.downloadFile('userGraphics.kml', createKMLForExport(dt), 'application/xml');
+          this.downloadFile(
+            'userGraphics.kml',
+            createKMLForExport(dt),
+            'application/xml'
+          );
           break;
         case 'mmp':
-          this.downloadFile('UserGraphics.mmp', JSON.stringify(dt), 'application/json');
+          this.downloadFile(
+            'UserGraphics.mmp',
+            JSON.stringify(dt),
+            'application/json'
+          );
           break;
         case 'gpx':
-          this.downloadFile('userGraphics.gpx', createGPXForExport(dt), 'application/xml');
+          this.downloadFile(
+            'userGraphics.gpx',
+            createGPXForExport(dt),
+            'application/xml'
+          );
           break;
         default:
           break;
