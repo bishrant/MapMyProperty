@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { take } from 'rxjs/internal/operators/take';
 import { kmlToGeoJson, createKMLForExport } from './KMLUtils';
 import { createGPXForExport, gpxToGeoJson } from './GPXUtils';
-import { convertSHPToGraphics } from './SHPUtils';
+import { convertSHPToGraphics, downloadSHP } from './SHPUtils';
 
 @Component({
   selector: 'app-import-export',
@@ -118,10 +118,17 @@ export class ImportExportComponent implements OnInit {
             'application/xml'
           );
           break;
+        case 'shp':
+          downloadSHP();
+          break;
         default:
           break;
       }
     });
+  }
+
+  downloadTest () {
+    downloadSHP();
   }
 
   ngOnDestroy () {

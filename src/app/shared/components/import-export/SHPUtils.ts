@@ -3,7 +3,10 @@ import { convertFeatureCollectionToGraphics } from './FeatureCollectionUtils';
 import { addGraphics } from '../../store/graphics.actions';
 import { id } from '../../store/todo';
 import { getDefaultSymbol } from './DefaultSymbols';
+import * as shpwrite from 'shp-write';
+import { downloadFile } from './DownloadFile';
 import Graphic = require('esri/Graphic');
+// const shpwrite = require('shp-write');
 declare const zip: any;
 zip.workerScriptsPath = 'scripts/';
 
@@ -135,8 +138,96 @@ const readerCompleteMultiple = (zipReader: any, file: any, store: any) => {
   }
 };
 
+// (optional) set names for feature types and zipped folder
+const options = {
+  folder: 'myshapes',
+  types: {
+    point: 'mypoints',
+    polygon: 'mypolygons',
+    line: 'mylines'
+  }
+};
+const zipClass = (function () {
+  let zipWriter: any, blobWriter: any;
+  return {
+    addFiles: (filenames: any, files: any, onend: any) => {
+      let addIndex = 0;
+      function nextFile () {
+        const file = files[addIndex];
+        const blob = new Blob([file], { type: 'application / octet - stream' });
+
+        zipWriter.add(
+          filenames[addIndex],
+          new zip.BlobReader(blob),
+          function () {
+            addIndex++;
+            if (addIndex < files.length) nextFile();
+            else onend();
+          },
+          null
+        );
+      }
+
+      function createZipWriter () {
+        zip.createWriter(blobWriter, function (writer: any) {
+          zipWriter = writer;
+          nextFile();
+        });
+      }
+
+      if (zipWriter) nextFile();
+      else {
+        blobWriter = new zip.BlobWriter('application/zip');
+        createZipWriter();
+      }
+    },
+    getBlobURL: function (callback: any) {
+      zipWriter.close(function (blob: any) {
+        const blobURL = URL.createObjectURL(blob);
+        callback(blobURL);
+        zipWriter = null;
+      });
+    }
+  };
+})();
+
+const downloadSHP = () => {
+  // a GeoJSON bridge for features
+  const geoj = { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[-116.23535156249999, 32.99023555965106], [-97.91015624999999, 32.99023555965106], [-97.91015624999999, 44.18220395771566], [-116.23535156249999, 44.18220395771566], [-116.23535156249999, 32.99023555965106]]] } }, { type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: [-102.0849609375, 29.649868677972304] } }, { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[-98.173828125, 44.809121700077355], [-90.87890625, 33.97980872872457], [-93.8671875, 31.690781806136822]] } }] };
+
+  const y = [shpwrite.geojson.line(geoj)];
+  console.log(y);
+
+  y.forEach(function (l: any) {
+    shpwrite.write(l.properties, l.type, l.geometries, function (err: any, files: any) {
+      console.log(files);
+      const prefix = l.type + '.';
+      zipClass.addFiles([prefix + 'dbf', prefix + 'shp', prefix + 'shx', prefix + 'prj'],
+        [files.dbf.buffer, files.shp.buffer, files.shx.buffer, files.prj], function () {
+          zipClass.getBlobURL(function (blobURL: any) {
+            console.log(blobURL);
+            const dlink = document.createElement('a');
+            dlink.download = name;
+            dlink.href = blobURL;
+            dlink.onclick = function () {
+            // revokeObjectURL needs a delay to work properly
+              setTimeout(function () {
+                window.URL.revokeObjectURL(dlink.href);
+              }, 100);
+            };
+            dlink.click();
+            dlink.remove();
+          });
+        });
+      if (err) {
+        console.error(err);
+      }
+    });
+  });
+};
+
 const convertSHPToGraphics = async (file: any, store: any) => {
   getZipEntries(file, readerCompleteMultiple, store);
 };
 
-export { convertSHPToGraphics };
+export { convertSHPToGraphics, downloadSHP };
