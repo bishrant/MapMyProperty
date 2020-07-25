@@ -4,7 +4,9 @@ import { addGraphics } from '../../store/graphics.actions';
 import { id } from '../../store/todo';
 import { getDefaultSymbol } from './DefaultSymbols';
 import * as shpwrite from 'shp-write';
+import * as shpwriteGeoJSON from 'shp-write/src/geojson';
 import { downloadFile } from './DownloadFile';
+import { async } from 'rxjs';
 import Graphic = require('esri/Graphic');
 // const shpwrite = require('shp-write');
 declare const zip: any;
@@ -181,48 +183,64 @@ const zipClass = (function () {
         createZipWriter();
       }
     },
-    getBlobURL: function (callback: any) {
-      zipWriter.close(function (blob: any) {
+
+    getBlobURL: () => new Promise((resolve: any, reject: any) => {
+      zipWriter.close((blob: any) => {
         const blobURL = URL.createObjectURL(blob);
-        callback(blobURL);
-        zipWriter = null;
-      });
-    }
-  };
+        resolve(blobURL);
+        zipWriter = undefined;
+      })
+    })
+  }
 })();
 
-const downloadSHP = () => {
+const shpWriteFromJSON = (geoj: any) => {
+  return new Promise((resolve: any, reject: any) => {
+    shpwrite.write(geoj.properties, geoj.type, geoj.geometries, (err: any, shpFile: any) => {
+      if (err) reject(err);
+
+      resolve(shpFile);
+    });
+  })
+}
+
+const downloadSHP = async () => {
   // a GeoJSON bridge for features
   const geoj = { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[-116.23535156249999, 32.99023555965106], [-97.91015624999999, 32.99023555965106], [-97.91015624999999, 44.18220395771566], [-116.23535156249999, 44.18220395771566], [-116.23535156249999, 32.99023555965106]]] } }, { type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: [-102.0849609375, 29.649868677972304] } }, { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[-98.173828125, 44.809121700077355], [-90.87890625, 33.97980872872457], [-93.8671875, 31.690781806136822]] } }] };
 
-  const y = [shpwrite.geojson.line(geoj)];
+  const y = [shpwriteGeoJSON.line(geoj), shpwriteGeoJSON.point(geoj)];
   console.log(y);
 
-  y.forEach(function (l: any) {
-    shpwrite.write(l.properties, l.type, l.geometries, function (err: any, files: any) {
-      console.log(files);
-      const prefix = l.type + '.';
-      zipClass.addFiles([prefix + 'dbf', prefix + 'shp', prefix + 'shx', prefix + 'prj'],
-        [files.dbf.buffer, files.shp.buffer, files.shx.buffer, files.prj], function () {
-          zipClass.getBlobURL(function (blobURL: any) {
-            console.log(blobURL);
-            const dlink = document.createElement('a');
-            dlink.download = name;
-            dlink.href = blobURL;
-            dlink.onclick = function () {
-            // revokeObjectURL needs a delay to work properly
-              setTimeout(function () {
-                window.URL.revokeObjectURL(dlink.href);
-              }, 100);
-            };
-            dlink.click();
-            dlink.remove();
-          });
-        });
-      if (err) {
-        console.error(err);
-      }
-    });
+  const line: any = { type: 'line', geom: await shpWriteFromJSON(shpwriteGeoJSON.line(geoj)) };
+  const pt: any = { type: 'point', geom: await shpWriteFromJSON(shpwriteGeoJSON.point(geoj)) };
+  const polygon: any = { type: 'polygon', geom: await shpWriteFromJSON(shpwriteGeoJSON.polygon(geoj)) };
+  // const shps = [line, pt];
+  const filesArray: any = [];
+  const fileNamesArray: any = [];
+  [line, pt, polygon].forEach((f: any) => {
+    console.log(f);
+    const p = f.type + '.';
+    const g = f.geom;
+    filesArray.push(g.shp.buffer, g.dbf.buffer, g.shx.buffer, g.prj);
+    fileNamesArray.push(p + 'shp', p + 'dbf', p + 'shx', p + 'prj');
+  })
+  console.log(filesArray, fileNamesArray);
+  zipClass.addFiles(fileNamesArray, filesArray, function () {
+    zipClass.getBlobURL()
+      .then((blobURL: any) => {
+        console.log(blobURL);
+        const dlink = document.createElement('a');
+        dlink.download = name;
+        dlink.href = blobURL;
+        dlink.onclick = function () {
+        // revokeObjectURL needs a delay to work properly
+          setTimeout(function () {
+            window.URL.revokeObjectURL(dlink.href);
+          }, 500);
+        };
+        dlink.click();
+        dlink.remove();
+      });
   });
 };
 
