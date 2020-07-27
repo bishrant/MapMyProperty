@@ -119,7 +119,7 @@ export class ImportExportComponent implements OnInit {
           );
           break;
         case 'shp':
-          downloadSHP();
+          downloadSHP(dt);
           break;
         default:
           break;
@@ -128,7 +128,7 @@ export class ImportExportComponent implements OnInit {
   }
 
   downloadTest () {
-    downloadSHP();
+    downloadSHP(null);
   }
 
   ngOnDestroy () {
