@@ -6,9 +6,11 @@ import { getDefaultSymbol } from './DefaultSymbols';
 import * as shpwrite from 'shp-write';
 import * as shpwriteGeoJSON from 'shp-write/src/geojson';
 import { downloadFile } from './DownloadFile';
-import { async } from 'rxjs';
-import Graphic = require('esri/Graphic');
 import { arcgisToGeoJSON } from '../../utils/GeoJSONUtils';
+import { Point, Polygon, Polyline } from 'esri/geometry';
+import { createWebMercatorPointFromGraphic } from './sharedUtils';
+import Graphic = require('esri/Graphic');
+import webMercatorUtils = require('esri/geometry/support/webMercatorUtils');
 // const shpwrite = require('shp-write');
 declare const zip: any;
 zip.workerScriptsPath = 'scripts/';
@@ -204,86 +206,84 @@ const shpWriteFromJSON = (geoj: any) => {
     });
   })
 }
-var input = {
-  'displayFieldName': 'prop0',
-  'fieldAliases': {'prop0': 'prop0'},
-  'geometryType': 'esriGeometryPolygon',
-  'fields': [
+const input = {
+  fields: [
     {
-      'name': 'prop0',
-      'type': 'esriFieldTypeString',
-      'alias': 'prop0',
-      'length': 20
-    },
-    {
-      'name': 'OBJECTID',
-      'type': 'esriFieldTypeOID',
-      'alias': 'OBJECTID'
-    },
-    {
-      'name': 'FID',
-      'type': 'esriFieldTypeDouble',
-      'alias': 'FID'
+      name: 'id',
+      type: 'esriFieldTypeString',
+      length: 20
     }
   ],
-  'spatialReference': { 'wkid': 4326 },
-  'features': [
+  spatialReference: { wkid: 3857 },
+  features: [
     {
-      'geometry': {
-        'x': 102,
-        'y': 0.5
+      geometry: {
+        x: 102,
+        y: 0.5
       },
-      'attributes': {
-        'prop0': 'value0',
-        'OBJECTID': 0,
-        'FID': 0
+      attributes: {
+        id: 'value0'
       }
     }, {
-      'geometry': {
-        'paths': [
+      geometry: {
+        paths: [
           [[102, 0],
             [103, 1],
             [104, 0],
             [105, 1]]
         ]
       },
-      'attributes': {
-        'prop0': null,
-        'OBJECTID': null,
-        'FID': 1
+      attributes: {
+        id: 'sdf'
       }
     }, {
-      'geometry': {
-        'rings': [
-          [ [100, 0],
+      geometry: {
+        rings: [
+          [[100, 0],
             [100, 1],
             [101, 1],
             [101, 0],
-            [100, 0] ]
+            [100, 0]]
         ]
       },
-      'attributes': {
-        'prop0': null,
-        'OBJECTID': 2,
-        'FID': 30.25
+      attributes: {
+        id: 'sdfs'
       }
     }
   ]
 };
 
-
-const downloadSHP = async () => {
-  const t = arcgisToGeoJSON(input, null);
+const downloadSHP = async (dt: any) => {
+  const geoJSONStructure: any = {
+    fields: [{ name: 'id', type: 'esriFieldTypeString', length: 20 }],
+    spatialReference: { wkid: 3857 },
+    features: []
+  }
+  dt.forEach((feat: any) => {
+    const _f = JSON.parse(feat);
+    const _geomType = _f.attributes.geometryType;
+    console.log(_f);
+    const _geom = _geomType === 'point' ? createWebMercatorPointFromGraphic(_f) : _geomType === 'polygon' ? new Polygon(_f.geometry) : new Polyline(_f.geometry);
+    console.log(_geom);
+    const _ff = {
+      geometry: _geom.toJSON(),
+      attributes: { id: _f.attributes.id }
+    };
+    console.log(_ff);
+    geoJSONStructure.features.push(_ff);
+  });
+  console.log(dt, geoJSONStructure);
+  const t = arcgisToGeoJSON(geoJSONStructure, null);
   console.log(t);
   // a GeoJSON bridge for features
-  const geoj = { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[-116.23535156249999, 32.99023555965106], [-97.91015624999999, 32.99023555965106], [-97.91015624999999, 44.18220395771566], [-116.23535156249999, 44.18220395771566], [-116.23535156249999, 32.99023555965106]]] } }, { type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: [-102.0849609375, 29.649868677972304] } }, { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[-98.173828125, 44.809121700077355], [-90.87890625, 33.97980872872457], [-93.8671875, 31.690781806136822]] } }] };
+  // const geoj = { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[-116.23535156249999, 32.99023555965106], [-97.91015624999999, 32.99023555965106], [-97.91015624999999, 44.18220395771566], [-116.23535156249999, 44.18220395771566], [-116.23535156249999, 32.99023555965106]]] } }, { type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: [-102.0849609375, 29.649868677972304] } }, { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[-98.173828125, 44.809121700077355], [-90.87890625, 33.97980872872457], [-93.8671875, 31.690781806136822]] } }] };
 
-  const y = [shpwriteGeoJSON.line(geoj), shpwriteGeoJSON.point(geoj)];
-  console.log(y);
+  // const y = [shpwriteGeoJSON.line(geoj), shpwriteGeoJSON.point(geoj)];
+  // console.log(y);
 
-  const line: any = { type: 'line', geom: await shpWriteFromJSON(shpwriteGeoJSON.line(geoj)) };
-  const pt: any = { type: 'point', geom: await shpWriteFromJSON(shpwriteGeoJSON.point(geoj)) };
-  const polygon: any = { type: 'polygon', geom: await shpWriteFromJSON(shpwriteGeoJSON.polygon(geoj)) };
+  const line: any = { type: 'line', geom: await shpWriteFromJSON(shpwriteGeoJSON.line(t)) };
+  const pt: any = { type: 'point', geom: await shpWriteFromJSON(shpwriteGeoJSON.point(t)) };
+  const polygon: any = { type: 'polygon', geom: await shpWriteFromJSON(shpwriteGeoJSON.polygon(t)) };
   // const shps = [line, pt];
   const filesArray: any = [];
   const fileNamesArray: any = [];
