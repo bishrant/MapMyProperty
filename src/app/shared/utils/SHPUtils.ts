@@ -1,17 +1,13 @@
 import * as shp from 'shpjs';
 import { convertFeatureCollectionToGraphics } from './FeatureCollectionUtils';
-import { addGraphics } from '../../store/graphics.actions';
-import { id } from '../../store/todo';
 import { getDefaultSymbol } from './DefaultSymbols';
 import * as shpwrite from 'shp-write';
 import * as shpwriteGeoJSON from 'shp-write/src/geojson';
-import { downloadFile } from './DownloadFile';
-import { arcgisToGeoJSON } from '../../utils/GeoJSONUtils';
-import { Point, Polygon, Polyline } from 'esri/geometry';
-import { createWebMercatorPointFromGraphic } from './sharedUtils';
+import { arcgisToGeoJSON } from './GeoJSONUtils';
+import { createWebMercatorPointFromGraphic, createWebMercatorPolygonFromGraphic, createWebMercatorLineFromGraphic } from './WebMercatorUtils';
+import { addGraphics } from '../store/graphics.actions';
+import { id } from '../store/todo';
 import Graphic = require('esri/Graphic');
-import webMercatorUtils = require('esri/geometry/support/webMercatorUtils');
-// const shpwrite = require('shp-write');
 declare const zip: any;
 zip.workerScriptsPath = 'scripts/';
 
@@ -143,15 +139,6 @@ const readerCompleteMultiple = (zipReader: any, file: any, store: any) => {
   }
 };
 
-// (optional) set names for feature types and zipped folder
-const options = {
-  folder: 'myshapes',
-  types: {
-    point: 'mypoints',
-    polygon: 'mypolygons',
-    line: 'mylines'
-  }
-};
 const zipClass = (function () {
   let zipWriter: any, blobWriter: any;
   return {
@@ -206,65 +193,19 @@ const shpWriteFromJSON = (geoj: any) => {
     });
   })
 }
-const input = {
-  fields: [
-    {
-      name: 'id',
-      type: 'esriFieldTypeString',
-      length: 20
-    }
-  ],
-  spatialReference: { wkid: 3857 },
-  features: [
-    {
-      geometry: {
-        x: 102,
-        y: 0.5
-      },
-      attributes: {
-        id: 'value0'
-      }
-    }, {
-      geometry: {
-        paths: [
-          [[102, 0],
-            [103, 1],
-            [104, 0],
-            [105, 1]]
-        ]
-      },
-      attributes: {
-        id: 'sdf'
-      }
-    }, {
-      geometry: {
-        rings: [
-          [[100, 0],
-            [100, 1],
-            [101, 1],
-            [101, 0],
-            [100, 0]]
-        ]
-      },
-      attributes: {
-        id: 'sdfs'
-      }
-    }
-  ]
-};
 
-const downloadSHP = async (dt: any) => {
+const downloadSHP = async (data: any, filename: string) => {
   const geoJSONStructure: any = {
     fields: [{ name: 'id', type: 'esriFieldTypeString', length: 20 }],
     spatialReference: { wkid: 3857 },
     features: []
   }
-  dt.forEach((feat: any) => {
+  data.forEach((feat: any) => {
     const _f = JSON.parse(feat);
     const _geomType = _f.attributes.geometryType;
-    console.log(_f);
-    const _geom = _geomType === 'point' ? createWebMercatorPointFromGraphic(_f) : _geomType === 'polygon' ? new Polygon(_f.geometry) : new Polyline(_f.geometry);
-    console.log(_geom);
+    const _geom = _geomType === 'point' ? createWebMercatorPointFromGraphic(_f)
+      : (_geomType === 'polygon' || _geomType === 'circle') ? createWebMercatorPolygonFromGraphic(_f)
+        : createWebMercatorLineFromGraphic(_f);
     const _ff = {
       geometry: _geom.toJSON(),
       attributes: { id: _f.attributes.id }
@@ -272,22 +213,29 @@ const downloadSHP = async (dt: any) => {
     console.log(_ff);
     geoJSONStructure.features.push(_ff);
   });
-  console.log(dt, geoJSONStructure);
-  const t = arcgisToGeoJSON(geoJSONStructure, null);
-  console.log(t);
+  console.log(geoJSONStructure);
+  const geoj = arcgisToGeoJSON(geoJSONStructure, null);
+  console.log(geoj);
   // a GeoJSON bridge for features
-  // const geoj = { type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[-116.23535156249999, 32.99023555965106], [-97.91015624999999, 32.99023555965106], [-97.91015624999999, 44.18220395771566], [-116.23535156249999, 44.18220395771566], [-116.23535156249999, 32.99023555965106]]] } }, { type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: [-102.0849609375, 29.649868677972304] } }, { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [[-98.173828125, 44.809121700077355], [-90.87890625, 33.97980872872457], [-93.8671875, 31.690781806136822]] } }] };
 
-  // const y = [shpwriteGeoJSON.line(geoj), shpwriteGeoJSON.point(geoj)];
-  // console.log(y);
+  const shps = [];
+  const geometryAvailable = geoj.features.map((f: any) => f.geometry.type.toLowerCase());
 
-  const line: any = { type: 'line', geom: await shpWriteFromJSON(shpwriteGeoJSON.line(t)) };
-  const pt: any = { type: 'point', geom: await shpWriteFromJSON(shpwriteGeoJSON.point(t)) };
-  const polygon: any = { type: 'polygon', geom: await shpWriteFromJSON(shpwriteGeoJSON.polygon(t)) };
-  // const shps = [line, pt];
+  if (geometryAvailable.indexOf('linestring') > -1) {
+    shps.push({ type: 'line', geom: await shpWriteFromJSON(shpwriteGeoJSON.line(geoj)) });
+  }
+
+  if (geometryAvailable.indexOf('point') > -1) {
+    shps.push({ type: 'point', geom: await shpWriteFromJSON(shpwriteGeoJSON.point(geoj)) });
+  }
+
+  if (geometryAvailable.indexOf('polygon') > -1) {
+    shps.push({ type: 'polygon', geom: await shpWriteFromJSON(shpwriteGeoJSON.polygon(geoj)) });
+  }
+
   const filesArray: any = [];
   const fileNamesArray: any = [];
-  [line, pt, polygon].forEach((f: any) => {
+  shps.forEach((f: any) => {
     console.log(f);
     const p = f.type + '.';
     const g = f.geom;
@@ -300,7 +248,7 @@ const downloadSHP = async (dt: any) => {
       .then((blobURL: any) => {
         console.log(blobURL);
         const dlink = document.createElement('a');
-        dlink.download = name;
+        dlink.download = filename;
         dlink.href = blobURL;
         dlink.onclick = function () {
         // revokeObjectURL needs a delay to work properly

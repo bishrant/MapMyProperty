@@ -1,8 +1,8 @@
 import { Point } from 'esri/geometry';
-import { RGBAObjectToABGR } from '../../utils/Colors';
-import { kml } from './kml';
+import { kml } from './lib/kml';
 import { convertFeatureCollectionToGraphics } from './FeatureCollectionUtils';
-import { createWebMercatorLineFromGraphic, createWebMercatorPointFromGraphic, createWebMercatorPolygonFromGraphic } from './sharedUtils';
+import { createWebMercatorLineFromGraphic, createWebMercatorPointFromGraphic, createWebMercatorPolygonFromGraphic } from './WebMercatorUtils';
+import { RGBAObjectToABGR } from './Colors';
 
 const pointGraphicToKML = (gJson: any) => {
   const name = gJson.attributes.geometryType === 'text' ? gJson.attributes.symbol.text : '';

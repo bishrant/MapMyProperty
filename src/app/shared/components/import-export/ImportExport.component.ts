@@ -3,9 +3,10 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/internal/operators/take';
-import { kmlToGeoJson, createKMLForExport } from './KMLUtils';
-import { createGPXForExport, gpxToGeoJson } from './GPXUtils';
-import { convertSHPToGraphics, downloadSHP } from './SHPUtils';
+import { kmlToGeoJson, createKMLForExport } from '../../utils/KMLUtils';
+import { createGPXForExport, gpxToGeoJson } from '../../utils/GPXUtils';
+import { convertSHPToGraphics, downloadSHP } from '../../utils/SHPUtils';
+import { downloadFile } from '../../utils/DownloadFile';
 
 @Component({
   selector: 'app-import-export',
@@ -21,22 +22,6 @@ export class ImportExportComponent implements OnInit {
   fileUploadError = '';
   constructor (private store: Store<AppState>) { }
 
-  downloadFile (name: any, contents: any, mime_type: string) {
-    mime_type = mime_type || 'text/plain';
-    const blob = new Blob([contents], { type: mime_type });
-    const dlink = document.createElement('a');
-    dlink.download = name;
-    dlink.href = window.URL.createObjectURL(blob);
-    dlink.onclick = function () {
-      // revokeObjectURL needs a delay to work properly
-      setTimeout(function () {
-        window.URL.revokeObjectURL(dlink.href);
-      }, 100);
-    };
-    dlink.click();
-    dlink.remove();
-  }
-
   ngOnInit () {
     this.graphicsSub$ = this.store
       .select((state: any) => state.app.graphics)
@@ -44,16 +29,6 @@ export class ImportExportComponent implements OnInit {
         this.exportEnabled = x.length > 0;
       });
   }
-
-  fileToArrayBuffer = (file: any) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result);
-      };
-      reader.onerror = reject;
-      reader.readAsArrayBuffer(file);
-    });
 
   parseUploadedFiles (file: any) {
     const fileReader: any = new FileReader();
@@ -98,37 +73,21 @@ export class ImportExportComponent implements OnInit {
       // @todo need to check whether there are any features or not before proceeding
       switch (this.format) {
         case 'kml':
-          this.downloadFile(
-            'userGraphics.kml',
-            createKMLForExport(dt),
-            'application/xml'
-          );
+          downloadFile('userGraphics.kml', createKMLForExport(dt), 'application/xml');
           break;
         case 'mmp':
-          this.downloadFile(
-            'UserGraphics.mmp',
-            JSON.stringify(dt),
-            'application/json'
-          );
+          downloadFile('UserGraphics.mmp', JSON.stringify(dt), 'application/json');
           break;
         case 'gpx':
-          this.downloadFile(
-            'userGraphics.gpx',
-            createGPXForExport(dt),
-            'application/xml'
-          );
+          downloadFile('userGraphics.gpx', createGPXForExport(dt), 'application/xml');
           break;
         case 'shp':
-          downloadSHP(dt);
+          downloadSHP(dt, 'MapMyProperty.zip');
           break;
         default:
           break;
       }
     });
-  }
-
-  downloadTest () {
-    downloadSHP(null);
   }
 
   ngOnDestroy () {
