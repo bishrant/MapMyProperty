@@ -1,9 +1,9 @@
-import { id } from '../../store/todo';
 import { defaultPointSymbol, defaultTextSymbol, defaultLineSymbol, defaultPolygonSymbol } from './DefaultSymbols';
 import Point from 'esri/geometry/Point';
 import Graphic from 'esri/Graphic';
 import Polyline from 'esri/geometry/Polyline';
 import Polygon from 'esri/geometry/Polygon';
+import { id } from '../store/todo';
 import webMercatorUtils = require('esri/geometry/support/webMercatorUtils');
 
 const convertFeatureCollectionToGraphics = (featureCollection: any) => {
