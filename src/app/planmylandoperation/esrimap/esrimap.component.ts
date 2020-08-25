@@ -1,5 +1,6 @@
+
 import { Component, ElementRef, HostListener, OnInit, ViewChild, Renderer2 } from '@angular/core';
-import { CreatePolygonGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
+import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
 import Graphic from 'esri/Graphic';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
@@ -15,20 +16,20 @@ import E = __esri;
   styleUrls: ['./esrimap.component.scss']
 })
 export class EsrimapComponent implements OnInit {
-
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true })
   private graphicsStoreEl!: GraphicsStoreComponent;
   private graphicsSubcription$: any;
-  mapView!: E.MapView // = createMapView(this.mapViewEl, this.searchBarDiv);
+  mapView!: E.MapView; // = createMapView(this.mapViewEl, this.searchBarDiv);
   clickToAddText = false;
   sketchVM: any = new SketchViewModel();
   selectedGraphics!: any[] | undefined;
   mapCoords: any;
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
-  constructor(private store: Store<AppState>) {}
+  textGraphicsLayer = CreateTextGraphicsLayer();
+  constructor(private store: Store<AppState>, private renderer: Renderer2) { }
   @HostListener('keydown.control.z') undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
@@ -52,7 +53,7 @@ export class EsrimapComponent implements OnInit {
         this.showCoordinates(this.mapView.center);
       });
 
-      this.mapView.on('pointer-move', (evt) => {
+      this.mapView.on('pointer-move', (evt: any) => {
         this.showCoordinates(this.mapView.toMap({ x: evt.x, y: evt.y }));
       });
     }
@@ -61,8 +62,20 @@ export class EsrimapComponent implements OnInit {
   private initializeMap = async () => {
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
-      this.mapView.map.add(this.polygonGraphicsLayer);
+      this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer]);
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
+      const p = {
+        type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+        style: "circle",
+        color: "cyan",
+        size: "20px",  // pixels
+        outline: {  // autocasts as new SimpleLineSymbol()
+          color: [ 0, 0, 0 ],
+          width: 1  // points
+        }
+      };
+      this.sketchVM.updatePointSymbol = p;
+      this.sketchVM.activePointSymbol = p;
       this.showMapCoordinates();
     } catch (error) {
       console.error('Map load error ', error);
@@ -74,11 +87,16 @@ export class EsrimapComponent implements OnInit {
       if (g.length > 0) {
         const graphicsArray = g.map((_g: any) => {
           let gr = JSON.parse(_g);
-          return gr.attributes.geometryType === 'text' ?  Graphic.fromJSON(gr): new Graphic(gr);
+          return new Graphic(gr);
         });
-        this.polygonGraphicsLayer.graphics = graphicsArray;
+        const allExcepttext = graphicsArray.filter((graphic: any) => graphic.attributes.geometryType != 'text');
+
+        const textGraphicsArray = graphicsArray.filter((graphic: any) => graphic.attributes.geometryType === 'text');
+        this.polygonGraphicsLayer.graphics = allExcepttext;
+        this.textGraphicsLayer.graphics = textGraphicsArray;
       } else {
         this.polygonGraphicsLayer.removeAll();
+        this.textGraphicsLayer.removeAll();
       }
     });
   };
@@ -91,5 +109,4 @@ export class EsrimapComponent implements OnInit {
   ngOnDestroy(): void {
     this.graphicsSubcription$.unsubscribe();
   }
-
 }

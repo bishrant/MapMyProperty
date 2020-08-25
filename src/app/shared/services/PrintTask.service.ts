@@ -32,7 +32,7 @@ export class PrintTaskService {
 
         this.printTask.execute(printParameters).then((response) => {
             resolve(response.url);
-        }, (error) => {
+        }, (error: any) => {
             resolve(error);
         });
     });
