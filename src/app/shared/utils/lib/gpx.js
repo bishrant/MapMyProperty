@@ -4,7 +4,7 @@ function nodeVal (x) {
   if (x && x.normalize) {
     x.normalize();
   }
-  return x && x.textContent || '';
+  return x && (x.textContent || '');
 }
 
 const attributeNames = [

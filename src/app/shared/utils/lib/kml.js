@@ -4,7 +4,7 @@ function nodeVal (x) {
   if (x && x.normalize) {
     x.normalize();
   }
-  return x && x.textContent || '';
+  return x && (x.textContent || '');
 }
 
 const removeSpace = /\s*/g;
@@ -67,7 +67,7 @@ const geotypes = ['Polygon', 'LineString', 'Point', 'Track', 'gx:Track'];
 
 function kmlColor (properties, elem, prefix) {
   let v = (0, nodeVal)(get1(elem, 'color')) || '';
-  const colorProp = prefix == 'stroke' || prefix === 'fill' ? prefix : prefix + '-color';
+  const colorProp = prefix === 'stroke' || prefix === 'fill' ? prefix : prefix + '-color';
 
   if (v.substr(0, 1) === '#') {
     v = v.substr(1);

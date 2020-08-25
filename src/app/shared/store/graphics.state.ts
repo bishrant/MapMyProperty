@@ -10,5 +10,5 @@ export interface AppState {
 export const initialGraphicState: GraphicsState = {
   graphics: [],
   canUndo: false,
-  canRedo: false,
+  canRedo: false
 };

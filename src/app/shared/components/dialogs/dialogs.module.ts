@@ -5,8 +5,6 @@ import { DialogComponent } from './dialog.component';
 import { DialogService } from './dialog.service';
 import { MatButtonModule, MatButton } from '@angular/material/button';
 
-
-
 @NgModule({
   declarations: [DialogComponent],
   imports: [

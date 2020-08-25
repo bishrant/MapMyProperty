@@ -7,7 +7,7 @@ import { ComponentPortal } from '@angular/cdk/portal';
 @Component({
   selector: 'app-color-picker',
   templateUrl: './color-picker.component.html',
-  styleUrls: ['./color-picker.component.scss'],
+  styleUrls: ['./color-picker.component.scss']
 })
 export class ColorPickerComponent {
   @Input() heading: string;
@@ -15,34 +15,35 @@ export class ColorPickerComponent {
   @Input() opacity: number;
   @Output() colorSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(public colorsPopoverService: ColorsPopoverService, private viewContainerRef: ViewContainerRef) {}
+  constructor (public colorsPopoverService: ColorsPopoverService, private viewContainerRef: ViewContainerRef) {}
 
   unsubscribeFromObservable = (colorObervable$: any) => {
     colorObervable$.unsubscribe();
   }
-  openColorSelector(origin: any) {
+
+  openColorSelector (origin: any) {
     const componentPortal = new ComponentPortal(ColorPickerPopoverComponent, this.viewContainerRef);
     const colorsPopoverService$ = this.colorsPopoverService
       .open(origin, componentPortal, { color: RGBObjectToHex(this.color), opacity: this.opacity });
 
-     const colorObervable$ = colorsPopoverService$.subscribe((colorInfo) => {
-       if (colorInfo) {
-         //convert hex to rgb
-         this.color = colorInfo.color;
-         this.opacity = colorInfo.opacity;
-         if (colorInfo.closePopup) {
-           this.colorSelected.emit(this.ConvertColorToRGBA(this.color, this.opacity));
-         }
-         // Needed to fix #52 
-         this.unsubscribeFromObservable(colorObervable$);
-       }
-     });
+    const colorObervable$ = colorsPopoverService$.subscribe((colorInfo) => {
+      if (colorInfo) {
+        // convert hex to rgb
+        this.color = colorInfo.color;
+        this.opacity = colorInfo.opacity;
+        if (colorInfo.closePopup) {
+          this.colorSelected.emit(this.ConvertColorToRGBA(this.color, this.opacity));
+        }
+        // Needed to fix #52
+        this.unsubscribeFromObservable(colorObervable$);
+      }
+    });
   }
 
   GetCircleColor = (_color: any) => {
     if (_color !== null) {
       let color = _color;
-      if (typeof color.r === undefined) {
+      if (typeof color.r === 'undefined') {
         color = HexToRGB(_color);
       }
       return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;

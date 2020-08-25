@@ -9,13 +9,13 @@ import { EsriMapModule } from './esrimap/esrimap.module';
 const routes: Routes = [
   {
     path: '',
-    component: MMPHomeComponent,
-  },
+    component: MMPHomeComponent
+  }
 ];
 
 @NgModule({
   declarations: [MMPHomeComponent],
   imports: [CommonModule, EsriMapModule, RouterModule.forChild(routes), FlexLayoutModule, HeaderModule],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class MMPHomepageModule {}

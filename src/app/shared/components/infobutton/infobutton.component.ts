@@ -8,5 +8,5 @@ import { Component, Input } from '@angular/core';
 export class InfobuttonComponent {
   @Input() tooltip: String = '';
   @Input() ariaLabel: String ='aria';
-  constructor() { }
+  constructor () { }
 }

@@ -10,7 +10,7 @@ import {
   CreateCircleFromGraphic,
   CreatePolygonFromGraphic,
   CreatePolylineFromGraphic,
-  CreatePointFromGraphic,
+  CreatePointFromGraphic
 } from 'src/app/shared/utils/DrawUtils';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { CreateCircleFromPoint } from 'src/app/shared/utils/SketchViewModelUitls';
@@ -22,7 +22,7 @@ import { AreGraphicsEqual } from '../../utils/GeometryEngine';
 @Component({
   selector: 'app-drawtools',
   templateUrl: './drawtools.component.html',
-  styleUrls: ['./drawtools.component.scss'],
+  styleUrls: ['./drawtools.component.scss']
 })
 export class DrawtoolsComponent implements OnInit {
   @Input() sketchVM: any;
@@ -42,7 +42,7 @@ export class DrawtoolsComponent implements OnInit {
   clickToAddTextboxHandler: any;
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
 
-  constructor(private store: Store<AppState>) {}
+  constructor (private store: Store<AppState>) {}
 
   private ClickToAddTextbox = () => {
     if (this.clickToAddTextboxHandler) {
@@ -57,8 +57,9 @@ export class DrawtoolsComponent implements OnInit {
       this.ResetDrawControls();
     });
   };
+
   private CreateDraggableTextbox = (textGraphic: any) => {
-    let graphicCenter = this.mapView.toScreen(textGraphic.geometry);
+    const graphicCenter = this.mapView.toScreen(textGraphic.geometry);
     const input = createInputWithFrame(
       graphicCenter,
       textGraphic,
@@ -71,6 +72,7 @@ export class DrawtoolsComponent implements OnInit {
     (document.getElementById('textboxes') as any).appendChild(input);
     dragElement(textGraphic.attributes.id, 'parent');
   };
+
   private detectTextGraphics = () => {
     this.mapView.on('click', (evt: any) => {
       if (this.sketchVM.state === 'active') return;
@@ -98,9 +100,11 @@ export class DrawtoolsComponent implements OnInit {
       });
     });
   };
+
   onGraphicsStyleChange = () => {
     this.changeGraphicsStyle();
   }
+
   changeGraphicsStyle = () => {
     if (!this.selectedGraphics) return;
 
@@ -136,7 +140,7 @@ export class DrawtoolsComponent implements OnInit {
             id: this.id(),
             symbol: createdGraphic.symbol,
             geometryType: evt.tool,
-            radius: 0,
+            radius: 0
           };
           if (evt.tool === 'polygon') {
             createdGraphic = CreatePolygonFromGraphic(createdGraphic, this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
@@ -171,8 +175,7 @@ export class DrawtoolsComponent implements OnInit {
       }
       if (gg.state === 'start' || gg.state === 'active') {
         // console.log(this.sketchVM.activePointSymbol);
-        let __g = gg.graphics[0];
-        let _temp = gg.graphics[0].clone();
+        const _temp = gg.graphics[0].clone();
         const p = {
           type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
           style: 'square',
@@ -181,8 +184,8 @@ export class DrawtoolsComponent implements OnInit {
           outline: {
             // autocasts as new SimpleLineSymbol()
             color: [255, 0, 255],
-            width: 3, // points
-          },
+            width: 3 // points
+          }
         };
         // let ss = _temp.attributes.symbol;
         // ss.outline = {
@@ -253,7 +256,8 @@ export class DrawtoolsComponent implements OnInit {
       this.radiusElmRef.nativeElement.blur();
     }
   };
-  radiusChangedEnter = ($event: any) => {
+
+  radiusChangedEnter = () => {
     this.updateCircleRadius();
   };
 
@@ -275,12 +279,13 @@ export class DrawtoolsComponent implements OnInit {
       }
     }
   };
+
   ResetDrawControls = () => {
     this.drawingTool = '';
     this.drawingMode = '';
   };
 
-  ngOnInit(): void {
+  ngOnInit (): void {
     if (this.sketchVM) {
       this.sketchVM.on('update', (e: any) => {
         if (e.state === 'complete') {
@@ -330,7 +335,7 @@ export class DrawtoolsComponent implements OnInit {
     }
   };
 
-  radiusBlurred = ($evt: any) => {
+  radiusBlurred = () => {
     if (this.selectedGraphics) {
       this.updateCircleRadius();
     }
@@ -338,7 +343,8 @@ export class DrawtoolsComponent implements OnInit {
       this.startDrawingGraphics('circle');
     }
   };
-  changeDrawingMode = ($evt: any) => {
+
+  changeDrawingMode = () => {
     if (this.drawingTool !== '') {
       this.startDrawingGraphics(this.drawingTool);
     }

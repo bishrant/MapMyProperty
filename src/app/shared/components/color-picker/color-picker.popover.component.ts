@@ -1,5 +1,5 @@
-import { Component, Input, ViewChild, ElementRef } from "@angular/core";
-import { ColorsPopoverService } from "../../services/ColorsPopover.service";
+import { Component, Input, ViewChild, ElementRef } from '@angular/core';
+import { ColorsPopoverService } from '../../services/ColorsPopover.service';
 import { ColorSwatch } from '../../utils/GraphicStyles';
 
 @Component({
@@ -13,28 +13,29 @@ export class ColorPickerPopoverComponent {
   @ViewChild('customColorInput') customColorInput: ElementRef;
   defaultColors = ColorSwatch;
 
-  public changeColor(color: string): void {
+  public changeColor (color: string): void {
     this.color = color;
     this.closePopupWithColor(true);
   }
 
-  public changeColorCustom(color: string): void {
+  public changeColorCustom (color: string): void {
     this.color = color;
     this.colorsPopoverService.close(false);
   }
 
-  public changeOpacity($event: any) {
+  public changeOpacity ($event: any) {
     this.opacity = $event.value;
     this.closePopupWithColor(false);
   }
 
-  public changeColorManual(color: string): void {
+  public changeColorManual (color: string): void {
     const isValid = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(color);
     if (isValid) {
       this.color = color;
       this.closePopupWithColor(false);
     }
   }
+
   openColorPalettee = () => {
     this.customColorInput.nativeElement.click();
   };
@@ -44,6 +45,6 @@ export class ColorPickerPopoverComponent {
     this.colorsPopoverService.close(colorInfo, closePopup);
   };
 
-  constructor(public colorsPopoverService: ColorsPopoverService) {
+  constructor (public colorsPopoverService: ColorsPopoverService) {
   }
 }

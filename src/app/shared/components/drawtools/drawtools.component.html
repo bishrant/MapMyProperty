@@ -42,7 +42,7 @@
 
             <div class="centerAlign">
                 <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [(ngModel)]="drawingMode"
-                    (change)="changeDrawingMode($event)">
+                    (change)="changeDrawingMode()">
 
                     <mat-button-toggle value="click" class="drawModeBtn">Click</mat-button-toggle>
                     <mat-button-toggle value="freehand" class="drawModeBtn">FreeHand</mat-button-toggle>
@@ -53,7 +53,7 @@
                     [hidden]="!((drawingTool === 'circle') && (drawingMode === 'click')) && !(selectedGraphicsGeometry === 'circle')">
                     <mat-form-field appearance="outline" class="radiusInput">
                         <input matInput placeholder="Radius" type="number" [(ngModel)]="radius" #radiusInput
-                            (keyup.enter)="radiusChangedEnter($event)" (blur)="radiusBlurred($event)">
+                            (keyup.enter)="radiusChangedEnter()" (blur)="radiusBlurred()">
                     </mat-form-field>
                     &nbsp; Miles
                 </div>

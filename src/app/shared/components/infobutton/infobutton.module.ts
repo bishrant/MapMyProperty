@@ -8,6 +8,6 @@ import { CommonModule } from '@angular/common';
 @NgModule({
   declarations: [InfobuttonComponent],
   imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule],
-  exports: [InfobuttonComponent],
+  exports: [InfobuttonComponent]
 })
 export class InfobuttonModule {}

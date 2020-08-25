@@ -1,6 +1,6 @@
 import { Point } from 'esri/geometry'
-import { createWebMercatorPolygonFromGraphic, createWebMercatorLineFromGraphic, createWebMercatorPointFromGraphic } from './sharedUtils'
-import { gpx } from './gpx';
+import { createWebMercatorPolygonFromGraphic, createWebMercatorLineFromGraphic, createWebMercatorPointFromGraphic } from './WebMercatorUtils'
+import { gpx } from './lib/gpx';
 import { convertFeatureCollectionToGraphics } from './FeatureCollectionUtils';
 
 const areaGraphicsToGPX = (gJson: any, name: string = 'area') => {

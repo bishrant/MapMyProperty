@@ -52,7 +52,7 @@ export class SensAreasService {
         inputPolygon: featureSet
       };
 
-      const gp: Geoprocessor = new Geoprocessor({
+      const gp: __esri.Geoprocessor = new Geoprocessor({
         url: GetSensAreasGpUrl()
       });
 
