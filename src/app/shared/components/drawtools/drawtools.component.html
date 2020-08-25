@@ -29,9 +29,11 @@
         </div>
         <br>
 
-        <app-pointcontrol #pointcontrol></app-pointcontrol>
+        <app-pointcontrol #pointcontrol [selectedGraphics]="selectedGraphics"
+            [hidden]="!((selectedGraphics.length > 0 && selectedGraphics[0].geometry.type=== 'point') || drawingTool === 'point')">
+        </app-pointcontrol>
         <br>
-        <fieldset>
+        <fieldset [hidden]="!(['polygon', 'circle', 'polyline'].indexOf(drawingTool) > -1)">
             <legend>Drawing Mode</legend>
             <app-infobutton
                 [tooltip]="'Specifies how vertices are added while the graphic can be created. Applies only while creating polygon, polyline and circle geometries'"
@@ -44,7 +46,7 @@
 
                     <mat-button-toggle value="click" class="drawModeBtn">Click</mat-button-toggle>
                     <mat-button-toggle value="freehand" class="drawModeBtn">FreeHand</mat-button-toggle>
-                    <mat-button-toggle value="hybrid" class="drawModeBtn" [disabled]="drawingTool === 'circle'">Hybrid
+                    <mat-button-toggle value="hybrid" class="drawModeBtn" [hidden]="drawingTool === 'circle'">Hybrid
                     </mat-button-toggle>
                 </mat-button-toggle-group>
                 <div
@@ -58,83 +60,16 @@
             </div>
         </fieldset>
 
-        <br>
-        <fieldset>
-            <legend>Line Style</legend>
-            <app-infobutton [tooltip]="'Specifies how the outline of the geometry is styled.'"
-                [ariaLabel]="'info button for line style'">
-            </app-infobutton>
-            <div style="display: flex;">
-                <div style="flex-grow: 1;">
-                    Line type:<br>
+        <app-linestyle #linestyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
+            (changedGraphicsStyle)="onGraphicsStyleChange">
+        </app-linestyle>
 
-                    <mat-select [(ngModel)]="lineProps.style" class="matSelect"
-                        (selectionChange)="changeGraphicsStyle()">
-                        <mat-select-trigger>
-                            <svg-icon *ngIf="lineProps.style !== 'none'"
-                                [src]="'assets/icons/symbols-sls-'+lineProps.style+'.svg'" [svgStyle]="lineSvgStyle">
-                            </svg-icon>
-                            <span *ngIf="lineProps.style === 'none'">None</span>
-                        </mat-select-trigger>
-                        <mat-option *ngFor="let style of lineStyles" [value]="style">
-                            <svg-icon *ngIf="style !== 'none'" [src]="'assets/icons/symbols-sls-'+style+'.svg'"
-                                [svgStyle]="lineSvgStyle">
-                            </svg-icon>
-                            <span *ngIf="style === 'none'">None</span>
-                        </mat-option>
-                    </mat-select>
-                </div>
-                <div>
-                    <app-color-picker [color]="lineProps.color" [opacity]="lineProps.opacity"
-                        (colorSelected)="changeLineColor($event)">
-                    </app-color-picker>
-                </div>
-            </div>
-            <div>
-                Width: {{lineProps.width}}px<br>
-                0 &nbsp;<mat-slider class="widthSlider" [thumbLabel]="true" step="1" (change)="changeGraphicsStyle()"
-                    [(ngModel)]="lineProps.width" min="0" max="10">
-                </mat-slider> &nbsp;10
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>Fill Style</legend>
-            <app-infobutton [tooltip]="'Specifies how the inside(fill) of the geometry is styled.'"
-                [ariaLabel]="'info button for fill style'">
-            </app-infobutton>
-            <div style="display: flex;">
-                <div style="flex-grow: 1;">
-                    Pattern :<br>
-                    <mat-select [(ngModel)]="fillProps.style" class="matSelect"
-                        (selectionChange)="changeGraphicsStyle()">
-                        <mat-select-trigger>
-                            <svg-icon *ngIf="fillProps.style !== 'none'"
-                                [src]="'assets/icons/symbols-sfs-'+fillProps.style+'.svg'" [svgStyle]="fillSvgStyle">
-                            </svg-icon>
-                            <span *ngIf="fillProps.style === 'none'">None</span>
-                        </mat-select-trigger>
-                        <mat-option *ngFor="let style of fillStyles" [value]="style">
-                            <span *ngIf="style === 'none'">None</span>
-                            <svg-icon *ngIf="style !== 'none'" [src]="'assets/icons/symbols-sfs-'+style+'.svg'"
-                                [svgStyle]="fillSvgStyle">
-                            </svg-icon>
-
-                        </mat-option>
-                    </mat-select>
-                </div>
-                <div>
-                    <app-color-picker [color]="fillProps.color" [opacity]="fillProps.opacity"
-                        (colorSelected)="changeFillColor($event)">
-                    </app-color-picker>
-                </div>
-            </div>
-
-        </fieldset>
+        <app-fillstyle #fillstyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
+            (changedGraphicsStyle)="onGraphicsStyleChange">
+        </app-fillstyle>
 
         <app-textcontrols #textcontrols [selectedTextGraphics]="selectedTextGraphics"
             [hidden]="!(selectedTextGraphics.length>0 || drawingTool === 'text')"></app-textcontrols>
 
-
     </div>
-    <!-- <div style="background: red; color:white">Works almost. not perfect !!!. Wait a day or so</div> -->
 </mat-expansion-panel>

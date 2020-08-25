@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./infobutton.component.scss']
 })
 export class InfobuttonComponent {
-  @Input() tooltip: String;
-  @Input() ariaLabel: String;
+  @Input() tooltip: String = '';
+  @Input() ariaLabel: String ='aria';
   constructor() { }
 }

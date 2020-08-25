@@ -1,4 +1,4 @@
-const RGBToHex = rgba => {
+const RGBToHex = (rgba: any) => {
   let r = rgba[0].toString(16);
   let g = rgba[1].toString(16);
   let b = rgba[2].toString(16);
@@ -10,7 +10,7 @@ const RGBToHex = rgba => {
   return "#" + r + g + b;
 };
 
-const HexToRGB  = (hex) => {
+const HexToRGB  = (hex: any) => {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
@@ -21,7 +21,7 @@ const HexToRGB  = (hex) => {
     : null;
 }
 
-const HexToRGBA = (hex, alpha) => {
+const HexToRGBA = (hex: any, alpha: any) => {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
@@ -32,14 +32,14 @@ const HexToRGBA = (hex, alpha) => {
       }
     : null;
 };
-const HexToRGBAArray = (hex, alpha) => {
+const HexToRGBAArray = (hex: any, alpha: any) => {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? "rgba("+parseInt(result[1], 16) + "," +parseInt(result[2], 16)+  ","+ parseInt(result[3], 16) + ","+ alpha / 100 +")"
     : [0,0,0,0];
 };
 
-function RGBAToHexA(color) {
+function RGBAToHexA(color: any) {
   let r = color.r.toString(16);
   let g = color.g.toString(16);
   let b = color.b.toString(16);
@@ -52,7 +52,21 @@ function RGBAToHexA(color) {
 
   return '#' + r + g + b + a;
 }
-function RGBObjectToHexA(color) {
+
+function RGBAObjectToABGR(color: any) {
+  let r = color.r.toString(16);
+  let g = color.g.toString(16);
+  let b = color.b.toString(16);
+  let a = (color.a * 255).toString(16).substring(0, 2);
+
+  if (r.length == 1) r = '0' + r;
+  if (g.length == 1) g = '0' + g;
+  if (b.length == 1) b = '0' + b;
+
+  return a+b+g+r;
+}
+
+function RGBObjectToHexA(color: any) {
   let r = color.r.toString(16);
   let g = color.g.toString(16);
   let b = color.b.toString(16);
@@ -64,7 +78,7 @@ function RGBObjectToHexA(color) {
 
   return '#' + r + g + b + a;
 }
-function RGBObjectToHex(color) {
+function RGBObjectToHex(color: any) {
   let r = color.r.toString(16);
   let g = color.g.toString(16);
   let b = color.b.toString(16);
@@ -76,4 +90,4 @@ function RGBObjectToHex(color) {
   return '#' + r + g + b;
 }
 
-export { RGBToHex, HexToRGB, HexToRGBA, HexToRGBAArray, RGBAToHexA, RGBObjectToHex, RGBObjectToHexA };
+export { RGBToHex, HexToRGB, HexToRGBA, HexToRGBAArray, RGBAToHexA, RGBObjectToHex, RGBObjectToHexA, RGBAObjectToABGR };

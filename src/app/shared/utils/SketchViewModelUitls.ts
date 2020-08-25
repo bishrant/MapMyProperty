@@ -1,16 +1,13 @@
-/// <amd-dependency path="esri/core/tsSupport/declareExtendsHelper" name="__extends" />
-/// <amd-dependency path="esri/core/tsSupport/decorateHelper" name="__decorate" />
-import MapView from 'arcgis-js-api/views/MapView';
 import SketchViewModel from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
 import { emptyPoint, bluePolygon } from './Renderers';
 import Circle from 'esri/geometry/Circle';
-import geometryEngine from 'esri/geometry/geometryEngine';
-import { subclass, declared } from 'esri/core/accessorSupport/decorators';
+import { planarArea } from 'esri/geometry/geometryEngine';
+import { subclass } from 'esri/core/accessorSupport/decorators';
 import { Polygon, Polyline } from 'esri/geometry';
 
 @subclass('esri.geometry.Circle')
-class TFSCircle extends declared(Circle) {
-  public asJSON() {
+class TFSCircle extends Circle {
+  public asJSON () {
     const cc = this.toJSON();
     cc.centroid = this.centroid;
     cc.extent = this.extent;
@@ -24,8 +21,8 @@ class TFSCircle extends declared(Circle) {
 }
 
 @subclass('esri.geometry.Polygon')
-class TFSPolygon extends declared(Polygon) {
-  public asJSON() {
+class TFSPolygon extends Polygon {
+  public asJSON () {
     const cc = this.toJSON();
     cc.extent = this.extent;
     cc.type = this.type;
@@ -39,20 +36,19 @@ class TFSPolygon extends declared(Polygon) {
 }
 
 @subclass('esri.geometry.Polyline')
-class TFSPolyline extends declared(Polyline) {
-  public asJSON() {
+class TFSPolyline extends Polyline {
+  public asJSON () {
     const cc = this.toJSON();
     cc.extent = this.extent;
     cc.type = this.type;
     cc.spatialReference = this.spatialReference;
     cc.paths = this.paths;
-   
     cc.toJSON = undefined;
     return cc;
   }
 }
 
-const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): __esri.SketchViewModel => {
+const SetupSketchViewModel = (graphicsLayer: any, mapView: __esri.MapView): __esri.SketchViewModel => {
   return new SketchViewModel({
     view: mapView,
     layer: graphicsLayer,
@@ -61,24 +57,24 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): __esri.Sket
     updateOnGraphicClick: true,
     defaultUpdateOptions: {
       enableRotation: false,
-      enableScaling: false,
+      enableScaling: false
     },
     defaultCreateOptions: {
-      mode: 'click',
-    },
+      mode: 'click'
+    }
     // toggleToolOnClick: false
   });
 };
 
 const CreateCircleWithGeometry = (originalGraphic: any) => {
   // calculate area to get the radius
-  const _area = geometryEngine.planarArea(originalGraphic.geometry, 'square-miles');
+  const _area = planarArea(originalGraphic.geometry, 'square-miles');
   const polygonRadius = Math.sqrt(_area / Math.PI);
   const rr = Math.round(((polygonRadius + Number.EPSILON) * 10) / 10);
   const c = new TFSCircle({
     center: originalGraphic.geometry.centroid,
     radius: rr,
-    radiusUnit: 'miles',
+    radiusUnit: 'miles'
   });
   return c;
 };
@@ -87,7 +83,7 @@ const CreateCircleFromPoint = (pointGeom: any, radius: number) => {
   const c = new TFSCircle({
     center: pointGeom,
     radius: radius,
-    radiusUnit: 'miles',
+    radiusUnit: 'miles'
   });
   return c;
 };

@@ -50,7 +50,7 @@ export class TextcontrolsComponent implements OnInit {
 
   changeFontSize = () => {
     if (this.selectedTextGraphics.length > 0) {
-      const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id);
+      const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id) as any;
       _input.setAttribute('fontSize', this.fontSize + 'px');
       _input.style.fontSize = this.fontSize + 'px';
     }
@@ -69,7 +69,7 @@ export class TextcontrolsComponent implements OnInit {
   };
   changeFontFamily = () => {
         if (this.selectedTextGraphics.length > 0) {
-          const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id);
+          const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id) as any;
           _input.setAttribute('fontFamily', this.textProps.font.family);
           _input.style.fontFamily = this.textProps.font.family;
         }
@@ -79,7 +79,7 @@ export class TextcontrolsComponent implements OnInit {
     this.textProps.color = colorInfo;
     if (this.selectedTextGraphics.length > 0) {
       const color = this.textProps.color;
-      const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id);
+      const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id) as any;
       _input.setAttribute('fontColor', JSON.stringify(this.textProps.color));
       _input.style.color = `rgba(${color.r},${color.g},${color.b},${color.a})`;
     }
@@ -88,7 +88,7 @@ export class TextcontrolsComponent implements OnInit {
   toggleFontWeight = () => {
     this.textProps.font.weight = this.textProps.font.weight === 'bold' ? 'normal' : 'bold';
     if (this.selectedTextGraphics.length > 0) {
-      const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id);
+      const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id) as any;
       _input.setAttribute('fontWeight', this.textProps.font.weight);
       _input.style.fontWeight = this.textProps.font.weight;
     }
@@ -97,7 +97,7 @@ export class TextcontrolsComponent implements OnInit {
   toggleFontDecoration = () => {
     this.textProps.font.decoration = this.textProps.font.decoration === 'underline' ? 'none' : 'underline';
     if (this.selectedTextGraphics.length > 0) {
-      const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id);
+      const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id) as any;
       _input.setAttribute('textDecoration', this.textProps.font.decoration);
       _input.style.textDecoration = this.textProps.font.decoration;
     }
@@ -106,7 +106,7 @@ export class TextcontrolsComponent implements OnInit {
   toggleFontStyle = () => {
     this.textProps.font.style = this.textProps.font.style === 'italic' ? 'none' : 'italic';
     if (this.selectedTextGraphics.length > 0) {
-      const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id);
+      const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id) as any;
       _input.setAttribute('textStyle', this.textProps.font.style);
       _input.style.fontStyle = this.textProps.font.style;
     }

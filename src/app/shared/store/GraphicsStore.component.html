@@ -11,8 +11,10 @@
   </button>
 </div>
 
-<div matTooltip="Delete all drawings." [hidden]="!(sketchVM.layer.graphics.length > 0)">
-  <button mat-raised-button color="warn" [disabled]="!(sketchVM.layer.graphics.length > 0)" (click)="deleteAll()">
+<div matTooltip="Delete all drawings." [hidden]="!((sketchVM.layer.graphics.length > 0) || (textGraphicsLayer.graphics.length >0))">
+  <button mat-raised-button color="warn" 
+  [disabled]="!((sketchVM.layer.graphics.length > 0) || (textGraphicsLayer.graphics.length >0))" 
+  (click)="deleteAll()">
     <mat-icon>delete_forever</mat-icon>Delete All
   </button>
 </div>

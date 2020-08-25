@@ -1,7 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { CreateSensAreasGL } from '../../pmloUtils/layers';
-import GraphicsLayer from 'arcgis-js-api/layers/GraphicsLayer';
-import Graphic from 'arcgis-js-api/geometry';
 import { DialogService } from 'src/app/shared/components/dialogs/dialog.service';
 import { GreaterThanMaxArea } from 'src/app/shared/utils/GeometryEngine';
 import { DecimalPipe } from '@angular/common';
@@ -13,7 +11,7 @@ import { PrintTaskService } from 'src/app/shared/services/PrintTask.service';
 @Component({
   selector: 'pmlo-sens-areas',
   templateUrl: './sens-areas.component.html',
-  styleUrls: ['./sens-areas.component.scss'],
+  styleUrls: ['./sens-areas.component.scss']
 })
 export class SensAreasComponent implements OnInit {
   @ViewChild('sensAreaToolHeader') sensAreaToolHeader: MatExpansionPanel;
@@ -34,27 +32,27 @@ export class SensAreasComponent implements OnInit {
 
   @Input() mapView: any;
 
-  private boundaryLayer: GraphicsLayer;
-  private sensAreaGL: GraphicsLayer = CreateSensAreasGL('sensAreasGL', 1);
+  private boundaryLayer: __esri.GraphicsLayer;
+  private sensAreaGL: __esri.GraphicsLayer = CreateSensAreasGL('sensAreasGL', 1);
 
   private opt = {
     message: '',
   };
 
-  constructor(
-    private dialogService: DialogService, 
+  constructor (
+    private dialogService: DialogService,
     private decimalPipe: DecimalPipe,
     private sensAreasService: SensAreasService,
     private spinner: NgxSpinnerService,
     private printTaskService: PrintTaskService
     ) {}
 
-  ngOnInit(): void {
-    this.sensAreasService.updateState.subscribe(st => {
+  ngOnInit (): void {
+    this.sensAreasService.updateState.subscribe((st: any) => {
       this.state = st;
     });
     this.boundaryLayer = this.mapView.map.findLayerById('userGraphicsLayer');
-    this.boundaryLayer.graphics.on('change', function (evt: any) {
+    this.boundaryLayer.graphics.on('change', (evt: any) => {
       const graphNumber: number = evt.target.length;
       if (graphNumber === 0) {
         this.state = 'noBoundary';
@@ -80,7 +78,7 @@ export class SensAreasComponent implements OnInit {
       this.state = 'clipping';
       this.spinner.show();
 
-      const inputBoundary: Graphic = this.boundaryLayer.graphics.getItemAt(0);
+      const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.getItemAt(0);
 
       this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((val) => {
         if (val)
@@ -115,30 +113,39 @@ export class SensAreasComponent implements OnInit {
     this.sensAreasService.updateGraphicsOpacity(this.sensAreaGL, value);
   }
 
-  updateGraphicOpacity(isChecked: boolean, origin: string) {
+  updateGraphicOpacity (isChecked: boolean, origin: string) {
     this.sensAreasService.updateOpacity(this.sensAreaGL, origin, isChecked);
   }
 
   bufferGraphic(origin: string):void {
     this.spinner.show();
-    const inputBoundary: Graphic = this.boundaryLayer.graphics.getItemAt(0);
+    const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.getItemAt(0);
     const inputFeet: number = origin === 'smz' ? this.smzBufferValue : this.wetlandsBufferValue;
-    this.sensAreasService.bufferGraphic(origin, inputBoundary, inputFeet).then(result => {
-      if (result === null)
+    if (inputFeet > 0) {
+      this.sensAreasService.bufferGraphic(origin, inputBoundary, inputFeet).then(result => {
+        if (result === null)
+        {
+          this.spinner.hide();
+          this.opt.message = 'There was an error creating the buffer. Please try again and, if the problem persists, contact the administrator.';
+          this.dialogService.open(this.opt);
+        } else {
+          this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue);
+          this.spinner.hide();
+        }
+      });
+    } else {
+      if (origin === 'smz' || origin === 'wetlandsBuffer')
       {
+        this.sensAreasService.removeGraphicsByAttribute(this.sensAreaGL, origin);
         this.spinner.hide();
-        this.opt.message = 'There was an error creating the buffer. Please try again and, if the problem persists, contact the administrator.';
-        this.dialogService.open(this.opt);
-      } else {
-        this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue);
-        this.spinner.hide();
-      }
-    });
+      }      
+    }
+
   }
 
   setSlope(origin: string):void {
     this.spinner.show();
-    const inputBoundary: Graphic = this.boundaryLayer.graphics.getItemAt(0);
+    const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.getItemAt(0);
     this.sensAreasService.setSlope(inputBoundary, this.slopeValue).then(result => {
       if (result === null)
       {
@@ -159,6 +166,7 @@ export class SensAreasComponent implements OnInit {
 
   buildSMZReport(): void {
     this.spinner.show();
+    this.mapView.goTo(this.boundaryLayer.graphics.getItemAt(0));
     this.printTaskService.exportWebMap(this.mapView, 'SensAreasTemplate', 'jpg').then((url) => {
       if (url === 'error')
       {

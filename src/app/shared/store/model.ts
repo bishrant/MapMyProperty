@@ -30,7 +30,7 @@ export interface WiederConfig {
    * How many state differences should be buffered in
    * either direction.
    */
-  maxBufferSize?: number;
+  maxBufferSize: number;
   /**
    * Types of actions to use for calculating patches
    * between states (leave empty to allow all actions).

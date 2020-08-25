@@ -6,8 +6,7 @@ module.exports = {
       features: {
         '3d': false
       }
-    }),
-
+    })
   ],
   node: {
     process: false,

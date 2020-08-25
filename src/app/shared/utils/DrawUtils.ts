@@ -1,4 +1,4 @@
-import { CreatePolygonSymbol, CreatePolylineSymbol, CreatePointSymbol } from './GraphicStyles';
+import { CreatePolygonSymbol, CreatePolylineSymbol } from './GraphicStyles';
 import { CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon, TFSPolyline } from './SketchViewModelUitls';
 const id = (): string => Math.random().toString(36).substr(2, 9);
 
@@ -20,27 +20,25 @@ const CreatePolygonGraphicWithSymbology = (graphic: any, lineProps: any, fillPro
 };
 
 const CreatePolygonFromGraphic = (graphic: any, lineProps: any, fillProps: any) => {
-  let polygonJSON = graphic.toJSON();
+  const polygonJSON = graphic.toJSON();
   polygonJSON.symbol = CreatePolygonSymbol(lineProps, fillProps);
   polygonJSON.attributes.symbol = polygonJSON.symbol;
   polygonJSON.toJSON = undefined;
   polygonJSON.geometry = new TFSPolygon({
     rings: graphic.geometry.rings,
-    spatialReference: graphic.geometry.spatialReference,
+    spatialReference: graphic.geometry.spatialReference
   }).asJSON();
   return polygonJSON;
 };
 
-
-
 const CreatePolylineFromGraphic = (graphic: any, lineProps: any) => {
-  let polylineJSON = graphic.toJSON();
+  const polylineJSON = graphic.toJSON();
   polylineJSON.symbol = CreatePolylineSymbol(lineProps);
   polylineJSON.attributes.symbol = polylineJSON.symbol;
   polylineJSON.toJSON = undefined;
   polylineJSON.geometry = new TFSPolyline({
     paths: graphic.geometry.paths,
-    spatialReference: graphic.geometry.spatialReference,
+    spatialReference: graphic.geometry.spatialReference
   }).asJSON();
   return polylineJSON;
 };
@@ -65,9 +63,8 @@ const CreatecircleFromPoint = (evt: any, radius: number, lineProps: any, fillPro
 };
 
 const CreatePointFromGraphic = (graphic: any, markerProps: any) => {
-  let _g = graphic.toJSON();
-  _g.symbol = CreatePointSymbol(markerProps);
-  _g.symbol.type = "simple-marker";
+  const _g = graphic.toJSON();
+  _g.symbol = markerProps;
   const _id = _g.attributes.id ? _g.attributes.id : id();
   _g.attributes = { id: _id, geometryType: 'point', symbol: _g.symbol };
   _g.geometry.type = 'point';

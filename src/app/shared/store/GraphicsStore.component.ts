@@ -11,6 +11,8 @@ import { removeGraphics, removeAllGraphics } from './graphics.actions';
 export class GraphicsStoreComponent {
   @Input('sketchVM') sketchVM: __esri.SketchViewModel;
   @Input('selectedGraphics') selectedGraphics: any[] = [];
+  @Input('textGraphicsLayer') textGraphicsLayer: __esri.GraphicsLayer;
+
   // readonly graphics$ = this.store.select(state => state.app.graphics);
   readonly disableUndo$ = this.store.select((state) => !state.app.canUndo);
   readonly disableRedo$ = this.store.select((state) => !state.app.canRedo);
@@ -31,6 +33,7 @@ export class GraphicsStoreComponent {
     const ids = this.selectedGraphics.map((gg) => gg.attributes.id);
     this.store.dispatch(removeGraphics({ ids }));
   }
+  
   redo(): void {
     if (this.sketchVM.state === 'active') {
       this.sketchVM.redo();

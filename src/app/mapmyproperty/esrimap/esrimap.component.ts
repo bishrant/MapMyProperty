@@ -64,8 +64,18 @@ export class EsrimapComponent implements OnInit {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer]);
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
-      this.sketchVM.updatePointSymbol = undefined;
-      this.sketchVM.activePointSymbol = undefined;
+      const p = {
+        type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+        style: "circle",
+        color: "cyan",
+        size: "20px",  // pixels
+        outline: {  // autocasts as new SimpleLineSymbol()
+          color: [ 0, 0, 0 ],
+          width: 1  // points
+        }
+      };
+      this.sketchVM.updatePointSymbol = p;
+      this.sketchVM.activePointSymbol = p;
       this.showMapCoordinates();
     } catch (error) {
       console.error('Map load error ', error);
@@ -75,17 +85,18 @@ export class EsrimapComponent implements OnInit {
   private listenToGraphicsStore = () => {
     return this.graphics$.subscribe((g: any) => {
       if (g.length > 0) {
-        const graphicsArray = g.map((_g) => {
+        const graphicsArray = g.map((_g: any) => {
           let gr = JSON.parse(_g);
-          return gr.attributes.geometryType === 'text' ? Graphic.fromJSON(gr) : new Graphic(gr);
+          return new Graphic(gr);
         });
-        const allExcepttext = graphicsArray.filter((graphic) => graphic.attributes.geometryType != 'text');
+        const allExcepttext = graphicsArray.filter((graphic: any) => graphic.attributes.geometryType != 'text');
 
-        const textGraphicsArray = graphicsArray.filter((graphic) => graphic.attributes.geometryType === 'text');
+        const textGraphicsArray = graphicsArray.filter((graphic: any) => graphic.attributes.geometryType === 'text');
         this.polygonGraphicsLayer.graphics = allExcepttext;
         this.textGraphicsLayer.graphics = textGraphicsArray;
       } else {
         this.polygonGraphicsLayer.removeAll();
+        this.textGraphicsLayer.removeAll();
       }
     });
   };

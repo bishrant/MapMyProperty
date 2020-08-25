@@ -17,7 +17,7 @@ export class ColorPickerComponent {
 
   constructor(public colorsPopoverService: ColorsPopoverService, private viewContainerRef: ViewContainerRef) {}
 
-  unsubscribeFromObservable = (colorObervable$) => {
+  unsubscribeFromObservable = (colorObervable$: any) => {
     colorObervable$.unsubscribe();
   }
   openColorSelector(origin: any) {
@@ -39,7 +39,7 @@ export class ColorPickerComponent {
      });
   }
 
-  GetCircleColor = (_color) => {
+  GetCircleColor = (_color: any) => {
     if (_color !== null) {
       let color = _color;
       if (typeof color.r === undefined) {
@@ -49,7 +49,7 @@ export class ColorPickerComponent {
     }
   };
 
-  ConvertColorToRGBA = (_color, opacity) => {
+  ConvertColorToRGBA = (_color: any, opacity: any) => {
     if (_color !== null) {
       let color = _color;
       if (typeof color.r === 'undefined') {

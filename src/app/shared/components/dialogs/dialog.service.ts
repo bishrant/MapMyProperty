@@ -12,7 +12,7 @@ export class DialogService {
 
   dialogRef: MatDialogRef<DialogComponent>;
 
-  public open(options) {
+  public open(options: any) {
     this.dialogRef = this.dialog.open(DialogComponent, {
       data: {
         message: options.message
