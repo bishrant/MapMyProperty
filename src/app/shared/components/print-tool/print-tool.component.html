@@ -1,0 +1,41 @@
+<mat-expansion-panel [expanded]="true" color="black">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            Export Map to PDF
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div>
+        <form [formGroup]="printForm">
+            <strong>Title</strong><br>
+            <mat-form-field appearance="outline" class="fullWidthInput">
+                <input matInput placeholder="Enter title" type="text" 
+                formControlName="title"
+                aria-label="Enter Map title" />
+            </mat-form-field><br>
+
+            <strong>Comments</strong><br>
+
+            <mat-form-field appearance="outline" class="fullWidthInput my-form-field">
+                <textarea matInput placeholder="Enter comments" type="text" aria-label="Enter Map title"
+                [errorStateMatcher]="matcher" id="comments"
+                    formControlName="comments" cdkTextareaAutosize maxlength="300" cdkAutosizeMinRows="3"
+                    cdkAutosizeMaxRows="6"></textarea>
+
+            </mat-form-field>
+            <span [style.color]="printForm?.controls.comments.value.length > MAX ? 'red': 'black'" style="float: right;">
+                {{printForm?.controls.comments.value.length}}/{{MAX}}
+            </span>
+            <span *ngIf="comments?.errors?.commentsLineBreaksInvalid" style="color: red; font-size: 10px">
+                Maximum of {{MAXLINES}} line breaks are allowed.
+            </span>
+            <br><br><br>
+
+            <div class="centerAlign">
+                <button mat-raised-button color="accent" (click)="showPrintMapPreview()" [disabled]="printForm.invalid">
+                    Preview
+                </button>
+            </div>
+        </form>
+    </div>
+</mat-expansion-panel>

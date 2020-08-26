@@ -53,7 +53,7 @@
                     [hidden]="!((drawingTool === 'circle') && (drawingMode === 'click')) && !(selectedGraphicsGeometry === 'circle')">
                     <mat-form-field appearance="outline" class="radiusInput">
                         <input matInput placeholder="Radius" type="number" [(ngModel)]="radius" #radiusInput
-                            (keyup.enter)="radiusChangedEnter()" (blur)="radiusBlurred()">
+                            (keyup.enter)="radiusChangedEnter()" (blur)="radiusBlurred()" aria-label="radius">
                     </mat-form-field>
                     &nbsp; Miles
                 </div>
