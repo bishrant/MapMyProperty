@@ -2,6 +2,9 @@ import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import MapView from 'esri/views/MapView';
 import Map from "arcgis-js-api/Map";
+import PrintTask from 'esri/tasks/PrintTask';
+import PrintParameters from 'esri/tasks/support/PrintParameters';
+import { Subscriber } from 'rxjs';
 
 @Component({
     selector: 'map-dialog',
@@ -12,8 +15,10 @@ export class MapPrintPreviewDialog implements OnInit {
     @ViewChild("mapViewNode", { static: true }) private mapViewEl: ElementRef;
     view: any;
     data: any;
+    
+    printTask = new PrintTask({url: 'https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Shared/PrintPro_no_rotate/GPServer/PrintUsingPro'});
     constructor(public dialogRef: MatDialogRef<MapPrintPreviewDialog>, @Inject(MAT_DIALOG_DATA) private _data: any, public dialog: MatDialog) {
-        this.data = _data;
+        this.data = this._data;
     }
 
     close(): void {
@@ -22,7 +27,7 @@ export class MapPrintPreviewDialog implements OnInit {
 
     async initializeMap() {
         console.log(this.data);
-        const _map = this.data.map;
+        const _map = this.data.esriMap.map;
         try {
             // Configure the Map
             const mapProperties: any = {
@@ -40,7 +45,7 @@ export class MapPrintPreviewDialog implements OnInit {
             };
 
             this.view = new MapView(mapViewProperties);
-            this.view.extent = this.data.extent;
+            this.view.extent = this.data.esriMap.extent;
             return this.view;
         } catch (error) {
             console.log("Esri: ", error);
@@ -60,22 +65,36 @@ export class MapPrintPreviewDialog implements OnInit {
 
     generatePDF() {
         const dialogRef = this.dialog.open(PrintToolLoadingComponent, {
-          width: window.innerWidth > 1024 ? '600px': '300px',
-          disableClose: true      
+            width: window.innerWidth > 1024 ? '600px': '300px',
+            disableClose: false      
+          });
+          dialogRef.afterClosed().subscribe(result => {
+            console.log('The map preview dialog was closed');
+          });
+        console.log(this.data);
+        const printParameters = new PrintParameters({
+            view: this.view,
+            extraParameters: {
+                title: this.data.title,
+                comments: this.data.comment
+            }
         });
-        dialogRef.afterClosed().subscribe(result => {
-          console.log('The map preview dialog was closed');
+
+        this.printTask.execute(printParameters).then((success: any) => {
+            console.log(success.url);
+            window.open(success.url, '_blank');
+            dialogRef.close();
+        }, (error: any) => {
+            console.error(error);
         });
+
       }
 
 }
 
 @Component({
     selector: 'app-print-loading',
-    template: `
-    <div><mat-spinner color="primary"></mat-spinner>Loading...</div>
-    `,
-    styles: [`div{color: red}`]
+    template: `<app-loader></app-loader>`
   })
   export class PrintToolLoadingComponent implements OnInit {
     constructor(public dialog: MatDialog) {}

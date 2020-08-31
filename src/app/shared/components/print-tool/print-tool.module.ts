@@ -13,6 +13,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MapPrintPreviewDialog, PrintToolLoadingComponent } from './map-dialog.componenet';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { LoaderModule } from '../loader/loader.module';
 
 @NgModule({
   declarations: [PrintToolComponent, MapPrintPreviewDialog, PrintToolLoadingComponent],
@@ -28,6 +29,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     MatToolbarModule,
     MatDialogModule,
     OverlayModule,
+    LoaderModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule
   ],
