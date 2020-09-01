@@ -14,6 +14,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MapPrintPreviewDialog, PrintToolLoadingComponent } from './map-dialog.componenet';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { LoaderModule } from '../loader/loader.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [PrintToolComponent, MapPrintPreviewDialog, PrintToolLoadingComponent],
@@ -31,7 +32,8 @@ import { LoaderModule } from '../loader/loader.module';
     OverlayModule,
     LoaderModule,
     ReactiveFormsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    HttpClientModule,
   ],
   exports: [PrintToolComponent],
   entryComponents: [MapPrintPreviewDialog, PrintToolLoadingComponent]

@@ -5,6 +5,7 @@ import Map from "arcgis-js-api/Map";
 import PrintTask from 'esri/tasks/PrintTask';
 import PrintParameters from 'esri/tasks/support/PrintParameters';
 import { Subscriber } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'map-dialog',
@@ -17,7 +18,8 @@ export class MapPrintPreviewDialog implements OnInit {
     data: any;
     
     printTask = new PrintTask({url: 'https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Shared/PrintPro_no_rotate/GPServer/PrintUsingPro'});
-    constructor(public dialogRef: MatDialogRef<MapPrintPreviewDialog>, @Inject(MAT_DIALOG_DATA) private _data: any, public dialog: MatDialog) {
+    constructor(public dialogRef: MatDialogRef<MapPrintPreviewDialog>, @Inject(MAT_DIALOG_DATA) private _data: any, 
+    public dialog: MatDialog, private http: HttpClient) {
         this.data = this._data;
     }
 
@@ -54,6 +56,7 @@ export class MapPrintPreviewDialog implements OnInit {
 
     ngOnInit() {
         this.initializeMap();
+        throw new Error("a very tough error")
     }
 
     ngOnDestroy() {
@@ -68,7 +71,7 @@ export class MapPrintPreviewDialog implements OnInit {
             width: window.innerWidth > 1024 ? '600px': '300px',
             disableClose: false      
           });
-          dialogRef.afterClosed().subscribe(result => {
+          dialogRef.afterClosed().subscribe((result: any) => {
             console.log('The map preview dialog was closed');
           });
         console.log(this.data);
