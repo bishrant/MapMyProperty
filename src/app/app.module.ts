@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,6 +17,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HeaderModule } from './shared/components/header/header.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { GlobalErrorHandler } from './shared/services/error/GlobalErrorHandler';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,9 +34,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     AngularSvgIconModule.forRoot(),
     NgxSpinnerModule,
     environment.production ? [] : StoreDevtoolsModule.instrument(),
-    FontAwesomeModule
+    FontAwesomeModule,
+    MatSnackBarModule
   ],
-  providers: [],
+  providers: [{provide: ErrorHandler, useClass: GlobalErrorHandler}],
   bootstrap: [AppComponent],
   exports: [HeaderModule, MatIconModule, MatButtonModule, MatTooltipModule, FlexLayoutModule]
 })

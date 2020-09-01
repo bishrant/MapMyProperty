@@ -19,7 +19,7 @@ export class PrintToolComponent implements OnInit {
   showPrintMapPreview(): void {
     const dialogRef = this.dialog.open(MapPrintPreviewDialog, {
       width: window.innerWidth > 1024 ? '600px' : '300px',
-      data: this.map
+      data: {esriMap: this.map, comments: this.printForm.get('comments')?.value, title: this.printForm.get('title')?.value}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -36,10 +36,7 @@ export class PrintToolComponent implements OnInit {
     })
   }
 
-
   get comments() { return this.printForm.get('comments') }
-
-
 }
 
 export function ValidateCommentsLength(MAX: number): ValidatorFn {
