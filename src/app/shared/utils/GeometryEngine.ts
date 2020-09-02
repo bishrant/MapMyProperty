@@ -1,5 +1,5 @@
 import { Polygon, Point, Polyline } from 'esri/geometry';
-import { geodesicArea, equals } from 'esri/geometry/geometryEngine';
+import { geodesicArea, equals, geodesicLength } from 'esri/geometry/geometryEngine';
 
 // Only works with WGS84 (wkid: 4326) and Web Mercator spatial references
 const GreaterThanMaxArea = (geometry : any, maxArea : number = 10000, unit : any) => {
@@ -54,4 +54,14 @@ const AreGraphicsEqual = (existing: any, updated: any) => {
   return geomEqual && attribEqual;
 }
 
-export { GreaterThanMaxArea, AreGraphicsEqual }
+const GetFeaturesLength = (graphics: __esri.Collection<__esri.Graphic>) => {
+  const reducer = (accumulator, currentValue) => accumulator + geodesicLength(currentValue.geometry, 'feet');
+  return graphics.reduce(reducer, 0);
+};
+
+const GetFeaturesAreaAcres = (graphics: __esri.Collection<__esri.Graphic>) => {
+  const reducer = (accumulator, currentValue) => accumulator + geodesicArea(currentValue.geometry, 'acres');
+  return graphics.reduce(reducer, 0);
+};
+
+export { GreaterThanMaxArea, AreGraphicsEqual, GetFeaturesLength, GetFeaturesAreaAcres }

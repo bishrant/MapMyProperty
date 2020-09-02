@@ -1,12 +1,14 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { CreateSensAreasGL } from '../../pmloUtils/layers';
 import { DialogService } from 'src/app/shared/components/dialogs/dialog.service';
-import { GreaterThanMaxArea } from 'src/app/shared/utils/GeometryEngine';
+import { GreaterThanMaxArea, GetFeaturesLength, GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import { DecimalPipe } from '@angular/common';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { SensAreasService } from './sens-areas.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PrintTaskService } from 'src/app/shared/services/PrintTask.service';
+import { ReportsService } from '../../pmloUtils/reports.service';
+import { SquareMetersToAcres, FormatRoundNumber } from 'src/app/shared/utils/ConversionTools';
 
 @Component({
   selector: 'pmlo-sens-areas',
@@ -30,6 +32,8 @@ export class SensAreasComponent implements OnInit {
   wetlandsBufferValue:number = 0;
   slopeValue:number = 8;
 
+  reportTitle = '';
+
   @Input() mapView: any;
 
   private boundaryLayer: __esri.GraphicsLayer;
@@ -44,7 +48,8 @@ export class SensAreasComponent implements OnInit {
     private decimalPipe: DecimalPipe,
     private sensAreasService: SensAreasService,
     private spinner: NgxSpinnerService,
-    private printTaskService: PrintTaskService
+    private printTaskService: PrintTaskService,
+    private reportsService: ReportsService
     ) {}
 
   ngOnInit (): void {
@@ -166,17 +171,39 @@ export class SensAreasComponent implements OnInit {
 
   buildSMZReport(): void {
     this.spinner.show();
-    this.mapView.goTo(this.boundaryLayer.graphics.getItemAt(0));
-    this.printTaskService.exportWebMap(this.mapView, 'SensAreasTemplate', 'jpg').then((url) => {
-      if (url === 'error')
-      {
-        this.spinner.hide();
-        this.opt.message = 'There was an error creating the report. Please try again and, if the problem persists, contact the administrator.';
-        this.dialogService.open(this.opt);
-      } else {
-        console.log(url);
-        this.spinner.hide();
+    this.mapView.goTo(this.boundaryLayer.graphics.getItemAt(0).geometry.extent.clone().expand(1.2)).then (
+      () => {
+        this.printTaskService.exportWebMap(this.mapView, 'SensAreasTemplate', 'jpg').then((url) => {
+          if (url === 'error')
+          {
+            this.spinner.hide();
+            this.opt.message = 'There was an error creating the report. Please try again and, if the problem persists, contact the administrator.';
+            this.dialogService.open(this.opt);
+          } else {
+            let severeSlopeArea: number = 0;
+            if(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'slopes').length > 0)
+            {
+              severeSlopeArea = SquareMetersToAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'slopes').getItemAt(0).attributes['Shape_Area']);
+            }
+            const reportParams = {
+              zzProjNamezz: this.reportTitle,
+              imageUrl: url,
+              zzStreamsLengthzz: FormatRoundNumber(GetFeaturesLength(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'streams')), 0) + ' feet',
+              zzSmzAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'smz')), 1) + ' acres',
+              zzSevereSlopezz: this.slopeValue,
+              zzSevereSlopesAreazz: FormatRoundNumber(severeSlopeArea, 1) + ' acres',
+              zzWetAreasAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'wetlands')), 1) + ' acres',
+              zzWetAreasBufferAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'wetlandsBuffer')), 1) + ' acres'
+            };
+            this.reportsService.getSMZReports({content: JSON.stringify(reportParams)}).subscribe(
+              response => {
+                console.log(response);
+                this.spinner.hide();
+              }
+            );
+          }
+        });
       }
-    });
+    );
   }
 }

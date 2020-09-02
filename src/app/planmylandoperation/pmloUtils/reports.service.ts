@@ -7,9 +7,9 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ReportsService {
 
-  private backendServer = 'https://localhost:44328/';
-  private apiDomain = this.backendServer + 'pmlo/';
-  private smzReportUrl = this.apiDomain + 'GetSMZReport';
+  private backendServer = 'https://localhost:44358/';
+  private apiDomain = this.backendServer + 'api/';
+  private smzReportUrl = this.apiDomain + 'CreateSensAreasReport';
 
   private httpOptions = {
     responseType: 'text' as 'json'

@@ -1,5 +1,5 @@
 mat-slider {
-    width: calc(100% - 53px);
+    width: calc(100% - 3.3125rem);
 }
 
 .d-flex {
@@ -19,28 +19,28 @@ mat-slider {
 }
 
 .py-3 {
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 .mt-3 {
-    margin-top: 8px;
+    margin-top: 0.5rem;
 }
 
 .plusSign {
-    margin-right: 8px;
+    margin-right: 0.5rem;
     font-size: 1.25rem;
-    width: 12px;
+    width: 0.75rem;
     align-self: center;
     cursor: pointer;
 }
 
 .saSymbol {
-    width: 30px;
+    width: 1.875rem;
     margin-left: auto;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin: 5px 10px 5px auto;
+    margin-top: 0.3125rem;
+    margin-bottom: 0.3125rem;
+    margin: 0.3125rem 0.625rem 0.3125rem auto;
     border: 1px solid black;
 }
 
@@ -51,7 +51,7 @@ mat-slider {
 .streamColor {
     color: #005ce6;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 .smzBack {
@@ -68,17 +68,17 @@ mat-slider {
 
 .wetBufferBack {
     background-color: #444f89;
-    margin-top: 21px;
-    margin-bottom: 21px;
+    margin-top: 1.3125rem;
+    margin-bottom: 1.3125rem;
 }
 
 .subMenuContainer {
-    margin-left: 40px;
+    margin-left: 2.5rem;
 }
 
 .subMenuContainer mat-form-field {
-    width: 40px;
-    margin-right: 10px;
+    width: 2.5rem;
+    margin-right: 0.625rem;
 }
 
 .pmlo-button {
@@ -86,11 +86,15 @@ mat-slider {
 }
 
 .prefix-margin {
-    margin-right: 10px;
+    margin-right: 0.625rem;
 }
 
-.generalBtn {
+.generalBtn, .reportTitleContainer {
     width: 100%;
-    margin-right: 10px;
-    margin-left: 10px;
+    margin-right: 0.625rem;
+    margin-left: 0.625rem;
+}
+
+.reportTitleContainer .mat-form-field-wrapper {
+    padding-bottom: 1rem;
 }

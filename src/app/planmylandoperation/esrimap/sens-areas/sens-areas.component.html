@@ -86,8 +86,16 @@
             <div class="row mt-3">
                 <button mat-raised-button class="pmlo-button generalBtn" (click)="clearSMZGraphics()">Clear Layer</button>
             </div>
+
             <div class="row mt-3">
-                <button mat-raised-button color="accent" class="pmlo-button generalBtn" (click)="buildSMZReport()">Create a Report</button>
+                <mat-form-field class="reportTitleContainer">
+                    <mat-label>Report Title</mat-label>
+                    <input matInput type="text" [(ngModel)]="reportTitle" maxlength="40">
+                </mat-form-field>
+            </div>
+            
+            <div class="row mt-3">
+                <button type="button" mat-raised-button color="accent" class="pmlo-button generalBtn" (click)="buildSMZReport()">Create a Report</button>
             </div>
         </ng-container>
     </div>
