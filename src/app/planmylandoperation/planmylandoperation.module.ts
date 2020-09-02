@@ -8,6 +8,7 @@ import { EsriMapModule } from './esrimap/esrimap.module';
 import { DialogService } from '../shared/components/dialogs/dialog.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { CustomSnackBarService } from '../shared/components/custom-snack-bar/custom-snack-bar.service';
 
 const routes: Routes = [
   {
@@ -26,7 +27,7 @@ const routes: Routes = [
     HeaderModule,
     MatDialogModule
   ],
-  providers: [DialogService, MatDialog, DecimalPipe]
+  providers: [DialogService, MatDialog, DecimalPipe, CustomSnackBarService]
 })
 export class PlanmylandoperationModule {
   constructor (overlayContainer: OverlayContainer) {

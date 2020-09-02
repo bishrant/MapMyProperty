@@ -9,6 +9,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { PrintTaskService } from 'src/app/shared/services/PrintTask.service';
 import { ReportsService } from '../../pmloUtils/reports.service';
 import { SquareMetersToAcres, FormatRoundNumber } from 'src/app/shared/utils/ConversionTools';
+import { CustomSnackBarService } from 'src/app/shared/components/custom-snack-bar/custom-snack-bar.service';
 
 @Component({
   selector: 'pmlo-sens-areas',
@@ -49,7 +50,8 @@ export class SensAreasComponent implements OnInit {
     private sensAreasService: SensAreasService,
     private spinner: NgxSpinnerService,
     private printTaskService: PrintTaskService,
-    private reportsService: ReportsService
+    private reportsService: ReportsService,
+    private customSnackBarService: CustomSnackBarService
     ) {}
 
   ngOnInit (): void {
@@ -198,6 +200,7 @@ export class SensAreasComponent implements OnInit {
             this.reportsService.getSMZReports({content: JSON.stringify(reportParams)}).subscribe(
               response => {
                 console.log(response);
+                this.customSnackBarService.open({url: response.fileName});
                 this.spinner.hide();
               }
             );
