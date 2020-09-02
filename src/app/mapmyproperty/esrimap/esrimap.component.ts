@@ -1,5 +1,5 @@
 
-import { Component, ElementRef, HostListener, OnInit, ViewChild, Renderer2 } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
 import Graphic from 'esri/Graphic';
 import { AppState } from 'src/app/shared/store/graphics.state';
@@ -30,7 +30,7 @@ export class EsrimapComponent implements OnInit {
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
-  constructor (private store: Store<AppState>, private renderer: Renderer2) { }
+  constructor (private store: Store<AppState>) { }
   @HostListener('keydown.control.z') undoFromKeyboard () {
     this.graphicsStoreEl.undo();
   }
