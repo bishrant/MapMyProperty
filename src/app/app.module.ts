@@ -18,7 +18,7 @@ import { HeaderModule } from './shared/components/header/header.module';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { GlobalErrorHandler } from './shared/services/error/GlobalErrorHandler';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,7 +37,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     FontAwesomeModule,
     MatSnackBarModule
   ],
-  providers: [{provide: ErrorHandler, useClass: GlobalErrorHandler}],
+  providers: [
+    {provide: ErrorHandler, useClass: GlobalErrorHandler}, 
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {horizontalPosition: 'end', verticalPosition: 'top'}}],
   bootstrap: [AppComponent],
   exports: [HeaderModule, MatIconModule, MatButtonModule, MatTooltipModule, FlexLayoutModule]
 })
