@@ -81,6 +81,15 @@ export class EsrimapComponent implements OnInit {
       this.sketchVM.updatePointSymbol = p;
       this.sketchVM.activePointSymbol = p;
       this.showMapCoordinates();
+      // console.log(window['lo']);
+      this.mapView.on('layerview-create-error', (ee)=>{
+        console.log(ee);
+        let error = new Error();
+        error.message = ee.error.message;
+        error.name = ee.error.name;
+        throw error;
+      });
+      
     } catch (error) {
       console.error('Map load error ', error);
     }
