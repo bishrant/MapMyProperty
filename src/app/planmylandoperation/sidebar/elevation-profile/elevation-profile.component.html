@@ -1,0 +1,41 @@
+<mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            Elevation Profile
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="py-3">
+        <mat-icon class="smallIcon right">help</mat-icon>
+    </div>
+    <div>
+        <div class="centerAlign">
+            <mat-button-toggle-group (change)="startDrawingGraphics($event.value)" class="toggleBtnGroup">
+                <mat-button-toggle value="polyline" aria-label="Line" class="toggleBtn">
+                    Draw Line
+                </mat-button-toggle>
+                <span> &nbsp;</span>
+                <mat-button-toggle value="freehand" aria-label="Point" class="toggleBtn">
+                    Draw FreeHand
+                </mat-button-toggle>
+
+            </mat-button-toggle-group>
+
+            <br>
+            <div class="centerAlign">
+                <mat-checkbox ([ngModel])="baseMSL">Base Sea Level
+                </mat-checkbox>
+            </div>
+            <br>
+
+            <div class="centerAlign">
+                <button mat-raised-button color="accent" (click)="clearElevationProfile()"
+                    [disabled]="!isElevationProfileToolActive">
+                    Clear
+                </button>
+            </div>
+        </div>
+        <br>
+    </div>
+
+</mat-expansion-panel>

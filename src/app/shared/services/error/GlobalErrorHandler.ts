@@ -33,7 +33,7 @@ export class GlobalErrorHandler implements ErrorHandler {
             } else {
                 message = errorService.getClientErrorMessage(error);
                 // notifier.showError(message);
-                stackTrace = error.stack.replace(/\n/gi, '\n\n');
+                stackTrace = error.stack? error.stack.replace(/\n/gi, '\n\n'): 'Not Available';
             }
         }
 
