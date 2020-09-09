@@ -1,31 +1,4 @@
-mat-slider {
-    width: calc(100% - 3.3125rem);
-}
-
-.d-flex {
-    display: flex;
-}
-
-.justify-space-between {
-    justify-content: space-between;
-}
-
-.right {
-    float: right;
-}
-
-.row {
-    display: flex;
-}
-
-.py-3 {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-}
-
-.mt-3 {
-    margin-top: 0.5rem;
-}
+@import '../../styles/pmlo-shared-styles.scss';
 
 .plusSign {
     margin-right: 0.5rem;

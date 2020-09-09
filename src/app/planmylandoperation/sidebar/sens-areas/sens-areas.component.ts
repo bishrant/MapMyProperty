@@ -41,7 +41,7 @@ export class SensAreasComponent implements OnInit {
   private sensAreaGL: __esri.GraphicsLayer = CreateSensAreasGL('sensAreasGL', 1);
 
   private opt = {
-    message: '',
+    message: ''
   };
 
   constructor (
