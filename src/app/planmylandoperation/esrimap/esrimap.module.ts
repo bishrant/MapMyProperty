@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormsModule } from '@angular/forms';
+import { ElevationProfileModule } from '../sidebar/elevation-profile/elevation-profile.module';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { FormsModule } from '@angular/forms';
     MatInputModule,
     MatButtonModule,
     MatProgressBarModule,
-    FormsModule
+    FormsModule,
+    ElevationProfileModule
   ],
   exports: [EsrimapComponent]
 })
