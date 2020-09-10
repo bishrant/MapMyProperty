@@ -1,0 +1,21 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+.btn {
+    @apply font-bold py-2 px-4 rounded;
+}
+.btn-dark-gray {
+    @apply bg-gray-700 text-white;
+}
+.btn-dark-gray:hover {
+    @apply bg-gray-700;
+}
+
+.btn-icon {
+    @apply py-2 px-2 rounded bg-gray-800 inline-flex items-center text-white;
+}
+
+.btn-icon:disabled {
+    @apply btn-icon opacity-50 cursor-not-allowed;
+}

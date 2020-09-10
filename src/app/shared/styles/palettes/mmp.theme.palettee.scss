@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@import '@angular/material/_theming.scss';
 @import '../variables/mmp.theme.colors.scss';
 
 $mmp-primary: mat-palette($mmpPrimaryPalettee);

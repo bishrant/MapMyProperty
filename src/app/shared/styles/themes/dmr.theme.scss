@@ -1,76 +1,79 @@
-@import '~@angular/material/theming';
-// @import "./theme-base";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+// @import '~@angular/material/theming';
+// // @import "./theme-base";
 
-$dmrPrimaryPalettee: (
-  50: #ebf1ed,
-  100: #ccdbd3,
-  200: #abc4b6,
-  300: #89ac99,
-  400: #6f9a83,
-  500: #56886d,
-  600: #4f8065,
-  700: #45755a,
-  800: #3c6b50,
-  900: #2b583e,
-  A100: #a2ffc7,
-  A200: #6fffa8,
-  A400: #3cff89,
-  A700: #23ff7a,
-  contrast: (
-    50: #000000,
-    100: #000000,
-    200: #000000,
-    300: #000000,
-    400: #000000,
-    500: #ffffff,
-    600: #ffffff,
-    700: #ffffff,
-    800: #ffffff,
-    900: #ffffff,
-    A100: #000000,
-    A200: #000000,
-    A400: #000000,
-    A700: #000000,
-  ),
-);
+// $dmrPrimaryPalettee: (
+//   50: #ebf1ed,
+//   100: #ccdbd3,
+//   200: #abc4b6,
+//   300: #89ac99,
+//   400: #6f9a83,
+//   500: #56886d,
+//   600: #4f8065,
+//   700: #45755a,
+//   800: #3c6b50,
+//   900: #2b583e,
+//   A100: #a2ffc7,
+//   A200: #6fffa8,
+//   A400: #3cff89,
+//   A700: #23ff7a,
+//   contrast: (
+//     50: #000000,
+//     100: #000000,
+//     200: #000000,
+//     300: #000000,
+//     400: #000000,
+//     500: #ffffff,
+//     600: #ffffff,
+//     700: #ffffff,
+//     800: #ffffff,
+//     900: #ffffff,
+//     A100: #000000,
+//     A200: #000000,
+//     A400: #000000,
+//     A700: #000000,
+//   ),
+// );
 
-$dmrSecondaryPalettee: (
-  50: #e7e7e7,
-  100: #c2c2c2,
-  200: #9a9a9a,
-  300: #727272,
-  400: #535353,
-  500: #353535,
-  600: #303030,
-  700: #282828,
-  800: #222222,
-  900: #161616,
-  A100: #ef6f6f,
-  A200: #ea4141,
-  A400: #f80000,
-  A700: #df0000,
-  contrast: (
-    50: #000000,
-    100: #000000,
-    200: #000000,
-    300: #ffffff,
-    400: #ffffff,
-    500: #ffffff,
-    600: #ffffff,
-    700: #ffffff,
-    800: #ffffff,
-    900: #ffffff,
-    A100: #000000,
-    A200: #ffffff,
-    A400: #ffffff,
-    A700: #ffffff,
-  ),
-);
+// $dmrSecondaryPalettee: (
+//   50: #e7e7e7,
+//   100: #c2c2c2,
+//   200: #9a9a9a,
+//   300: #727272,
+//   400: #535353,
+//   500: #353535,
+//   600: #303030,
+//   700: #282828,
+//   800: #222222,
+//   900: #161616,
+//   A100: #ef6f6f,
+//   A200: #ea4141,
+//   A400: #f80000,
+//   A700: #df0000,
+//   contrast: (
+//     50: #000000,
+//     100: #000000,
+//     200: #000000,
+//     300: #ffffff,
+//     400: #ffffff,
+//     500: #ffffff,
+//     600: #ffffff,
+//     700: #ffffff,
+//     800: #ffffff,
+//     900: #ffffff,
+//     A100: #000000,
+//     A200: #ffffff,
+//     A400: #ffffff,
+//     A700: #ffffff,
+//   ),
+// );
 
-$primary: mat-palette($dmrPrimaryPalettee);
-$accent: mat-palette($dmrSecondaryPalettee);
-$warn: mat-palette($mat-red);
-$theme: mat-dark-theme($primary, $accent, $warn);
+// $primary: mat-palette($dmrPrimaryPalettee);
+// $accent: mat-palette($dmrSecondaryPalettee);
+// $warn: mat-palette($mat-red);
+// $theme: mat-dark-theme($primary, $accent, $warn);
 
 // $custom-typography: mat-typography-config(
 //   $font-family: "Roboto, monospace",

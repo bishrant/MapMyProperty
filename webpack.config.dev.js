@@ -11,9 +11,11 @@ module.exports = {
           test: /\.scss$/,
           loader: "postcss-loader",
           options: {
+            postcssOptions: {
             ident: "postcss",
             syntax: "postcss-scss",
             plugins: [a, b, c],
+            }
           },
         },
       ],
