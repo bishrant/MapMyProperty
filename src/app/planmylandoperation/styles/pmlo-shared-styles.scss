@@ -1,0 +1,24 @@
+.d-flex, .row {
+    display: flex;
+}
+
+.justify-space-between {
+    justify-content: space-between;
+}
+
+.right {
+    float: right;
+}
+
+.py-3 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.mt-3 {
+    margin-top: 0.5rem;
+}
+
+mat-slider {
+    width: calc(100% - 2.875rem);
+}

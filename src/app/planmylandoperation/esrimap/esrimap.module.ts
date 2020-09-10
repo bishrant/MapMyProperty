@@ -4,7 +4,6 @@ import { GraphicsStoreModule } from 'src/app/shared/store/GraphicsStore.module';
 import { NgModule } from '@angular/core';
 import { SidebarModule } from '../sidebar/sidebar.module';
 import { DrawtoolsModule } from 'src/app/shared/components/drawtools/drawtools.module';
-import { SensAreasComponent } from './sens-areas/sens-areas.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -13,12 +12,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormsModule } from '@angular/forms';
+import { SensAreasComponent } from '../sidebar/sens-areas/sens-areas.component';
+import { SoilsComponent } from '../sidebar/soils/soils.component';
 import { ElevationProfileModule } from '../sidebar/elevation-profile/elevation-profile.module';
 
 @NgModule({
   declarations: [
     EsrimapComponent,
-    SensAreasComponent
+    SensAreasComponent,
+    SoilsComponent
   ],
   imports: [
     CommonModule,

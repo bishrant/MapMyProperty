@@ -1,0 +1,268 @@
+~DeclareVarchar(@mukey,30)~
+SELECT @mukey = (select * from SDA_Get_Mukey_from_intersection_with_WktWgs84('point(zzLon zzLat)'))
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+--Retrieves basic attributes available straight from muaggatt and component tables into temp table #comp
+-----------------------------------------------------------------------------------------------------------------------------------------
+SELECT mapunit.mukey
+, mapunit.musym
+, mapunit.muname
+, component.compname
+, component.comppct_r
+, component.compkind
+, component.wei
+, component.weg
+, component.erocl
+, component.taxclname
+, muaggatt.drclassdcd
+, muaggatt.flodfreqdcd
+, muaggatt.pondfreqprs
+, muaggatt.wtdepannmin
+, muaggatt.slopegradwta
+INTO #comp
+FROM mapunit 
+INNER JOIN component ON mapunit.mukey = component.mukey
+INNER JOIN muaggatt ON mapunit.mukey = muaggatt.mukey
+WHERE muaggatt.mukey IN (@mukey)
+AND component.majcompflag='yes'
+AND component.cokey = (SELECT TOP 1 component.cokey FROM component WHERE component.mukey = mapunit.mukey ORDER BY component.comppct_r DESC)
+ORDER BY mapunit.mukey
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+--Sums total component perentages for a map unit for those components that are Hydric
+-----------------------------------------------------------------------------------------------------------------------------------------
+SELECT mapunit.mukey
+, SUM(CASE WHEN component.hydricrating = 'Yes' THEN component.comppct_r ELSE 0 END) AS sumcomppct_r
+INTO #temp
+FROM mapunit
+INNER JOIN component on mapunit.mukey = component.mukey
+WHERE mapunit.mukey IN (@mukey)
+GROUP BY mapunit.mukey
+ORDER BY mapunit.mukey
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+--Assigns a describer for Hydric Rating to map unit based on percentages calculated in previous step
+-----------------------------------------------------------------------------------------------------------------------------------------
+SELECT #temp.mukey
+, #temp.sumcomppct_r
+, (CASE WHEN #temp.sumcomppct_r = 0 THEN 'Nonhydric'
+        WHEN #temp.sumcomppct_r < 33 THEN 'Predominantly Nonhydric'
+		WHEN #temp.sumcomppct_r < 66 THEN 'Partially Hydric'
+		WHEN #temp.sumcomppct_r < 100 THEN 'Predominantly Hydric'
+		ELSE 'Hydric' END) AS Hydric_Rating
+INTO #hr
+FROM #temp
+ORDER BY #temp.mukey
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------
+--Retrieves ecological class for mapping unit for highest percentage component
+SELECT maxpc.mukey, coecoclass.ecoclassid, coecoclass.ecoclassname
+INTO #ec
+FROM coecoclass
+INNER JOIN
+       (SELECT component.mukey, component.cokey, component.comppct_r
+       FROM component
+       INNER JOIN
+              (SELECT component.mukey, MAX(component.comppct_r) as maxcomppct
+              FROM component
+              GROUP BY component.mukey) groupedcomponent
+       ON component.mukey = groupedcomponent.mukey
+       AND component.comppct_r = groupedcomponent.maxcomppct
+       WHERE component.mukey = @mukey) maxpc
+ON coecoclass.cokey = maxpc.cokey
+WHERE maxpc.mukey = @mukey
+-----------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------
+--Retrieves the site index and species name for the species having the greatest site index for dominant
+--components for a mapping unit
+
+SELECT qmaxsi.mukey, qmaxsi.cokey, coforprod.plantcomname, qmaxsi.maxsi
+INTO #ssi
+FROM
+coforprod
+INNER JOIN
+       (SELECT maxpc.mukey, maxpc.cokey, MAX(coforprod.siteindex_r) as maxsi
+       FROM coforprod
+       INNER JOIN
+              (SELECT component.mukey, component.cokey
+              FROM component
+              INNER JOIN
+                     (SELECT component.mukey, MAX(component.comppct_r) as maxcomppct
+                     FROM component
+                     GROUP BY component.mukey) groupedcomponent
+              ON component.mukey = groupedcomponent.mukey
+              AND component.comppct_r = groupedcomponent.maxcomppct
+              WHERE component.mukey = @mukey) maxpc
+       ON coforprod.cokey = maxpc.cokey
+       WHERE maxpc.mukey = @mukey
+       GROUP BY maxpc.mukey, maxpc.cokey) qmaxsi
+ON coforprod.cokey = qmaxsi.cokey AND coforprod.siteindex_r = qmaxsi.maxsi
+---------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+--Assigns texture description to A and B horizons
+-----------------------------------------------------------------------------------------------------------------------------------------
+SELECT mapunit.mukey
+, MIN(CASE WHEN chorizon.desgnmaster = 'A' THEN (chorizon.hzname + ' - ' + chtexturegrp.texdesc) END) AS Horizon_Name_A
+, MAX(CASE WHEN chorizon.desgnmaster = 'A' THEN (chorizon.hzname + ' - ' + chtexturegrp.texdesc) END) AS Horizon_Name_A_MAX
+, MIN(CASE WHEN chorizon.desgnmaster = 'B' THEN (chorizon.hzname + ' - ' + chtexturegrp.texdesc) END) AS Horizon_Name_B
+INTO #horizon
+FROM mapunit
+INNER JOIN component ON mapunit.mukey = component.mukey
+INNER JOIN chorizon ON component.cokey = chorizon.cokey
+INNER JOIN chtexturegrp ON chorizon.chkey = chtexturegrp.chkey
+WHERE mapunit.mukey IN (@mukey)
+AND component.majcompflag = 'Yes' 
+AND component.cokey = (SELECT TOP 1 component.cokey FROM component WHERE component.mukey = mapunit.mukey ORDER BY component.comppct_r DESC)
+AND (chorizon.desgnmaster = 'A' OR chorizon.desgnmaster = 'B')
+AND chtexturegrp.rvindicator = 'Yes'
+GROUP BY mapunit.mukey
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+--Creates Horizon_A and Horizon_B from previous step
+-----------------------------------------------------------------------------------------------------------------------------------------
+SELECT #horizon.mukey
+, (CASE WHEN #horizon.Horizon_Name_A = #horizon.Horizon_Name_A_MAX THEN #horizon.Horizon_Name_A
+        WHEN #horizon.Horizon_Name_A <> #horizon.Horizon_Name_A_MAX THEN (#horizon.Horizon_Name_A + ' | ' + #horizon.Horizon_Name_A_MAX) END) AS Horizon_A
+, #horizon.Horizon_Name_B AS Horizon_B
+INTO #horizon2
+FROM #horizon
+GROUP BY #horizon.mukey, #horizon.Horizon_Name_A, #horizon.Horizon_Name_A_MAX, #horizon.Horizon_Name_B
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+--Retrieve Forestry Suitability Ratings for map units 
+-----------------------------------------------------------------------------------------------------------------------------------------
+SELECT mapunit.mukey
+, mapunit.muname
+, component.compname
+, component.comppct_r
+, cointerp.mrulename
+, cointerp.interplrc
+INTO #interp
+FROM mapunit
+INNER JOIN component ON mapunit.mukey = component.mukey
+INNER JOIN cointerp ON component.cokey = cointerp.cokey
+WHERE mapunit.mukey IN (@mukey)
+AND component.majcompflag = 'Yes'
+AND cointerp.ruledepth = 0
+AND cointerp.mrulename IN('FOR - Construction Limitations for Haul Roads/Log Landings', 
+                          'FOR - Hand Planting Suitability', 
+						  'FOR - Harvest Equipment Operability', 
+						  'FOR - Log Landing Suitability', 
+						  'FOR - Mechanical Planting Suitability', 
+						  'FOR - Mechanical Site Preparation (Deep)', 
+						  'FOR - Mechanical Site Preparation (Surface)', 
+						  'FOR - Potential Erosion Hazard (Off-Road/Off-Trail)', 
+						  'FOR - Potential Erosion Hazard (Road/Trail)', 
+						  'FOR - Potential Fire Damage Hazard', 
+						  'FOR - Potential Seedling Mortality', 
+						  'FOR - Road Suitability (Natural Surface)', 
+						  'FOR - Soil Rutting Hazard') 
+AND component.cokey = (SELECT TOP 1 component.cokey FROM component WHERE component.mukey=mapunit.mukey ORDER BY component.comppct_r DESC)
+ORDER BY mapunit.mukey, cointerp.mrulename
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+--Assign a Forestry Suitability Ratings to each map unit
+-----------------------------------------------------------------------------------------------------------------------------------------
+SELECT #interp.mukey	
+, MAX(CASE When #interp.mrulename = 'FOR - Construction Limitations for Haul Roads/Log Landings' Then #interp.interplrc END) AS CLRoadLndg
+, MAX(CASE When #interp.mrulename = 'FOR - Hand Planting Suitability' Then #interp.interplrc END) AS HandPlant
+, MAX(CASE When #interp.mrulename = 'FOR - Harvest Equipment Operability' Then #interp.interplrc END) AS HEquipOp
+, MAX(CASE When #interp.mrulename = 'FOR - Log Landing Suitability' Then #interp.interplrc END) AS LogLndg
+, MAX(CASE When #interp.mrulename = 'FOR - Mechanical Planting Suitability' Then #interp.interplrc END) AS MechPlant
+, MAX(CASE When #interp.mrulename = 'FOR - Mechanical Site Preparation (Deep)' Then #interp.interplrc END) AS SitePrepD
+, MAX(CASE When #interp.mrulename = 'FOR - Mechanical Site Preparation (Surface)' Then #interp.interplrc END) AS SitePrepS
+, MAX(CASE When #interp.mrulename = 'FOR - Potential Erosion Hazard (Off-Road/Off-Trail)' Then #interp.interplrc END) AS EroHzdORT
+, MAX(CASE When #interp.mrulename = 'FOR - Potential Erosion Hazard (Road/Trail)' Then #interp.interplrc END) AS EroHzdRT
+, MAX(CASE When #interp.mrulename = 'FOR - Potential Fire Damage Hazard' Then #interp.interplrc END) AS FireDamage
+, MAX(CASE When #interp.mrulename = 'FOR - Potential Seedling Mortality' Then #interp.interplrc END) AS SeedMortal
+, MAX(CASE When #interp.mrulename = 'FOR - Road Suitability (Natural Surface)' Then #interp.interplrc END) AS RoadSuitNS
+, MAX(CASE When #interp.mrulename = 'FOR - Soil Rutting Hazard' Then #interp.interplrc END) AS SoilRutHzd
+INTO #interpPIV
+FROM #interp
+GROUP BY #interp.mukey
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------
+--This select statement retrieves version information for the SSURGO data
+SELECT CONCAT ( 'v', CONVERT(VARCHAR(3), sacatalog.saversion), ', ', CONVERT(VARCHAR(12), sacatalog.saverest, 107)) AS saversion
+, CONCAT ( 'v', CONVERT(VARCHAR(3), satabularver.tabularversion), ', ', CONVERT(VARCHAR(12), satabularver.tabularverest, 107)) AS tabularversion
+, CONCAT ( 'v', CONVERT(VARCHAR(3), saspatialver.spatialversion), ', ', CONVERT(VARCHAR(12), saspatialver.spatialverest, 107)) AS spatialversion
+, mapunit.mukey
+INTO #v
+FROM sacatalog
+INNER JOIN saspatialver ON sacatalog.areasymbol = saspatialver.areasymbol
+INNER JOIN satabularver ON sacatalog.areasymbol= satabularver.areasymbol
+INNER JOIN legend ON sacatalog.areasymbol= legend.areasymbol
+INNER JOIN mapunit ON legend.lkey = mapunit.lkey
+WHERE mapunit.mukey IN (@mukey)
+----------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+--Compile results into one selection
+-----------------------------------------------------------------------------------------------------------------------------------------
+SELECT #comp.mukey
+, #comp.musym
+, #comp.muname
+, #comp.compname
+, #comp.comppct_r
+, #comp.erocl
+, #comp.taxclname
+, #comp.drclassdcd
+, #comp.flodfreqdcd
+, #comp.pondfreqprs
+, #comp.wtdepannmin
+, #comp.slopegradwta
+, #hr.Hydric_Rating
+, #ec.ecoclassid
+, #ec.ecoclassname
+, #ssi.maxsi AS si
+, #ssi.plantcomname
+, #horizon2.Horizon_A
+, #horizon2.Horizon_B
+, #interpPIV.CLRoadLndg
+, #interpPIV.HandPlant
+, #interpPIV.HEquipOp
+, #interpPIV.LogLndg
+, #interpPIV.MechPlant
+, #interpPIV.SitePrepD
+, #interpPIV.SitePrepS
+, #interpPIV.EroHzdORT
+, #interpPIV.EroHzdRT
+, #interpPIV.FireDamage
+, #interpPIV.SeedMortal
+, #interpPIV.RoadSuitNS
+, #interpPIV.SoilRutHzd
+, #v.saversion
+, #v.tabularversion
+, #v.spatialversion
+FROM #comp
+Left outer join #hr ON #comp.mukey = #hr.mukey
+left outer join #ec ON #comp.mukey = #ec.mukey
+left outer join #ssi ON #comp.mukey = #ssi.mukey
+Left outer join #horizon2 ON #comp.mukey = #horizon2.mukey
+Left outer join #interpPIV ON #comp.mukey = #interpPIV.mukey
+Left outer join #v ON #comp.mukey = #v.mukey
+ORDER BY #comp.mukey
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+DROP TABLE #temp
+DROP TABLE #comp
+DROP TABLE #hr 
+DROP TABLE #ec 
+DROP TABLE #ssi
+DROP TABLE #horizon
+DROP TABLE #horizon2
+DROP TABLE #interp
+DROP TABLE #interpPIV
+DROP TABLE #v
