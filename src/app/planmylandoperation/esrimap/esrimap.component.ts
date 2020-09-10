@@ -7,6 +7,7 @@ import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls'
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import createMapView from 'src/app/shared/utils/CreateMapView';
+import { CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -28,6 +29,8 @@ export class EsrimapComponent implements OnInit {
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
+  private soilsLayer = CreateSoilsLayer();
+
   constructor (private store: Store<AppState>) {}
   @HostListener('keydown.control.z') undoFromKeyboard () {
     this.graphicsStoreEl.undo();
@@ -64,7 +67,7 @@ export class EsrimapComponent implements OnInit {
   private initializeMap = async () => {
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
-      this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer]);
+      this.mapView.map.addMany([this.soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer]);
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
       const p = {
         type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()

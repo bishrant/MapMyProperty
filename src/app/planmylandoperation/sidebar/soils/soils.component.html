@@ -1,0 +1,23 @@
+<mat-expansion-panel #sensAreaToolHeader>
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            Soils
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="py-3">
+        <mat-icon class="smallIcon right">help</mat-icon>
+        <br>
+        <div class="row prl-10">
+            <mat-checkbox (change)="soilsVisibleChanged($event.checked)">Visible</mat-checkbox>
+        </div>
+        <div class="row prl-10">
+            <mat-checkbox (change)="soilsIdentifyChanged($event.checked)">Identify</mat-checkbox>
+        </div>
+
+        <div class="py-3">0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5" min="0" max="100">
+        </mat-slider> &nbsp;100</div>
+    </div>
+
+
+</mat-expansion-panel>
