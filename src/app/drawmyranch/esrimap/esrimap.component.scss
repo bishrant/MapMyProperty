@@ -1,35 +1,3 @@
 @import url('https://js.arcgis.com/4.16/esri/css/main.css');
-@import "src/app/shared/styles/BodyFrame.scss";
-@import "src/app/shared/styles/themes/dmr.theme.scss";
-
-$translucent: mat-color($primary, translucent);
-$accent: mat-color($accent);
-
-.headerRow {
-  background-color: $translucent;
-}
-.secondary {
-  background-color: $accent;
-}
-.sidebarBlanket {
-  background-color: $translucent;
-}
-
-.sidebar {
-  background-color: mat-color($primary);
-}
-.translucentPadding {
-  background-color: $translucent;
-}
-
-.headerBlanket {
-  background-color: $translucent;
-}
-
-.translucentPadding {
-  background-color: $translucent;
-}
-
-.headerBlanket {
-  background-color: $translucent;
-}
+@import "../../shared/styles/BodyFrame.scss";
+// @import "../../shared/styles/themes/dmr.theme.scss";

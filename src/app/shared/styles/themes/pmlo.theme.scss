@@ -1,8 +1,9 @@
 @import '../palettes/pmlo.theme.palette.scss';
+
+@import '../_functions.scss';
+@import '../_variables.scss';
+@import '../_layout.scss';
 @include mat-core();
-@import '../functions';
-@import '../_variables';
-@import '../layout';
 
 $pmlo-light-theme: mat-light-theme($pmlo-primary, $pmlo-accent, $pmlo-warn);
 $pmlo-foreground: my-mat-theme-foreground(mat-color($pmlo-primary, 700));

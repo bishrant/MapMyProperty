@@ -1,6 +1,7 @@
 @import url('https://js.arcgis.com/4.16/esri/css/main.css');
-@import 'src/app/shared/styles/BodyFrame.scss';
-@import 'src/app/shared/styles/palettes/pmlo.theme.palette.scss';
+@import "../../shared/styles/BodyFrame.scss";
+
+@import '../../shared/styles/palettes/pmlo.theme.palette.scss';
 
 $translucent: mat-color($pmlo-primary, translucent);
 $accent: mat-color($pmlo-accent);
