@@ -4,8 +4,8 @@ import MapView from 'esri/views/MapView';
 import Map from "arcgis-js-api/Map";
 import PrintTask from 'esri/tasks/PrintTask';
 import PrintParameters from 'esri/tasks/support/PrintParameters';
-import { Subscriber } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { TraceGPError } from '../../services/error/GPServiceError';
+import { AppConfiguration } from 'src/config';
 
 @Component({
     selector: 'map-dialog',
@@ -16,10 +16,10 @@ export class MapPrintPreviewDialog implements OnInit {
     @ViewChild("mapViewNode", { static: true }) private mapViewEl: ElementRef;
     view: any;
     data: any;
-    
-    printTask = new PrintTask({url: 'https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Shared/PrintPro_no_rotate/GPServer/PrintUsingPro'});
-    constructor(public dialogRef: MatDialogRef<MapPrintPreviewDialog>, @Inject(MAT_DIALOG_DATA) private _data: any, 
-    public dialog: MatDialog, private http: HttpClient) {
+    // printTask = new PrintTask({url: 'https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Shared/PrintPro_no_rotate/GPServer/PrintUsingPro'});
+    printTask = new PrintTask({ url: this.config.printGPServiceURL });
+    constructor(public dialogRef: MatDialogRef<MapPrintPreviewDialog>, @Inject(MAT_DIALOG_DATA) private _data: any,
+        public dialog: MatDialog, private config: AppConfiguration) {
         this.data = this._data;
     }
 
@@ -56,7 +56,7 @@ export class MapPrintPreviewDialog implements OnInit {
 
     ngOnInit() {
         this.initializeMap();
-        throw new Error("a very tough error")
+        throw new Error("Type Error: Expecting point geometry got polygon")
     }
 
     ngOnDestroy() {
@@ -68,12 +68,12 @@ export class MapPrintPreviewDialog implements OnInit {
 
     generatePDF() {
         const dialogRef = this.dialog.open(PrintToolLoadingComponent, {
-            width: window.innerWidth > 1024 ? '600px': '300px',
-            disableClose: false      
-          });
-          dialogRef.afterClosed().subscribe((result: any) => {
+            width: window.innerWidth > 1024 ? '600px' : '300px',
+            disableClose: false
+        });
+        dialogRef.afterClosed().subscribe((result: any) => {
             console.log('The map preview dialog was closed');
-          });
+        });
         console.log(this.data);
         const printParameters = new PrintParameters({
             view: this.view,
@@ -83,24 +83,26 @@ export class MapPrintPreviewDialog implements OnInit {
             }
         });
 
-        this.printTask.execute(printParameters).then((success: any) => {
-            console.log(success.url);
-            window.open(success.url, '_blank');
-            dialogRef.close();
-        }, (error: any) => {
-            console.error(error);
-        });
+        this.printTask.execute(printParameters)
+            .then((success: any) => {
+                console.log(success.url);
+                window.open(success.url, '_blank');
+                dialogRef.close();
+            })
+            .catch((error: any) => {
+                let gpError = TraceGPError(this.config.printGPServiceURL, error);
+                throw gpError;
+            });
 
-      }
+    }
 
 }
 
 @Component({
     selector: 'app-print-loading',
     template: `<app-loader></app-loader>`
-  })
-  export class PrintToolLoadingComponent implements OnInit {
-    constructor(public dialog: MatDialog) {}
-    ngOnInit (): void {  }
-  }
-  
+})
+export class PrintToolLoadingComponent implements OnInit {
+    constructor(public dialog: MatDialog) { }
+    ngOnInit(): void { }
+}

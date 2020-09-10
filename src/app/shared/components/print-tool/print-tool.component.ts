@@ -14,12 +14,14 @@ export class PrintToolComponent implements OnInit {
   printForm: FormGroup;
   MAX: number = 200;
   MAXLINES: number = 5;
+  showCurrentDate = true;
   constructor(public dialog: MatDialog, private formBuilder: FormBuilder) { }
   matcher = new MyErrorStateMatcher();
   showPrintMapPreview(): void {
     const dialogRef = this.dialog.open(MapPrintPreviewDialog, {
       width: window.innerWidth > 1024 ? '600px' : '300px',
-      data: {esriMap: this.map, comments: this.printForm.get('comments')?.value, title: this.printForm.get('title')?.value}
+      data: {esriMap: this.map, comments: this.printForm.get('comments')?.value, 
+      title: this.printForm.get('title')?.value, showCurrentDate: this.showCurrentDate}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -32,7 +34,7 @@ export class PrintToolComponent implements OnInit {
   ngOnInit(): void {
     this.printForm = this.formBuilder.group({
       title: [''],
-      comments: ['', { validators: [ValidateCommentsLength(this.MAX), ValidateLineBreaks(this.MAXLINES)], updateOn: 'change' }]
+      comments: ['', { validators: [ValidateCommentsLength(this.MAX), ValidateLineBreaks(this.MAXLINES)], updateOn: 'change' }],
     })
   }
 

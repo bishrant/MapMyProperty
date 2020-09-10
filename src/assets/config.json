@@ -1,0 +1,4 @@
+{
+  "loggingURL": "https://txfipdev.tfs.tamu.edu/MMPReport/api/logs",
+  "printGPServiceURL": "https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Shared/PrintUsingPro/GPServer/PrintUsingPro"
+}

@@ -1,5 +1,5 @@
 
-import { Component, ElementRef, HostListener, OnInit, ViewChild, Renderer2 } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
 import Graphic from 'esri/Graphic';
 import { AppState } from 'src/app/shared/store/graphics.state';
@@ -8,7 +8,7 @@ import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls'
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import createMapView from 'src/app/shared/utils/CreateMapView';
-// import E = __esri;
+
 
 @Component({
   selector: 'app-esrimap',
@@ -30,20 +30,20 @@ export class EsrimapComponent implements OnInit {
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
-  constructor (private store: Store<AppState>, private renderer: Renderer2) { }
-  @HostListener('keydown.control.z') undoFromKeyboard () {
+  constructor(private store: Store<AppState>) { }
+  @HostListener('keydown.control.z') undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
 
-  @HostListener('keydown.control.y') redoFromKeyboard () {
+  @HostListener('keydown.control.y') redoFromKeyboard() {
     this.graphicsStoreEl.redo();
   }
 
-  @HostListener('keydown.meta.shift.z') redoFromKeyboardMac () {
+  @HostListener('keydown.meta.shift.z') redoFromKeyboardMac() {
     this.graphicsStoreEl.redo();
   }
 
-  @HostListener('keydown.meta.z') undoFromKeyboardMac () {
+  @HostListener('keydown.meta.z') undoFromKeyboardMac() {
     this.graphicsStoreEl.undo();
   }
 
@@ -81,6 +81,17 @@ export class EsrimapComponent implements OnInit {
       this.sketchVM.updatePointSymbol = p;
       this.sketchVM.activePointSymbol = p;
       this.showMapCoordinates();
+      // console.log(window['lo']);
+      this.mapView.on('layerview-create-error', (ee) => {
+        console.log(ee);
+        let error = new Error();
+        error.message = ee.error.message;
+        error.name = ee.error.name;
+        throw error;
+      });
+
+
+
     } catch (error) {
       console.error('Map load error ', error);
     }
@@ -105,12 +116,12 @@ export class EsrimapComponent implements OnInit {
     });
   };
 
-  ngOnInit () {
+  ngOnInit() {
     this.initializeMap();
     this.graphicsSubcription$ = this.listenToGraphicsStore();
   }
 
-  ngOnDestroy (): void {
+  ngOnDestroy(): void {
     this.graphicsSubcription$.unsubscribe();
   }
 }

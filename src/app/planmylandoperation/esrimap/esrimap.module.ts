@@ -14,6 +14,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormsModule } from '@angular/forms';
 import { SensAreasComponent } from '../sidebar/sens-areas/sens-areas.component';
 import { SoilsComponent } from '../sidebar/soils/soils.component';
+import { ElevationProfileModule } from '../sidebar/elevation-profile/elevation-profile.module';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { SoilsComponent } from '../sidebar/soils/soils.component';
     MatInputModule,
     MatButtonModule,
     MatProgressBarModule,
-    FormsModule
+    FormsModule,
+    ElevationProfileModule
   ],
   exports: [EsrimapComponent]
 })
