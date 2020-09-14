@@ -1,6 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { HeaderModule } from 'src/app/shared/components/header/header.module';
 import { MMPHomeComponent } from './mmphome.component';
 import { NgModule } from '@angular/core';
@@ -15,7 +14,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [MMPHomeComponent],
-  imports: [CommonModule, EsriMapModule, RouterModule.forChild(routes), FlexLayoutModule, HeaderModule],
+  imports: [CommonModule, EsriMapModule, RouterModule.forChild(routes), HeaderModule],
   exports: [RouterModule]
 })
 export class MMPHomepageModule {}
