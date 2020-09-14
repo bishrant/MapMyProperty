@@ -49,6 +49,8 @@
                     <mat-button-toggle value="hybrid" class="drawModeBtn" [hidden]="drawingTool === 'circle'">Hybrid
                     </mat-button-toggle>
                 </mat-button-toggle-group>
+            </div>
+            <div class="centerAlign">
                 <div
                     [hidden]="!((drawingTool === 'circle') && (drawingMode === 'click')) && !(selectedGraphicsGeometry === 'circle')">
                     <mat-form-field appearance="outline" class="radiusInput">

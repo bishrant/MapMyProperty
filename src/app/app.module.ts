@@ -10,7 +10,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -27,7 +26,6 @@ import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/mater
     HeaderModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    FlexLayoutModule,
     HttpClientModule,
     ReactiveFormsModule,
     StoreModule.forRoot({ app: GraphicsReducer }),
@@ -38,9 +36,9 @@ import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/mater
     MatSnackBarModule
   ],
   providers: [
-    {provide: ErrorHandler, useClass: GlobalErrorHandler}, 
+    {provide: ErrorHandler, useClass: GlobalErrorHandler},
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {horizontalPosition: 'end', verticalPosition: 'top'}}],
   bootstrap: [AppComponent],
-  exports: [HeaderModule, MatIconModule, MatButtonModule, MatTooltipModule, FlexLayoutModule]
+  exports: [HeaderModule, MatIconModule, MatButtonModule, MatTooltipModule]
 })
 export class AppModule {}

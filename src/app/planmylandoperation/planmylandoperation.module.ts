@@ -1,6 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { HeaderModule } from 'src/app/shared/components/header/header.module';
 import { PmloComponent } from './pmlo/pmlo.component';
 import { NgModule } from '@angular/core';
@@ -23,7 +22,6 @@ const routes: Routes = [
     CommonModule,
     EsriMapModule,
     RouterModule.forChild(routes),
-    FlexLayoutModule,
     HeaderModule,
     MatDialogModule
   ],
