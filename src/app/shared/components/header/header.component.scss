@@ -1,54 +1,35 @@
-@import '../../styles/_variables.scss';
 .title {
   font-weight: 500;
 }
-
-.headerClass .headerRow {
-  display: flex;
-  flex-direction: row;
-}
-.headerRow {
-  height: 50px;
-  align-items: center;
-  // background-color: mat-color($mmp-primary, translucent);
-  color: black;
-  padding-left: 10px;
+.headerItem{
+  @apply block mt-4 text-black mr-4;
 }
 
-.secondary {
-  // background-color: mat-color($mmp-accent);
-  color: white;
-  border-radius: 5px 0 0 5px;
+.headerItem:hover {
+  @apply text-gray-700;
 }
-.smallLogo {
-  display: none;
-  height: 100%;
+@screen lg{
+  .headerItem {
+    @apply inline-block mt-0;
+  }
 }
-.largeLogo {
-  height: 100%;
+
+.menuButton {
+  @apply flex items-center px-3 py-2 border rounded text-black border-black;
 }
+
+.menuButton:hover {
+  @apply text-gray-800 border-blue-400;
+}
+
 .logo {
   height: 32px;
   padding-right: 10px;
-  // display: inline-block;
 }
 .spacer {
   flex: 1 1 auto;
 }
 
-.headerMenuLink {
-  padding: 0;
-  font-weight: 400;
-  margin: 0 10px;
-  text-decoration: none;
-}
-
-.headerRow > div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-}
 .menuBtn {
   display: none;
 }
@@ -59,18 +40,4 @@
 
 .socialMediaIcon:hover {
   filter: opacity(0.5) drop-shadow(2px 4px 6px black);
-}
-
-@media screen and (max-width: $layout-breakpoint-sm) {
-  .smallLogo {
-    display: inline-block;
-    // height: 100%;
-  }
-  .largeLogo {
-    display: none;
-    // height: 100%;
-  }
-  .menuBtn {
-    display: inline-flex;
-  }
 }

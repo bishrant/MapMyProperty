@@ -11,7 +11,7 @@
 </div>
 <div class="mapBlanket">
     <div class="headerBlanket">
-        <div class="header headerRow secondary" fxLayout="row">
+        <div class="header headerRow secondary" >
             <div #searchBar></div>
             <div class="coordsDisplay">
                 Mouse Coordinates [ {{mapCoords}} ]
@@ -24,7 +24,7 @@
         <div #mapViewNode class="mapViewNode " id="parent">
             <div id="textboxes"></div>
         </div>
-        <app-graphic-store #graphicsStore [sketchVM]="sketchVM" 
+        <app-graphic-store #graphicsStore [sketchVM]="sketchVM"
         [selectedGraphics]="selectedGraphics"
         [textGraphicsLayer] ="textGraphicsLayer"
             class="graphicsControls">

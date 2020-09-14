@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexLayoutModule } from '@angular/flex-layout';
+// import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ToggleButtonModule } from '../togglebutton/togglebutton';
@@ -34,7 +34,7 @@ import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
     MatExpansionModule,
     MatButtonModule,
     MatIconModule,
-    FlexLayoutModule,
+    // FlexLayoutModule,
     MatInputModule,
     MatButtonToggleModule,
     ToggleButtonModule,

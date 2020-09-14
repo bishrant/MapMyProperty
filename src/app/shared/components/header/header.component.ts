@@ -5,13 +5,12 @@ import { Component, OnInit, Input } from '@angular/core';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
-  @Input('headerColor') headerColor: String | undefined;
-  @Input('title') title: String = '';
-  public headerStyle: any = {};
+export class HeaderComponent  {
+  @Input('headerColor') headerColor: String | undefined = 'white';
+  @Input('title') title: String = 'Map My Property Suite';
+  isHidden = true;
   constructor () {}
-
-  ngOnInit (): void {
-    this.headerStyle = { 'background-color': this.headerColor };
+  toggleHidden() {
+    this.isHidden = !this.isHidden;
   }
 }
