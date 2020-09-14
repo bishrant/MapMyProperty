@@ -5,7 +5,6 @@ import { ColorPickerModule } from '../shared/components/color-picker/color-picke
 import { CommonModule } from '@angular/common';
 import { DMRHomeComponent } from './dmrhome.component';
 import { EsrimapComponent } from './esrimap/esrimap.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { GraphicsStoreModule } from '../shared/store/GraphicsStore.module';
 import { HeaderModule } from '../shared/components/header/header.module';
@@ -35,7 +34,6 @@ const routes: Routes = [
     MatButtonModule,
     MatTooltipModule,
     MatSliderModule,
-    FlexLayoutModule,
     MatExpansionModule,
     MatSelectModule,
     FormsModule,
