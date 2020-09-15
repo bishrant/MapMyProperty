@@ -14,7 +14,6 @@ import { MapPrintPreviewDialog, PrintToolLoadingComponent } from './map-dialog.c
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { LoaderModule } from '../loader/loader.module';
 import { HttpClientModule } from '@angular/common/http';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ModalModule } from '../../lib/angular-modal/modal/modal-module';
 
 @NgModule({
@@ -34,7 +33,6 @@ import { ModalModule } from '../../lib/angular-modal/modal/modal-module';
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     HttpClientModule,
-    MatCheckboxModule,
     ModalModule
   ],
   exports: [PrintToolComponent],
