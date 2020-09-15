@@ -29,16 +29,21 @@
       </span>
       <br><br>
       <div class="centerAlign">
-        <mat-checkbox [(ngModel)]="showCurrentDate" [ngModelOptions]="{standalone: true}">Show Current Date
-        </mat-checkbox>
+        <label class="inline-flex items-center mt-3">
+          <input type="checkbox" class="form-checkbox h-5 w-5 text-mmp_primary" [(ngModel)]="showCurrentDate" [ngModelOptions]="{standalone: true}">
+          <span class="ml-2 text-black">Show Current Date</span>
+      </label>
       </div>
       <br>
 
       <div class="centerAlign">
-        <button type="button" color="accent" (click)="showPrintMapPreview()" [disabled]="printForm.invalid">
+        <button type="button" (click)="showPrintMapPreview()" [disabled]="printForm.invalid" class="mmp-primary primary-button">
           Preview
         </button>
       </div>
+
+
+
     </form>
   </div>
 

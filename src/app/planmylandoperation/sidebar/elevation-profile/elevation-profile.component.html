@@ -23,8 +23,10 @@
 
             <br>
             <div class="centerAlign">
-                <mat-checkbox ([ngModel])="baseMSL">Base Sea Level
-                </mat-checkbox>
+              <label class="inline-flex items-center mt-3">
+                <input type="checkbox" class="form-checkbox h-5 w-5 text-mmp_primary" [(ngModel)]="baseMSL" >
+                <span class="ml-2 text-black">Base Sea Level</span>
+            </label>
             </div>
             <br>
 
@@ -34,8 +36,6 @@
                     Clear
                 </button>
             </div>
-
-
         </div>
         <br>
     </div>

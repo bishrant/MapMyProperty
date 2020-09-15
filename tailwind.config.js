@@ -1,8 +1,18 @@
 module.exports = {
   purge: [],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        mmp_primary: '#334506',
+        mmp_secondary: '#751380'
+      }
+    },
+
+  },
+  future: {
+    removeDeprecatedGapUtilities: true,
+    purgeLayersByDefault: true,
   },
   variants: {},
-  plugins: [],
+  plugins: [require('@tailwindcss/custom-forms'),],
 }

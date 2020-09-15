@@ -19,3 +19,16 @@
 .btn-icon:disabled {
   @apply btn-icon opacity-50 cursor-not-allowed;
 }
+
+.primary-button {
+  @apply font-bold py-2 px-4 rounded;
+}
+
+.mmp-primary-button:hover {
+  @apply bg-blue-700;
+}
+
+.mmp-primary {
+  @apply bg-mmp_primary text-white;
+}
+
