@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { LoaderService } from '../../services/Loader.service';
 
 @Component({
   selector: 'app-loader',
@@ -7,8 +8,27 @@ import { Component, Input } from '@angular/core';
 })
 export class LoaderComponent {
   @Input() color: string = 'black';
-  border: string = '1.1em solid '+ this.color
+  @Input() disableBackground = false;
+  baseZ = '214748364';
+  border: string = '1.1em solid ' + this.color
   height: string = '50px';
   width: string = '50px';
-  constructor () { }
+  loading: boolean = false;
+  constructor(private loaderService: LoaderService) {
+
+    this.loaderService.isLoading.subscribe((v) => {
+      console.log(v);
+      this.loading = v;
+    });
+
+  }
+
+  public show() {
+    this.loading = true;
+  }
+
+  public hide() {
+    this.loading = false;
+  }
+
 }

@@ -13,14 +13,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ModalModule } from 'src/app/shared/lib/angular-modal/modal/modal-module';
 
 @NgModule({
   declarations: [ElevationProfileComponent],
   imports: [
-     
+
     CommonModule, MatExpansionModule, MatIconModule, MatButtonToggleModule,
     AngularSvgIconModule, MatCheckboxModule, MatButtonModule, MatDialogModule, MatFormFieldModule,
-    DragDropModule, MatButtonModule
+    DragDropModule, MatButtonModule, ModalModule
   ],
   exports: [ElevationProfileComponent],
   providers: [ElevationProfileService]

@@ -18,6 +18,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { GlobalErrorHandler } from './shared/services/error/GlobalErrorHandler';
 import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { LoaderModule } from './shared/components/loader/loader.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,7 +34,8 @@ import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/mater
     NgxSpinnerModule,
     environment.production ? [] : StoreDevtoolsModule.instrument(),
     FontAwesomeModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    LoaderModule
   ],
   providers: [
     {provide: ErrorHandler, useClass: GlobalErrorHandler},

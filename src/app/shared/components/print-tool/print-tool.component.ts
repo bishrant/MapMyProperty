@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MapPrintPreviewDialog } from './map-dialog.componenet';
 import { FormControl, FormGroup, Validators, FormBuilder, AbstractControl, FormGroupDirective, NgForm, ValidatorFn } from '@angular/forms';
+import PrintTask from 'esri/tasks/PrintTask';
+import PrintParameters from 'esri/tasks/support/PrintParameters';
+import { AppConfiguration } from 'src/config';
 
 @Component({
   selector: 'app-print-tool',
@@ -10,25 +11,75 @@ import { FormControl, FormGroup, Validators, FormBuilder, AbstractControl, FormG
   encapsulation: ViewEncapsulation.None
 })
 export class PrintToolComponent implements OnInit {
+  @ViewChild('printMapModal') printMapModal: any;
+  @ViewChild("mapViewNode", { static: true }) private mapViewEl: ElementRef;
   @Input() map: any;
   printForm: FormGroup;
   MAX: number = 200;
   MAXLINES: number = 5;
   showCurrentDate = true;
-  constructor(public dialog: MatDialog, private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private config: AppConfiguration, private loaderService: LoaderService) { }
   matcher = new MyErrorStateMatcher();
+  popupMapView: any;
+  printTask = new PrintTask({ url: this.config.printGPServiceURL });
   showPrintMapPreview(): void {
-    const dialogRef = this.dialog.open(MapPrintPreviewDialog, {
-      width: window.innerWidth > 1024 ? '600px' : '300px',
-      data: {esriMap: this.map, comments: this.printForm.get('comments')?.value, 
-      title: this.printForm.get('title')?.value, showCurrentDate: this.showCurrentDate}
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The map preview dialog was closed');
-    });
+    this.printMapModal.closeOnEscape = false;
+    this.printMapModal.show();
+    setTimeout(() => {
+      this.initializeMap();
+    }, 10);
   }
 
+  async initializeMap() {
+    try {
+      const mapProperties: any = {
+        basemap: this.map.map.basemap.id,
+        layers: this.map.map.layers
+      };
+
+      let ESRIMap = await import('arcgis-js-api/Map');
+      const map = new ESRIMap.default(mapProperties);
+      const mapViewProperties: any = {
+        container: this.mapViewEl.nativeElement,
+        map: map
+      };
+
+      const ESRIMapView = await import('arcgis-js-api/views/MapView');
+      this.popupMapView = new ESRIMapView.default(mapViewProperties);
+      this.popupMapView.extent = this.map.extent;
+      return this.popupMapView;
+    } catch (error) {
+      console.log("Esri: ", error);
+    }
+  }
+
+  async generatePDF() {
+    this.loaderService.isLoading.next(true);
+    const printParameters = new PrintParameters({
+      view: this.popupMapView,
+      extraParameters: {
+        comments: this.printForm.get('comments')?.value,
+        title: this.printForm.get('title')?.value,
+        Layout_Template: 'MMP',
+        Format: 'PDF',
+        showCurrentDate: this.showCurrentDate
+      }
+    });
+
+    this.printTask.execute(printParameters)
+      .then((success: any) => {
+        console.log(success.url);
+        window.open(success.url, '_blank');
+        this.loaderService.isLoading.next(false);
+        this.printMapModal.hide();
+      })
+      .catch((error: any) => {
+        console.log(error);
+        let gpError = TraceGPError(this.config.printGPServiceURL, error);
+        throw gpError;
+      });
+
+  }
 
 
   ngOnInit(): void {
@@ -60,6 +111,10 @@ export function ValidateLineBreaks(MAXLINES: number): ValidatorFn {
 }
 
 import { ErrorStateMatcher } from '@angular/material/core';
+import { ViewChild } from '@angular/core';
+import { ElementRef } from '@angular/core';
+import { TraceGPError } from '../../services/error/GPServiceError';
+import { LoaderService } from '../../services/Loader.service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
