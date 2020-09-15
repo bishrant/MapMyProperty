@@ -8,7 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MapPrintPreviewDialog, PrintToolLoadingComponent } from './map-dialog.componenet';
@@ -16,6 +15,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { LoaderModule } from '../loader/loader.module';
 import { HttpClientModule } from '@angular/common/http';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ModalModule } from '../../lib/angular-modal/modal/modal-module';
 
 @NgModule({
   declarations: [PrintToolComponent, MapPrintPreviewDialog, PrintToolLoadingComponent],
@@ -29,13 +29,13 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatFormFieldModule,
     MatButtonModule,
     MatToolbarModule,
-    MatDialogModule,
     OverlayModule,
     LoaderModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     HttpClientModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    ModalModule
   ],
   exports: [PrintToolComponent],
   entryComponents: [MapPrintPreviewDialog, PrintToolLoadingComponent]

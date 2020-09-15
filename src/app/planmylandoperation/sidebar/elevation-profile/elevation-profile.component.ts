@@ -3,6 +3,7 @@ import { ElevationProfile } from './ElevationProfileUtils';
 import { ElevationProfileService } from 'src/app/shared/services/elevation-profile/elevation-profile.service';
 import { Subscriber, Observable, Subscription } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { ViewChild } from '@angular/core';
 // import ElevationProfile from 'src/app/shared/utils/ElevationProfile/ElevationProfile.js'
 // import HelloWorld from 'src/app/shared/utils/ElevationProfile/HelloWorld.js';
 
@@ -12,6 +13,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dial
   styleUrls: ['./elevation-profile.component.scss']
 })
 export class ElevationProfileComponent implements OnInit {
+
   baseMSL = false;
   isElevationProfileToolActive = false;
   @Input() mapView: any;
@@ -25,7 +27,7 @@ export class ElevationProfileComponent implements OnInit {
 
   startDrawingGraphics(value: any) {
     import('../../../shared/services/elevation-profile/lib/plotly.js').then((_plotly: any) => { this.Plotly = _plotly;
-    
+
       this.openDialog()
     });
     return;
@@ -41,6 +43,7 @@ export class ElevationProfileComponent implements OnInit {
   }
 
   openDialog(): void {
+
     const dialogRef = this.dialog.open(ElevationProfileDialog, {
       width: '250px',
       data: { PlotLy: this.Plotly, name: 'test' },
@@ -61,6 +64,8 @@ export class ElevationProfileComponent implements OnInit {
   ngOnDestroy() {
     this.chartDataObservable$.unsubscribe();
   }
+
+
 }
 
 

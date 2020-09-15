@@ -1,6 +1,29 @@
+.loading-whole-page {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.loadingBackground {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+
 .loading-container {
     width: 100px;
     height: 100px;
+    z-index: 1111111111111111111111111111111111111111111111111111111111;
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    transform: translateX(50px);
 }
 .loader{
   border-radius: 50%;
