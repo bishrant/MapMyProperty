@@ -11,7 +11,7 @@ if (environment.production) {
 }
 
 // Load configuration that is external from build
-fetch('/assets/config.json').then(async res => {
+fetch('./assets/config.json').then(async res => {
   const configuration = await res.json();
 
   platformBrowserDynamic([

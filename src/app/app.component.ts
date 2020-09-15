@@ -13,7 +13,7 @@ export class AppComponent implements OnInit{
       throw event.reason;
     });
     window.addEventListener("error", function(err) {
-      console.log("ERROR RHERE");
+      console.log("ERROR RHERE", err);
     })
   }
 }
