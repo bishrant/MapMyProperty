@@ -6,7 +6,6 @@ import { SidebarModule } from '../sidebar/sidebar.module';
 import { DrawtoolsModule } from 'src/app/shared/components/drawtools/drawtools.module';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSliderModule } from '@angular/material/slider';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,7 +28,6 @@ import { ElevationProfileModule } from '../sidebar/elevation-profile/elevation-p
     DrawtoolsModule,
     MatExpansionModule,
     MatSliderModule,
-    MatCheckboxModule,
     MatIconModule,
     MatInputModule,
     MatButtonModule,
