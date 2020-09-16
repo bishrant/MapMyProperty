@@ -32,3 +32,15 @@
   @apply bg-mmp_primary text-white;
 }
 
+.checkbox {
+  @apply form-checkbox h-5 w-5 border border-gray-800;
+}
+
+.checkbox[checked="true"] {
+  @apply bg-black text-white bg-no-repeat bg-center;
+  background-size: 100% 100%;
+  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 16 16" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M5.707 7.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4a1 1 0 0 0-1.414-1.414L7 8.586 5.707 7.293z"/></svg>');
+}
+.checkbox-label {
+  @apply ml-2 text-black;
+}
