@@ -1,33 +1,44 @@
 <div #sidebar class="sidebarBlanket">
-    <div class="sidebar">
-        <app-sidebar>
-            <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer">
-            </app-drawtools>
-            <app-import-export></app-import-export>
-            <app-print-tool [map]="mapView"></app-print-tool>
-        </app-sidebar>
-    </div>
+  <div class="sidebar">
+    <app-sidebar>
+      <app-accordion>
+
+        <app-accordion-panel title="Draw">
+          <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer">
+          </app-drawtools>
+        </app-accordion-panel>
+
+        <app-accordion-panel title="Import | Export">
+          <app-import-export></app-import-export>
+        </app-accordion-panel>
+
+        <app-accordion-panel title="Export Map to PDF">
+          <app-print-tool [map]="mapView"></app-print-tool>
+        </app-accordion-panel>
+
+      </app-accordion>
+
+    </app-sidebar>
+  </div>
 
 </div>
 <div class="mapBlanket">
-    <div class="headerBlanket">
-        <div class="header headerRow secondary" >
-            <div #searchBar></div>
-            <div class="coordsDisplay">
-                Mouse Coordinates [ {{mapCoords}} ]
+  <div class="headerBlanket">
+    <div class="header headerRow secondary">
+      <div #searchBar></div>
+      <div class="coordsDisplay">
+        Mouse Coordinates [ {{mapCoords}} ]
 
-                <div id="widgetDiv" class="esri-widget"></div>
-            </div>
-        </div>
+        <div id="widgetDiv" class="esri-widget"></div>
+      </div>
     </div>
-    <div class="translucentPadding mapViewNodeBlanket">
-        <div #mapViewNode class="mapViewNode " id="parent">
-            <div id="textboxes"></div>
-        </div>
-        <app-graphic-store #graphicsStore [sketchVM]="sketchVM"
-        [selectedGraphics]="selectedGraphics"
-        [textGraphicsLayer] ="textGraphicsLayer"
-            class="graphicsControls">
-        </app-graphic-store>
+  </div>
+  <div class="translucentPadding mapViewNodeBlanket">
+    <div #mapViewNode class="mapViewNode " id="parent">
+      <div id="textboxes"></div>
     </div>
+    <app-graphic-store #graphicsStore [sketchVM]="sketchVM" [selectedGraphics]="selectedGraphics"
+      [textGraphicsLayer]="textGraphicsLayer" class="graphicsControls">
+    </app-graphic-store>
+  </div>
 </div>

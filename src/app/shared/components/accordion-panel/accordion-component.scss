@@ -1,0 +1,38 @@
+.mypanel {
+  background-color: white;
+  color: #222;
+  width: 250px;
+}
+
+.mypanel .title {
+  background-color: #ccc;
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #666;
+}
+
+.mypanel .body {
+  padding: 10px;
+}
+
+.mypanel .body.hidden {
+  display: none;
+}
+
+.mypanel svg {
+  height: 25px;
+  width: 30px;
+  display: block;
+  float: right;
+  transition-duration: 0.25s;
+  transition-property: transform;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}

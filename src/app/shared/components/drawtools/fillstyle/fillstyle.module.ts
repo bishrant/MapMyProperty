@@ -5,7 +5,6 @@ import { FillstyleComponent } from './fillstyle.component';
 import { FormsModule } from '@angular/forms';
 import { InfobuttonModule } from './../../infobutton/infobutton.module';
 import { MatButtonModule } from '@angular/material/button';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NgModule } from '@angular/core';
@@ -19,7 +18,6 @@ import { NgModule } from '@angular/core';
     FormsModule,
     InfobuttonModule,
     MatButtonModule,
-    MatExpansionModule,
     MatFormFieldModule,
     MatSelectModule
   ],

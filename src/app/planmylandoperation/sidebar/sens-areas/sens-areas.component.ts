@@ -3,7 +3,6 @@ import { CreateSensAreasGL } from '../../pmloUtils/layers';
 import { DialogService } from 'src/app/shared/components/dialogs/dialog.service';
 import { GreaterThanMaxArea, GetFeaturesLength, GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import { DecimalPipe } from '@angular/common';
-import { MatExpansionPanel } from '@angular/material/expansion';
 import { SensAreasService } from './sens-areas.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PrintTaskService } from 'src/app/shared/services/PrintTask.service';
@@ -17,7 +16,7 @@ import { CustomSnackBarService } from 'src/app/shared/components/custom-snack-ba
   styleUrls: ['./sens-areas.component.scss']
 })
 export class SensAreasComponent implements OnInit {
-  @ViewChild('sensAreaToolHeader') sensAreaToolHeader: MatExpansionPanel;
+  @ViewChild('sensAreaToolHeader') sensAreaToolHeader: any;
 
   state: string = 'noBoundary';
   streamCollapsed: boolean = true;
@@ -145,7 +144,7 @@ export class SensAreasComponent implements OnInit {
       {
         this.sensAreasService.removeGraphicsByAttribute(this.sensAreaGL, origin);
         this.spinner.hide();
-      }      
+      }
     }
 
   }

@@ -12,7 +12,6 @@ import { ColorPickerModule } from '../../color-picker/color-picker.module';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [LinestyleComponent],
@@ -28,7 +27,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
     AngularSvgIconModule,
     MatButtonModule,
     MatSelectModule,
-    MatExpansionModule,
     MatButtonToggleModule
   ],
   exports: [LinestyleComponent]
