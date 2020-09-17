@@ -1,32 +1,47 @@
 <div #sidebar class="sidebarBlanket">
-    <div class="sidebar">
-        <app-sidebar>
-                <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer">
-                </app-drawtools>
-                <pmlo-sens-areas [mapView]="mapView"></pmlo-sens-areas>
-                <pmlo-soils [mapView]="mapView"></pmlo-soils>
-                <app-elevation-profile [mapView]="mapView"></app-elevation-profile>
-        </app-sidebar>
-    </div>
+  <div class="sidebar">
+    <app-sidebar>
+      <app-accordion>
+
+        <app-accordion-panel title="Draw">
+          <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer">
+          </app-drawtools>
+        </app-accordion-panel>
+
+        <app-accordion-panel title="Sensitive Areas">
+          <pmlo-sens-areas [mapView]="mapView"></pmlo-sens-areas>
+        </app-accordion-panel>
+
+        <app-accordion-panel title="Soils">
+          <pmlo-soils [mapView]="mapView"></pmlo-soils>
+        </app-accordion-panel>
+
+        <app-accordion-panel title="Elevation Profile">
+          <app-elevation-profile [mapView]="mapView"></app-elevation-profile>
+        </app-accordion-panel>
+
+      </app-accordion>
+
+    </app-sidebar>
+
+  </div>
 
 </div>
 <div class="mapBlanket">
-    <div class="headerBlanket">
-        <div class="header headerRow secondary">
-            <div #searchBar></div>
-            <div class="coordsDisplay">
-                Mouse Coordinates [ {{mapCoords}} ]
-            </div>
-        </div>
+  <div class="headerBlanket">
+    <div class="header headerRow secondary">
+      <div #searchBar></div>
+      <div class="coordsDisplay">
+        Mouse Coordinates [ {{mapCoords}} ]
+      </div>
     </div>
-    <div class="translucentPadding mapViewNodeBlanket">
-        <div #mapViewNode class="mapViewNode " id="parent">
-            <div id="textboxes"></div>
-        </div>
-        <app-graphic-store #graphicsStore [sketchVM]="sketchVM"
-        [selectedGraphics]="selectedGraphics"
-        [textGraphicsLayer] ="textGraphicsLayer"
-            class="graphicsControls">
-        </app-graphic-store>
+  </div>
+  <div class="translucentPadding mapViewNodeBlanket">
+    <div #mapViewNode class="mapViewNode " id="parent">
+      <div id="textboxes"></div>
     </div>
+    <app-graphic-store #graphicsStore [sketchVM]="sketchVM" [selectedGraphics]="selectedGraphics"
+      [textGraphicsLayer]="textGraphicsLayer" class="graphicsControls">
+    </app-graphic-store>
+  </div>
 </div>

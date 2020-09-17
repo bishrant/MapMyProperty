@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { ElevationProfileComponent } from './elevation-profile.component';
 import { CommonModule } from '@angular/common';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -16,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [ElevationProfileComponent],
   imports: [
-    CommonModule, MatExpansionModule, MatIconModule, MatButtonToggleModule,
+    CommonModule, MatIconModule, MatButtonToggleModule,
     AngularSvgIconModule, MatButtonModule, MatDialogModule, MatFormFieldModule, FormsModule,
     DragDropModule, MatButtonModule, ModalModule
   ],

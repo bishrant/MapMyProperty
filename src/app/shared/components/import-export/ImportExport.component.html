@@ -1,27 +1,19 @@
-<mat-expansion-panel [expanded]="true" color="black">
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            Import | Export
-        </mat-panel-title>
-    </mat-expansion-panel-header>
+<div>
+  <br>
+  <mat-radio-group aria-label="Select an import/export option" [(ngModel)]="format">
+    <div class="importExportFormat">
+      <mat-radio-button value="mmp">MMP</mat-radio-button>
+      <mat-radio-button value="shp">SHP</mat-radio-button>
+    </div>
+    <div class="importExportFormat">
 
-    <div>
+      <mat-radio-button value="kml">KML</mat-radio-button>
+      <mat-radio-button value="gpx">GPX</mat-radio-button>
+    </div>
+  </mat-radio-group>
+  <!-- [disabled]="(sketchVM.state === 'ready') && (disableUndo$ | async)" -->
 
-        <br>
-        <mat-radio-group aria-label="Select an import/export option" [(ngModel)]="format">
-            <div class="importExportFormat">
-                <mat-radio-button value="mmp">MMP</mat-radio-button>
-                <mat-radio-button value="shp">SHP</mat-radio-button>
-            </div>
-            <div class="importExportFormat">
-
-                <mat-radio-button value="kml">KML</mat-radio-button>
-                <mat-radio-button value="gpx">GPX</mat-radio-button>
-            </div>
-        </mat-radio-group>
-        <!-- [disabled]="(sketchVM.state === 'ready') && (disableUndo$ | async)" -->
-
-        <!-- <div class="importExportFormat">
+  <!-- <div class="importExportFormat">
             <button mat-raised-button color="accent" (click)="chooseFile()">
                 <mat-icon>publish</mat-icon>
                 Import
@@ -34,21 +26,22 @@
             </button>
         </div> -->
 
-        <div class="importExportFormat">
-            <button class="btn-icon" (click)="chooseFile()" type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-4 mr-1" fill="#FFF" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M5 4v2h14V4H5zm0 10h4v6h6v-6h4l-7-7-7 7z"/></svg>
-                <span>Import</span>
-            </button>
-            <input type="file" #fileInput id="fileUpload" name="fileUpload" multiple="multiple" accept="*"
-                style="display:none;" />
-                <button class="btn-icon" (click)="export()" [disabled]="!exportEnabled" type="button" >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-4 mr-1" fill="#FFF" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                    <span>Export</span>
-                </button>
-        </div>
-
-
-
-
-    </div>
-</mat-expansion-panel>
+  <div class="importExportFormat">
+    <button class="btn-icon" (click)="chooseFile()" type="button">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-4 mr-1" fill="#FFF" height="24" viewBox="0 0 24 24"
+        width="24">
+        <path d="M0 0h24v24H0z" fill="none" />
+        <path d="M5 4v2h14V4H5zm0 10h4v6h6v-6h4l-7-7-7 7z" /></svg>
+      <span>Import</span>
+    </button>
+    <input type="file" #fileInput id="fileUpload" name="fileUpload" multiple="multiple" accept="*"
+      style="display:none;" />
+    <button class="btn-icon" (click)="export()" [disabled]="!exportEnabled" type="button">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-4 mr-1" fill="#FFF" height="24" viewBox="0 0 24 24"
+        width="24">
+        <path d="M0 0h24v24H0z" fill="none" />
+        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" /></svg>
+      <span>Export</span>
+    </button>
+  </div>
+</div>

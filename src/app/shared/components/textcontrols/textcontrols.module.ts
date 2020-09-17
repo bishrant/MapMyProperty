@@ -8,7 +8,6 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -26,7 +25,6 @@ import { TextcontrolsComponent } from './textcontrols.component';
     MatSelectModule,
     FormsModule,
     MatFormFieldModule,
-    MatExpansionModule,
     MatButtonModule,
     MatIconModule,
     MatInputModule,

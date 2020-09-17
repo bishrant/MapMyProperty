@@ -1,29 +1,29 @@
-@import '../palettes/mmp.theme.palettee.scss';
-@import '../_functions.scss';
-@import '../_variables.scss';
-@import '../_layout.scss';
+// @import '../palettes/mmp.theme.palettee.scss';
+// @import '../_functions.scss';
+// @import '../_variables.scss';
+// @import '../_layout.scss';
 
-@include mat-core();
+// @include mat-core();
 
-$mmp-light-theme: mat-light-theme($mmp-primary, $mmp-accent, $mmp-warn);
-// $mmp-foreground: my-mat-theme-foreground(mat-color($mmp-primary, 700));
-// $mmp-foreground: mat-palette()
+// $mmp-light-theme: mat-light-theme($mmp-primary, $mmp-accent, $mmp-warn);
+// // $mmp-foreground: my-mat-theme-foreground(mat-color($mmp-primary, 700));
+// // $mmp-foreground: mat-palette()
 
-$mmp-theme: $mmp-light-theme;
-// map-merge(
-//   $mmp-light-theme,
-//   // (
-//   //   foreground: $mmp-foreground,
-//   // )
-// );
+// $mmp-theme: $mmp-light-theme;
+// // map-merge(
+// //   $mmp-light-theme,
+// //   // (
+// //   //   foreground: $mmp-foreground,
+// //   // )
+// // );
 
-// $pmlo-theme: mat-light-theme($pmlo-primary, $pmlo-accent, $pmlo-warn);
+// // $pmlo-theme: mat-light-theme($pmlo-primary, $pmlo-accent, $pmlo-warn);
 
-.mmp-theme {
-  .mat-expansion-panel-header {
-    background-color: mat-color($mmp-primary, 900) !important;
-    color: white !important;
-  }
+// .mmp-theme {
+//   .mat-expansion-panel-header {
+//     background-color: mat-color($mmp-primary, 900) !important;
+//     color: white !important;
+//   }
 
-  @include angular-material-theme($mmp-theme);
-}
+//   @include angular-material-theme($mmp-theme);
+// }

@@ -6,10 +6,11 @@ import { NgModule } from '@angular/core';
 import { SidebarModule } from '../sidebar/sidebar.module';
 import { DrawtoolsModule } from 'src/app/shared/components/drawtools/drawtools.module';
 import { PrintToolModule } from 'src/app/shared/components/print-tool/print-tool.module';
+import { AccordionPanelModule } from 'src/app/shared/components/accordion-panel/accordion.panel.module';
 
 @NgModule({
   declarations: [EsrimapComponent],
-  imports: [CommonModule, GraphicsStoreModule, SidebarModule, DrawtoolsModule, ImportExportModule, PrintToolModule],
+  imports: [CommonModule, GraphicsStoreModule, SidebarModule, DrawtoolsModule, ImportExportModule, PrintToolModule, AccordionPanelModule],
   exports: [EsrimapComponent]
 })
 export class EsriMapModule {}

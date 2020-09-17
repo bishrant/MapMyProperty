@@ -4,7 +4,6 @@ import { GraphicsStoreModule } from 'src/app/shared/store/GraphicsStore.module';
 import { NgModule } from '@angular/core';
 import { SidebarModule } from '../sidebar/sidebar.module';
 import { DrawtoolsModule } from 'src/app/shared/components/drawtools/drawtools.module';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -14,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { SensAreasComponent } from '../sidebar/sens-areas/sens-areas.component';
 import { SoilsComponent } from '../sidebar/soils/soils.component';
 import { ElevationProfileModule } from '../sidebar/elevation-profile/elevation-profile.module';
+import { AccordionPanelModule } from 'src/app/shared/components/accordion-panel/accordion.panel.module';
 
 @NgModule({
   declarations: [
@@ -26,14 +26,14 @@ import { ElevationProfileModule } from '../sidebar/elevation-profile/elevation-p
     GraphicsStoreModule,
     SidebarModule,
     DrawtoolsModule,
-    MatExpansionModule,
     MatSliderModule,
     MatIconModule,
     MatInputModule,
     MatButtonModule,
     MatProgressBarModule,
     FormsModule,
-    ElevationProfileModule
+    ElevationProfileModule,
+    AccordionPanelModule
   ],
   exports: [EsrimapComponent]
 })

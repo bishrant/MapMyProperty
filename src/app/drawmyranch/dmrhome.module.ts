@@ -9,7 +9,6 @@ import { FormsModule } from '@angular/forms';
 import { GraphicsStoreModule } from '../shared/store/GraphicsStore.module';
 import { HeaderModule } from '../shared/components/header/header.module';
 import { MatButtonModule } from '@angular/material/button';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
@@ -34,7 +33,6 @@ const routes: Routes = [
     MatButtonModule,
     MatTooltipModule,
     MatSliderModule,
-    MatExpansionModule,
     MatSelectModule,
     FormsModule,
     MatFormFieldModule,
