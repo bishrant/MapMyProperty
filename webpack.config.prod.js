@@ -1,34 +1,43 @@
-// webpack.config.dev.js
+// webpack.config.prod.js
 const ArcGISPlugin = require("@arcgis/webpack-plugin");
+const a = require("postcss-import");
+const b = require("tailwindcss")('./tailwind.config.prod.js');
+const c = require("autoprefixer");
 
 module.exports = {
-    module: {
-      rules: [
-        {
-          test: /\.scss$/,
-          loader: "postcss-loader",
-          options: {
+  module: {
+    rules: [
+      {
+        test: /\.scss$/,
+        loader: "postcss-loader",
+        options: {
+          postcssOptions: {
             ident: "postcss",
             syntax: "postcss-scss",
-            plugins: () => [
-              require("postcss-import"),
-              require("tailwindcss"),
-              require("autoprefixer"),
-            ],
-          },
-        },
-      ],
-    },
-    plugins: [
-        new ArcGISPlugin({
-          features: {
-            '3d': false
+            plugins: [a, b, c],
           }
-        })
+        },
+      },
+    ],
+  },
+  plugins: [
+    new ArcGISPlugin({
+      features: {
+        '3d': false
+      },
+      userDefinedExcludes: [
+        "arcgis-js-api/layers/BingMapsLayer",
+        "arcgis-js-api/layers/CSVLayer",
+        "arcgis-js-api/layers/GeoRSSLayer",
+        "arcgis-js-api/layers/OpenStreetMapLayer",
+      "arcgis-js-api/layers/StreamLayer",
       ],
-      node: {
-        process: false,
-        global: false,
-        fs: "empty"
-      }
-  };
+      locales: ['en']
+    })
+  ],
+  node: {
+    process: false,
+    global: false,
+    fs: "empty"
+  }
+};

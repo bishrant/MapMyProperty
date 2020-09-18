@@ -67,7 +67,9 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-
+              "customWebpackConfig": {
+                "path": "./webpack.config.prod.js"
+              },
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
