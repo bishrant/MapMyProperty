@@ -1,25 +1,10 @@
 @import '../palettes/pmlo.theme.palette.scss';
-
-@import '../_functions.scss';
-@import '../_variables.scss';
 @import '../_layout.scss';
+
 @include mat-core();
 
 $pmlo-light-theme: mat-light-theme($pmlo-primary, $pmlo-accent, $pmlo-warn);
-$pmlo-foreground: my-mat-theme-foreground(mat-color($pmlo-primary, 700));
-
-$pmlo-theme: map-merge(
-  $pmlo-light-theme,
-  (
-    foreground: $pmlo-foreground,
-  )
-);
 
 .pmlo-theme {
-  .mat-expansion-panel-header {
-    background-color: mat-color($pmlo-primary, 900) !important;
-    color: white !important;
-  }
-
-  @include angular-material-theme($pmlo-theme);
+  @include angular-material-theme($pmlo-light-theme);
 }
