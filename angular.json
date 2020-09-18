@@ -53,7 +53,7 @@
               "src/styles.scss",
               {
                 "input": "src/app/shared/styles/themes/dmr.theme.scss",
-                "lazy": true,
+                "inject": false,
                 "bundleName": "dmr-theme"
               }
             ],
