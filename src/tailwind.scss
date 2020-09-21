@@ -33,7 +33,7 @@
 }
 
 .checkbox {
-  @apply form-checkbox h-5 w-5 border border-gray-800 cursor-pointer;
+  @apply h-5 w-5 border border-gray-800 cursor-pointer;
 }
 
 .checkbox[checked="true"] {
