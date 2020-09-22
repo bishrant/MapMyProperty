@@ -18,15 +18,15 @@ module.exports = {
         checkbox: {
 
           '&:checked': {
-            borderColor: 'orange',
-            backgroundColor: 'red',
+            // borderColor: 'orange',
+            // backgroundColor: 'red',
             backgroundSize: '100% 100%',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
           },
           'checkbox[checked="true"]': {
-            borderColor: 'orange',
-            backgroundColor: 'red',
+            // borderColor: 'orange',
+            // backgroundColor: 'red',
             backgroundSize: '100% 100%',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
