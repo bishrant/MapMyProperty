@@ -10,9 +10,10 @@
 
 .saSymbol {
     width: 1.875rem;
-    margin-left: auto;
-    margin-top: 0.3125rem;
-    margin-bottom: 0.3125rem;
+    height: 1.25rem;
+    // margin-left: auto;
+    // margin-top: 0.3125rem;
+    // margin-bottom: 0.3125rem;
     margin: 0.3125rem 0.625rem 0.3125rem auto;
     border: 1px solid black;
 }
@@ -49,10 +50,10 @@
     margin-left: 2.5rem;
 }
 
-.subMenuContainer mat-form-field {
-    width: 2.5rem;
-    margin-right: 0.625rem;
-}
+// .subMenuContainer mat-form-field {
+//     width: 2.5rem;
+//     margin-right: 0.625rem;
+// }
 
 .pmlo-button {
     align-self: center;
@@ -70,4 +71,9 @@
 
 .reportTitleContainer .mat-form-field-wrapper {
     padding-bottom: 1rem;
+}
+
+.mat-slider-horizontal {
+    height: 100%;
+    width: 80%;
 }

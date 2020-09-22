@@ -1,10 +1,3 @@
-<!-- <mat-expansion-panel #sensAreaToolHeader (opened)="opened()">
-  <mat-expansion-panel-header>
-    <mat-panel-title>
-      Sensitive Areas
-    </mat-panel-title>
-  </mat-expansion-panel-header> -->
-
   <div class="py-3">
     <mat-icon class="smallIcon right">help</mat-icon>
     <br>
@@ -20,38 +13,39 @@
       <div>
         Transparency<br>
       </div>
-      <div>0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" [value]="sliderValue"
+      <div class="flex justify-between items-baseline mb-2">
+        <div>0</div>
+        <mat-slider class="mat-slider-has-ticks" [thumbLabel]="true" [value]="sliderValue"
           (input)="updateSliderValue($event.value)" step="5" min="0" max="100">
-        </mat-slider> &nbsp;100</div>
-      <div class="row">
+        </mat-slider>
+        <div>100</div>
+      </div>
+      <div class="flex items-center">
         <div class="plusSign"></div>
         <label class="inline-flex">
-          <input type="checkbox" class="checkbox" [attr.checked]="streamsChkboxValue" [(ngModel)]="streamsChkboxValue"
+          <input type="checkbox" class="m-auto form-checkbox h-5 w-5 text-pmlo_secondary" [attr.checked]="streamsChkboxValue" [(ngModel)]="streamsChkboxValue"
             (change)="updateGraphicOpacity($event.target.checked, 'streams')">
           <span class="checkbox-label">Streams</span>
         </label>
 
-        <!-- <mat-checkbox [checked]= "streamsChkboxValue" (change)="updateGraphicOpacity($event.checked, 'streams')">Streams</mat-checkbox> -->
         <div class="saSymbol streamLegend">
           <div class="streamColor">&ndash;&ndash;&ndash;</div>
         </div>
       </div>
-      <div class="row">
+      <div class="flex items-center">
         <div class="plusSign" (click)="streamCollapsed = !streamCollapsed">
           <span *ngIf="streamCollapsed">+</span>
           <span *ngIf="!streamCollapsed">&ndash;</span>
         </div>
         <label class="inline-flex">
-          <input type="checkbox" class="checkbox" [attr.checked]="smzChkboxValue" [(ngModel)]="smzChkboxValue"
+          <input type="checkbox" class="m-auto form-checkbox h-5 w-5 text-pmlo_secondary" [attr.checked]="smzChkboxValue" [(ngModel)]="smzChkboxValue"
             (change)="updateGraphicOpacity($event.target.checked, 'smz')">
           <span class="checkbox-label">(SMZ)</span>
         </label>
 
-        <!-- <mat-checkbox [checked]="smzChkboxValue" (change)="updateGraphicOpacity($event.checked, 'smz')">Streams Buffers -->
-          <!-- (SMZ)</mat-checkbox> -->
         <div class="saSymbol smzBack"></div>
       </div>
-      <div class="row" *ngIf="!streamCollapsed">
+      <div class="flex" *ngIf="!streamCollapsed">
         <div class="subMenuContainer">
           <mat-form-field class="example-form-field">
             <mat-label>Feet</mat-label>
@@ -61,23 +55,21 @@
         </div>
         <button mat-raised-button color="accent" class="pmlo-button" (click)="bufferGraphic('smz')">Buffer</button>
       </div>
-      <div class="row">
+      <div class="flex items-center">
         <div class="plusSign" (click)="slopeCollapsed = !slopeCollapsed">
           <span *ngIf="slopeCollapsed">+</span>
           <span *ngIf="!slopeCollapsed">&ndash;</span>
         </div>
 
         <label class="inline-flex">
-          <input type="checkbox" class="checkbox" [attr.checked]="slopesChkboxValue" [(ngModel)]="slopesChkboxValue"
+          <input type="checkbox" class="m-auto form-checkbox h-5 w-5 text-pmlo_secondary" [attr.checked]="slopesChkboxValue" [(ngModel)]="slopesChkboxValue"
             (change)="updateGraphicOpacity($event.target.checked, 'slopes')">
           <span class="checkbox-label">Slopes (>8%)</span>
         </label>
 
-        <!-- <mat-checkbox [checked]="slopesChkboxValue" (change)="updateGraphicOpacity($event.checked, 'slopes')">Severe
-          Slopes (>8%)</mat-checkbox> -->
         <div class="saSymbol slopeBack"></div>
       </div>
-      <div class="row" *ngIf="!slopeCollapsed">
+      <div class="flex" *ngIf="!slopeCollapsed">
         <div class="subMenuContainer">
           <span class="prefix-margin">&lt;</span>
           <mat-form-field class="example-form-field">
@@ -87,23 +79,21 @@
         </div>
         <button mat-raised-button color="accent" class="pmlo-button" (click)="setSlope('slopes')">Set</button>
       </div>
-      <div class="row">
+      <div class="flex items-center">
         <div class="plusSign" (click)="wetCollapsed = !wetCollapsed">
           <span *ngIf="wetCollapsed">+</span>
           <span *ngIf="!wetCollapsed">&ndash;</span>
         </div>
 
         <label class="inline-flex">
-          <input type="checkbox" class="checkbox" [attr.checked]="wetAreasChkboxValue" [(ngModel)]="wetAreasChkboxValue"
+          <input type="checkbox" class="m-auto form-checkbox h-5 w-5 text-pmlo_secondary" [attr.checked]="wetAreasChkboxValue" [(ngModel)]="wetAreasChkboxValue"
             (change)="updateGraphicOpacity($event.target.checked, 'wetlands')">
           <span class="checkbox-label">Wet Areas</span>
         </label>
 
-        <!-- <mat-checkbox [checked]="wetAreasChkboxValue" (change)="updateGraphicOpacity($event.checked, 'wetlands')">Wet
-          Areas</mat-checkbox> -->
         <div class="saSymbol wetBack"></div>
       </div>
-      <div class="row" *ngIf="!wetCollapsed">
+      <div class="flex" *ngIf="!wetCollapsed">
         <div class="subMenuContainer">
           <mat-form-field class="example-form-field">
             <mat-label>Feet</mat-label>
@@ -116,23 +106,20 @@
         <div class="saSymbol wetBufferBack"></div>
       </div>
 
-      <div class="row mt-3">
+      <div class="flex mt-3">
         <button mat-raised-button class="pmlo-button generalBtn" (click)="clearSMZGraphics()">Clear Layer</button>
       </div>
 
-      <div class="row mt-3">
+      <div class="flex mt-3">
         <mat-form-field class="reportTitleContainer">
           <mat-label>Report Title</mat-label>
           <input matInput type="text" [(ngModel)]="reportTitle" maxlength="40" aria-label="report title">
         </mat-form-field>
       </div>
 
-      <div class="row mt-3">
+      <div class="flex mt-3">
         <button type="button" mat-raised-button color="accent" class="pmlo-button generalBtn"
           (click)="buildSMZReport()">Create a Report</button>
       </div>
     </ng-container>
   </div>
-
-
-<!-- </mat-expansion-panel> -->
