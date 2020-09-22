@@ -32,6 +32,14 @@
   @apply bg-mmp_primary text-white;
 }
 
+.pmlo-primary {
+  @apply bg-pmlo_primary text-white;
+}
+
+.pmlo-secondary {
+  @apply bg-pmlo_secondary text-white;
+}
+
 .checkbox {
   @apply h-5 w-5 border border-gray-800 cursor-pointer;
 }
