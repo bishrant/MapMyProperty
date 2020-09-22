@@ -45,13 +45,18 @@
 
         <div class="saSymbol smzBack"></div>
       </div>
-      <div class="flex" *ngIf="!streamCollapsed">
+      <div class="flex my-2" *ngIf="!streamCollapsed">
         <div class="subMenuContainer">
-          <mat-form-field class="example-form-field">
-            <mat-label>Feet</mat-label>
-            <input matInput type="number" min="0" [value]="smzBufferValue" aria-label="smz buffer radius"
-              (input)="smzBufferValue = $event.target.value">
-          </mat-form-field>
+          <div class="subMenuContainer flex">
+            <div class="md-input-main">
+              <div class="md-input-box">
+                <input id="smzBufferValue" class="pmlo-md-input md-input" name="smzBufferValue" type="number" min="0"
+                [(ngModel)]="smzBufferValue" placeholder=" " aria-label="s m z buffer radius" />
+                <label for="smzBufferValue" class="md-label text-pmlo_primary">Feet</label>
+                <div class="pmlo-md-input-underline md-input-underline"></div>
+              </div>
+            </div>
+          </div>
         </div>
         <button mat-raised-button color="accent" class="pmlo-button" (click)="bufferGraphic('smz')">Buffer</button>
       </div>
@@ -64,18 +69,22 @@
         <label class="inline-flex">
           <input type="checkbox" class="m-auto form-checkbox h-5 w-5 text-pmlo_secondary" [attr.checked]="slopesChkboxValue" [(ngModel)]="slopesChkboxValue"
             (change)="updateGraphicOpacity($event.target.checked, 'slopes')">
-          <span class="checkbox-label">Slopes (>8%)</span>
+          <span class="checkbox-label">Slopes (>{{slopeValue}}%)</span>
         </label>
 
         <div class="saSymbol slopeBack"></div>
       </div>
-      <div class="flex" *ngIf="!slopeCollapsed">
-        <div class="subMenuContainer">
-          <span class="prefix-margin">&lt;</span>
-          <mat-form-field class="example-form-field">
-            <mat-label>Percent</mat-label>
-            <input matInput type="number" [value]="slopeValue" (input)="slopeValue = $event.target.value" aria-label="slope">
-          </mat-form-field>
+      <div class="flex my-2" *ngIf="!slopeCollapsed">
+        <div class="subMenuContainer slopeBufferContainer flex">
+          <div class="prefix-margin flex items-center"><div>&gt;</div></div>
+          <div class="md-input-main">
+            <div class="md-input-box">
+              <input id="slopeInput" class="pmlo-md-input md-input" name="slopeInput" type="number" min="0"
+              [(ngModel)]="slopeValue" placeholder=" " aria-label="slope percent" />
+              <label for="slopeInput" class="md-label text-pmlo_primary">Percent</label>
+              <div class="pmlo-md-input-underline md-input-underline"></div>
+            </div>
+          </div>
         </div>
         <button mat-raised-button color="accent" class="pmlo-button" (click)="setSlope('slopes')">Set</button>
       </div>
@@ -93,13 +102,16 @@
 
         <div class="saSymbol wetBack"></div>
       </div>
-      <div class="flex" *ngIf="!wetCollapsed">
+      <div class="flex mt-2" *ngIf="!wetCollapsed">
         <div class="subMenuContainer">
-          <mat-form-field class="example-form-field">
-            <mat-label>Feet</mat-label>
-            <input matInput type="number" min="0" [value]="wetlandsBufferValue" aria-label="buffer radius"
-              (input)="wetlandsBufferValue = $event.target.value">
-          </mat-form-field>
+          <div class="md-input-main">
+            <div class="md-input-box">
+              <input id="wetBufferInput" class="pmlo-md-input md-input" name="wetBufferInput" type="number" min="0"
+              [(ngModel)]="wetlandsBufferValue" placeholder=" " aria-label="buffer radius" />
+              <label for="wetBufferInput" class="md-label text-pmlo_primary">Feet</label>
+              <div class="pmlo-md-input-underline md-input-underline"></div>
+            </div>
+          </div>
         </div>
         <button mat-raised-button color="accent" class="pmlo-button"
           (click)="bufferGraphic('wetlandsBuffer')">Buffer</button>
@@ -111,10 +123,14 @@
       </div>
 
       <div class="flex mt-3">
-        <mat-form-field class="reportTitleContainer">
-          <mat-label>Report Title</mat-label>
-          <input matInput type="text" [(ngModel)]="reportTitle" maxlength="40" aria-label="report title">
-        </mat-form-field>
+        <div class="md-input-main mx-3">
+          <div class="md-input-box">
+            <input id="saReportTitle" name="saReportTitle" type="text" class="pmlo-md-input md-input" placeholder=" "
+              [(ngModel)]="reportTitle" maxlength="40" />
+            <label for="saReportTitle" class="md-label text-pmlo_primary">Report Title</label>
+            <div class="pmlo-md-input-underline md-input-underline"></div>
+          </div>
+        </div>
       </div>
 
       <div class="flex mt-3">

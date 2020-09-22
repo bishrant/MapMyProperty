@@ -47,7 +47,12 @@
 }
 
 .subMenuContainer {
-    margin-left: 2.5rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.subMenuContainer input {
+    max-width: 3.25rem;
 }
 
 // .subMenuContainer mat-form-field {
