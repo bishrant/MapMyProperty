@@ -8,18 +8,19 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormsModule } from '@angular/forms';
 import { SensAreasComponent } from '../sidebar/sens-areas/sens-areas.component';
 import { SoilsComponent } from '../sidebar/soils/soils.component';
 import { ElevationProfileModule } from '../sidebar/elevation-profile/elevation-profile.module';
 import { AccordionPanelModule } from 'src/app/shared/components/accordion-panel/accordion.panel.module';
+import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 
 @NgModule({
   declarations: [
     EsrimapComponent,
     SensAreasComponent,
-    SoilsComponent
+    SoilsComponent,
+    ProgressBarComponent
   ],
   imports: [
     CommonModule,
@@ -30,7 +31,6 @@ import { AccordionPanelModule } from 'src/app/shared/components/accordion-panel/
     MatIconModule,
     MatInputModule,
     MatButtonModule,
-    MatProgressBarModule,
     FormsModule,
     ElevationProfileModule,
     AccordionPanelModule
