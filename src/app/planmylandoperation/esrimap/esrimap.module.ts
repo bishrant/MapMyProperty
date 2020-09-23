@@ -14,6 +14,7 @@ import { SoilsComponent } from '../sidebar/soils/soils.component';
 import { ElevationProfileModule } from '../sidebar/elevation-profile/elevation-profile.module';
 import { AccordionPanelModule } from 'src/app/shared/components/accordion-panel/accordion.panel.module';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
     MatButtonModule,
     FormsModule,
     ElevationProfileModule,
-    AccordionPanelModule
+    AccordionPanelModule,
+    FontAwesomeModule
   ],
   exports: [EsrimapComponent]
 })

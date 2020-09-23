@@ -3,6 +3,7 @@ import { SoilsService } from './soils.service';
 import { PMLOSoil } from '../../models/pmloSoil.model';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { GetPMLOSoilPopupContent } from '../../pmloUtils/popupContent';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'pmlo-soils',
@@ -12,6 +13,8 @@ import { GetPMLOSoilPopupContent } from '../../pmloUtils/popupContent';
 export class SoilsComponent implements OnInit {
 
   @Input() mapView: any;
+
+  faQuestionCircle = faQuestionCircle;
 
   private soilsDynamicLayer: __esri.WMSLayer;
   private soilsIdentifyClickEvent: any;

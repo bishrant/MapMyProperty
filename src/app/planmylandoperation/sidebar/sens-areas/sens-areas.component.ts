@@ -9,6 +9,7 @@ import { PrintTaskService } from 'src/app/shared/services/PrintTask.service';
 import { ReportsService } from '../../pmloUtils/reports.service';
 import { SquareMetersToAcres, FormatRoundNumber } from 'src/app/shared/utils/ConversionTools';
 import { CustomSnackBarService } from 'src/app/shared/components/custom-snack-bar/custom-snack-bar.service';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'pmlo-sens-areas',
@@ -17,6 +18,8 @@ import { CustomSnackBarService } from 'src/app/shared/components/custom-snack-ba
 })
 export class SensAreasComponent implements OnInit {
   @ViewChild('sensAreaToolHeader') sensAreaToolHeader: any;
+
+  faQuestionCircle = faQuestionCircle;
 
   state: string = 'noBoundary';
   streamCollapsed: boolean = true;
