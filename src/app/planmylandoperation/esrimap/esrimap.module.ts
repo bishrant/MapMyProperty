@@ -5,7 +5,6 @@ import { NgModule } from '@angular/core';
 import { SidebarModule } from '../sidebar/sidebar.module';
 import { DrawtoolsModule } from 'src/app/shared/components/drawtools/drawtools.module';
 import { MatSliderModule } from '@angular/material/slider';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -29,7 +28,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     SidebarModule,
     DrawtoolsModule,
     MatSliderModule,
-    MatIconModule,
     MatInputModule,
     MatButtonModule,
     FormsModule,
