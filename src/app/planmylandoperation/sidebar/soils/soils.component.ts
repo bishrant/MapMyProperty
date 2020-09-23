@@ -62,7 +62,7 @@ export class SoilsComponent implements OnInit {
           this.spinner.hide();
         })
       });
-    } else {
+    } else if (this.soilsIdentifyClickEvent !== undefined) {
       this.soilsIdentifyClickEvent.remove();
     }
   }
