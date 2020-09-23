@@ -8,6 +8,7 @@ import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import createMapView from 'src/app/shared/utils/CreateMapView';
 import { CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
+import { MapviewService } from 'src/app/shared/services/mapview.service';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -31,7 +32,9 @@ export class EsrimapComponent implements OnInit {
   textGraphicsLayer = CreateTextGraphicsLayer();
   private soilsLayer = CreateSoilsLayer();
 
-  constructor (private store: Store<AppState>) {}
+  constructor (
+    private store: Store<AppState>,
+    private mapViewService: MapviewService) {}
   @HostListener('keydown.control.z') undoFromKeyboard () {
     this.graphicsStoreEl.undo();
   }
@@ -52,10 +55,14 @@ export class EsrimapComponent implements OnInit {
     this.mapCoords = 'Lat: ' + pt.latitude.toFixed(5) + '  Long:' + pt.longitude.toFixed(5);
   };
 
-  private showMapCoordinates = () => {
+  private setMapEvents = () => {
     if (this.mapView) {
       this.mapView.watch('stationary', () => {
         this.showCoordinates(this.mapView.center);
+      });
+
+      this.mapView.watch('scale', (value) => {
+        this.mapViewService.pushMapScale(value);
       });
 
       this.mapView.on('pointer-move', (evt: any) => {
@@ -81,7 +88,7 @@ export class EsrimapComponent implements OnInit {
       };
       this.sketchVM.updatePointSymbol = p;
       this.sketchVM.activePointSymbol = p;
-      this.showMapCoordinates();
+      this.setMapEvents();
     } catch (error) {
       console.error('Map load error ', error);
     }
