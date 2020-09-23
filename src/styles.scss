@@ -209,3 +209,11 @@ $sliderBase: 6px;
   color: #0000EE;
   text-decoration: underline;
 }
+
+.pmloMap .esri-popup__header {
+  @apply bg-pmlo_primary;
+}
+
+.pmloMap .esri-popup__header, .pmloMap .esri-popup__button {
+  @apply text-white font-bold;
+}

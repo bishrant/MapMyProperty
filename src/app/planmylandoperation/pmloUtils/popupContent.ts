@@ -2,7 +2,7 @@ import { PMLOSoil } from "../models/pmloSoil.model";
 
 const GetPMLOSoilPopupContent = (soil: PMLOSoil) => {
     const ecoclassidUrl:string = 'https://edit.jornada.nmsu.edu/catalogs/esd/' + soil.ecoclassid.substring(1,5) + '/' + soil.ecoclassid;
-    let popupContent: string = `
+    const popupContent: string = `
     <div class="pmlo-popup-content">
         <p class="my-5"><b>Map Unit Name: </b><span>${soil.muname}</span></p>
         <p class="my-5"><b>Map Unit Dominant Component: </b><span>${soil.compname}</span></p>
