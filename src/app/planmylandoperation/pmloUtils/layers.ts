@@ -1,6 +1,6 @@
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 
-const CreateSensAreasGL = (id: string, opacity: number) => {
+const CreateGL = (id: string, opacity: number) => {
   const graphicsLayer = new GraphicsLayer({
     id: id,
     opacity: opacity
@@ -8,4 +8,4 @@ const CreateSensAreasGL = (id: string, opacity: number) => {
   return graphicsLayer;
 };
 
-export { CreateSensAreasGL };
+export { CreateGL };

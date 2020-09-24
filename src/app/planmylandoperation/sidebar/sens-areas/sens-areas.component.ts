@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { CreateSensAreasGL } from '../../pmloUtils/layers';
+import { CreateGL } from '../../pmloUtils/layers';
 import { DialogService } from 'src/app/shared/components/dialogs/dialog.service';
 import { GreaterThanMaxArea, GetFeaturesLength, GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import { DecimalPipe } from '@angular/common';
@@ -40,7 +40,7 @@ export class SensAreasComponent implements OnInit {
   @Input() mapView: any;
 
   private boundaryLayer: __esri.GraphicsLayer;
-  private sensAreaGL: __esri.GraphicsLayer = CreateSensAreasGL('sensAreasGL', 1);
+  private sensAreaGL: __esri.GraphicsLayer = CreateGL('sensAreasGL', 1);
 
   private opt = {
     message: ''
