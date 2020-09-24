@@ -58,7 +58,7 @@
             </div>
           </div>
         </div>
-        <button mat-raised-button color="accent" class="pmlo-button" (click)="bufferGraphic('smz')">Buffer</button>
+        <button type="button" class="pmlo-btn pmlo-secondary sm-btn" (click)="bufferGraphic('smz')">Buffer</button>
       </div>
       <div class="flex items-center">
         <div class="plusSign" (click)="slopeCollapsed = !slopeCollapsed">
@@ -86,7 +86,7 @@
             </div>
           </div>
         </div>
-        <button mat-raised-button color="accent" class="pmlo-button" (click)="setSlope('slopes')">Set</button>
+        <button type="button" class="pmlo-btn pmlo-secondary sm-btn" (click)="setSlope('slopes')">Set</button>
       </div>
       <div class="flex items-center">
         <div class="plusSign" (click)="wetCollapsed = !wetCollapsed">
@@ -113,13 +113,13 @@
             </div>
           </div>
         </div>
-        <button mat-raised-button color="accent" class="pmlo-button"
+        <button type="button" class="pmlo-btn pmlo-secondary sm-btn"
           (click)="bufferGraphic('wetlandsBuffer')">Buffer</button>
         <div class="saSymbol wetBufferBack"></div>
       </div>
 
       <div class="flex mt-3">
-        <button mat-raised-button class="pmlo-button generalBtn" (click)="clearSMZGraphics()">Clear Layer</button>
+        <button type="button" class="pmlo-btn generalBtn" (click)="clearSMZGraphics()">Clear Layer</button>
       </div>
 
       <div class="flex mt-3">
@@ -134,7 +134,7 @@
       </div>
 
       <div class="flex mt-3">
-        <button type="button" mat-raised-button color="accent" class="pmlo-button generalBtn"
+        <button type="button" class="pmlo-btn pmlo-secondary generalBtn"
           (click)="buildSMZReport()">Create a Report</button>
       </div>
     </ng-container>

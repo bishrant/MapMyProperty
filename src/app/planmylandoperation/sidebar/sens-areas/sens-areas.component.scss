@@ -11,9 +11,6 @@
 .saSymbol {
     width: 1.875rem;
     height: 1.25rem;
-    // margin-left: auto;
-    // margin-top: 0.3125rem;
-    // margin-bottom: 0.3125rem;
     margin: 0.3125rem 0.625rem 0.3125rem auto;
     border: 1px solid black;
 }
@@ -55,15 +52,6 @@
     max-width: 3.25rem;
 }
 
-// .subMenuContainer mat-form-field {
-//     width: 2.5rem;
-//     margin-right: 0.625rem;
-// }
-
-.pmlo-button {
-    align-self: center;
-}
-
 .prefix-margin {
     margin-right: 0.625rem;
 }
@@ -76,4 +64,8 @@
 
 .reportTitleContainer .mat-form-field-wrapper {
     padding-bottom: 1rem;
+}
+
+.sm-btn {
+    width: 3.75rem;
 }
