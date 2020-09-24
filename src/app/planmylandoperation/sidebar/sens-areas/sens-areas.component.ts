@@ -89,8 +89,8 @@ export class SensAreasComponent implements OnInit {
 
       const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.getItemAt(0);
 
-      this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((val) => {
-        if (val)
+      this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((isInTexas:boolean) => {
+        if (isInTexas)
         {
           this.sensAreasService.getSensAreas(inputBoundary).then((result) => {
             if (result.length === 0)
