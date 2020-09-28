@@ -5,6 +5,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { GetPMLOSoilPopupContent } from '../../pmloUtils/popupContent';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
+import { DialogService } from 'src/app/shared/components/dialogs/dialog.service';
+import { CreateGL } from '../../pmloUtils/layers';
 
 @Component({
   selector: 'pmlo-soils',
@@ -18,14 +20,23 @@ export class SoilsComponent implements OnInit {
   faQuestionCircle = faQuestionCircle;
   isIdentifyChecked:boolean = false;
   isVisibleDisabled:boolean = true;
+  isReportBtnDisabled:boolean = false;
+  sliderValue: number = 80;
 
   private soilsDynamicLayer: __esri.WMSLayer;
   private soilsIdentifyClickEvent: any;
+  private boundaryLayer: __esri.GraphicsLayer;
+  private pmloSoilsGL: __esri.GraphicsLayer = CreateGL('pmloSoilsGL', 1);
+
+  private opt = {
+    message: ''
+  };
 
   constructor(
     private soilsService: SoilsService,
     private spinner: NgxSpinnerService,
-    private mapViewService: MapviewService
+    private mapViewService: MapviewService,
+    private dialogService: DialogService
   ) { }
 
   ngOnInit(): void {
@@ -39,12 +50,43 @@ export class SoilsComponent implements OnInit {
         this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
       }
     });
+    this.boundaryLayer = this.mapView.map.findLayerById('userGraphicsLayer');
+    //const boundaryLayerIndex:number = this.mapView.map.layers.findIndex(lyr => lyr === this.boundaryLayer)
+    this.mapView.map.add(this.pmloSoilsGL);
   }
 
   soilsVisibleChanged(isChecked: boolean)
   {
     this.soilsDynamicLayer.visible = isChecked;
     this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
+  }
+
+  clipSoils():void {
+
+    if (this.boundaryLayer.graphics.length === 0)
+    {
+      this.opt.message = 'Please make sure you draw a boundary or load a file using the tools in the previous toolbox before running this tool.';
+      this.dialogService.open(this.opt);
+    } else if (this.boundaryLayer.graphics.length > 1)
+    {
+      this.opt.message = 'You can only clip soils areas from one polygon at a time.';
+      this.dialogService.open(this.opt);
+    } else {
+      this.spinner.show();
+      const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.getItemAt(0);
+
+      this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
+        if (result.length === 0)
+        {
+          this.spinner.hide();
+          this.opt.message = 'There was an error while clipping the soils. Please try again and, if the problem persists, contact the administrator.';
+          this.dialogService.open(this.opt);
+        } else {
+          this.soilsService.addSoilsToMap(this.pmloSoilsGL, result[0], this.sliderValue);
+          this.spinner.hide();
+        }
+      });
+    }
   }
 
   private createSoilsIdentifyClickEvent(isChecked:boolean):void {

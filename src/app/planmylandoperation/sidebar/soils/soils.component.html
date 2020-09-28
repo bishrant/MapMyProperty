@@ -19,13 +19,13 @@
 
   <div class="flex justify-between items-baseline py-3">
     <div>0</div>
-    <mat-slider class="mat-slider-has-ticks" [thumbLabel]="true" step="5" min="0" max="100">
+    <mat-slider class="mat-slider-has-ticks" [thumbLabel]="true" step="5" min="0" max="100" [value]="sliderValue">
     </mat-slider>
     <div>100</div>
   </div>
 
   <div class="flex justify-center mt-3">
-    <button type="button" class="pmlo-btn generalBtn">Clip</button>
+    <button type="button" class="pmlo-btn generalBtn" (click)="clipSoils()">Clip</button>
   </div>
 
   <div class="flex justify-center mt-3">
@@ -33,6 +33,6 @@
   </div>
 
   <div class="flex justify-center mt-3">
-    <button type="button" class="pmlo-btn pmlo-secondary generalBtn">Create A Report</button>
+    <button type="button" class="pmlo-btn pmlo-secondary generalBtn" [ngClass]="{'opacity-25 cursor-not-allowed': isReportBtnDisabled}" [disabled]="isReportBtnDisabled">Create A Report</button>
   </div>
 </div>
