@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { CreateSensAreasGL } from '../../pmloUtils/layers';
+import { CreateGL } from '../../pmloUtils/layers';
 import { DialogService } from 'src/app/shared/components/dialogs/dialog.service';
 import { GreaterThanMaxArea, GetFeaturesLength, GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import { DecimalPipe } from '@angular/common';
@@ -9,6 +9,7 @@ import { PrintTaskService } from 'src/app/shared/services/PrintTask.service';
 import { ReportsService } from '../../pmloUtils/reports.service';
 import { SquareMetersToAcres, FormatRoundNumber } from 'src/app/shared/utils/ConversionTools';
 import { CustomSnackBarService } from 'src/app/shared/components/custom-snack-bar/custom-snack-bar.service';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'pmlo-sens-areas',
@@ -17,6 +18,8 @@ import { CustomSnackBarService } from 'src/app/shared/components/custom-snack-ba
 })
 export class SensAreasComponent implements OnInit {
   @ViewChild('sensAreaToolHeader') sensAreaToolHeader: any;
+
+  faQuestionCircle = faQuestionCircle;
 
   state: string = 'noBoundary';
   streamCollapsed: boolean = true;
@@ -37,7 +40,7 @@ export class SensAreasComponent implements OnInit {
   @Input() mapView: any;
 
   private boundaryLayer: __esri.GraphicsLayer;
-  private sensAreaGL: __esri.GraphicsLayer = CreateSensAreasGL('sensAreasGL', 1);
+  private sensAreaGL: __esri.GraphicsLayer = CreateGL('sensAreasGL', 1);
 
   private opt = {
     message: ''
@@ -86,8 +89,8 @@ export class SensAreasComponent implements OnInit {
 
       const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.getItemAt(0);
 
-      this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((val) => {
-        if (val)
+      this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((isInTexas:boolean) => {
+        if (isInTexas)
         {
           this.sensAreasService.getSensAreas(inputBoundary).then((result) => {
             if (result.length === 0)

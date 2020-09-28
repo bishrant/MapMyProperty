@@ -32,14 +32,6 @@
   @apply bg-mmp_primary text-white;
 }
 
-.pmlo-primary {
-  @apply bg-pmlo_primary text-white;
-}
-
-.pmlo-secondary {
-  @apply bg-pmlo_secondary text-white;
-}
-
 .checkbox {
   @apply h-5 w-5 border border-gray-800 cursor-pointer;
 }
@@ -113,9 +105,5 @@
   	@apply md-label-focus;
 	transform: translate(0, -50px) scale(0.75);
 	transform-origin: top left;
-}
-
-.pmlo-md-input:focus + .md-label, .md-input:not(:placeholder-shown) + .md-label {
-  @apply text-pmlo_primary;
 }
 // End of Material Design Input

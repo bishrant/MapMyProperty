@@ -9,6 +9,7 @@ const CreateSoilsLayer = (Id: string = 'soilsDynamicLayer') => {
                 name: 'mapunitpoly'
             }
         ],
+        minScale: 37000,
         visible: false
     });
     return soilsLayer;

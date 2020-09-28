@@ -11,7 +11,11 @@ const GetBufferSensAreasGpUrl = () => {
 };
 
 const GetSevereSlopesGpUrl = () => {
-    return "http://tfsgis02.tfs.tamu.edu/arcgis/rest/services/PMLO/GetSlope/GPServer/Get%20Slope";
+    return "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/PMLO/GetSlope/GPServer/Get%20Slope";
 };
 
-export { GetTxStateUrl, GetSensAreasGpUrl, GetBufferSensAreasGpUrl, GetSevereSlopesGpUrl }
+const GetClipSoilsGpUrl = () => {
+  return "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/Shared/ClipSoils/GPServer/Clip%20Soils";
+};
+
+export { GetTxStateUrl, GetSensAreasGpUrl, GetBufferSensAreasGpUrl, GetSevereSlopesGpUrl, GetClipSoilsGpUrl }

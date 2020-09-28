@@ -196,11 +196,19 @@ $sliderBase: 6px;
   background-color: white;
 }
 
-.pmlo-popup-content .my-5 {
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-
 .pmlo-popup-content p {
   font-size: 14px;
+}
+
+.pmlo-popup-content a {
+  color: #0000EE;
+  text-decoration: underline;
+}
+
+.pmloMap .esri-popup__header, .esri-popup__header-title:hover {
+  @apply bg-pmlo_primary;
+}
+
+.pmloMap .esri-popup__header, .pmloMap .esri-popup__button {
+  @apply text-white font-bold;
 }
