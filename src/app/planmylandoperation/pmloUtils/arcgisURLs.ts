@@ -15,7 +15,7 @@ const GetSevereSlopesGpUrl = () => {
 };
 
 const GetClipSoilsGpUrl = () => {
-  return "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/Shared/ClipSoils/GPServer/Clip%20Soils";
+  return "https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Shared/ClipSoils/GPServer/Clip%20Soils";
 };
 
 export { GetTxStateUrl, GetSensAreasGpUrl, GetBufferSensAreasGpUrl, GetSevereSlopesGpUrl, GetClipSoilsGpUrl }
