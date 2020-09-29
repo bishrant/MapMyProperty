@@ -15,4 +15,12 @@ const CreateTextGraphicsLayer = (Id: string = 'userTextGraphicsLayer') => {
   });
 };
 
-export { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer };
+// Gets the polygon graphics from a given graphics layer
+const GetPolygonGraphics = (gl:__esri.GraphicsLayer) => {
+  const polygonGraphics  = gl.graphics.map((g:any) => {
+    return g.geometry.type === 'polygon';
+  });
+  return polygonGraphics;
+};
+
+export { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer, GetPolygonGraphics };
