@@ -27,6 +27,7 @@ export class SoilsComponent implements OnInit {
   private soilsIdentifyClickEvent: any;
   private boundaryLayer: __esri.GraphicsLayer;
   private pmloSoilsGL: __esri.GraphicsLayer = CreateGL('pmloSoilsGL', 1);
+  private pmloSoilLabelsGL: __esri.GraphicsLayer = CreateGL('pmloSoilLabelsGL', 1);
 
   private opt = {
     message: ''
@@ -43,16 +44,28 @@ export class SoilsComponent implements OnInit {
     this.soilsDynamicLayer = this.mapView.map.findLayerById('soilsDynamicLayer');
     this.mapViewService.soilsDisabled.subscribe((isDisabled:boolean) => {
       this.isVisibleDisabled = isDisabled;
-      if (isDisabled && this.soilsIdentifyClickEvent !== undefined)
+      if(isDisabled)
       {
-        this.soilsIdentifyClickEvent.remove();
-      } else if (!isDisabled) {
+        this.pmloSoilLabelsGL.visible = false;
+        if (this.soilsIdentifyClickEvent !== undefined)
+        {
+          this.soilsIdentifyClickEvent.remove();
+        }
+      } else {
+        this.pmloSoilLabelsGL.visible = true;
         this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
       }
+      // if (isDisabled && this.soilsIdentifyClickEvent !== undefined)
+      // {
+      //   this.soilsIdentifyClickEvent.remove();
+      // } else if (!isDisabled) {
+      //   this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
+      // }
     });
     this.boundaryLayer = this.mapView.map.findLayerById('userGraphicsLayer');
     //const boundaryLayerIndex:number = this.mapView.map.layers.findIndex(lyr => lyr === this.boundaryLayer)
     this.mapView.map.add(this.pmloSoilsGL);
+    this.mapView.map.add(this.pmloSoilLabelsGL);
   }
 
   soilsVisibleChanged(isChecked: boolean)
@@ -82,7 +95,8 @@ export class SoilsComponent implements OnInit {
           this.opt.message = 'There was an error while clipping the soils. Please try again and, if the problem persists, contact the administrator.';
           this.dialogService.open(this.opt);
         } else {
-          this.soilsService.addSoilsToMap(this.pmloSoilsGL, result[0], this.sliderValue);
+          this.soilsService.addSoilsToMap(this.pmloSoilsGL, result[0]);
+          this.soilsService.addSoilLabelsToMap(this.pmloSoilLabelsGL, result[1]);
           this.spinner.hide();
         }
       });

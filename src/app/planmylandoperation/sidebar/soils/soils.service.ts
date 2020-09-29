@@ -2,11 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import FeatureSet from 'esri/tasks/support/FeatureSet';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
+import GeometryService from 'esri/tasks/GeometryService';
 import { GetClipSoilsGpUrl } from '../../pmloUtils/arcgisURLs';
 import { LineProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { GetDefaultLineProps } from '../../pmloUtils/SensAreasStyles';
 import { GetSoilFillProps } from '../../pmloUtils/SoilsStyles';
 import { CreatePolygonSymbol } from 'src/app/shared/utils/GraphicStyles';
+import { Point, Polygon } from 'esri/geometry';
+import Graphic from 'esri/Graphic';
+import { GetGeometryServiceUrl } from 'src/app/shared/utils/GISUrls';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +45,7 @@ export class SoilsService {
     });
   }
 
-  getSoils(graph: __esri.Graphic): Promise<any[]> {
+  getSoils(graph: Graphic): Promise<any[]> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
@@ -73,11 +77,10 @@ export class SoilsService {
     });
   }
 
-  addSoilsToMap(gl: __esri.GraphicsLayer, soilMp: any, sliderValue: number): void {
-    const graphicTransparency:number = (100 - sliderValue) / 100;
-    const graphicsCollection: __esri.Graphic[] = [];
+  addSoilsToMap(gl: __esri.GraphicsLayer, soilMulti: any): void {
+    const graphicsCollection: Graphic[] = [];
     const lineProps: LineProps = GetDefaultLineProps();
-    soilMp.value.features.forEach((feature: any) => {
+    soilMulti.value.features.forEach((feature: any) => {
       let hexcolor: string = feature.getAttribute('HexColor');
       if (feature.getAttribute('musym') === 'W')
       {
@@ -89,5 +92,39 @@ export class SoilsService {
     });
 
     gl.addMany(graphicsCollection);
+  }
+
+  addSoilLabelsToMap(gl: __esri.GraphicsLayer, soilSingle: any): void {
+    const geometryService: GeometryService = new GeometryService({
+      url: GetGeometryServiceUrl()
+    });
+    if (soilSingle.value.features.length > 0)
+    {
+      const geometries:Polygon[] = soilSingle.value.features.map((feature:Graphic) => {
+        return feature.geometry;
+      });
+      geometryService.labelPoints(geometries).then((labelPoints:any) => {
+        const labelGraphics = labelPoints.map((labelPoint:Point, i:number) => {
+          const textSymbol = {
+            type: 'text',
+            text: soilSingle.value.features[i].attributes.musym.toString(),
+            color: 'black',
+            font: {
+              size: '12px',
+              family: 'arial',
+              weight: 'bold'
+            }
+          };
+          const labelPointGraphic = new Graphic({
+            geometry: labelPoint,
+            symbol: textSymbol
+          });
+          return labelPointGraphic;
+        });
+      
+        // add the labels to the map
+        gl.addMany(labelGraphics);
+       });
+    }
   }
 }
