@@ -17,7 +17,7 @@
     </label>
   </div>
 
-  <div class="flex justify-between items-baseline py-3">
+  <div class="flex justify-between items-baseline py-3" *ngIf="areSoilsClipped">
     <div>0</div>
     <mat-slider class="mat-slider-has-ticks" [thumbLabel]="true" step="5" min="0" max="100" [value]="sliderValue">
     </mat-slider>
@@ -25,14 +25,14 @@
   </div>
 
   <div class="flex justify-center mt-3">
-    <button type="button" class="pmlo-btn generalBtn" (click)="clipSoils()">Clip</button>
+    <button type="button" class="pmlo-btn generalBtn" (click)="clipSoils()" [disabled]="!polygonGraphicsInBoundary">Clip</button>
   </div>
 
   <div class="flex justify-center mt-3">
-    <button type="button" class="pmlo-btn generalBtn">Clear Clipped Layer</button>
+    <button type="button" class="pmlo-btn generalBtn" (click)="clearSoilGLayers()"  [disabled]="!areSoilsClipped">Clear Clipped Layer</button>
   </div>
 
   <div class="flex justify-center mt-3">
-    <button type="button" class="pmlo-btn pmlo-secondary generalBtn" [ngClass]="{'opacity-25 cursor-not-allowed': isReportBtnDisabled}" [disabled]="isReportBtnDisabled">Create A Report</button>
+    <button type="button" class="pmlo-btn pmlo-secondary generalBtn" [disabled]="!areSoilsClipped">Create A Report</button>
   </div>
 </div>

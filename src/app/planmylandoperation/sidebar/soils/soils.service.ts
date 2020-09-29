@@ -23,7 +23,7 @@ export class SoilsService {
     private http: HttpClient
   ) { }
 
-  identifySoil(mapView: __esri.MapView, mapPoint: __esri.Point, origin: string): Promise<any>
+  identifySoil(mapPoint: __esri.Point, origin: string): Promise<any>
   {
     return new Promise((resolve, reject) => {
       const queryFile:string = 'assets/soilQueries/' + origin + 'SoilQuery.txt';
@@ -77,7 +77,7 @@ export class SoilsService {
     });
   }
 
-  addSoilsToMap(gl: __esri.GraphicsLayer, soilMulti: any): void {
+  addSoilsToMap(gl: __esri.GraphicsLayer, soilMulti: any, boundaryId:string): void {
     const graphicsCollection: Graphic[] = [];
     const lineProps: LineProps = GetDefaultLineProps();
     soilMulti.value.features.forEach((feature: any) => {
@@ -88,13 +88,14 @@ export class SoilsService {
       }
       const fillProps = GetSoilFillProps(hexcolor);
       feature.symbol = CreatePolygonSymbol(lineProps, fillProps);
+      feature.setAttribute('boundaryId', boundaryId);
       graphicsCollection.push(feature);
     });
 
     gl.addMany(graphicsCollection);
   }
 
-  addSoilLabelsToMap(gl: __esri.GraphicsLayer, soilSingle: any): void {
+  addSoilLabelsToMap(gl: __esri.GraphicsLayer, soilSingle: any, boundaryId:string): void {
     const geometryService: GeometryService = new GeometryService({
       url: GetGeometryServiceUrl()
     });
@@ -117,7 +118,10 @@ export class SoilsService {
           };
           const labelPointGraphic = new Graphic({
             geometry: labelPoint,
-            symbol: textSymbol
+            symbol: textSymbol,
+            attributes: {
+              boundaryId: boundaryId
+            }
           });
           return labelPointGraphic;
         });

@@ -1,5 +1,5 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer  } from 'src/app/shared/utils/CreateGraphicsLayer';
+import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer, FindGraphicById, GetPolygonGraphics  } from 'src/app/shared/utils/CreateGraphicsLayer';
 import Graphic from 'esri/Graphic';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
@@ -28,7 +28,7 @@ export class EsrimapComponent implements OnInit {
   selectedGraphics!: any[] | undefined;
   mapCoords: any;
   readonly graphics$ = this.store.select((state) => state.app.graphics);
-  polygonGraphicsLayer = CreatePolygonGraphicsLayer();
+  polygonGraphicsLayer:__esri.GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
   private soilsLayer = CreateSoilsLayer();
 
@@ -75,6 +75,21 @@ export class EsrimapComponent implements OnInit {
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       this.mapView.map.addMany([this.soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer]);
+      this.mapView.whenLayerView(this.polygonGraphicsLayer).then((boundaryLayerView) => {
+        boundaryLayerView.watch('updating', (val) => {
+          if (val)
+          {
+            let glHasPolygons: boolean = true;
+            const pmloSoilsGL:__esri.GraphicsLayer = this.mapView.map.findLayerById('pmloSoilsGL') as __esri.GraphicsLayer;
+            
+            if (GetPolygonGraphics(boundaryLayerView.layer as __esri.GraphicsLayer).length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined))
+            {
+              glHasPolygons = false;
+            }
+            this.mapViewService.glHasPolygons.emit(glHasPolygons);
+          }
+        });
+      });
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
       const p = {
         type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
