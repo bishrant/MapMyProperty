@@ -19,12 +19,14 @@ export class SoilsComponent implements OnInit {
 
   faQuestionCircle = faQuestionCircle;
   isIdentifyChecked:boolean = false;
+  isIdentifyDisabled:boolean = true;
   isVisibleDisabled:boolean = true;
+  isVisibleChecked:boolean = false;
   isReportBtnDisabled:boolean = false;
   sliderValue: number = 80;
 
   private soilsDynamicLayer: __esri.WMSLayer;
-  private soilsIdentifyClickEvent: any;
+  private soilsIdentifyClickEvent: any = null;
   private boundaryLayer: __esri.GraphicsLayer;
   private pmloSoilsGL: __esri.GraphicsLayer = CreateGL('pmloSoilsGL', 1);
   private pmloSoilLabelsGL: __esri.GraphicsLayer = CreateGL('pmloSoilLabelsGL', 1);
@@ -44,6 +46,12 @@ export class SoilsComponent implements OnInit {
     this.soilsDynamicLayer = this.mapView.map.findLayerById('soilsDynamicLayer');
     this.mapViewService.soilsDisabled.subscribe((isDisabled:boolean) => {
       this.isVisibleDisabled = isDisabled;
+      if (!isDisabled && this.isVisibleChecked)
+      {
+        this.isIdentifyDisabled = false;
+      } else {
+        this.isIdentifyDisabled = true;
+      }
       if(isDisabled)
       {
         this.pmloSoilLabelsGL.visible = false;
@@ -70,7 +78,9 @@ export class SoilsComponent implements OnInit {
 
   soilsVisibleChanged(isChecked: boolean)
   {
+    this.isVisibleChecked = isChecked;
     this.soilsDynamicLayer.visible = isChecked;
+    this.isIdentifyDisabled = !isChecked;
     this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
   }
 
@@ -130,8 +140,9 @@ export class SoilsComponent implements OnInit {
           this.spinner.hide();
         })
       });
-    } else if (this.soilsIdentifyClickEvent !== undefined) {
+    } else if (this.soilsIdentifyClickEvent !== null) {
       this.soilsIdentifyClickEvent.remove();
+      this.soilsIdentifyClickEvent = null;
     }
   }
 
