@@ -63,15 +63,8 @@ export class SoilsComponent implements OnInit {
         this.pmloSoilLabelsGL.visible = true;
         this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
       }
-      // if (isDisabled && this.soilsIdentifyClickEvent !== undefined)
-      // {
-      //   this.soilsIdentifyClickEvent.remove();
-      // } else if (!isDisabled) {
-      //   this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
-      // }
     });
     this.boundaryLayer = this.mapView.map.findLayerById('userGraphicsLayer');
-    //const boundaryLayerIndex:number = this.mapView.map.layers.findIndex(lyr => lyr === this.boundaryLayer)
     this.mapView.map.add(this.pmloSoilsGL);
     this.mapView.map.add(this.pmloSoilLabelsGL);
   }
