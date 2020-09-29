@@ -61,6 +61,7 @@ export class SoilsComponent implements OnInit {
         if (this.soilsIdentifyClickEvent !== null)
         {
           this.soilsIdentifyClickEvent.remove();
+          this.soilsIdentifyClickEvent = null;
         }
       } else {
         this.pmloSoilLabelsGL.visible = true;
