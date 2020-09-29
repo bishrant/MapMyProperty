@@ -56,11 +56,11 @@
         </fieldset>
 
         <app-linestyle #linestyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
-            (changedGraphicsStyle)="onGraphicsStyleChange">
+            (changedGraphicsStyle)="onGraphicsStyleChange()">
         </app-linestyle>
 
         <app-fillstyle #fillstyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
-            (changedGraphicsStyle)="onGraphicsStyleChange">
+            (changedGraphicsStyle)="onGraphicsStyleChange()">
         </app-fillstyle>
 
         <app-textcontrols #textcontrols [selectedTextGraphics]="selectedTextGraphics"
