@@ -5,8 +5,7 @@ import Geoprocessor from 'esri/tasks/Geoprocessor';
 import GeometryService from 'esri/tasks/GeometryService';
 import { GetClipSoilsGpUrl } from '../../pmloUtils/arcgisURLs';
 import { FillProps, LineProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
-import { GetDefaultLineProps } from '../../pmloUtils/SensAreasStyles';
-import { GetOrageLineProps, GetSoilFillProps, GetSoilTextSymbol } from '../../pmloUtils/SoilsStyles';
+import { GetDefaultSoilsLineProps, GetOrageLineProps, GetSoilFillProps, GetSoilTextSymbol } from '../../pmloUtils/SoilsStyles';
 import { CreatePolygonSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { Point, Polygon } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
@@ -81,12 +80,11 @@ export class SoilsService {
   addSoilsToMap(gl: __esri.GraphicsLayer, soilMulti: any, boundaryId:string, sliderValue:number, isOrange:boolean): void {
     const graphicTransparency:number = (100 - sliderValue) / 100;
     const graphicsCollection: Graphic[] = [];
-    let lineProps: LineProps = GetDefaultLineProps();
+    let lineProps: LineProps = GetDefaultSoilsLineProps(graphicTransparency);
     soilMulti.value.features.forEach((feature: any) => {
       let fillProps: FillProps;
       if (!isOrange)
       {
-        lineProps = GetDefaultLineProps();
         fillProps = GetSoilFillProps(feature, graphicTransparency);
       } else {
         lineProps = GetOrageLineProps();
@@ -154,7 +152,7 @@ export class SoilsService {
           let lineProps: LineProps;
           if (!isOrange)
           {
-            lineProps = GetDefaultLineProps();
+            lineProps = GetDefaultSoilsLineProps(alpha);
           } else {
             lineProps = GetOrageLineProps();
           }

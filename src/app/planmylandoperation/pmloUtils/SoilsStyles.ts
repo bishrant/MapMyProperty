@@ -50,4 +50,15 @@ const GetSoilTextSymbol: any = (text: string, isOrange:boolean, alpha:number) =>
       return textSymbol;
 };
 
-export { GetSoilFillProps, GetOrageLineProps, GetSoilTextSymbol }
+const GetDefaultSoilsLineProps: any = (alpha:number) => {
+    const lineProps: LineProps = {
+        style: 'solid',
+        color: { r: 105, g: 105, b: 105, a: alpha },
+        opacity: 100,
+        width: 1
+      };
+
+    return lineProps;
+};
+
+export { GetSoilFillProps, GetOrageLineProps, GetSoilTextSymbol, GetDefaultSoilsLineProps }
