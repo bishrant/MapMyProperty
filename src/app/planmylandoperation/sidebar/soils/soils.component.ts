@@ -26,7 +26,8 @@ export class SoilsComponent implements OnInit {
   areSoilsClipped:boolean = false;
   polygonGraphicsInBoundary:boolean = false;
 
-  sliderValue: number = 80;
+  sliderValue: number = 75;
+  isOrangeSymbol:boolean = true;
 
   private soilsDynamicLayer: __esri.WMSLayer;
   private soilsIdentifyClickEvent: any = null;
@@ -124,8 +125,8 @@ export class SoilsComponent implements OnInit {
           this.dialogService.open(this.opt);
         } else {
           const boundaryId:string = inputBoundary.attributes.id;
-          this.soilsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId);
-          this.soilsService.addSoilLabelsToMap(this.pmloSoilLabelsGL, result[1], boundaryId);
+          this.soilsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId, this.sliderValue, this.isOrangeSymbol);
+          this.soilsService.addSoilLabelsToMap(this.pmloSoilLabelsGL, result[1], boundaryId, this.sliderValue, this.isOrangeSymbol);
           this.spinner.hide();
         }
       });
@@ -174,5 +175,14 @@ export class SoilsComponent implements OnInit {
   clearSoilGLayers():void {
     this.pmloSoilLabelsGL.removeAll();
     this.pmloSoilsGL.removeAll();
+  }
+
+  updateSliderValue(value: number):void {
+    if (value < 75 || value === 100) {
+      this.isOrangeSymbol = false;
+    } else {
+      this.isOrangeSymbol = true;
+    }
+    this.soilsService.updateGraphicsOpacity(this.pmloSoilsGL, this.pmloSoilLabelsGL, value, this.isOrangeSymbol);
   }
 }

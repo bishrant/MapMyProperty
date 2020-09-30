@@ -4,13 +4,14 @@ import FeatureSet from 'esri/tasks/support/FeatureSet';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
 import GeometryService from 'esri/tasks/GeometryService';
 import { GetClipSoilsGpUrl } from '../../pmloUtils/arcgisURLs';
-import { LineProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
+import { FillProps, LineProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { GetDefaultLineProps } from '../../pmloUtils/SensAreasStyles';
-import { GetSoilFillProps } from '../../pmloUtils/SoilsStyles';
+import { GetOrageLineProps, GetSoilFillProps, GetSoilTextSymbol } from '../../pmloUtils/SoilsStyles';
 import { CreatePolygonSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { Point, Polygon } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
 import { GetGeometryServiceUrl } from 'src/app/shared/utils/GISUrls';
+import { TextSymbol } from 'esri/symbols';
 
 @Injectable({
   providedIn: 'root'
@@ -77,16 +78,20 @@ export class SoilsService {
     });
   }
 
-  addSoilsToMap(gl: __esri.GraphicsLayer, soilMulti: any, boundaryId:string): void {
+  addSoilsToMap(gl: __esri.GraphicsLayer, soilMulti: any, boundaryId:string, sliderValue:number, isOrange:boolean): void {
+    const graphicTransparency:number = (100 - sliderValue) / 100;
     const graphicsCollection: Graphic[] = [];
-    const lineProps: LineProps = GetDefaultLineProps();
+    let lineProps: LineProps = GetDefaultLineProps();
     soilMulti.value.features.forEach((feature: any) => {
-      let hexcolor: string = feature.getAttribute('HexColor');
-      if (feature.getAttribute('musym') === 'W')
+      let fillProps: FillProps;
+      if (!isOrange)
       {
-        hexcolor = '#7ab6f5'
+        lineProps = GetDefaultLineProps();
+        fillProps = GetSoilFillProps(feature, graphicTransparency);
+      } else {
+        lineProps = GetOrageLineProps();
+        fillProps = GetSoilFillProps(feature, 0);
       }
-      const fillProps = GetSoilFillProps(hexcolor);
       feature.symbol = CreatePolygonSymbol(lineProps, fillProps);
       feature.setAttribute('boundaryId', boundaryId);
       graphicsCollection.push(feature);
@@ -95,7 +100,8 @@ export class SoilsService {
     gl.addMany(graphicsCollection);
   }
 
-  addSoilLabelsToMap(gl: __esri.GraphicsLayer, soilSingle: any, boundaryId:string): void {
+  addSoilLabelsToMap(gl: __esri.GraphicsLayer, soilSingle: any, boundaryId:string, sliderValue:number, isOrange:boolean): void {
+    const graphicTransparency:number = (100 - sliderValue) / 100;
     const geometryService: GeometryService = new GeometryService({
       url: GetGeometryServiceUrl()
     });
@@ -104,31 +110,68 @@ export class SoilsService {
       const geometries:Polygon[] = soilSingle.value.features.map((feature:Graphic) => {
         return feature.geometry;
       });
+      let alpha:number = graphicTransparency;
+      if (isOrange)
+      {
+        alpha = 1;
+      }
       geometryService.labelPoints(geometries).then((labelPoints:any) => {
         const labelGraphics = labelPoints.map((labelPoint:Point, i:number) => {
-          const textSymbol = {
-            type: 'text',
-            text: soilSingle.value.features[i].attributes.musym.toString(),
-            color: 'black',
-            font: {
-              size: '12px',
-              family: 'arial',
-              weight: 'bold'
-            }
-          };
           const labelPointGraphic = new Graphic({
             geometry: labelPoint,
-            symbol: textSymbol,
+            symbol: GetSoilTextSymbol(soilSingle.value.features[i].attributes.musym, isOrange, alpha),
             attributes: {
               boundaryId: boundaryId
             }
           });
           return labelPointGraphic;
         });
-      
+
         // add the labels to the map
         gl.addMany(labelGraphics);
        });
     }
+  }
+
+  updateGraphicsOpacity(soilsgl: __esri.GraphicsLayer, labelsgl: __esri.GraphicsLayer, sliderValue: number, isOrange:boolean): void {
+    const graphicTransparency:number = (100 - sliderValue) / 100;
+    if (!isOrange)
+    {
+      this.setSymbolColor(soilsgl, false, graphicTransparency);
+      this.setSymbolColor(labelsgl, false, graphicTransparency);
+    } else{
+      this.setSymbolColor(soilsgl, true, 0);
+      this.setSymbolColor(labelsgl, true, graphicTransparency);
+    }
+  }
+
+  private setSymbolColor(gl: __esri.GraphicsLayer, isOrange:boolean, alpha: number): void {
+    gl.graphics.forEach((g: __esri.Graphic) => {
+      let symbol: any;
+      switch (g.geometry.type)
+      {
+        case 'polygon':
+          let lineProps: LineProps;
+          if (!isOrange)
+          {
+            lineProps = GetDefaultLineProps();
+          } else {
+            lineProps = GetOrageLineProps();
+          }
+          const fillProps:FillProps = GetSoilFillProps(g, alpha);
+          symbol = CreatePolygonSymbol(lineProps, fillProps);
+          break;
+
+        case 'point':
+          if (isOrange)
+          {
+            alpha = 1;
+          }
+          symbol = GetSoilTextSymbol((g.symbol as TextSymbol).text, isOrange, alpha)
+          break;
+      }
+
+      g.symbol = symbol;
+    });
   }
 }
