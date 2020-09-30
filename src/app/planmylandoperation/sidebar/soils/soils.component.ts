@@ -26,7 +26,7 @@ export class SoilsComponent implements OnInit {
   areSoilsClipped:boolean = false;
   polygonGraphicsInBoundary:boolean = false;
 
-  sliderValue: number = 100;
+  sliderValue: number = 0;
   isOrangeSymbol:boolean = false;
 
   private soilsDynamicLayer: __esri.WMSLayer;
