@@ -19,7 +19,8 @@
 
   <div class="flex justify-between items-baseline py-3" *ngIf="areSoilsClipped">
     <div>0</div>
-    <mat-slider class="mat-slider-has-ticks" [thumbLabel]="true" step="5" min="0" max="100" [value]="sliderValue">
+    <mat-slider class="mat-slider-has-ticks" [thumbLabel]="true" step="5" min="0" max="100" [value]="sliderValue"
+    (input)="updateSliderValue($event.value)">
     </mat-slider>
     <div>100</div>
   </div>
