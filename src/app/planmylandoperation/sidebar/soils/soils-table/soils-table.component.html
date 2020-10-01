@@ -1,0 +1,33 @@
+<table class="table-auto">
+    <thead>
+        <tr>
+            <th class="px-4 py-1 cursor-pointer" *ngFor="let head of headElements; let hi = index"
+                (click)="updateSortImages(head)">{{head.label}}<span>
+                    <fa-icon *ngIf="!head.isSortActive" class="float-right greyColor" [icon]="faSort"></fa-icon>
+                    <fa-icon *ngIf="head.isSortActive && head.sortedAsc" class="float-right text-pmlo_secondary"
+                        [icon]="faSortUp"></fa-icon>
+                    <fa-icon *ngIf="head.isSortActive && !head.sortedAsc" class="float-right text-pmlo_secondary"
+                        [icon]="faSortDown"></fa-icon>
+                </span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let soil of soils">
+            <td class="px-4 py-1 text-center">
+                <div [ngStyle]="{'background-color': getBackgroundColor(soil.attributes)}">{{soil.attributes.musym}}
+                </div>
+            </td>
+            <td class="px-4 py-1">{{soil.attributes.muname}}</td>
+            <td class="px-4 py-1 text-right">{{getsoilAcres(soil.attributes.Shape_Area)}}</td>
+            <td class="px-4 py-1 text-right">{{getsoilPercentage(soil.attributes.Shape_Area)}}%</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr class="font-bold">
+            <td class="px-4 py-1" colspan="2">Total</td>
+            <td class="px-4 py-1 text-right">{{totalAcres}}</td>
+            <td class="px-4 py-1 text-right">100.0%</td>
+        </tr>
+    </tfoot>
+</table>
+<p class="footerNote">Note: Small deviations possibly found in the table values are due to rounding in calculations.</p>

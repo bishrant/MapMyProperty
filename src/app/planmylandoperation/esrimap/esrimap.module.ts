@@ -15,13 +15,15 @@ import { AccordionPanelModule } from 'src/app/shared/components/accordion-panel/
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModalModule } from 'src/app/shared/lib/angular-modal/modal/modal-module';
+import { SoilsTableComponent } from '../sidebar/soils/soils-table/soils-table.component';
 
 @NgModule({
   declarations: [
     EsrimapComponent,
     SensAreasComponent,
     SoilsComponent,
-    ProgressBarComponent
+    ProgressBarComponent,
+    SoilsTableComponent
   ],
   imports: [
     CommonModule,

@@ -17,6 +17,7 @@ import { TextSymbol } from 'esri/symbols';
 })
 export class SoilsService {
   @Output() showTableModal:EventEmitter<boolean> = new EventEmitter();
+  @Output() shareMultiSoils:EventEmitter<Graphic[]> = new EventEmitter();
   
   private ssurgoTabularUrl = 'https://SDMDataAccess.sc.egov.usda.gov/Tabular/post.rest';
 
@@ -82,6 +83,7 @@ export class SoilsService {
     const graphicTransparency:number = (100 - sliderValue) / 100;
     const graphicsCollection: Graphic[] = [];
     let lineProps: LineProps = GetDefaultSoilsLineProps(graphicTransparency);
+    this.shareMultiSoils.emit(soilMulti.value.features);
     soilMulti.value.features.forEach((feature: any) => {
       let fillProps: FillProps;
       if (!isOrange)

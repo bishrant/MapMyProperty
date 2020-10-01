@@ -186,6 +186,7 @@ export class SoilsComponent implements OnInit {
     this.pmloSoilLabelsGL.removeAll();
     this.pmloSoilsGL.removeAll();
     this.soilsService.showTableModal.emit(false);
+    this.soilsService.shareMultiSoils.emit([]);
   }
 
   updateSliderValue(value: number):void {

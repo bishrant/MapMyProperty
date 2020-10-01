@@ -1,0 +1,26 @@
+th {
+    position: relative;
+    background-color: #eeeeee;
+}
+th span {
+    position: absolute;
+    right: 0.125rem;
+}
+
+.greyColor {
+    color: #d3d3d3;
+}
+
+table {
+    font-size: 0.875rem;
+    min-width: 33.125rem;
+    width: 100%;
+}
+
+tr {
+    border: 0.125rem solid #dddddd;
+}
+
+.footerNote {
+    font-size: 0.625rem;
+}

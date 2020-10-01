@@ -42,11 +42,9 @@
   </div>
 </div>
 
-<app-modal #soilsTableModal [maximizable]="false" [backdrop]="false" [inViewport]="true">
+<app-modal class="pmloSoilsTable" #soilsTableModal [maximizable]="false" [backdrop]="false" [inViewport]="true">
   <ng-container class="app-modal-header">Soils Within Project Area</ng-container>
   <ng-container class="app-modal-body">
-    <h3>MODAL DIALOG</h3>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-      Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</p>
+    <pmlo-soils-table></pmlo-soils-table>
   </ng-container>
 </app-modal>
