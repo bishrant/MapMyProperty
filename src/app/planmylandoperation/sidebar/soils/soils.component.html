@@ -16,22 +16,30 @@
       <span class="checkbox-label" [ngClass]="{'disabledLabel': isIdentifyDisabled}">Identify</span>
     </label>
   </div>
-
-  <div class="flex justify-between items-baseline py-3" *ngIf="areSoilsClipped">
+<ng-container *ngIf="areSoilsClipped">
+  <div class="pt-3">Transparency</div>
+  <div class="flex justify-between items-baseline pb-1">
     <div>0</div>
     <mat-slider class="mat-slider-has-ticks" [thumbLabel]="true" step="5" min="0" max="100" [value]="sliderValue"
     (input)="updateSliderValue($event.value)">
     </mat-slider>
     <div>100</div>
   </div>
+</ng-container>
+
 
   <div class="flex justify-center mt-3">
     <button type="button" class="pmlo-btn generalBtn" (click)="clipSoils()" [disabled]="!polygonGraphicsInBoundary">Clip</button>
   </div>
 
-  <div class="flex justify-center mt-3">
-    <button type="button" class="pmlo-btn generalBtn" (click)="clearSoilGLayers()"  [disabled]="!areSoilsClipped">Clear Clipped Layer</button>
-  </div>
+  <ng-container *ngIf="areSoilsClipped">
+    <div class="flex justify-center mt-3">
+      <button type="button" class="pmlo-btn generalBtn" (click)="toggleTable()">{{ isTableVisible ? 'Hide' : 'Show' }} Table</button>
+    </div>
+    <div class="flex justify-center mt-3">
+      <button type="button" class="pmlo-btn generalBtn" (click)="clearSoilGLayers()">Clear Clipped Layer</button>
+    </div>
+  </ng-container>
 
   <div class="flex justify-center mt-3">
     <button type="button" class="pmlo-btn pmlo-secondary generalBtn" [disabled]="!areSoilsClipped">Create A Report</button>

@@ -2,7 +2,6 @@
   <div class="sidebar">
     <app-sidebar>
       <app-accordion>
-
         <app-accordion-panel title="Draw">
           <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer">
           </app-drawtools>
@@ -19,11 +18,8 @@
         <app-accordion-panel title="Elevation Profile">
           <app-elevation-profile [mapView]="mapView"></app-elevation-profile>
         </app-accordion-panel>
-
       </app-accordion>
-
     </app-sidebar>
-
   </div>
 
 </div>
@@ -45,3 +41,10 @@
     </app-graphic-store>
   </div>
 </div>
+
+<app-modal class="pmloSoilsTable" #soilsTableModal [maximizable]="false" [backdrop]="false" [inViewport]="true">
+  <ng-container class="app-modal-header">Soils Within Project Area</ng-container>
+  <ng-container class="app-modal-body">
+    <pmlo-soils-table></pmlo-soils-table>
+  </ng-container>
+</app-modal>

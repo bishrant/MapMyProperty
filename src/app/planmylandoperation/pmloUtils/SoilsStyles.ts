@@ -7,7 +7,7 @@ const GetSoilFillProps: any = (gra:__esri.Graphic, alpha:number) => {
     let hexColor: string = gra.getAttribute('HexColor');
     if (gra.getAttribute('musym') === 'W')
     {
-        hexColor = '#7ab6f5'
+        hexColor = WaterBlueHexColor;
     }
     const rgbObject: any = HexToRGB(hexColor);
     const fillProps: FillProps = {
@@ -50,4 +50,17 @@ const GetSoilTextSymbol: any = (text: string, isOrange:boolean, alpha:number) =>
       return textSymbol;
 };
 
-export { GetSoilFillProps, GetOrageLineProps, GetSoilTextSymbol }
+const GetDefaultSoilsLineProps: any = (alpha:number) => {
+    const lineProps: LineProps = {
+        style: 'solid',
+        color: { r: 105, g: 105, b: 105, a: alpha },
+        opacity: 100,
+        width: 1
+      };
+
+    return lineProps;
+};
+
+const WaterBlueHexColor: string = '#7ab6f5';
+
+export { GetSoilFillProps, GetOrageLineProps, GetSoilTextSymbol, GetDefaultSoilsLineProps, WaterBlueHexColor }

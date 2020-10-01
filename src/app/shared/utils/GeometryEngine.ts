@@ -64,4 +64,8 @@ const GetFeaturesAreaAcres = (graphics: __esri.Collection<__esri.Graphic>) => {
   return graphics.reduce(reducer, 0);
 };
 
-export { GreaterThanMaxArea, AreGraphicsEqual, GetFeaturesLength, GetFeaturesAreaAcres }
+const ConvertSquareMetersToAcres = (sqmt:number) => {
+  return sqmt * 0.00024710538146717;
+};
+
+export { GreaterThanMaxArea, AreGraphicsEqual, GetFeaturesLength, GetFeaturesAreaAcres, ConvertSquareMetersToAcres }

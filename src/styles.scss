@@ -212,3 +212,12 @@ $sliderBase: 6px;
 .pmloMap .esri-popup__header, .pmloMap .esri-popup__button {
   @apply text-white font-bold;
 }
+
+.pmloSoilsTable .ui-modal {
+  width: 37.5rem;
+  /* for resize limits use min-width, min-height, max-width, max-height in css */
+}
+
+.pmloSoilsTable .ui-modal-header {
+  @apply bg-pmlo_primary !important;
+}
