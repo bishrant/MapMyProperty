@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import FeatureSet from 'esri/tasks/support/FeatureSet';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
@@ -16,7 +16,8 @@ import { TextSymbol } from 'esri/symbols';
   providedIn: 'root'
 })
 export class SoilsService {
-
+  @Output() showTableModal:EventEmitter<boolean> = new EventEmitter();
+  
   private ssurgoTabularUrl = 'https://SDMDataAccess.sc.egov.usda.gov/Tabular/post.rest';
 
   constructor(

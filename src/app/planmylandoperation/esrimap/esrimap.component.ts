@@ -9,6 +9,7 @@ import { Store } from '@ngrx/store';
 import createMapView from 'src/app/shared/utils/CreateMapView';
 import { CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
+import { SoilsService } from '../sidebar/soils/soils.service';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -18,8 +19,8 @@ import { MapviewService } from 'src/app/shared/services/mapview.service';
 export class EsrimapComponent implements OnInit {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
-  @ViewChild('graphicsStore', { static: true })
-  private graphicsStoreEl!: GraphicsStoreComponent;
+  @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
+  @ViewChild('soilsTableModal') soilsTableModal: any;
 
   private graphicsSubcription$: any;
   mapView!: __esri.MapView // = createMapView(this.mapViewEl, this.searchBarDiv);
@@ -34,7 +35,8 @@ export class EsrimapComponent implements OnInit {
 
   constructor (
     private store: Store<AppState>,
-    private mapViewService: MapviewService) {}
+    private mapViewService: MapviewService,
+    private soilsService:SoilsService) {}
   @HostListener('keydown.control.z') undoFromKeyboard () {
     this.graphicsStoreEl.undo();
   }
@@ -131,6 +133,14 @@ export class EsrimapComponent implements OnInit {
   ngOnInit () {
     this.initializeMap();
     this.graphicsSubcription$ = this.listenToGraphicsStore();
+    this.soilsService.showTableModal.subscribe((show:boolean) => {
+      if (show)
+      {
+        this.soilsTableModal.show();
+      } else {
+        this.soilsTableModal.hide();
+      }
+    });
   }
 
   ngOnDestroy (): void {

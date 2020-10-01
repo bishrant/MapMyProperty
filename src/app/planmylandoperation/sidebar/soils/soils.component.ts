@@ -25,6 +25,7 @@ export class SoilsComponent implements OnInit {
   isVisibleChecked:boolean = false;
   areSoilsClipped:boolean = false;
   polygonGraphicsInBoundary:boolean = false;
+  isTableVisible:boolean = false;
 
   sliderValue: number = 0;
   isOrangeSymbol:boolean = false;
@@ -93,6 +94,14 @@ export class SoilsComponent implements OnInit {
         }
       });
     });
+
+    this.soilsService.showTableModal.subscribe((show:boolean) => {
+      if (show) {
+        this.isTableVisible = true;
+      } else {
+        this.isTableVisible = false;
+      }
+    });
   }
 
   soilsVisibleChanged(isChecked: boolean)
@@ -127,6 +136,7 @@ export class SoilsComponent implements OnInit {
           const boundaryId:string = inputBoundary.attributes.id;
           this.soilsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId, this.sliderValue, this.isOrangeSymbol);
           this.soilsService.addSoilLabelsToMap(this.pmloSoilLabelsGL, result[1], boundaryId, this.sliderValue, this.isOrangeSymbol);
+          this.soilsService.showTableModal.emit(true);
           this.spinner.hide();
         }
       });
@@ -175,6 +185,7 @@ export class SoilsComponent implements OnInit {
   clearSoilGLayers():void {
     this.pmloSoilLabelsGL.removeAll();
     this.pmloSoilsGL.removeAll();
+    this.soilsService.showTableModal.emit(false);
   }
 
   updateSliderValue(value: number):void {
@@ -184,5 +195,14 @@ export class SoilsComponent implements OnInit {
       this.isOrangeSymbol = true;
     }
     this.soilsService.updateGraphicsOpacity(this.pmloSoilsGL, this.pmloSoilLabelsGL, value, this.isOrangeSymbol);
+  }
+
+  toggleTable():void {
+    if (this.isTableVisible)
+    {
+      this.soilsService.showTableModal.emit(false);
+    } else {
+      this.soilsService.showTableModal.emit(true);
+    }
   }
 }
