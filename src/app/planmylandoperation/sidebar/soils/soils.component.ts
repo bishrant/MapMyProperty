@@ -8,6 +8,9 @@ import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { DialogService } from 'src/app/shared/components/dialogs/dialog.service';
 import { CreateGL } from '../../pmloUtils/layers';
 import { GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
+import { CreatePolygonSymbol } from 'src/app/shared/utils/GraphicStyles';
+import { FillProps, LineProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
+import { GetSelectedSoilFillProps, GetSelectedSoilLineProps } from '../../pmloUtils/SoilsStyles';
 
 @Component({
   selector: 'pmlo-soils',
@@ -100,6 +103,25 @@ export class SoilsComponent implements OnInit {
         this.isTableVisible = true;
       } else {
         this.isTableVisible = false;
+      }
+    });
+
+    this.soilsService.selectPolygonFromTable.subscribe((soil:any) => {
+      if (soil === null)
+      {
+        this.pmloSoilsGL.graphics.pop();
+      } else {
+        const prevSelectedGraphic:__esri.Graphic = this.pmloSoilsGL.graphics.find(el => el.attributes.isFromSelection);
+        if (prevSelectedGraphic !== undefined)
+        {
+          this.pmloSoilsGL.graphics.pop();
+        }
+        const fillProps:FillProps = GetSelectedSoilFillProps();
+        const lineProps:LineProps = GetSelectedSoilLineProps();
+        const clonedGrahic: any = soil.clone();
+        clonedGrahic.attributes.isFromSelection = true;
+        clonedGrahic.symbol = CreatePolygonSymbol(lineProps, fillProps);
+        this.pmloSoilsGL.add(clonedGrahic);
       }
     });
   }

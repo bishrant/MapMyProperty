@@ -18,6 +18,7 @@ import { TextSymbol } from 'esri/symbols';
 export class SoilsService {
   @Output() showTableModal:EventEmitter<boolean> = new EventEmitter();
   @Output() shareMultiSoils:EventEmitter<Graphic[]> = new EventEmitter();
+  @Output() selectPolygonFromTable:EventEmitter<Graphic> = new EventEmitter();
   
   private ssurgoTabularUrl = 'https://SDMDataAccess.sc.egov.usda.gov/Tabular/post.rest';
 

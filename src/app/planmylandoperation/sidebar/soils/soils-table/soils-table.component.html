@@ -12,7 +12,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let soil of soils">
+        <tr *ngFor="let soil of soils" (click)="selectSoil(soil)" class="cursor-pointer" [ngClass]="{'selectedSoil': selectedSoil === soil}">
             <td class="px-4 py-1 text-center">
                 <div [ngStyle]="{'background-color': getBackgroundColor(soil.attributes)}">{{soil.attributes.musym}}
                 </div>
