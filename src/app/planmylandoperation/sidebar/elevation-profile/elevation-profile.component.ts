@@ -20,12 +20,15 @@ export class ElevationProfileComponent {
   faQuestionCircle = faQuestionCircle;
   elvUtils: any;
   Plotly: any;
+  isReversed: boolean = false;
 
   chartDataObservable$: Subscription;
   drawingObservable$: Subscription;
   closePopup$: Subscription;
 
-  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService) { }
+  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService) {
+    this.isReversed = elevationService.isReversed;
+  }
 
   onResizeEnd($event) {
     console.log("REISE ", $event, $event.height);
