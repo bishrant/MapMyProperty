@@ -20,6 +20,7 @@ export class ModalComponent implements AfterViewChecked {
   @Input() headerBackgroundColor = 'darkgray';
 
   @Output() closeModal: EventEmitter<boolean> = new EventEmitter();
+  @Output() resizeEnd: EventEmitter<ResizableEvent> = new EventEmitter();
 
   @ViewChild('modalRoot', { static: false }) modalRoot: ElementRef;
   @ViewChild('modalBody', { static: false }) modalBody: ElementRef;
