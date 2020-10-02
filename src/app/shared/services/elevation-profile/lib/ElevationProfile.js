@@ -78,15 +78,6 @@ var ElevationProfile = /** @class */ (function (_super) {
     // <div class={this.classes(CSS.esriWidget, CSS.root, !this.showWidget ? CSS.chartHidden: null )}>
     ElevationProfile.prototype.render = function () {
         console.log(this.viewModel.state);
-        // if (this.viewModel.state !== '') {
-        //   console.log('need to destroy');
-        //   const div = document.getElementById('myDiv') as any;
-        //   if (div) {
-        //     div.outerHTML = div.outerHTML;
-        //     Plotly.purge('myDiv');
-        //     this.viewModel.ptArrayOriginal = null;
-        //   }
-        // }
         var state = this.viewModel.state;
         return (tsx("div", { class: this.classes(CSS.esriWidget, CSS.root, !this.viewModel.showWidget ? CSS.chartHidden : null) },
             tsx("div", { id: "myDiv", class: this.classes({

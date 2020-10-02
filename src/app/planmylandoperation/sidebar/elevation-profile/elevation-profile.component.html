@@ -1,7 +1,6 @@
 <div class="py-3">
-  <mat-icon class="smallIcon right">help</mat-icon>
-</div>
-<div>
+  <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle"></fa-icon>
+  <br>
   <div class="centerAlign">
     <div>
       <ul class="btn-group">
@@ -20,7 +19,7 @@
     <br>
     <div class="centerAlign">
       <label class="inline-flex items-center mt-3">
-        <input type="checkbox" class="form-checkbox h-5 w-5 text-mmp_primary" [(ngModel)]="baseMSL">
+        <input type="checkbox" class="form-checkbox h-5 w-5 text-mmp_primary" [(ngModel)]="isMSL">
         <span class="ml-2 text-black">Base Sea Level</span>
       </label>
     </div>
@@ -35,21 +34,20 @@
 
 
   </div>
-  <br>
 </div>
 
-<app-modal #elevationProfileModal class="panel-demo1" [maximizable]="false" [backdrop]="true"
-  (closeModal)="modelClosed()">
+<app-modal #elevationProfileModal [maximizable]="false" [backdrop]="true"
+  (closeModal)="modelClosed()" (resizeEnd)="onResizeEnd($event)">
   <ng-container class="app-modal-header">Elevation Profile</ng-container>
   <ng-container class="app-modal-body">
-    <div #mapViewNode style="height: 500px; width: 100%;position: relative;">
+    <div #mapViewNode style="height: 340px; width: 100%;position: relative;">
       <div id="gd">
       </div>
     </div>
   </ng-container>
   <ng-container class="app-modal-footer">
     <button (click)="reverseProfile()" class="profileDirection" title="reveser">
-      <i title="reveser"></i>
+      <i title="reveser" class="fas fa-arrow-left"></i> Reverse {{isReversed}}
     </button>
 
     <span class="createreportBar">

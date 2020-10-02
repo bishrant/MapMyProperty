@@ -41,6 +41,12 @@ class ElevationProfileViewModel extends Accessor {
   @property()
   error: string = "";
 
+  @property()
+  isMSL: boolean = false;
+
+  @property()
+  divId: string = 'elevation-plotly';
+
   GetElevationData(graphic: Graphic) {
     let feat = graphic.toJSON();
     feat.atttributes = { OID: 1 };
@@ -86,13 +92,13 @@ class ElevationProfileViewModel extends Accessor {
     } else {
       data = [normalLine] as any;
     }
-    const options = GetGraphOptions(pts, unit);
+    const options = GetGraphOptions(pts, unit, this.isMSL, this.divId);
     return [data, options, pts];
   }
 
   initializeHover(Plotly: any, _pts: any, mapView: __esri.MapView) {
     console.log(_pts);
-    var myPlot: any = document.getElementById("myDiv");
+    var myPlot: any = document.getElementById(this.divId);
     myPlot
       .on("plotly_hover", function (data: any) {
         const pId = data.points[0].pointIndex;
@@ -173,19 +179,19 @@ class ElevationProfileViewModel extends Accessor {
           }
         })
         const printTask = new PrintTask({ url: 'https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/Shared/ExportWebMap/GPServer/Export%20Web%20Map/execute' })
-    
+
         const printURLData: any = await printTask.execute(printParameters);
         const _title = document.getElementById('elevationProfileTitle') as any;
         const img = await this.exportImage();
-    
-    
+
+
         var reportData = {
           title: _title.value,
           summaryStats: this.GetStatistics(),
           graphImage: (img as any).split("data:image/png;base64,")[1],
           mapLink: printURLData.url
         };
-    
+
         console.log(reportData);
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -210,7 +216,7 @@ class ElevationProfileViewModel extends Accessor {
 
   exportImage() {
     return new Promise((resolve: any, reject: any) => {
-      var myPlot: any = document.getElementById('myDiv');
+      var myPlot: any = document.getElementById(this.divId);
       Plotly.toImage(myPlot, { height: 400, width: 856 })
         .then(function (url: any) { resolve(url); })
         .catch((err: any) => reject(err))
