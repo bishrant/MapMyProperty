@@ -4,7 +4,7 @@ import ElevationProfileViewModel from './ElevationProfileViewModel';
 import { ElevationProfileProperties } from './interfaces';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import Graphic from 'esri/Graphic';
-import * as Plotly from './lib/plotly-basic-1.55.2.min.js';
+// import * as Plotly from './lib/plotly-basic-1.55.2.min.js';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 @Injectable()
@@ -14,10 +14,12 @@ export class ElevationProfileService {
   state: EventEmitter<any> = new EventEmitter();
 
   public mapView: __esri.MapView;
-  public sketchVM: any;
+  public sketchVM: __esri.SketchViewModel;
   private reveresed: boolean = false;
   public reportURL: string = 'https://localhost:44358/api/CreateElevationProfileReport';
   public plot: any;
+  public Plotly: any;
+  private divId: String;
   private graphicsLayer = new GraphicsLayer();
   viewModel: ElevationProfileViewModel = new ElevationProfileViewModel();
 
@@ -25,6 +27,7 @@ export class ElevationProfileService {
 
   public initialize(props: ElevationProfileProperties) {
     this.mapView = props.mapView;
+    this.divId = props.divId;
     this.viewModel.unit = props.unit;
     this.viewModel.slopeThreshold = props.slopeThreshold;
     this.mapView.map.add(this.graphicsLayer);
@@ -49,12 +52,12 @@ export class ElevationProfileService {
         console.log(evt.graphic);
         this.viewModel.userGraphic = evt.graphic;
         console.log(evt.graphic);
-      
+        this.drawingComplete.emit(evt.graphic);
         that.displayLineChart(evt.graphic);
       }
     })
   }
-//  this.drawingComplete.emit(evt.graphic);
+//
 
   private async displayLineChart(graphic: Graphic) {
     this.viewModel.state = "loading";
@@ -86,14 +89,47 @@ export class ElevationProfileService {
     [data, options, ptArrayNew] = [null, null, null];
   }
 
+ public reverseProfile() {
+    this.reveresed = !this.reveresed;
+    const div = document.getElementById('myDiv') as any;
+    this.Plotly.purge('myDiv');
+    div.outerHTML = div.outerHTML;
+
+    let reversedPtArray = JSON.parse(JSON.stringify(this.viewModel.ptArrayOriginal));
+    let reveresedArrayNew;
+    if (this.reveresed) {
+      reveresedArrayNew = JSON.parse(JSON.stringify(reversedPtArray.reverse()));
+    } else {
+      reveresedArrayNew = JSON.parse(JSON.stringify(this.viewModel.ptArrayOriginal));
+    }
+    const [data, options, ptArrayNew] = this.viewModel.getChartData(reveresedArrayNew, this.viewModel.unit);
+    this._renderChart(data, options);
+    // console.log(reveresedArrayNew);
+    this.viewModel.initializeHover(this.Plotly, ptArrayNew, this.mapView);
+    reveresedArrayNew = undefined;
+    reversedPtArray = undefined;
+  }
+
+
 
   protected _renderChart(data: any[], options: any): any {
     console.log(data, options);
     this.chartData$.next({data, options});
-    
+    this.Plotly.react(this.divId, data, options, { displayModeBar: false, responsive: true, autosize: true });
   }
 
   public start(tool: 'polyline' | 'freehand') {
     this.sketchVM.create('polyline', { mode: tool === 'freehand' ? 'freehand' : 'click' });
+  }
+
+  public close() {
+    this.graphicsLayer.removeAll();
+    this.sketchVM.destroy();
+  }
+
+  async createReport() {
+    await this.mapView.goTo(this.sketchVM.layer.graphics);
+    await this.viewModel.printReport(this.mapView, this.reportURL);
+
   }
 }

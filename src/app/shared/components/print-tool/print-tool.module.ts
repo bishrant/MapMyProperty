@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MapPrintPreviewDialog, PrintToolLoadingComponent } from './map-dialog.componenet';
+// import {  PrintToolLoadingComponent } from './map-dialog.componenet';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoaderModule } from '../loader/loader.module';
 import { HttpClientModule } from '@angular/common/http';
@@ -17,7 +17,7 @@ import { ModalModule } from '../../lib/angular-modal/modal/modal-module';
 import { AccordionPanelModule } from '../accordion-panel/accordion.panel.module';
 
 @NgModule({
-  declarations: [PrintToolComponent, MapPrintPreviewDialog, PrintToolLoadingComponent],
+  declarations: [PrintToolComponent],
   imports: [
     CommonModule,
     InfobuttonModule,
@@ -36,6 +36,6 @@ import { AccordionPanelModule } from '../accordion-panel/accordion.panel.module'
     AccordionPanelModule
   ],
   exports: [PrintToolComponent],
-  entryComponents: [MapPrintPreviewDialog, PrintToolLoadingComponent]
+  // entryComponents: [ PrintToolLoadingComponent]
 })
 export class PrintToolModule { }
