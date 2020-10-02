@@ -7,6 +7,7 @@
      [east]="true"
      [southEast]="true"
      (resizing)="onResize($event)"
+     (resizeEnd)="resizeEnd.emit($event)"
      appDraggable
      [dragEventTarget]="dragEventTarget"
      [inViewport]="inViewport"
