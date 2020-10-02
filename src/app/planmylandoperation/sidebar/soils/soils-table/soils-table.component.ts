@@ -21,6 +21,8 @@ export class SoilsTableComponent implements OnInit {
   faSortUp = faSortUp;
   faSortDown = faSortDown;
 
+  selectedSoil:__esri.Graphic;
+
   private totalAreaSqMt = 0;
 
   constructor(
@@ -68,6 +70,17 @@ export class SoilsTableComponent implements OnInit {
         }
       }
     );
+  }
+
+  selectSoil(soil:__esri.Graphic):void {
+    if (this.selectedSoil === soil)
+    {
+      this.selectedSoil = undefined;
+      this.soilsService.selectPolygonFromTable.emit(null);
+    } else {
+      this.selectedSoil = soil;
+      this.soilsService.selectPolygonFromTable.emit(soil);
+    }    
   }
 
   private sortByAttribute(attr:string, sortedAsc:boolean):void {

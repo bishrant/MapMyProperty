@@ -63,4 +63,27 @@ const GetDefaultSoilsLineProps: any = (alpha:number) => {
 
 const WaterBlueHexColor: string = '#7ab6f5';
 
-export { GetSoilFillProps, GetOrageLineProps, GetSoilTextSymbol, GetDefaultSoilsLineProps, WaterBlueHexColor }
+const GetSelectedSoilFillProps: any = () => {
+    const fillProps: FillProps = {
+        color: {r: 0, g: 0, b: 0, a: 1 },
+        style: 'diagonal-cross',
+        opacity: 100
+    };
+
+    return fillProps;
+};
+
+const GetSelectedSoilLineProps: any = () => {
+    const lineProps: LineProps = {
+        style: 'solid',
+        color: { r: 0, g: 255, b: 0, a: 1 },
+        opacity: 100,
+        width: 2
+      };
+
+    return lineProps;
+};
+
+
+
+export { GetSoilFillProps, GetOrageLineProps, GetSoilTextSymbol, GetDefaultSoilsLineProps, WaterBlueHexColor, GetSelectedSoilFillProps, GetSelectedSoilLineProps }
