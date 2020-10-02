@@ -8,6 +8,7 @@ export interface ElevationProfileViewModelProperties {
   slopeThreshold?: number | undefined;
   mapView: any;
   unit: ElevationUnits;
+  divId: String;
 }
 
 export type ElevationUnits = 'meters' | 'feet' | 'kilometers' | 'miles' | 'nautical-miles' | 'yards';

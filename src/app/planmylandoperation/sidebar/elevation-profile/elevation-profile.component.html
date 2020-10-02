@@ -3,17 +3,20 @@
 </div>
 <div>
   <div class="centerAlign">
-    <mat-button-toggle-group (change)="startDrawingGraphics($event.value)" class="toggleBtnGroup">
-      <mat-button-toggle value="polyline" aria-label="Line" class="toggleBtn">
-        Draw Line
-      </mat-button-toggle>
-      <span> &nbsp;</span>
-      <mat-button-toggle value="freehand" aria-label="Point" class="toggleBtn">
-        Draw FreeHand
-      </mat-button-toggle>
-
-    </mat-button-toggle-group>
-
+    <div>
+      <ul class="btn-group">
+        <li>
+          <input type="radio" id="draw_line" name="amount" [value]="'polyline'" aria-label="Line"
+            (ngModelChange)="startDrawingGraphics($event)" [(ngModel)]="drawTool" />
+          <label for="draw_line" class="pmlo-btn pmlo-secondary generalBtn">Draw Line</label>
+        </li>
+        <li>
+          <input type="radio" id="draw_freehand" name="amount" [value]="'freehand'" aria-label="Point"
+            (ngModelChange)="startDrawingGraphics($event)" [(ngModel)]="drawTool" />
+          <label for="draw_freehand">Draw FreeHand</label>
+        </li>
+      </ul>
+    </div>
     <br>
     <div class="centerAlign">
       <label class="inline-flex items-center mt-3">
@@ -29,6 +32,30 @@
         Clear
       </button>
     </div>
+
+
   </div>
   <br>
 </div>
+
+<app-modal #elevationProfileModal class="panel-demo1" [maximizable]="false" [backdrop]="true"
+  (closeModal)="modelClosed()">
+  <ng-container class="app-modal-header">Elevation Profile</ng-container>
+  <ng-container class="app-modal-body">
+    <div #mapViewNode style="height: 500px; width: 100%;position: relative;">
+      <div id="gd">
+      </div>
+    </div>
+  </ng-container>
+  <ng-container class="app-modal-footer">
+    <button (click)="reverseProfile()" class="profileDirection" title="reveser">
+      <i title="reveser"></i>
+    </button>
+
+    <span class="createreportBar">
+      <b> Project Name: </b>
+      <input type="text" id="elevationProfileTitle" class="titleInput" aria-label="project name" />
+      <button (click)="createReport()" class="createReportBtn">Create Report</button>
+    </span>
+  </ng-container>
+</app-modal>
