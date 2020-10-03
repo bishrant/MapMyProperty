@@ -69,6 +69,7 @@ export class ElevationProfileComponent {
   }
 
   reverseProfile() {
+    this.isReversed = !this.isReversed;
     this.elevationService.reverseProfile();
   }
 
