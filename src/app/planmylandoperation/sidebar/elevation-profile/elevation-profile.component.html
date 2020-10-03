@@ -46,14 +46,15 @@
     </div>
   </ng-container>
   <ng-container class="app-modal-footer">
-    <button (click)="reverseProfile()" class="profileDirection" title="reveser">
-      <i title="reveser" class="fas fa-arrow-left"></i> Reverse {{isReversed}}
+    <button (click)="reverseProfile()" class="pmlo-btn pmlo-secondary generalBtn" title="reveser">
+      <span class="{{isReversed ? 'icon-arrow-right': 'icon-arrow-left'}}"></span>
+      Reverse
     </button>
 
     <span class="createreportBar">
       <b> Project Name: </b>
       <input type="text" id="elevationProfileTitle" class="titleInput" aria-label="project name" />
-      <button (click)="createReport()" class="createReportBtn">Create Report</button>
+      <button (click)="createReport()" class="pmlo-btn pmlo-secondary generalBtn">Create Report</button>
     </span>
   </ng-container>
 </app-modal>

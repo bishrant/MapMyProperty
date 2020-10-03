@@ -62,9 +62,9 @@ const CreateNormalElevationLine = (ptArray: any, unit: ElevationUnits) => {
       width: 2,
     },
     hovertemplate:
-      "%{y:.2f} "+ abbr +" elevation<br>" +
-      "%{x:.2f} "+ labbr +" from start<br>" +
-      "%{customdata[0]:.2f} "+ abbr +" net elevation change<br>" +
+      "%{y:.2f} " + abbr + " elevation<br>" +
+      "%{x:.2f} " + labbr + " from start<br>" +
+      "%{customdata[0]:.2f} " + abbr + " net elevation change<br>" +
       "%{customdata[1]:.2f}% forward slope",
   };
 };
@@ -106,7 +106,7 @@ const GetGraphOptions = (ptArray: any, unit: ElevationUnits, isMSL: boolean, div
       linewidth: 2,
       separatethousands: true,
       title: {
-        text: "<b>Distance ("+unit+")</b>",
+        text: "<b>Distance (" + unit + ")</b>",
         standoff: 10,
         font: {
           size: 15,
