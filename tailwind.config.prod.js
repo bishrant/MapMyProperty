@@ -19,17 +19,15 @@ module.exports = {
     customForms: theme => ({
       default: {
         checkbox: {
-
+          borderColor: 'black',
           '&:checked': {
-            borderColor: 'orange',
-            backgroundColor: 'red',
+            borderColor: 'black',
             backgroundSize: '100% 100%',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
           },
           'checkbox[checked="true"]': {
-            borderColor: 'orange',
-            backgroundColor: 'red',
+            borderColor: 'black',
             backgroundSize: '100% 100%',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',

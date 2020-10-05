@@ -17,10 +17,13 @@ const CreateHigherSlopeLine = (higherSlopeArray: any) => {
     y: higherSlopeArray[1],
     fill: "tozeroy",
     type: "scatter",
+    smoothing: 1,
     fillcolor: "transparent",
     line: {
       color: "rgb(255,0,0)",
       width: 3,
+      shape: "linear",
+      smoothing: 1
     },
     marker: {
       color: "transparent",
@@ -50,6 +53,7 @@ const CreateNormalElevationLine = (ptArray: any, unit: ElevationUnits) => {
     customdata: ptArray.map((p: any) => [p[2] - ptArray[0][2], p[4]]),
     fill: "tozeroy",
     type: "scatter",
+    smoothing: 1,
     mode: "markers+lines",
     marker: {
       color: "transparent",
@@ -60,6 +64,8 @@ const CreateNormalElevationLine = (ptArray: any, unit: ElevationUnits) => {
     line: {
       color: "rgb(0,0,0)",
       width: 2,
+      shape: "linear",
+      smoothing: 1
     },
     hovertemplate:
       "%{y:.2f} " + abbr + " elevation<br>" +

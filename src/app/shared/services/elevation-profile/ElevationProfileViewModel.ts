@@ -101,29 +101,39 @@ class ElevationProfileViewModel extends Accessor {
     var myPlot: any = document.getElementById(this.divId);
     myPlot
       .on("plotly_hover", function (data: any) {
-        const pId = data.points[0].pointIndex;
-        const pt = _pts[pId];
-        var point: any = {
-          type: "point", // autocasts as new Point()
-          x: pt[0],
-          y: pt[1],
-          spatialReference: { wkid: 102100 },
-        };
+        try {
+          const pId = data.points[0].pointIndex;
+          const pt = _pts[pId];
+          var point: any = {
+            type: "point", // autocasts as new Point()
+            x: pt[0],
+            y: pt[1],
+            spatialReference: { wkid: 102100 },
+          };
 
-        // Create a symbol for drawing the point
-        var markerSymbol: any = {
-          type: "simple-marker",
-          style: "cross",
-          color: "cyan",
-        };
+          // Create a symbol for drawing the point
+          var markerSymbol: any = {
+            type: "simple-marker",
+            style: "cross",
+            color: "cyan",
+            outline: {  // autocasts as new SimpleLineSymbol()
+              color: [ 0, 255,255],
+              width: "2px"
+            }
+          };
 
-        // Create a graphic and add the geometry and symbol to it
-        var pointGraphic = new Graphic({
-          geometry: point,
-          symbol: markerSymbol,
-        });
-        mapView.graphics.removeAll();
-        mapView.graphics.add(pointGraphic);
+          // Create a graphic and add the geometry and symbol to it
+          var pointGraphic = new Graphic({
+            geometry: point,
+            symbol: markerSymbol,
+          });
+          mapView.graphics.removeAll();
+          mapView.graphics.add(pointGraphic);
+        } catch (error) {
+          console.log(error);
+
+        }
+
       })
       .on("plotly_unhover", function (data: any) {
         mapView.graphics.removeAll();

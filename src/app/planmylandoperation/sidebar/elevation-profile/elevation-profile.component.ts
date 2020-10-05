@@ -13,7 +13,9 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 export class ElevationProfileComponent {
   @ViewChild('elevationProfileModal') elevationProfileModal: any;
   @Input() mapView: any;
+  @Input() slopeThreshold: number = 8;
 
+  headerBgColor = '#353535'
   drawTool: String;
   isMSL = false;
   isElevationProfileToolActive = false;
@@ -40,7 +42,7 @@ export class ElevationProfileComponent {
     });
 
     this.elvUtils = undefined;
-    this.elvUtils = this.elevationService.initialize({ mapView: this.mapView, slopeThreshold: 4, unit: 'feet', divId: 'gd', isMSL: this.isMSL });
+    this.elvUtils = this.elevationService.initialize({ mapView: this.mapView, slopeThreshold: this.slopeThreshold, unit: 'feet', divId: 'gd', isMSL: this.isMSL });
     this.elvUtils.start(value);
 
     this.drawingObservable$ = this.elevationService.drawingComplete.subscribe((graphics: any) => {
