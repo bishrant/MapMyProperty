@@ -37,6 +37,7 @@ export class ElevationProfileComponent {
     this.elevationService.resizeChart($event.width - 30, $event.height - 90);
   }
   startDrawingGraphics(value: any) {
+
     import('../../../shared/services/elevation-profile/lib/plotly.js').then((_plotly: any) => {
       this.Plotly = _plotly;
     });
@@ -76,6 +77,7 @@ export class ElevationProfileComponent {
   }
 
   createReport() {
+    // this.loaderService.isLoading.next(true);
     this.elevationService.createReport();
   }
 }
