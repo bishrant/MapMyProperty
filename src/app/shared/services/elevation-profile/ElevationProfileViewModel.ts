@@ -47,7 +47,7 @@ class ElevationProfileViewModel extends Accessor {
   @property()
   divId: string = 'elevation-plotly';
 
-  GetElevationData(graphic: Graphic) {
+  GetElevationData(graphic: Graphic, elevationGPServiceURL: string) {
     let feat = graphic.toJSON();
     feat.atttributes = { OID: 1 };
     var myHeaders = new Headers();
@@ -71,10 +71,7 @@ class ElevationProfileViewModel extends Accessor {
       body: urlencoded,
       redirect: "follow",
     };
-    return fetch(
-      "https://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile/execute",
-      requestOptions
-    );
+    return fetch(elevationGPServiceURL, requestOptions);
   }
 
   getChartData(pts: any, unit: ElevationUnits) {
@@ -174,7 +171,7 @@ class ElevationProfileViewModel extends Accessor {
     }
   }
 
-  async printReport(mapView: MapView, reportURL: string) {
+  async printReport(mapView: MapView, reportURL: string, exportMapGPServiceURL: string) {
     return new Promise(async (resolve: any, reject: any) => {
       try {
         const printTemplate = new PrintTemplate({
@@ -188,7 +185,7 @@ class ElevationProfileViewModel extends Accessor {
             f: 'json'
           }
         })
-        const printTask = new PrintTask({ url: 'https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/Shared/ExportWebMap/GPServer/Export%20Web%20Map/execute' })
+        const printTask = new PrintTask({ url: exportMapGPServiceURL })
 
         const printURLData: any = await printTask.execute(printParameters);
         const _title = document.getElementById('elevationProfileTitle') as any;
@@ -212,13 +209,12 @@ class ElevationProfileViewModel extends Accessor {
           redirect: "follow",
         };
         const reportResponse: any = await fetch(reportURL, requestOptions).then((response: any) => response.json())
-        const rr = reportResponse;
-        console.log("Final link ", rr);
-
+        resolve(reportResponse)
       } catch (error) {
         this.state = "error";
         this.error = error;
         console.error(error);
+        reject(error);
       }
     })
 

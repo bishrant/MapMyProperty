@@ -5,6 +5,8 @@ import { ElevationProfileProperties } from './interfaces';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import Graphic from 'esri/Graphic';
 import { ReplaySubject } from 'rxjs';
+import { AppConfiguration } from 'src/config';
+import { LoaderService } from '../Loader.service';
 
 @Injectable()
 export class ElevationProfileService {
@@ -15,13 +17,14 @@ export class ElevationProfileService {
   public mapView: __esri.MapView;
   public sketchVM: __esri.SketchViewModel;
   private reveresed: boolean = false;
-  public reportURL: string = 'https://localhost:44358/api/CreateElevationProfileReport';
   public plot: any;
   public Plotly: any;
   private graphicsLayer = new GraphicsLayer();
   viewModel: ElevationProfileViewModel = new ElevationProfileViewModel();
 
-  constructor() { }
+  constructor(private config: AppConfiguration, private loaderService: LoaderService) {
+
+   }
 
   public initialize(props: ElevationProfileProperties) {
     this.mapView = props.mapView;
@@ -68,7 +71,7 @@ export class ElevationProfileService {
     this.viewModel.showWidget = true;
     try {
 
-      // let elevationData = await this.viewModel.GetElevationData(graphic);
+      // let elevationData = await this.viewModel.GetElevationData(graphic, this.config.elevationGPServiceURL);
       // const result = await elevationData.text();
       // const resultJson = JSON.parse(result);
       // console.log(resultJson);
@@ -142,8 +145,19 @@ export class ElevationProfileService {
   }
 
   async createReport() {
+    this.loaderService.isLoading.next(true);
     await this.mapView.goTo(this.sketchVM.layer.graphics);
-    await this.viewModel.printReport(this.mapView, this.reportURL);
+    this.viewModel.printReport(this.mapView, this.config.elevationProfileReportURL, this.config.exportMapGPServiceURL)
+    .then((response: any) => {
+      console.log(response);
+      window.open(response.fileName, "_blank");
+    })
+    .catch((e:any) => {
+      console.error(e);
+    })
+    .finally(() => {
+      this.loaderService.isLoading.next(false);
+    })
 
   }
 }

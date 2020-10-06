@@ -1,4 +1,7 @@
 {
-  "loggingURL": "https://txfipdev.tfs.tamu.edu/MMPReport/api/logs",
-  "printGPServiceURL": "https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Shared/PrintUsingPro/GPServer/PrintUsingPro"
+  "loggingURL": "https://txfipdev.tfs.tamu.edu/AppErrorLogger/api/logs",
+  "printGPServiceURL": "https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Shared/PrintUsingPro/GPServer/PrintUsingPro",
+  "exportMapGPServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/Shared/ExportWebMap/GPServer/Export%20Web%20Map/execute",
+  "elevationProfileReportURL": "https://txfipdev.tfs.tamu.edu/MMPReport/api/CreateElevationProfileReport",
+  "elevationGPServiceURL": "https://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile/execute"
 }
