@@ -44,7 +44,6 @@ export class ModalComponent implements AfterViewChecked {
 
   ngAfterViewChecked() {
     if (this.executePostDisplayActions) {
-      // this.center();
       if (!this.hasBeenDraggedBefore) {this.center()}
       this.executePostDisplayActions = false;
     }
@@ -61,7 +60,6 @@ export class ModalComponent implements AfterViewChecked {
 
   onDragEnd($event) {
     this.hasBeenDraggedBefore = true;
-    // console.log("Drag end", $event);
   }
 
   @HostListener('window:resize')
