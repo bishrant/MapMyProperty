@@ -48,10 +48,12 @@ export class ElevationProfileComponent {
 
     this.drawingObservable$ = this.elevationService.drawingComplete.subscribe((graphics: any) => {
       this.loaderService.isLoading.next(true);
+      console.time('graph')
       this.chartDataObservable$ = this.elevationService.chartData$.subscribe(async (d: any) => {
         this.elevationService.Plotly = this.Plotly;
         this.elevationProfileModal.show();
         this.loaderService.isLoading.next(false);
+        console.timeEnd('graph')
       });
     })
   }
@@ -77,6 +79,8 @@ export class ElevationProfileComponent {
   }
 
   createReport() {
+    // x=2;
+    // throw new Error("test");
     // this.loaderService.isLoading.next(true);
     this.elevationService.createReport();
   }

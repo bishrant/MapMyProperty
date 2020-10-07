@@ -17,7 +17,6 @@ export class LoaderComponent {
   constructor(private loaderService: LoaderService) {
 
     this.loaderService.isLoading.subscribe((v) => {
-      console.log(v);
       this.loading = v;
     });
 

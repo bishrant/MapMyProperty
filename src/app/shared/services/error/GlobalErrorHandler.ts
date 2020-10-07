@@ -21,7 +21,7 @@ export class GlobalErrorHandler implements ErrorHandler {
         if (error instanceof HttpErrorResponse) {
             // server error
             message = errorService.getServerErrorMessage(error);
-            // notifier.showError(message);
+            notifier.showError(message);
             stackTrace = error.error.stack ? error.error.stack : 'Not Available';
             stackTrace = stackTrace.replace(/\n/gi, '\n\n');
         } else {
@@ -32,7 +32,7 @@ export class GlobalErrorHandler implements ErrorHandler {
                 errorName = error.rejection.name;
             } else {
                 message = errorService.getClientErrorMessage(error);
-                // notifier.showError(message);
+                notifier.showError(message);
                 stackTrace = error.stack? error.stack.replace(/\n/gi, '\n\n'): 'Not Available';
             }
         }
