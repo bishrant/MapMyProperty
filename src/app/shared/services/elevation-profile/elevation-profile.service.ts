@@ -22,9 +22,7 @@ export class ElevationProfileService {
   private graphicsLayer = new GraphicsLayer();
   viewModel: ElevationProfileViewModel = new ElevationProfileViewModel();
 
-  constructor(private config: AppConfiguration, private loaderService: LoaderService) {
-
-   }
+  constructor(private config: AppConfiguration, private loaderService: LoaderService) {  }
 
   public initialize(props: ElevationProfileProperties) {
     this.mapView = props.mapView;
@@ -91,7 +89,7 @@ export class ElevationProfileService {
     let d = JSON.parse(JSON.stringify(dd));
     let [data, options, ptArrayNew] = this.viewModel.getChartData(d, this.viewModel.unit);
     this._renderChart(data, options);
-    this.viewModel.initializeHover(this.Plotly, ptArrayNew, this.mapView);
+    this.viewModel.initializeHover(this.Plotly, ptArrayNew, this.mapView, this.graphicsLayer);
     // this.viewModel.state = 'idle';
     d = null;
     [data, options, ptArrayNew] = [null, null, null];
@@ -116,7 +114,7 @@ export class ElevationProfileService {
     const [data, options, ptArrayNew] = this.viewModel.getChartData(reveresedArrayNew, this.viewModel.unit);
     this._renderChart(data, options);
     // console.log(reveresedArrayNew);
-    this.viewModel.initializeHover(this.Plotly, ptArrayNew, this.mapView);
+    this.viewModel.initializeHover(this.Plotly, ptArrayNew, this.mapView, this.graphicsLayer);
     reveresedArrayNew = undefined;
     reversedPtArray = undefined;
   }

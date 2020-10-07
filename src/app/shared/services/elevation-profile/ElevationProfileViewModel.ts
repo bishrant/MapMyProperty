@@ -93,7 +93,7 @@ class ElevationProfileViewModel extends Accessor {
     return [data, options, pts];
   }
 
-  initializeHover(Plotly: any, _pts: any, mapView: __esri.MapView) {
+  initializeHover(Plotly: any, _pts: any, mapView: __esri.MapView, graphicsLayer: __esri.GraphicsLayer) {
     console.log(_pts);
     var myPlot: any = document.getElementById(this.divId);
     myPlot
@@ -124,8 +124,8 @@ class ElevationProfileViewModel extends Accessor {
             geometry: point,
             symbol: markerSymbol,
           });
-          mapView.graphics.removeAll();
-          mapView.graphics.add(pointGraphic);
+          graphicsLayer.removeAll();
+          graphicsLayer.add(pointGraphic);
         } catch (error) {
           console.log(error);
 
@@ -133,11 +133,12 @@ class ElevationProfileViewModel extends Accessor {
 
       })
       .on("plotly_unhover", function (data: any) {
-        mapView.graphics.removeAll();
+        graphicsLayer.removeAll();
       });
 
   }
   GetStatistics() {
+    console.time("stats");
     let pts = JSON.parse(JSON.stringify(this.ptArrayOriginal));
     pts = ConvertElevationUnits(pts, this.unit);
     pts = CalculateLength(pts, this.unit);
@@ -146,7 +147,7 @@ class ElevationProfileViewModel extends Accessor {
 
     const unitAbbr = " " + lengthAbbrMap[this.unit];
     const elevAbbr = " " + lengthAbbrMap[elevationUnitMap[this.unit]];
-    console.log(pts);
+
     const totalDistance = pts[pts.length - 1][3];
     const slopes = pts.map((p: any) => p[4]);
     const steepSlopes = this.slopeThreshold ? pts.filter((s: any) => s[4] > this.slopeThreshold).map((p: any) => p[5]) : [];
@@ -156,6 +157,7 @@ class ElevationProfileViewModel extends Accessor {
 
     const elevationGain = sum(elevationDiff.filter((d: any) => d > 0));
     const elevationLoss = sum(elevationDiff.filter((d: any) => d < 0));
+    console.timeEnd("stats");
     // gets the stats needed for PLMO report
     return {
       TotalDistance: totalDistance + unitAbbr,
