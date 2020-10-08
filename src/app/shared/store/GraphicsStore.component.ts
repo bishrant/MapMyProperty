@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from './graphics.state';
 import { removeGraphics, removeAllGraphics } from './graphics.actions';
@@ -8,15 +8,37 @@ import { removeGraphics, removeAllGraphics } from './graphics.actions';
   templateUrl: './GraphicsStore.component.html',
   styleUrls: ['./GraphicsStore.component.scss']
 })
-export class GraphicsStoreComponent {
+export class GraphicsStoreComponent implements AfterViewInit {
   @Input('sketchVM') sketchVM: __esri.SketchViewModel;
-  @Input('selectedGraphics') selectedGraphics: any[] = [];
+
   @Input('textGraphicsLayer') textGraphicsLayer: __esri.GraphicsLayer;
+  // readonly graphics$ = this.store.select(state => state.app.graphics);
+
 
   // readonly graphics$ = this.store.select(state => state.app.graphics);
   readonly disableUndo$ = this.store.select((state) => !state.app.canUndo);
   readonly disableRedo$ = this.store.select((state) => !state.app.canRedo);
+
+  selectedGraphics: any[] = [];
   constructor (private readonly store: Store<AppState>) {}
+
+
+  initSketchVMUpdate = () => {
+    this.sketchVM.on('update', (gg: any) => {
+      if (gg.state === 'cancel' || gg.aborted) {
+        this.selectedGraphics = [];
+        return;
+      } else if (gg.state === 'start' || gg.state === 'active') {
+        this.selectedGraphics = gg.graphics;
+      } else if (gg.state === 'complete') {
+        this.selectedGraphics = [];
+      }
+    })
+  }
+
+  ngAfterViewInit() {
+    this.initSketchVMUpdate();
+  }
 
   undo (): void {
     this.sketchVM.undo();
