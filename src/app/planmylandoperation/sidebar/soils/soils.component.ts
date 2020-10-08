@@ -11,6 +11,11 @@ import { GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { CreatePolygonSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { FillProps, LineProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { GetSelectedSoilFillProps, GetSelectedSoilLineProps } from '../../pmloUtils/SoilsStyles';
+import { SoilsReportService } from './soils-report.service';
+import { SensAreasService } from '../sens-areas/sens-areas.service';
+import { GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
+import Collection from 'esri/core/Collection';
+import { SquareMetersToAcres } from 'src/app/shared/utils/ConversionTools';
 
 @Component({
   selector: 'pmlo-soils',
@@ -33,6 +38,8 @@ export class SoilsComponent implements OnInit {
   sliderValue: number = 0;
   isOrangeSymbol:boolean = false;
 
+  soReportTitle = '';
+
   private soilsDynamicLayer: __esri.WMSLayer;
   private soilsIdentifyClickEvent: any = null;
   private userGL: __esri.GraphicsLayer;
@@ -47,10 +54,13 @@ export class SoilsComponent implements OnInit {
     private soilsService: SoilsService,
     private spinner: NgxSpinnerService,
     private mapViewService: MapviewService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private soilsReportService: SoilsReportService,
+    private sensAreasService: SensAreasService
   ) { }
 
   ngOnInit(): void {
+    this.pmloSoilLabelsGL.minScale = 37000;
     this.soilsDynamicLayer = this.mapView.map.findLayerById('soilsDynamicLayer');
     this.mapViewService.soilsDisabled.subscribe((isDisabled:boolean) => {
       this.isVisibleDisabled = isDisabled;
@@ -62,14 +72,12 @@ export class SoilsComponent implements OnInit {
       }
       if(isDisabled)
       {
-        this.pmloSoilLabelsGL.visible = false;
         if (this.soilsIdentifyClickEvent !== null)
         {
           this.soilsIdentifyClickEvent.remove();
           this.soilsIdentifyClickEvent = null;
         }
       } else {
-        this.pmloSoilLabelsGL.visible = true;
         this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
       }
     });
@@ -227,5 +235,47 @@ export class SoilsComponent implements OnInit {
     } else {
       this.soilsService.showTableModal.emit(true);
     }
+  }
+
+  buildSoilsReport():void {
+    this.spinner.show();
+    const boundary:__esri.Graphic= this.userGL.graphics.getItemAt(0);
+    const boundaryCollection:Collection<__esri.Graphic> = new Collection<__esri.Graphic>();
+    boundaryCollection.add(boundary);
+    const soilsAttributes:any = this.pmloSoilsGL.graphics.map((soil:__esri.Graphic) => {
+      soil.attributes.Acres = SquareMetersToAcres(soil.attributes.Shape_Area);
+      return soil.attributes;
+    });
+    this.mapView.goTo(boundary.geometry.extent.clone().expand(1.2)).then(
+      () => {
+        Promise.all([
+          this.soilsReportService.printMaps(this.mapView, this.pmloSoilsGL, this.pmloSoilLabelsGL),
+          this.soilsReportService.getCountyFromCentroid((boundary.geometry as __esri.Polygon).centroid),
+          this.soilsReportService.getWatershedFromCentroid((boundary.geometry as __esri.Polygon).centroid),
+          this.soilsReportService.getSoilsReportHydroParams(boundary),
+          this.sensAreasService.isWithinTexas(boundary.geometry)
+        ]).then((value) => {
+          const reportParams:any = {
+            projectName: this.soReportTitle,
+            boundaryImageUrl: value[0].boundaryImage,
+            soilsImageUrl: value[0].soilsImage,
+            countyName: value[1].countyName,
+            countyFips: value[1].countyFips,
+            whatershed: value[2],
+            ephemeralFeet: value[3].ephemeralFeet,
+            intermittentFeet: value[3].intermittentFeet,
+            perennialFeet: value[3].perennialFeet,
+            wetlandsAcres: value[3].wetlandsAcres,
+            isWithinTexas: value[4],
+            projectAcres: GetFeaturesAreaAcres(boundaryCollection),
+            latitude: (boundary.geometry as __esri.Polygon).centroid.latitude,
+            longitude: (boundary.geometry as __esri.Polygon).centroid.longitude,
+            soils: soilsAttributes.items
+          };
+          // const reportUrl:string = this.soilsReportService.createReport(reportParams);      
+          this.spinner.hide();
+          // window.open(reportUrl, '_blank');
+        });
+      });
   }
 }
