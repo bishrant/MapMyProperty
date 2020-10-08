@@ -1,4 +1,4 @@
-import { GetTxStateUrl, GetSensAreasGpUrl, GetBufferSensAreasGpUrl, GetSevereSlopesGpUrl } from '../../pmloUtils/arcgisURLs';
+import { GetSensAreasGpUrl, GetBufferSensAreasGpUrl, GetSevereSlopesGpUrl, GetCountyQueryUrl } from '../../pmloUtils/arcgisURLs';
 import { Injectable, Output, EventEmitter, Directive } from '@angular/core';
 import Query from 'esri/tasks/support/Query';
 import QueryTask from 'esri/tasks/QueryTask';
@@ -27,18 +27,26 @@ export class SensAreasService {
   isWithinTexas(geo: __esri.Geometry): Promise<boolean> {
     return new Promise((resolve) => {
       const _queryTask = new QueryTask({
-        url: GetTxStateUrl()
+        url: GetCountyQueryUrl()
       });
       const query = new Query();
-      query.spatialRelationship = 'within';
+      query.spatialRelationship = 'intersects';
       query.returnGeometry = false;
       query.geometry = geo;
+      query.outFields = ['STATE_FIPSCODE'];
 
-      _queryTask.execute(query).then((results: any) => {
-        if (results.features.length === 0) {
+      _queryTask.execute(query).then((result: any) => {
+        if (result.features.length === 0) {
           resolve(false);
         } else {
-          resolve(true);
+          let isInTexas:boolean = true;
+          result.features.forEach((co:__esri.Graphic) => {
+            if (co.attributes.STATE_FIPSCODE !== '48')
+            {
+              isInTexas = false;
+            }
+          });
+          resolve(isInTexas);
         }
       });
     });

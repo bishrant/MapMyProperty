@@ -3,7 +3,7 @@ const GetCustomExportWebMapUrl = () => {
 };
 
 const GetGeometryServiceUrl = () => {
-    return 'https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/Utilities/Geometry/GeometryServer';
+    return 'https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Utilities/Geometry/GeometryServer';
 };
 
 export { GetCustomExportWebMapUrl, GetGeometryServiceUrl }

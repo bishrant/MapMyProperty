@@ -39,9 +39,19 @@
     <div class="flex justify-center mt-3">
       <button type="button" class="pmlo-btn generalBtn" (click)="clearSoilGLayers()">Clear Clipped Layer</button>
     </div>
+    <div class="flex mt-3">
+      <div class="md-input-main mx-3">
+        <div class="md-input-box">
+          <input id="soReportTitle" name="soReportTitle" type="text" class="pmlo-md-input md-input" placeholder=" "
+            [(ngModel)]="soReportTitle" maxlength="40" />
+          <label for="soReportTitle" class="md-label text-pmlo_primary">Report Title</label>
+          <div class="pmlo-md-input-underline md-input-underline"></div>
+        </div>
+      </div>
+    </div>
   </ng-container>
 
   <div class="flex justify-center mt-3">
-    <button type="button" class="pmlo-btn pmlo-secondary generalBtn" [disabled]="!areSoilsClipped">Create A Report</button>
+    <button type="button" class="pmlo-btn pmlo-secondary generalBtn" [disabled]="!areSoilsClipped" (click)="buildSoilsReport()">Create A Report</button>
   </div>
 </div>
