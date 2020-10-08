@@ -20,12 +20,14 @@ export class ModalComponent implements AfterViewChecked {
   @Input() headerBackgroundColor = 'darkgray';
 
   @Output() closeModal: EventEmitter<boolean> = new EventEmitter();
+  @Output() resizeEnd: EventEmitter<ResizableEvent> = new EventEmitter();
 
   @ViewChild('modalRoot', { static: false }) modalRoot: ElementRef;
   @ViewChild('modalBody', { static: false }) modalBody: ElementRef;
   @ViewChild('modalHeader', { static: false }) modalHeader: ElementRef;
   @ViewChild('modalFooter', { static: false }) modalFooter: ElementRef;
   @ViewChild('closeIcon', { static: false }) closeIcon: ElementRef;
+
 
   visible: boolean;
   executePostDisplayActions: boolean;
@@ -36,12 +38,13 @@ export class ModalComponent implements AfterViewChecked {
   preMaximizePageX: number;
   preMaximizePageY: number;
   dragEventTarget: MouseEvent | TouchEvent;
+  hasBeenDraggedBefore: boolean = false;
 
   constructor(private element: ElementRef) { }
 
   ngAfterViewChecked() {
     if (this.executePostDisplayActions) {
-      this.center();
+      if (!this.hasBeenDraggedBefore) {this.center()}
       this.executePostDisplayActions = false;
     }
   }
@@ -53,6 +56,10 @@ export class ModalComponent implements AfterViewChecked {
       event.stopPropagation();
       this.hide();
     }
+  }
+
+  onDragEnd($event) {
+    this.hasBeenDraggedBefore = true;
   }
 
   @HostListener('window:resize')

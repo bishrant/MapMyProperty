@@ -1,6 +1,7 @@
 <div *ngIf="loading">
   <div class="loading-container" [style.zIndex]="baseZ+'1'">
-      <div class="loader" [ngStyle]="{borderLeft: border, height: height, width: width }">Loading...</div>
+      <div class="loader" [ngStyle]="{height: height, width: width }"></div>
+     <span> Loading...</span>
   </div>
   <div class="loadingBackground" *ngIf="!disableBackground" [style.zIndex]="baseZ" [ngStyle]="{'background-color': '#2b292975'}">
 </div>

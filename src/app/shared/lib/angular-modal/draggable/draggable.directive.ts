@@ -63,7 +63,9 @@ export class DraggableDirective implements OnChanges, OnDestroy {
   onMouseup(event: MouseEvent | TouchEvent): void {
     this.endDrag();
     this.removeEventListener();
-    this.dragEnd.emit(event);
+
+    const st: any = this.element.nativeElement.style
+    this.dragEnd.emit({left: st.left, top: st.top});
   }
 
   addEventListeners(event: MouseEvent | TouchEvent) {

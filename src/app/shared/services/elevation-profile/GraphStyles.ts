@@ -17,10 +17,13 @@ const CreateHigherSlopeLine = (higherSlopeArray: any) => {
     y: higherSlopeArray[1],
     fill: "tozeroy",
     type: "scatter",
+    smoothing: 1,
     fillcolor: "transparent",
     line: {
       color: "rgb(255,0,0)",
       width: 3,
+      shape: "linear",
+      smoothing: 1
     },
     marker: {
       color: "transparent",
@@ -43,13 +46,14 @@ const CreateNormalElevationLine = (ptArray: any, unit: ElevationUnits) => {
   // const ptArray = ptArray0.slice();
   const abbr = elevationUnitMap[unit] === 'meters' ? 'm.' : 'ft.';
   const labbr = lengthAbbrMap[unit];
-  
+
   return {
     x: ptArray.map((p: any) => p[3]),
     y: ptArray.map((p: any) => p[2]),
     customdata: ptArray.map((p: any) => [p[2] - ptArray[0][2], p[4]]),
     fill: "tozeroy",
     type: "scatter",
+    smoothing: 1,
     mode: "markers+lines",
     marker: {
       color: "transparent",
@@ -60,18 +64,22 @@ const CreateNormalElevationLine = (ptArray: any, unit: ElevationUnits) => {
     line: {
       color: "rgb(0,0,0)",
       width: 2,
+      shape: "linear",
+      smoothing: 1
     },
     hovertemplate:
-      "%{y:.2f} "+ abbr +" elevation<br>" +
-      "%{x:.2f} "+ labbr +" from start<br>" +
-      "%{customdata[0]:.2f} "+ abbr +" net elevation change<br>" +
+      "%{y:.2f} " + abbr + " elevation<br>" +
+      "%{x:.2f} " + labbr + " from start<br>" +
+      "%{customdata[0]:.2f} " + abbr + " net elevation change<br>" +
       "%{customdata[1]:.2f}% forward slope",
   };
 };
 
-const GetGraphOptions = (ptArray: any, unit: ElevationUnits) => {
+const GetGraphOptions = (ptArray: any, unit: ElevationUnits, isMSL: boolean, divId: string) => {
   let elev = ptArray.map((p: any) => p[2]);
   const abbr = elevationUnitMap[unit];
+  const _hostDiv = document.getElementById(divId);
+  console.log("DIV:", document.getElementById(divId));
   const options = {
     hoverMode: "closest",
     hoverDistance: -1,
@@ -80,7 +88,7 @@ const GetGraphOptions = (ptArray: any, unit: ElevationUnits) => {
     dragMode: false,
     displayModeBar: false,
     scrollZoom: false,
-    width: 600,
+    width: _hostDiv.clientWidth,
     height: 340,
     margin: {
       l: 60,
@@ -104,7 +112,7 @@ const GetGraphOptions = (ptArray: any, unit: ElevationUnits) => {
       linewidth: 2,
       separatethousands: true,
       title: {
-        text: "<b>Distance ("+unit+")</b>",
+        text: "<b>Distance (" + unit + ")</b>",
         standoff: 10,
         font: {
           size: 15,
@@ -118,7 +126,7 @@ const GetGraphOptions = (ptArray: any, unit: ElevationUnits) => {
     },
     yaxis: {
       range: [
-        min(elev) > 100 ? min(elev) - 10 : min(elev) - 5,
+        isMSL ? 0 : (min(elev) > 100 ? min(elev) - 10 : min(elev) - 5),
         max(elev) > 100 ? max(elev) + 10 : max(elev) + 5,
       ],
       fixedrange: true,

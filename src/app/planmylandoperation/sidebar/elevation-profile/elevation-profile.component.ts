@@ -1,98 +1,87 @@
-import { Component, OnInit, Input, Inject } from '@angular/core';
-import { ElevationProfile } from './ElevationProfileUtils';
+import { Component, Input } from '@angular/core';
 import { ElevationProfileService } from 'src/app/shared/services/elevation-profile/elevation-profile.service';
-import { Subscriber, Observable, Subscription } from 'rxjs';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 import { ViewChild } from '@angular/core';
-// import ElevationProfile from 'src/app/shared/utils/ElevationProfile/ElevationProfile.js'
-// import HelloWorld from 'src/app/shared/utils/ElevationProfile/HelloWorld.js';
+import { LoaderService } from 'src/app/shared/services/Loader.service';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-elevation-profile',
   templateUrl: './elevation-profile.component.html',
   styleUrls: ['./elevation-profile.component.scss']
 })
-export class ElevationProfileComponent implements OnInit {
-
-  baseMSL = false;
-  isElevationProfileToolActive = false;
+export class ElevationProfileComponent {
+  @ViewChild('elevationProfileModal') elevationProfileModal: any;
   @Input() mapView: any;
+  @Input() slopeThreshold: number = 8;
 
+  headerBgColor = '#353535'
+  drawTool: String;
+  isMSL = false;
+  isElevationProfileToolActive = false;
+  faQuestionCircle = faQuestionCircle;
   elvUtils: any;
   Plotly: any;
+  isReversed: boolean = false;
+
   chartDataObservable$: Subscription;
-  constructor(private elevationService: ElevationProfileService, private dialog: MatDialog) { }
+  drawingObservable$: Subscription;
+  closePopup$: Subscription;
 
-  ngOnInit(): void { }
-
-  startDrawingGraphics(value: any) {
-    import('../../../shared/services/elevation-profile/lib/plotly.js').then((_plotly: any) => { this.Plotly = _plotly;
-
-      this.openDialog()
-    });
-    return;
-    console.log("Draw this ", value, this.elvUtils);
-    this.elvUtils = undefined;
-    this.elvUtils = this.elevationService.initialize({ mapView: this.mapView, slopeThreshold: 4, unit: 'feet' });
-    this.elvUtils.start(value);
-
-    this.chartDataObservable$ = this.elevationService.chartData$.subscribe(async (d: any) => {
-      this.openDialog();
-
-    });
+  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService) {
+    this.isReversed = elevationService.isReversed;
   }
 
-  openDialog(): void {
+  onResizeEnd($event) {
+    console.log("REISE ", $event, $event.height);
+    this.elevationService.resizeChart($event.width - 30, $event.height - 90);
+  }
+  startDrawingGraphics(value: any) {
 
-    const dialogRef = this.dialog.open(ElevationProfileDialog, {
-      width: '250px',
-      data: { PlotLy: this.Plotly, name: 'test' },
-      hasBackdrop: false,
-      disableClose: true
+    import('../../../shared/services/elevation-profile/lib/plotly.js').then((_plotly: any) => {
+      this.Plotly = _plotly;
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
+    this.elvUtils = undefined;
+    this.elvUtils = this.elevationService.initialize({ mapView: this.mapView, slopeThreshold: this.slopeThreshold, unit: 'feet', divId: 'gd', isMSL: this.isMSL });
+    this.elvUtils.start(value);
+
+    this.drawingObservable$ = this.elevationService.drawingComplete.subscribe((graphics: any) => {
+      this.loaderService.isLoading.next(true);
+      console.time('graph')
+      this.chartDataObservable$ = this.elevationService.chartData$.subscribe(async (d: any) => {
+        this.elevationService.Plotly = this.Plotly;
+        this.elevationProfileModal.show();
+        this.loaderService.isLoading.next(false);
+        console.timeEnd('graph')
+      });
+    })
+  }
+
+  modelClosed() {
+    this.elevationService.close();
+    this.drawTool = undefined;
   }
 
   clearElevationProfile() {
     console.log('clear profile');
-
+    this.elevationProfileModal.hide();
   }
 
   ngOnDestroy() {
     this.chartDataObservable$.unsubscribe();
+    this.drawingObservable$.unsubscribe();
   }
 
-
-}
-
-
-@Component({
-  selector: 'elevation-profile-dialog',
-  templateUrl: 'elevation-profile-dialog.html',
-})
-export class ElevationProfileDialog implements OnInit {
-
-  constructor(public dialogRef: MatDialogRef<ElevationProfileDialog>, @Inject(MAT_DIALOG_DATA) public data: any) { }
-  async init() {
-    let Plotly = this.data.Plotly;
-    if (typeof Plotly === 'undefined') {
-      // need to wait
-      console.log('plotly not loaded yet')
-      Plotly = await import('../../../shared/services/elevation-profile/lib/plotly.js') as any;
-    }
-    Plotly.plot('gd', [{ x: [0, 1], y: [0, 1] }]);
+  reverseProfile() {
+    this.isReversed = !this.isReversed;
+    this.elevationService.reverseProfile();
   }
 
-  ngOnInit() {
-    this.init();
+  createReport() {
+    // x=2;
+    // throw new Error("test");
+    // this.loaderService.isLoading.next(true);
+    this.elevationService.createReport();
   }
-
-  close(): void {
-    this.dialogRef.close();
-  }
-
-
 }

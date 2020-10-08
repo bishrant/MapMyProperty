@@ -7,12 +7,13 @@
      [east]="true"
      [southEast]="true"
      (resizing)="onResize($event)"
+     (resizeEnd)="resizeEnd.emit($event)"
      appDraggable
      [dragEventTarget]="dragEventTarget"
      [inViewport]="inViewport"
      [style.display]="visible ? 'block' : 'none'"
      (mousedown)="moveOnTop()"
-     (touchstart)="moveOnTop()">
+     (touchstart)="moveOnTop()" (dragEnd)="onDragEnd($event)">
     <div class="ui-modal-header" #modalHeader [style.backgroundColor]="headerBackgroundColor"
          (mousedown)="initDrag($event)"
          (touchstart)="initDrag($event)">

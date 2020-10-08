@@ -1,11 +1,85 @@
+@import "../../styles/pmlo-shared-styles.scss";
+
 .toggleBtn {
-    border: 1px solid;
-    width: 110px;
+  border: 1px solid;
+  width: 110px;
 }
 .toggleBtnGroup {
-    padding: 2px;
-    border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  padding: 2px;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-group {
+  list-style-type: none;
+  margin: 5px 0 0 0;
+  padding: 0;
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.btn-group li {
+  float: left;
+  margin: 5px 5px 0 0;
+  width: 120px;
+  height: 40px;
+  position: relative;
+}
+
+.btn-group label,
+.btn-group input {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.btn-group input[type="radio"] {
+  opacity: 0.011;
+  z-index: 100;
+}
+
+.btn-group input[type="radio"]:checked + label {
+  border: 2px solid #00feea;
+}
+
+.btn-group label {
+  padding: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  z-index: 90;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.btn-group label:hover {
+  background: #ddd;
+}
+
+.profileDirection {
+  height: 35px;
+  width: 35px;
+  font-size: 25px;
+  border-radius: 35px;
+  background: white;
+  border: 1px solid black;
+  margin-left: 20px;
+  box-shadow: none;
+}
+
+.createreportBar {
+  float: right;
+  margin-right: 20px;
+}
+
+.slopeIndicator {
+  display: flex;
+  align-items: center;
+  margin-top: -30px;
+  margin-left: 20px;
 }
