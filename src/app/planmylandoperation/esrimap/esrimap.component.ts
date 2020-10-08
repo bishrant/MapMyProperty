@@ -117,7 +117,6 @@ export class EsrimapComponent implements OnInit {
         const graphicsArray = g.map((_g: any) => {
           const gr = JSON.parse(_g);
           return new Graphic(gr);
-          // return gr.attributes.geometryType === 'text' ? Graphic.fromJSON(gr) : new Graphic(gr);
         });
         const allExcepttext = graphicsArray.filter((graphic: any) => graphic.attributes.geometryType != 'text');
 
