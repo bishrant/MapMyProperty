@@ -1,9 +1,9 @@
 import WMSLayer from 'arcgis-js-api/layers/WMSLayer';
 
-const CreateSoilsLayer = (Id: string = 'soilsDynamicLayer') => {
+const CreateSoilsLayer = (Id: string = 'soilsDynamicLayer', ssurgoWMSURL:string) => {
     const soilsLayer = new WMSLayer({
         id: Id,
-        url: 'https://sdmdataaccess.nrcs.usda.gov/Spatial/sdm.wms?',
+        url: ssurgoWMSURL,
         sublayers: [
             {
                 name: 'mapunitpoly'

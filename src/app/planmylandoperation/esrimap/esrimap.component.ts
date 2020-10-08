@@ -10,6 +10,7 @@ import createMapView from 'src/app/shared/utils/CreateMapView';
 import { CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { SoilsService } from '../sidebar/soils/soils.service';
+import { AppConfiguration } from 'src/config';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -31,12 +32,13 @@ export class EsrimapComponent implements OnInit {
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer:__esri.GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
-  private soilsLayer = CreateSoilsLayer();
 
   constructor (
     private store: Store<AppState>,
     private mapViewService: MapviewService,
-    private soilsService:SoilsService) {}
+    private soilsService:SoilsService,
+    private appConfig:AppConfiguration
+    ) {}
   @HostListener('keydown.control.z') undoFromKeyboard () {
     this.graphicsStoreEl.undo();
   }
@@ -76,7 +78,8 @@ export class EsrimapComponent implements OnInit {
   private initializeMap = async () => {
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
-      this.mapView.map.addMany([this.soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer]);
+      const soilsLayer:__esri.WMSLayer = CreateSoilsLayer('soilsDynamicLayer', this.appConfig.ssurgoWMSURL);
+      this.mapView.map.addMany([soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer]);
       this.mapView.whenLayerView(this.polygonGraphicsLayer).then((boundaryLayerView) => {
         boundaryLayerView.watch('updating', (val) => {
           if (val)

@@ -3,14 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import FeatureSet from 'esri/tasks/support/FeatureSet';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
 import GeometryService from 'esri/tasks/GeometryService';
-import { GetClipSoilsGpUrl } from '../../pmloUtils/arcgisURLs';
 import { FillProps, LineProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { GetDefaultSoilsLineProps, GetOrageLineProps, GetSoilFillProps, GetSoilTextSymbol } from '../../pmloUtils/SoilsStyles';
 import { CreatePolygonSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { Point, Polygon } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
-import { GetGeometryServiceUrl } from 'src/app/shared/utils/GISUrls';
 import { TextSymbol } from 'esri/symbols';
+import { AppConfiguration } from 'src/config';
 
 @Injectable({
   providedIn: 'root'
@@ -20,10 +19,9 @@ export class SoilsService {
   @Output() shareMultiSoils:EventEmitter<Graphic[]> = new EventEmitter();
   @Output() selectPolygonFromTable:EventEmitter<Graphic> = new EventEmitter();
   
-  private ssurgoTabularUrl = 'https://SDMDataAccess.sc.egov.usda.gov/Tabular/post.rest';
-
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private appConfig:AppConfiguration
   ) { }
 
   identifySoil(mapPoint: __esri.Point, origin: string): Promise<any>
@@ -35,7 +33,7 @@ export class SoilsService {
         const queryString = data.toString().replace('zzLon', mapPoint.longitude.toString()).replace('zzLat', mapPoint.latitude.toString());
         console.log(queryString);
         try {
-          this.http.post(this.ssurgoTabularUrl, {
+          this.http.post(this.appConfig.ssurgoTabularURL, {
             query: queryString,
             format: 'json'
         }).subscribe(response => {
@@ -58,7 +56,7 @@ export class SoilsService {
       };
 
       const gp: __esri.Geoprocessor = new Geoprocessor({
-        url: GetClipSoilsGpUrl()
+        url: this.appConfig.clipSoilsGPServiceURL
       });
 
       gp.submitJob(params).then((jobInfo) => {
@@ -105,7 +103,7 @@ export class SoilsService {
   addSoilLabelsToMap(gl: __esri.GraphicsLayer, soilSingle: any, boundaryId:string, sliderValue:number, isOrange:boolean): void {
     const graphicTransparency:number = (100 - sliderValue) / 100;
     const geometryService: GeometryService = new GeometryService({
-      url: GetGeometryServiceUrl()
+      url: this.appConfig.geometryServiceURL
     });
     if (soilSingle.value.features.length > 0)
     {

@@ -177,7 +177,7 @@ export class SensAreasComponent implements OnInit {
     this.spinner.show();
     this.mapView.goTo(this.boundaryLayer.graphics.getItemAt(0).geometry.extent.clone().expand(1.2)).then (
       () => {
-        this.printTaskService.exportWebMap(this.mapView, 'SensAreasTemplate', 'jpg').then((url) => {
+        this.printTaskService.exportWebMap(this.mapView, 'PMLOSensAreasTemplate', 'jpg').then((url) => {
           if (url === 'error')
           {
             this.spinner.hide();
