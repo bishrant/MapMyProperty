@@ -4,7 +4,8 @@
       <app-accordion>
 
         <app-accordion-panel title="Draw">
-          <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer">
+          <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
+          >
           </app-drawtools>
         </app-accordion-panel>
 
@@ -40,7 +41,7 @@
     <div #mapViewNode class="mapViewNode " id="parent">
       <div id="textboxes"></div>
     </div>
-    <app-graphic-store #graphicsStore [sketchVM]="sketchVM" [selectedGraphics]="selectedGraphics"
+    <app-graphic-store #graphicsStore [sketchVM]="sketchVM"
       [textGraphicsLayer]="textGraphicsLayer" class="graphicsControls">
     </app-graphic-store>
   </div>
