@@ -1,7 +1,7 @@
 import { formatNumber } from '@angular/common';
 
 const SquareMetersToAcres = (value: number) => {
-    return value * 0.000247105;
+    return value * 0.00024710538146717;
 };
 
 const FormatRoundNumber = (value: number, decimals: number) => {
