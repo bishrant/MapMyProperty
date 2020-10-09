@@ -1,4 +1,3 @@
-import { GetSensAreasGpUrl, GetBufferSensAreasGpUrl, GetSevereSlopesGpUrl, GetCountyQueryUrl } from '../../pmloUtils/arcgisURLs';
 import { Injectable, Output, EventEmitter, Directive } from '@angular/core';
 import Query from 'esri/tasks/support/Query';
 import QueryTask from 'esri/tasks/QueryTask';
@@ -14,6 +13,7 @@ import {
   GetWetlandsBufferProps,
   GetSMZProps
 } from '../../pmloUtils/SensAreasStyles';
+import { AppConfiguration } from 'src/config';
 
 @Directive()
 @Injectable({
@@ -22,12 +22,14 @@ import {
 export class SensAreasService {
   @Output() updateState: EventEmitter<string> = new EventEmitter();
 
-  constructor() {}
+  constructor(
+    private appConfig:AppConfiguration
+  ) {}
 
   isWithinTexas(geo: __esri.Geometry): Promise<boolean> {
     return new Promise((resolve) => {
       const _queryTask = new QueryTask({
-        url: GetCountyQueryUrl()
+        url: this.appConfig.usCountyLayerURL
       });
       const query = new Query();
       query.spatialRelationship = 'intersects';
@@ -61,7 +63,7 @@ export class SensAreasService {
       };
 
       const gp: __esri.Geoprocessor = new Geoprocessor({
-        url: GetSensAreasGpUrl()
+        url: this.appConfig.sensAreasGPServiceURL
       });
 
       gp.submitJob(params).then((jobInfo) => {
@@ -149,7 +151,7 @@ export class SensAreasService {
       };
 
       const gp: Geoprocessor = new Geoprocessor({
-        url: GetBufferSensAreasGpUrl(),
+        url: this.appConfig.bufferSensAreasGPServiceURL
       });
 
       gp.submitJob(params).then((jobInfo) => {
@@ -240,7 +242,7 @@ export class SensAreasService {
        };
 
       const gp: Geoprocessor = new Geoprocessor({
-        url: GetSevereSlopesGpUrl(),
+        url: this.appConfig.severeSlopesGPServiceURL
       });
 
       gp.submitJob(params).then((jobInfo) => {

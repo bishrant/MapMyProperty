@@ -14,7 +14,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HeaderModule } from './shared/components/header/header.module';
-import { NgxSpinnerModule } from 'ngx-spinner';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { GlobalErrorHandler } from './shared/services/error/GlobalErrorHandler';
 import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
@@ -31,7 +30,6 @@ import { LoaderModule } from './shared/components/loader/loader.module';
     ReactiveFormsModule,
     StoreModule.forRoot({ app: GraphicsReducer }),
     AngularSvgIconModule.forRoot(),
-    NgxSpinnerModule,
     environment.production ? [] : StoreDevtoolsModule.instrument(),
     FontAwesomeModule,
     MatSnackBarModule,

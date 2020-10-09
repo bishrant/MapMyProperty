@@ -4,12 +4,12 @@ import { DialogService } from 'src/app/shared/components/dialogs/dialog.service'
 import { GreaterThanMaxArea, GetFeaturesLength, GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import { DecimalPipe } from '@angular/common';
 import { SensAreasService } from './sens-areas.service';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { PrintTaskService } from 'src/app/shared/services/PrintTask.service';
 import { ReportsService } from '../../pmloUtils/reports.service';
 import { SquareMetersToAcres, FormatRoundNumber } from 'src/app/shared/utils/ConversionTools';
 import { CustomSnackBarService } from 'src/app/shared/components/custom-snack-bar/custom-snack-bar.service';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { LoaderService } from 'src/app/shared/services/Loader.service';
 
 @Component({
   selector: 'pmlo-sens-areas',
@@ -50,7 +50,7 @@ export class SensAreasComponent implements OnInit {
     private dialogService: DialogService,
     private decimalPipe: DecimalPipe,
     private sensAreasService: SensAreasService,
-    private spinner: NgxSpinnerService,
+    private loaderService: LoaderService,
     private printTaskService: PrintTaskService,
     private reportsService: ReportsService,
     private customSnackBarService: CustomSnackBarService
@@ -85,7 +85,7 @@ export class SensAreasComponent implements OnInit {
       this.dialogService.open(this.opt);
     } else if (this.sensAreaGL.graphics.length === 0) {
       this.state = 'clipping';
-      this.spinner.show();
+      this.loaderService.isLoading.next(true);
 
       const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.getItemAt(0);
 
@@ -95,18 +95,18 @@ export class SensAreasComponent implements OnInit {
           this.sensAreasService.getSensAreas(inputBoundary).then((result) => {
             if (result.length === 0)
             {
-              this.spinner.hide();
+              this.loaderService.isLoading.next(false);
               this.sensAreaToolHeader.close();
               this.opt.message = 'There was an error calculating "Sensitive Areas". Please try again and, if the problem persists, contact the administrator.';
               this.dialogService.open(this.opt);
             } else {
               this.sensAreasService.addSensAreasToMap(this.sensAreaGL, result, this.sliderValue);
               this.state = 'clipped';
-              this.spinner.hide();
+              this.loaderService.isLoading.next(false);
             }
           });
         } else {
-          this.spinner.hide();
+          this.loaderService.isLoading.next(false);
           this.sensAreaToolHeader.close();
           this.opt.message = 'Please make sure that your project area is totally within Texas.';
           this.dialogService.open(this.opt);
@@ -127,43 +127,43 @@ export class SensAreasComponent implements OnInit {
   }
 
   bufferGraphic(origin: string):void {
-    this.spinner.show();
+    this.loaderService.isLoading.next(true);
     const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.getItemAt(0);
     const inputFeet: number = origin === 'smz' ? this.smzBufferValue : this.wetlandsBufferValue;
     if (inputFeet > 0) {
       this.sensAreasService.bufferGraphic(origin, inputBoundary, inputFeet).then(result => {
         if (result === null)
         {
-          this.spinner.hide();
+          this.loaderService.isLoading.next(false);
           this.opt.message = 'There was an error creating the buffer. Please try again and, if the problem persists, contact the administrator.';
           this.dialogService.open(this.opt);
         } else {
           this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue);
-          this.spinner.hide();
+          this.loaderService.isLoading.next(false);
         }
       });
     } else {
       if (origin === 'smz' || origin === 'wetlandsBuffer')
       {
         this.sensAreasService.removeGraphicsByAttribute(this.sensAreaGL, origin);
-        this.spinner.hide();
+        this.loaderService.isLoading.next(false);
       }
     }
 
   }
 
   setSlope(origin: string):void {
-    this.spinner.show();
+    this.loaderService.isLoading.next(true);
     const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.getItemAt(0);
     this.sensAreasService.setSlope(inputBoundary, this.slopeValue).then(result => {
       if (result === null)
       {
-        this.spinner.hide();
+        this.loaderService.isLoading.next(false);
         this.opt.message = 'There was an error setting the severe slope. Please try again and, if the problem persists, contact the administrator.';
         this.dialogService.open(this.opt);
       } else {
         this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue);
-        this.spinner.hide();
+        this.loaderService.isLoading.next(false);
       }
     });
   }
@@ -174,13 +174,13 @@ export class SensAreasComponent implements OnInit {
   }
 
   buildSMZReport(): void {
-    this.spinner.show();
+    this.loaderService.isLoading.next(true);
     this.mapView.goTo(this.boundaryLayer.graphics.getItemAt(0).geometry.extent.clone().expand(1.2)).then (
       () => {
-        this.printTaskService.exportWebMap(this.mapView, 'SensAreasTemplate', 'jpg').then((url) => {
+        this.printTaskService.exportWebMap(this.mapView, 'PMLOSensAreasTemplate', 'jpg').then((url) => {
           if (url === 'error')
           {
-            this.spinner.hide();
+            this.loaderService.isLoading.next(false);
             this.opt.message = 'There was an error creating the report. Please try again and, if the problem persists, contact the administrator.';
             this.dialogService.open(this.opt);
           } else {
@@ -203,7 +203,7 @@ export class SensAreasComponent implements OnInit {
               response => {
                 console.log(response);
                 this.customSnackBarService.open({url: response.fileName});
-                this.spinner.hide();
+                this.loaderService.isLoading.next(false);
               }
             );
           }
