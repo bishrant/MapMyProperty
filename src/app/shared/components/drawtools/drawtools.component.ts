@@ -1,5 +1,5 @@
 import { updateGraphics, addGraphics } from '../../store/graphics.actions';
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
@@ -28,6 +28,8 @@ export class DrawtoolsComponent implements OnInit {
   @Input() sketchVM: any;
   @Input() mapView: any;
   @Input() textGraphicsLayer: any;
+  @Output() selectedTextGraphicsChanged: EventEmitter<any> = new EventEmitter<any>();
+
   @ViewChild('radiusInput') radiusElmRef: ElementRef;
   @ViewChild('textcontrols') textcontrolsElmRef: any;
   @ViewChild('pointcontrol') pointControlElmRef: any;
@@ -80,10 +82,12 @@ export class DrawtoolsComponent implements OnInit {
       this.mapView.hitTest(evt).then((response: any) => {
         if (response.results.length < 1) {
           this.selectedTextGraphics = [];
+          this.selectedTextGraphicsChanged.emit(this.selectedTextGraphics);
           return;
         }
 
         this.selectedTextGraphics = response.results.filter((res: any) => res.graphic.layer === this.textGraphicsLayer);
+        this.selectedTextGraphicsChanged.emit(this.selectedTextGraphics);
         if (this.selectedTextGraphics.length > 0) {
           const textGraphic = this.selectedTextGraphics[0].graphic;
           const extent = this.mapView.extent.clone().expand(0.85);
@@ -161,20 +165,16 @@ export class DrawtoolsComponent implements OnInit {
 
   initSketchVMUpdate = () => {
     this.sketchVM.on('update', (gg: any) => {
-      console.log(gg);
       if (gg.state === 'cancel' || gg.aborted) {
         this.selectedGraphics = [];
         return;
       }
       if (gg.graphics[0].attributes.geometryType === 'text') {
-        // this.editMapText(gg.graphics[0]);
-        // this.selectedGraphics = gg.graphics[0];
         this.sketchVM.cancel();
         this.sketchVM.complete();
         return;
       }
       if (gg.state === 'start' || gg.state === 'active') {
-        // console.log(this.sketchVM.activePointSymbol);
         const _temp = gg.graphics[0].clone();
         const p = {
           type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
@@ -182,30 +182,10 @@ export class DrawtoolsComponent implements OnInit {
           color: 'transparent',
           size: _temp.attributes.symbol.size, // pixels
           outline: {
-            // autocasts as new SimpleLineSymbol()
             color: [255, 0, 255],
-            width: 3 // points
+            width: 3
           }
         };
-        // let ss = _temp.attributes.symbol;
-        // ss.outline = {
-        //   color: [ 0, 255, 0 ],
-        //   width: 3  // points
-        // }
-        console.log(p, _temp);
-        // this.sketchVM.updatePointSymbol = p;
-        // this.sketchVM.activePointSymbol = p;
-        // this.sketchVM.activePointSymbol = _temp.attributes.symbol;
-        // this.sketchVM.updatePointSymbol = _temp.attributes.symbol;
-
-        // if (_temp.attributes.geometryType === 'point') {
-        //   let existng = this.sketchVM.activePointSymbol;
-        //   this.sketchVM.activePointSymbol = _temp.attributes.symbol;
-        // }
-        // this.sketchVM.activePointSymbol = _temp.attributes.symbol;
-        // _temp.symbol = _temp.attributes.symbol;
-        // this.mapView.graphics.removeAll();
-        // this.mapView.graphics.add(_temp);
         this.selectedGraphics = gg.graphics;
         dragElement('mydiv', 'parent');
         this.selectedGraphicsChanged();

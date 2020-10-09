@@ -14,12 +14,13 @@
   width: 100%;
 }
 .graphicsControls {
-  width: 100%;
+  width: 200px;
   position: absolute;
   bottom: 20px;
   z-index: 10;
   left: 0;
   right: 0;
+  margin: auto;
 }
 
 .mapBlanket {

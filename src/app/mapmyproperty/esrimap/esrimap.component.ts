@@ -26,6 +26,7 @@ export class EsrimapComponent implements OnInit {
   clickToAddText = false;
   sketchVM: any = new SketchViewModel();
   selectedGraphics!: any[] | undefined;
+  selectedTextGraphics: any[] = [];
   mapCoords: any;
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer = CreatePolygonGraphicsLayer();
@@ -37,6 +38,11 @@ export class EsrimapComponent implements OnInit {
 
   @HostListener('keydown.control.y') redoFromKeyboard() {
     this.graphicsStoreEl.redo();
+  }
+
+  textGraphicsChanged = ($event: any) => {
+    this.selectedTextGraphics = $event;
+    console.log('text graphics selection changed ', $event)
   }
 
   @HostListener('keydown.meta.shift.z') redoFromKeyboardMac() {

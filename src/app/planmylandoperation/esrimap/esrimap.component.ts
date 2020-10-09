@@ -86,7 +86,7 @@ export class EsrimapComponent implements OnInit {
           {
             let glHasPolygons: boolean = true;
             const pmloSoilsGL:__esri.GraphicsLayer = this.mapView.map.findLayerById('pmloSoilsGL') as __esri.GraphicsLayer;
-            
+
             if (GetPolygonGraphics(boundaryLayerView.layer as __esri.GraphicsLayer).length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined))
             {
               glHasPolygons = false;
@@ -119,7 +119,7 @@ export class EsrimapComponent implements OnInit {
       if (g.length > 0) {
         const graphicsArray = g.map((_g: any) => {
           const gr = JSON.parse(_g);
-          return gr.attributes.geometryType === 'text' ? Graphic.fromJSON(gr) : new Graphic(gr);
+          return new Graphic(gr);
         });
         const allExcepttext = graphicsArray.filter((graphic: any) => graphic.attributes.geometryType != 'text');
 
