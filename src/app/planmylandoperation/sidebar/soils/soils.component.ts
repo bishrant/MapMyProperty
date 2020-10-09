@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SoilsService } from './soils.service';
 import { PMLOSoil } from '../../models/pmloSoil.model';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { GetPMLOSoilPopupContent } from '../../pmloUtils/popupContent';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
@@ -16,6 +15,7 @@ import { SensAreasService } from '../sens-areas/sens-areas.service';
 import { GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import Collection from 'esri/core/Collection';
 import { SquareMetersToAcres } from 'src/app/shared/utils/ConversionTools';
+import { LoaderService } from 'src/app/shared/services/Loader.service';
 
 @Component({
   selector: 'pmlo-soils',
@@ -52,7 +52,7 @@ export class SoilsComponent implements OnInit {
 
   constructor(
     private soilsService: SoilsService,
-    private spinner: NgxSpinnerService,
+    private loaderService: LoaderService,
     private mapViewService: MapviewService,
     private dialogService: DialogService,
     private soilsReportService: SoilsReportService,
@@ -154,12 +154,12 @@ export class SoilsComponent implements OnInit {
       this.opt.message = 'You can only clip soils areas from one polygon at a time.';
       this.dialogService.open(this.opt);
     } else {
-      this.spinner.show();
+      this.loaderService.isLoading.next(true);
       const inputBoundary: __esri.Graphic = polygonGraphics.getItemAt(0);
       this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
         if (result.length === 0)
         {
-          this.spinner.hide();
+          this.loaderService.isLoading.next(false);
           this.opt.message = 'There was an error while clipping the soils. Please try again and, if the problem persists, contact the administrator.';
           this.dialogService.open(this.opt);
         } else {
@@ -167,7 +167,7 @@ export class SoilsComponent implements OnInit {
           this.soilsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId, this.sliderValue, this.isOrangeSymbol);
           this.soilsService.addSoilLabelsToMap(this.pmloSoilLabelsGL, result[1], boundaryId, this.sliderValue, this.isOrangeSymbol);
           this.soilsService.showTableModal.emit(true);
-          this.spinner.hide();
+          this.loaderService.isLoading.next(false);
         }
       });
     }
@@ -177,7 +177,7 @@ export class SoilsComponent implements OnInit {
     if (isChecked && this.soilsDynamicLayer.visible && this.soilsIdentifyClickEvent === null)
     {
       this.soilsIdentifyClickEvent = this.mapView.on('click', (evt: any) => {
-        this.spinner.show();
+        this.loaderService.isLoading.next(true);
         this.soilsService.identifySoil(evt.mapPoint, 'pmlo').then((result) => {
           const resulstTable = result.Table[0];
           const pmloSoil: PMLOSoil = new PMLOSoil();
@@ -197,7 +197,7 @@ export class SoilsComponent implements OnInit {
             overwriteActions: true,
             actions: []
           });
-          this.spinner.hide();
+          this.loaderService.isLoading.next(false);
         })
       });
     } else if (this.soilsIdentifyClickEvent !== null) {
@@ -238,7 +238,7 @@ export class SoilsComponent implements OnInit {
   }
 
   buildSoilsReport():void {
-    this.spinner.show();
+    this.loaderService.isLoading.next(true);
     const boundary:__esri.Graphic= this.userGL.graphics.getItemAt(0);
     const boundaryCollection:Collection<__esri.Graphic> = new Collection<__esri.Graphic>();
     boundaryCollection.add(boundary);
@@ -273,7 +273,7 @@ export class SoilsComponent implements OnInit {
             soils: soilsAttributes.items
           };
           // const reportUrl:string = this.soilsReportService.createReport(reportParams);      
-          this.spinner.hide();
+          this.loaderService.isLoading.next(false);
           // window.open(reportUrl, '_blank');
         });
       });
