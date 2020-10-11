@@ -16,8 +16,9 @@ import { CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/
 import { CreateCircleFromPoint } from 'src/app/shared/utils/SketchViewModelUitls';
 import { id } from '../../store/todo';
 import { dragElement } from './drag';
-import { createInput, createInputWithFrame } from './TextUtils';
 import { AreGraphicsEqual } from '../../utils/GeometryEngine';
+import { TextControlService } from '../../services/TextControl-service';
+import { TextControlSelectionService } from '../../services/TextControlSelection-service';
 
 @Component({
   selector: 'app-drawtools',
@@ -44,7 +45,9 @@ export class DrawtoolsComponent implements OnInit {
   clickToAddTextboxHandler: any;
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
 
-  constructor (private store: Store<AppState>) {}
+  constructor (private store: Store<AppState>, private TextService: TextControlService,
+    private TextSelectionService: TextControlSelectionService
+    ) {}
 
   private ClickToAddTextbox = () => {
     if (this.clickToAddTextboxHandler) {
@@ -52,7 +55,7 @@ export class DrawtoolsComponent implements OnInit {
     }
     this.clickToAddTextboxHandler = this.mapView.on('click', (mapEvt: any) => {
       const textboxes = document.getElementById('textboxes') as any;
-      const input = createInput(mapEvt, id(), this.store, this.textcontrolsElmRef.textProps);
+      const input = this.TextService.createInput(mapEvt, id(), this.store, this.textcontrolsElmRef.textProps);
       textboxes.appendChild(input);
       input.focus();
       this.clickToAddTextboxHandler.remove();
@@ -62,7 +65,7 @@ export class DrawtoolsComponent implements OnInit {
 
   private CreateDraggableTextbox = (textGraphic: any) => {
     const graphicCenter = this.mapView.toScreen(textGraphic.geometry);
-    const input = createInputWithFrame(
+    const input = this.TextSelectionService.createInputWithFrame(
       graphicCenter,
       textGraphic,
       textGraphic.attributes.symbol,
