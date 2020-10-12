@@ -140,7 +140,7 @@ export class SensAreasService {
     });
   }
 
-  bufferGraphic(origin: string, graph: __esri.Graphic, inputFeet: number): Promise<any> {
+  async bufferGraphic(origin: string, graph: __esri.Graphic, inputFeet: number): Promise<any> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
@@ -232,7 +232,7 @@ export class SensAreasService {
     });
   }
 
-  setSlope(graph: __esri.Graphic, inputSlope: number): Promise<any>  {
+  async setSlope(graph: __esri.Graphic, inputSlope: number): Promise<any>  {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
