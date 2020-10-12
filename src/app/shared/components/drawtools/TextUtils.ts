@@ -1,11 +1,23 @@
-import Graphic from 'esri/Graphic';
-import { addGraphics, updateGraphics } from '../../store/graphics.actions';
 const WIDTH = 200;
 const PADDING = 10;
 
-const addTextToMap = (targetElement: any, store: any, textProps: any, isUpdate: boolean = false) => {
-  const mapX = targetElement.getAttribute('mapX');
-  const mapY = targetElement.getAttribute('mapY');
+const SetInputStyleAttributes = (input: any, textProps: any, geometry: any, inputId: any) => {
+  const color = textProps.color;
+  input.classList.add('mapTextInput');
+  input.style.fontWeight = textProps.font.weight;
+  input.style.fontStyle = textProps.font.style;
+  input.style.textDecoration = textProps.font.decoration;
+  input.style.fontFamily = textProps.font.family;
+  input.style.color = `rgba(${color.r},${color.g},${color.b},${color.a})`;
+  input.style.fontSize = textProps.font.size;
+  input.style.lineHeight = textProps.font.size;
+  input.setAttribute('id', inputId);
+  input.setAttribute('mapX', geometry.x);
+  input.setAttribute('mapY', geometry.y);
+  return input;
+};
+
+const CreateTextSymbolFromHTML = (targetElement: any, textProps: any) => {
   if (targetElement.getAttribute('fontSize') !== null) {
     textProps.font.size = targetElement.getAttribute('fontSize');
   }
@@ -33,203 +45,8 @@ const addTextToMap = (targetElement: any, store: any, textProps: any, isUpdate: 
     font: textProps.font,
     lineWidth: '500px'
   };
-
-  const point: any = {
-    type: 'point',
-    x: mapX,
-    y: mapY,
-    spatialReference: { wkid: 102100 }
-  };
-  const gr = new Graphic({
-    geometry: point,
-    symbol: textSymbol,
-    attributes: {
-      id: targetElement.id,
-      symbol: textSymbol,
-      geometryType: 'text'
-    }
-  });
-  const _g = gr.toJSON();
-  _g.symbol = textSymbol;
-  _g.geometry.type = 'point';
-  if (isUpdate) {
-    store.dispatch(updateGraphics({ graphics: JSON.stringify([_g]) }));
-  } else {
-    store.dispatch(addGraphics({ graphics: [JSON.stringify(_g)] }));
-  }
-};
-
-const SetInputStyle = (input: any, textProps: any) => {
-  const color = textProps.color;
-  input.classList.add('mapTextInput');
-  input.style.fontWeight = textProps.font.weight;
-  input.style.fontStyle = textProps.font.style;
-  input.style.textDecoration = textProps.font.decoration;
-  input.style.fontFamily = textProps.font.family;
-  input.style.color = `rgba(${color.r},${color.g},${color.b},${color.a})`;
-  input.style.fontSize = textProps.font.size;
-  input.style.lineHeight = textProps.font.size;
-  return input;
-};
-
-const createInput = (mapEvt: any, inputId = '0', store: any, textProps: any) => {
-  const fontSize = parseInt(textProps.font.size.split('px')[0]);
-  const height = fontSize + 2 * PADDING;
-  let _input = document.createElement('input');
-  _input = SetInputStyle(_input, textProps);
-  _input.setAttribute('id', inputId);
-  _input.setAttribute('mapX', mapEvt.mapPoint.x);
-  _input.setAttribute('mapY', mapEvt.mapPoint.y);
-
-  _input.style.width = 'auto'; // WIDTH + 'px';
-  _input.style.height = height + 'px';
-
-  // need to take it out of bounds
-  const parentWidth = (document.getElementById('parent') as any).clientWidth;
-  const parentHeight = (document.getElementById('parent') as any).clientHeight;
-
-  const _x = mapEvt.x;
-  const _y = mapEvt.y;
-  if (WIDTH / 2 < _x && _x < parentWidth - WIDTH / 2) {
-    _input.style.left = _x - WIDTH / 2 + 'px';
-  } else {
-    if (_x < WIDTH / 2) {
-      _input.style.left = '0px';
-    }
-    if (parentWidth < _x + WIDTH / 2) {
-      _input.style.right = '0px';
-    }
-  }
-
-  if (height / 2 < _y && _y < parentHeight - height / 2) {
-    _input.style.top = _y - height / 2 + 'px';
-  } else {
-    if (_y < height / 2) {
-      _input.style.top = '0px';
-    }
-    if (parentHeight < _y + height / 2) {
-      _input.style.bottom = '0px';
-    }
-  }
-
-  // add event listeners
-  const enterKeylistener = (evt: any) => {
-    if (evt.keyCode === 13) {
-      AddTextToMap(evt.target);
-    }
-  };
-
-  const windowListener = (e: any) => {
-    if (typeof e === 'object') {
-      if (e.button === 0) {
-        const inputBox = document.getElementById(inputId);
-        if (e.target !== inputBox) {
-          // && ((e.target as any).classList.contains('esri-view-surface'))) {
-          if (inputBox) {
-            AddTextToMap(inputBox);
-          }
-        }
-      }
-    }
-  };
-  const cleanupListener = (target: any) => {
-    target.remove();
-    window.removeEventListener('click', windowListener);
-    _input.removeEventListener('keyup', enterKeylistener);
-  };
-
-  const AddTextToMap = (target: any) => {
-    if (target.value !== '') {
-      addTextToMap(target, store, textProps, false);
-    }
-    cleanupListener(target);
-  };
-
-  _input.addEventListener('keyup', enterKeylistener);
-  window.addEventListener('click', windowListener);
-  return _input;
-};
-
-const createInputWithFrame = (graphicCenter: any, textGraphic: any, textProps: any, store: any, mapView: any) => {
-  const inputId = textGraphic.attributes.id;
-  const frame = <HTMLElement>htmlToElement(`<div id="${inputId}_container" class="mapTextInputContainer">
-  
-  </div>`);
-  const headerDiv = <HTMLElement>(
-    htmlToElement(
-      `<div class='textBoxHeaderDrag' id="${inputId}_header"><span class='sep'>|</span><span>..<br></span><span>..<br></span><span>..<br></span></div>`
-    )
-  );
-  const fontSize = parseInt(textProps.font.size.split('px')[0]);
-  const textHeight = fontSize + 2 * PADDING;
-  let _input = document.createElement('input');
-  _input.style.height = textHeight + 'px';
-
-  _input = SetInputStyle(_input, textProps);
-
-  _input.value = textProps.text;
-
-  _input.style.lineHeight = textProps.font.size;
-
-  _input.setAttribute('id', inputId);
-  _input.setAttribute('mapX', textGraphic.geometry.x);
-  _input.setAttribute('mapY', textGraphic.geometry.y);
-
-  // add event listeners
-  // let enterKeylistener: any;
-  // let windowListener: any;
-
-  const cleanupListener = (target: any) => {
-    // remove parent div
-    (document.getElementById(target.id + '_container') as any).remove();
-    target.remove();
-    window.removeEventListener('click', windowListener);
-    _input.removeEventListener('keyup', enterKeylistener);
-  };
-
-  const AddTextToMap = (target: any) => {
-    const container = document.getElementById(inputId + '_container') as any;
-    const _screenPt = {
-      x: container.offsetLeft + target.clientWidth / 2,
-      y: container.offsetTop + target.clientHeight / 2
-    };
-    const _mapPoint = mapView.toMap(_screenPt);
-    target.setAttribute('mapX', _mapPoint.x);
-    target.setAttribute('mapY', _mapPoint.y);
-    addTextToMap(target, store, textProps, true);
-    cleanupListener(target);
-  };
-
-  const enterKeylistener = (evt: any) => {
-    if (evt.keyCode === 13) {
-      AddTextToMap(evt.target);
-    }
-  };
-
-  const windowListener = (e: any) => {
-    if (typeof e === 'object') {
-      if (e.button === 0) {
-        const inputBox = document.getElementById(inputId);
-        if (e.target !== inputBox && (e.target as any).classList.contains('esri-view-surface')) {
-          if (inputBox) {
-            AddTextToMap(inputBox);
-          }
-        }
-      }
-    }
-  };
-
-  _input.addEventListener('keyup', enterKeylistener);
-  window.addEventListener('click', windowListener);
-
-  frame.appendChild(_input);
-  frame.appendChild(headerDiv);
-
-  frame.style.left = graphicCenter.x - WIDTH / 2 + PADDING + 'px';
-  frame.style.width = WIDTH + 'px';
-  frame.style.top = graphicCenter.y - textHeight / 2 + 'px';
-  return frame;
-};
+  return textSymbol;
+}
 
 const htmlToElement = (html: any) => {
   const template = document.createElement('template');
@@ -238,4 +55,4 @@ const htmlToElement = (html: any) => {
   return template.content.firstElementChild;
 };
 
-export { createInput, htmlToElement, createInputWithFrame };
+export { htmlToElement, SetInputStyleAttributes, CreateTextSymbolFromHTML };

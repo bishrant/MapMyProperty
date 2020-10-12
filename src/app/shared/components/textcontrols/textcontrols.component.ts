@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { TextControlSelectionService } from '../../services/TextControlSelection-service';
 
 @Component({
   selector: 'app-textcontrols',
@@ -7,7 +8,11 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class TextcontrolsComponent implements OnInit {
   private _selectedTextGraphics: any[];
-
+  constructor (private TextSelectionService: TextControlSelectionService) {}
+  deleteText() {
+    console.log(this.selectedTextGraphics);
+    this.TextSelectionService.Delete(this.selectedTextGraphics[0].graphic.attributes.id);
+  }
   @Input() set selectedTextGraphics (value: any[]) {
     this._selectedTextGraphics = value;
     if (value.length > 0) {
@@ -116,7 +121,7 @@ export class TextcontrolsComponent implements OnInit {
     }
   };
 
-  constructor () {}
+
 
   ngOnInit (): void {}
 }
