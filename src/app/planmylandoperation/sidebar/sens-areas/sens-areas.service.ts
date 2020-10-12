@@ -26,7 +26,7 @@ export class SensAreasService {
     private appConfig:AppConfiguration
   ) {}
 
-  isWithinTexas(geo: __esri.Geometry): Promise<boolean> {
+  async isWithinTexas(geo: __esri.Geometry): Promise<boolean> {
     return new Promise((resolve) => {
       const _queryTask = new QueryTask({
         url: this.appConfig.usCountyLayerURL
