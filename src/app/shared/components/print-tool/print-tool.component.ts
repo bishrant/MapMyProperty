@@ -74,7 +74,7 @@ export class PrintToolComponent implements OnInit {
         this.printMapModal.hide();
       })
       .catch((error: any) => {
-        console.log(error);
+        console.error(error);
         let gpError = TraceGPError(this.config.printGPServiceURL, error);
         throw gpError;
       });

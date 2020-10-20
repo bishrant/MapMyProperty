@@ -14,7 +14,7 @@
      [style.display]="visible ? 'block' : 'none'"
      (mousedown)="moveOnTop()"
      (touchstart)="moveOnTop()" (dragEnd)="onDragEnd($event)">
-    <div class="ui-modal-header" #modalHeader [style.backgroundColor]="headerBackgroundColor"
+    <div class="ui-modal-header" #modalHeader [style.background]="headerBackgroundColor"
          (mousedown)="initDrag($event)"
          (touchstart)="initDrag($event)">
       <div class="ui-titlebar">
