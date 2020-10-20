@@ -26,6 +26,7 @@ button:disabled {
 
 .primary-button {
   @apply font-bold py-2 px-4 rounded;
+  font-weight: 500;
 }
 
 .mmp-primary-button:hover {

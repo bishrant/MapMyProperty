@@ -27,3 +27,19 @@
 .my-form-field .mat-form-field-wrapper{
     margin-bottom: -1.25em !important;
 }
+
+.mapViewNode {
+  height: 500px;
+  width: 600px;
+  position: relative;
+}
+@media (max-width: 640px) {
+  .mapViewNode {
+    width: 90vw;
+  }
+}
+
+.footer{
+  display: flex;
+  justify-content: center;
+}

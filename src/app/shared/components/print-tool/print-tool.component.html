@@ -39,17 +39,17 @@
   </form>
 </div>
 
-<app-modal #printMapModal [maximizable]="false" [backdrop]="true">
+<app-modal #printMapModal [maximizable]="false" [backdrop]="true" [headerBackgroundColor]="'black'">
   <ng-container class="app-modal-header">Map Preview</ng-container>
   <ng-container class="app-modal-body">
-    <div #mapViewNode style="height: 500px; width: 100%;position: relative;"> </div>
+    <div #mapViewNode class="mapViewNode"> </div>
   </ng-container>
   <ng-container class="app-modal-footer">
-    <button mat-raised-button color="accent" class="printMapBtn" (click)="generatePDF()">
-      <mat-icon>print</mat-icon>
-      Generate PDF
-    </button>
+    <div class="footer">
+      <button type="button" class="mmp-primary primary-button" (click)="generatePDF()">
+        Generate PDF
+      </button>
+    </div>
 
-    <button class="dt-button dt-blue" style="float: right;" (click)="printMapModal.hide()">Close</button>
   </ng-container>
 </app-modal>
