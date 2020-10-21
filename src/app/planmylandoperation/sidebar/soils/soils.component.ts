@@ -16,6 +16,9 @@ import { GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import Collection from 'esri/core/Collection';
 import { SquareMetersToAcres } from 'src/app/shared/utils/ConversionTools';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
+import { TraceGPError } from 'src/app/shared/services/error/GPServiceError';
+import { AppConfiguration } from 'src/config';
+import { ReportsService } from '../../pmloUtils/reports.service';
 
 @Component({
   selector: 'pmlo-soils',
@@ -56,7 +59,9 @@ export class SoilsComponent implements OnInit {
     private mapViewService: MapviewService,
     private dialogService: DialogService,
     private soilsReportService: SoilsReportService,
-    private sensAreasService: SensAreasService
+    private sensAreasService: SensAreasService,
+    private appConfig: AppConfiguration,
+    private reportsService: ReportsService
   ) { }
 
   ngOnInit(): void {
@@ -261,7 +266,7 @@ export class SoilsComponent implements OnInit {
             soilsImageUrl: value[0].soilsImage,
             countyName: value[1].countyName,
             countyFips: value[1].countyFips,
-            whatershed: value[2],
+            watershed: value[2],
             ephemeralFeet: value[3].ephemeralFeet,
             intermittentFeet: value[3].intermittentFeet,
             perennialFeet: value[3].perennialFeet,
@@ -272,9 +277,25 @@ export class SoilsComponent implements OnInit {
             longitude: (boundary.geometry as __esri.Polygon).centroid.longitude,
             soils: soilsAttributes.items
           };
-          // const reportUrl:string = this.soilsReportService.createReport(reportParams);      
+
+          console.log(reportParams);
+
+          this.reportsService.getSoilsReport({content: JSON.stringify(reportParams)}).subscribe(
+            (response:any) => {
+              this.loaderService.isLoading.next(false);
+              window.open(response.fileName, '_blank');
+            },
+            (error:any) => {
+              this.loaderService.isLoading.next(false);
+              const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
+              throw gpError;
+            }
+          );
+        })
+        .catch((error:any) => {
           this.loaderService.isLoading.next(false);
-          // window.open(reportUrl, '_blank');
+          const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
+          throw gpError;
         });
       });
   }
