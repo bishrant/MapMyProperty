@@ -16,6 +16,7 @@ import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModalModule } from 'src/app/shared/lib/angular-modal/modal/modal-module';
 import { SoilsTableComponent } from '../sidebar/soils/soils-table/soils-table.component';
+import { CulvertSizeModule } from '../sidebar/culvert-size/culvert-size.module';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { SoilsTableComponent } from '../sidebar/soils/soils-table/soils-table.co
     ElevationProfileModule,
     AccordionPanelModule,
     FontAwesomeModule,
-    ModalModule
+    ModalModule,
+    CulvertSizeModule
   ],
   exports: [EsrimapComponent]
 })
