@@ -36,6 +36,8 @@ export class CulvertSizeComponent {
     this.drawingObservable$ = this.culvertService.drawingComplete.subscribe((graphics: any) => {
       // this.loaderService.isLoading.next(true);
       // console.time('graph')
+      this.culvertService.GetCulvertData(graphics)
+      .then(x => console.log(x));
       // this.chartDataObservable$ = this.culvertService.chartData$.subscribe(async (d: any) => {
       //   this.culvertService.Plotly = this.Plotly;
       //   this.elevationProfileModal.show();
