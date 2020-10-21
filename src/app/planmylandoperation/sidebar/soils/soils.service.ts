@@ -46,7 +46,7 @@ export class SoilsService {
     });
   }
 
-  getSoils(graph: Graphic): Promise<any[]> {
+  getSoils(graph: Graphic, isFromSoils: boolean): Promise<any[]> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];

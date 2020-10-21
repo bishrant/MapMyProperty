@@ -161,7 +161,7 @@ export class SoilsComponent implements OnInit {
     } else {
       this.loaderService.isLoading.next(true);
       const inputBoundary: __esri.Graphic = polygonGraphics.getItemAt(0);
-      this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
+      this.soilsService.getSoils(inputBoundary, true).then((result: __esri.FeatureSet[]) => {
         if (result.length === 0)
         {
           this.loaderService.isLoading.next(false);
