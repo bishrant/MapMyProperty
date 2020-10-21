@@ -10,10 +10,10 @@ import { GetWebMapAsJsonString } from '../utils/WebMapAsJsonUtils';
 export class PrintTaskService {
   constructor(private appConfig: AppConfiguration) {}
 
-  exportWebMap(mv: MapView, layout: any, format: any): Promise<string> {
+  exportWebMap(mv: MapView, layout: any, format: any, boundaryExtent:__esri.Extent): Promise<string> {
     return new Promise((resolve) => {
       const printParameters = {
-        Web_Map_as_JSON: GetWebMapAsJsonString(mv),
+        Web_Map_as_JSON: GetWebMapAsJsonString(mv, boundaryExtent),
         Format: format,
         Layout_Template: layout,
       };

@@ -175,40 +175,36 @@ export class SensAreasComponent implements OnInit {
 
   buildSMZReport(): void {
     this.loaderService.isLoading.next(true);
-    this.mapView.goTo(this.boundaryLayer.graphics.getItemAt(0).geometry.extent.clone().expand(1.2)).then (
-      () => {
-        this.printTaskService.exportWebMap(this.mapView, 'PMLOSensAreasTemplate', 'jpg').then((url) => {
-          if (url === 'error')
-          {
+    this.printTaskService.exportWebMap(this.mapView, 'PMLOSensAreasTemplate', 'jpg', this.boundaryLayer.graphics.getItemAt(0).geometry.extent.clone().expand(1.05)).then((url) => {
+      if (url === 'error')
+      {
+        this.loaderService.isLoading.next(false);
+        this.opt.message = 'There was an error creating the report. Please try again and, if the problem persists, contact the administrator.';
+        this.dialogService.open(this.opt);
+      } else {
+        let severeSlopeArea: number = 0;
+        if(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'slopes').length > 0)
+        {
+          severeSlopeArea = SquareMetersToAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'slopes').getItemAt(0).attributes['Shape_Area']);
+        }
+        const reportParams = {
+          zzProjNamezz: this.reportTitle,
+          imageUrl: url,
+          zzStreamsLengthzz: FormatRoundNumber(GetFeaturesLength(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'streams')), 0) + ' feet',
+          zzSmzAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'smz')), 1) + ' acres',
+          zzSevereSlopezz: this.slopeValue,
+          zzSevereSlopesAreazz: FormatRoundNumber(severeSlopeArea, 1) + ' acres',
+          zzWetAreasAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'wetlands')), 1) + ' acres',
+          zzWetAreasBufferAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'wetlandsBuffer')), 1) + ' acres'
+        };
+        this.reportsService.getSMZReports({content: JSON.stringify(reportParams)}).subscribe(
+          response => {
+            console.log(response);
+            this.customSnackBarService.open({url: response.fileName});
             this.loaderService.isLoading.next(false);
-            this.opt.message = 'There was an error creating the report. Please try again and, if the problem persists, contact the administrator.';
-            this.dialogService.open(this.opt);
-          } else {
-            let severeSlopeArea: number = 0;
-            if(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'slopes').length > 0)
-            {
-              severeSlopeArea = SquareMetersToAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'slopes').getItemAt(0).attributes['Shape_Area']);
-            }
-            const reportParams = {
-              zzProjNamezz: this.reportTitle,
-              imageUrl: url,
-              zzStreamsLengthzz: FormatRoundNumber(GetFeaturesLength(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'streams')), 0) + ' feet',
-              zzSmzAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'smz')), 1) + ' acres',
-              zzSevereSlopezz: this.slopeValue,
-              zzSevereSlopesAreazz: FormatRoundNumber(severeSlopeArea, 1) + ' acres',
-              zzWetAreasAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'wetlands')), 1) + ' acres',
-              zzWetAreasBufferAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'wetlandsBuffer')), 1) + ' acres'
-            };
-            this.reportsService.getSMZReports({content: JSON.stringify(reportParams)}).subscribe(
-              response => {
-                console.log(response);
-                this.customSnackBarService.open({url: response.fileName});
-                this.loaderService.isLoading.next(false);
-              }
-            );
           }
-        });
+        );
       }
-    );
+    });
   }
 }
