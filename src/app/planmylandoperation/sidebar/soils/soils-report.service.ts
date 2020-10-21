@@ -20,17 +20,18 @@ export class SoilsReportService {
   async printMaps(
     mapView: __esri.MapView,
     pmloSoilsGL: __esri.GraphicsLayer,
-    pmloSoilLabelsGL: __esri.GraphicsLayer
+    pmloSoilLabelsGL: __esri.GraphicsLayer,
+    boundaryExtent: __esri.Extent
   ): Promise<any> {
     pmloSoilLabelsGL.visible = false;
     pmloSoilsGL.visible = false;
     return this.printTaskService
-      .exportWebMap(mapView, 'PMLOSensAreasTemplate', 'jpg')
+      .exportWebMap(mapView, 'PMLOSensAreasTemplate', 'jpg', boundaryExtent)
       .then((boundaryMapUrl: string) => {
         pmloSoilsGL.visible = true;
         pmloSoilLabelsGL.visible = true;
         return new Promise((resolve, reject) => {
-          this.printTaskService.exportWebMap(mapView, 'PMLOSoilsTemplate', 'jpg').then((soilsMapUrl: string) => {
+          this.printTaskService.exportWebMap(mapView, 'PMLOSoilsTemplate', 'jpg', boundaryExtent).then((soilsMapUrl: string) => {
             resolve({
               boundaryImage: boundaryMapUrl,
               soilsImage: soilsMapUrl,

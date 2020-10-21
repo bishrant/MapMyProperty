@@ -251,52 +251,49 @@ export class SoilsComponent implements OnInit {
       soil.attributes.Acres = SquareMetersToAcres(soil.attributes.Shape_Area);
       return soil.attributes;
     });
-    this.mapView.goTo(boundary.geometry.extent.clone().expand(1.2)).then(
-      () => {
-        Promise.all([
-          this.soilsReportService.printMaps(this.mapView, this.pmloSoilsGL, this.pmloSoilLabelsGL),
-          this.soilsReportService.getCountyFromCentroid((boundary.geometry as __esri.Polygon).centroid),
-          this.soilsReportService.getWatershedFromCentroid((boundary.geometry as __esri.Polygon).centroid),
-          this.soilsReportService.getSoilsReportHydroParams(boundary),
-          this.sensAreasService.isWithinTexas(boundary.geometry)
-        ]).then((value) => {
-          const reportParams:any = {
-            projectName: this.soReportTitle,
-            boundaryImageUrl: value[0].boundaryImage,
-            soilsImageUrl: value[0].soilsImage,
-            countyName: value[1].countyName,
-            countyFips: value[1].countyFips,
-            watershed: value[2],
-            ephemeralFeet: value[3].ephemeralFeet,
-            intermittentFeet: value[3].intermittentFeet,
-            perennialFeet: value[3].perennialFeet,
-            wetlandsAcres: value[3].wetlandsAcres,
-            isWithinTexas: value[4],
-            projectAcres: GetFeaturesAreaAcres(boundaryCollection),
-            latitude: (boundary.geometry as __esri.Polygon).centroid.latitude,
-            longitude: (boundary.geometry as __esri.Polygon).centroid.longitude,
-            soils: soilsAttributes.items
-          };
+    Promise.all([
+      this.soilsReportService.printMaps(this.mapView, this.pmloSoilsGL, this.pmloSoilLabelsGL, boundary.geometry.extent.clone().expand(1.05)),
+      this.soilsReportService.getCountyFromCentroid((boundary.geometry as __esri.Polygon).centroid),
+      this.soilsReportService.getWatershedFromCentroid((boundary.geometry as __esri.Polygon).centroid),
+      this.soilsReportService.getSoilsReportHydroParams(boundary),
+      this.sensAreasService.isWithinTexas(boundary.geometry)
+    ]).then((value) => {
+      const reportParams:any = {
+        projectName: this.soReportTitle,
+        boundaryImageUrl: value[0].boundaryImage,
+        soilsImageUrl: value[0].soilsImage,
+        countyName: value[1].countyName,
+        countyFips: value[1].countyFips,
+        watershed: value[2],
+        ephemeralFeet: value[3].ephemeralFeet,
+        intermittentFeet: value[3].intermittentFeet,
+        perennialFeet: value[3].perennialFeet,
+        wetlandsAcres: value[3].wetlandsAcres,
+        isWithinTexas: value[4],
+        projectAcres: GetFeaturesAreaAcres(boundaryCollection),
+        latitude: (boundary.geometry as __esri.Polygon).centroid.latitude,
+        longitude: (boundary.geometry as __esri.Polygon).centroid.longitude,
+        soils: soilsAttributes.items
+      };
 
-          console.log(reportParams);
+      console.log(reportParams);
 
-          this.reportsService.getSoilsReport({content: JSON.stringify(reportParams)}).subscribe(
-            (response:any) => {
-              this.loaderService.isLoading.next(false);
-              window.open(response.fileName, '_blank');
-            },
-            (error:any) => {
-              this.loaderService.isLoading.next(false);
-              const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
-              throw gpError;
-            }
-          );
-        })
-        .catch((error:any) => {
+      this.reportsService.getSoilsReport({content: JSON.stringify(reportParams)}).subscribe(
+        (response:any) => {
+          this.loaderService.isLoading.next(false);
+          window.open(response.fileName, '_blank');
+        },
+        (error:any) => {
           this.loaderService.isLoading.next(false);
           const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
           throw gpError;
-        });
-      });
+        }
+      );
+    })
+    .catch((error:any) => {
+      this.loaderService.isLoading.next(false);
+      const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
+      throw gpError;
+    });
   }
 }
