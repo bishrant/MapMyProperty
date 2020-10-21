@@ -1,7 +1,6 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
-import Graphic from 'esri/Graphic';
 import { ReplaySubject } from 'rxjs';
 import { AppConfiguration } from 'src/config';
 import { LoaderService } from './Loader.service';
