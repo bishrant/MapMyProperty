@@ -1,44 +1,36 @@
 import { Injectable } from '@angular/core';
-import PrintTask from "esri/tasks/PrintTask";
 import MapView from 'esri/views/MapView';
-import PrintParameters from 'esri/tasks/support/PrintParameters';
 import { AppConfiguration } from 'src/config';
-import { TraceGPError } from './error/GPServiceError';
+import Geoprocessor from 'esri/tasks/Geoprocessor';
+import { GetWebMapAsJsonString } from '../utils/WebMapAsJsonUtils';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class PrintTaskService {
-
-  constructor(
-      private appConfig:AppConfiguration
-  ) {}
+  constructor(private appConfig: AppConfiguration) {}
 
   exportWebMap(mv: MapView, layout: any, format: any): Promise<string> {
     return new Promise((resolve) => {
-        const printParameters: PrintParameters = new PrintParameters({
-            view: mv,
-            extraParameters: {
-                Final_Map_WKID: '',
-                Layout_Template: layout,
-                Format: format
-            }
-        });
+      const printParameters = {
+        Web_Map_as_JSON: GetWebMapAsJsonString(mv),
+        Format: format,
+        Layout_Template: layout,
+      };
 
-        const printTask:PrintTask = new PrintTask({
-            url: this.appConfig.printGPServiceURL
+      const printGP: Geoprocessor = new Geoprocessor({
+        url: this.appConfig.printGPServiceURL,
+      });
+      printGP.submitJob(printParameters).then((jobInfo) => {
+        printGP.waitForJobCompletion(jobInfo.jobId).then((jobInfo2) => {
+          if (jobInfo2.jobStatus === 'job-succeeded') {
+            printGP.getResultData(jobInfo2.jobId, 'Output_File').then((response) => {
+              console.log(response.value.url);
+              resolve(response.value.url);
+            });
+          }
         });
-
-        printTask.execute(printParameters).then((response) => {
-            resolve(response.url);
-        }, (error: any) => {
-            resolve(error);
-        })
-        .catch((error: any) => {
-            const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
-            throw gpError;
-        });
+      });
     });
   }
 }
