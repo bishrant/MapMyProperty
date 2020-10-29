@@ -20,14 +20,17 @@
   </div>
 </div>
 
-<app-modal #elevationProfileModal [maximizable]="false" [backdrop]="true"
+<app-modal #culvertModal [maximizable]="false" [backdrop]="false"
   (closeModal)="modelClosed()"  [headerBackgroundColor]="headerBgColor">
-  <ng-container class="app-modal-header bg-pmlo_secondary">Elevation Profile</ng-container>
+  <ng-container class="app-modal-header bg-pmlo_secondary">Watershed Properties</ng-container>
   <ng-container class="app-modal-body">
-    <div #mapViewNode style="height: 340px; width: 100%;position: relative;">
-      <div id="gd">
-      </div>
-    </div>
+
+    Area (Acres): {{culvertData.POLY_AREA | number: '1.2'}}<br>
+    Sand (%): {{culvertData.Sand_WA | number: '1.2'}}<br>
+    Silt (%): {{culvertData.Silt_WA | number: '1.2'}}<br>
+    Clay (%): {{culvertData.Clay_WA | number: '1.2'}}<br>
+    Slope (%): {{culvertData.Avg_Slope | number: '1.2'}}<br>
+
 
   </ng-container>
   <ng-container class="app-modal-footer">
