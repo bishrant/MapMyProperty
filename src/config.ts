@@ -4,6 +4,7 @@ export class AppConfiguration {
     exportMapGPServiceURL: string;
     elevationProfileReportURL: string;
     elevationGPServiceURL: string;
+    culvertSizeGPServiceURL: string;
     geometryServiceURL: string;
     clipSoilsGPServiceURL: string;
     usCountyLayerURL: string;
