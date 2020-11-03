@@ -98,11 +98,11 @@ export class TextControlSelectionService {
 
   Delete(id: string) {
     console.log(this.windowListener);
-    (document.getElementById(id) as any).remove();
-    (document.getElementById(id + '_container') as any).remove();
+    // (document.getElementById(id) as any).remove();
+    // (document.getElementById(id + '_container') as any).remove();
 
-    window.removeEventListener('click', this.windowListener);
-    this._input.removeEventListener('keyup', this.enterKeylistener);
+    // window.removeEventListener('click', this.windowListener);
+    // this._input.removeEventListener('keyup', this.enterKeylistener);
     let a=1;
     // this.CleanupListenerForInputFrame(this.inputBox);
   }

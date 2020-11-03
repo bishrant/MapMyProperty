@@ -23,7 +23,7 @@ module.exports = {
   plugins: [
     new ArcGISPlugin({
       features: {
-        '3d': false
+        '3d': true
       },
       userDefinedExcludes: [
         "arcgis-js-api/layers/BingMapsLayer",

@@ -18,6 +18,7 @@ import { ModalModule } from 'src/app/shared/lib/angular-modal/modal/modal-module
 import { SoilsTableComponent } from '../sidebar/soils/soils-table/soils-table.component';
 import { HarvestOperationsComponent } from '../sidebar/harvest-operations/harvest-operations.component';
 import { OperationLegendComponent } from '../operation-legend/operation-legend.component';
+import { CulvertSizeModule } from '../sidebar/culvert-size/culvert-size.module';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { OperationLegendComponent } from '../operation-legend/operation-legend.c
     ElevationProfileModule,
     AccordionPanelModule,
     FontAwesomeModule,
-    ModalModule
+    ModalModule,
+    CulvertSizeModule
   ],
   exports: [EsrimapComponent]
 })
