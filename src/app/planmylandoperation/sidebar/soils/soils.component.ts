@@ -42,7 +42,7 @@ export class SoilsComponent implements OnInit {
   sliderValue: number = 0;
   isOrangeSymbol:boolean = false;
 
-  soReportTitle = '';
+  soReportTitle:string = '';
 
   private soilsDynamicLayer: __esri.WMSLayer;
   private soilsIdentifyClickEvent: any = null;
