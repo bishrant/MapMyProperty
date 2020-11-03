@@ -25,7 +25,6 @@ export class PrintTaskService {
         printGP.waitForJobCompletion(jobInfo.jobId).then((jobInfo2) => {
           if (jobInfo2.jobStatus === 'job-succeeded') {
             printGP.getResultData(jobInfo2.jobId, 'Output_File').then((response) => {
-              console.log(response.value.url);
               resolve(response.value.url);
             });
           }
