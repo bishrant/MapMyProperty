@@ -19,6 +19,7 @@ import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { TraceGPError } from 'src/app/shared/services/error/GPServiceError';
 import { AppConfiguration } from 'src/config';
 import { ReportsService } from '../../pmloUtils/reports.service';
+import { EsrimapService } from '../../esrimap/esrimap.service';
 
 @Component({
   selector: 'pmlo-soils',
@@ -61,7 +62,8 @@ export class SoilsComponent implements OnInit {
     private soilsReportService: SoilsReportService,
     private sensAreasService: SensAreasService,
     private appConfig: AppConfiguration,
-    private reportsService: ReportsService
+    private reportsService: ReportsService,
+    private esriMapService: EsrimapService
   ) { }
 
   ngOnInit(): void {
@@ -135,6 +137,26 @@ export class SoilsComponent implements OnInit {
         clonedGrahic.attributes.isFromSelection = true;
         clonedGrahic.symbol = CreatePolygonSymbol(lineProps, fillProps);
         this.pmloSoilsGL.add(clonedGrahic);
+      }
+    });
+
+    this.soilsService.updateSliderValue.subscribe((res:any) => {
+      if (res.isFromSoils)
+      {
+        if (res.sliderVal < 75 || res.sliderVal === 100) {
+          this.isOrangeSymbol = false;
+        } else {
+          this.isOrangeSymbol = true;
+        }
+        this.soilsService.updateGraphicsOpacity(this.pmloSoilsGL, this.pmloSoilLabelsGL, res.sliderVal, this.isOrangeSymbol, true);
+      }
+      this.sliderValue = res.sliderVal;
+    });
+
+    this.esriMapService.toggleSoilsAccordion.subscribe((opened) => {
+      if (this.pmloSoilsGL.graphics.length > 0)
+      {
+        this.soilsService.updateGraphicsOpacity(this.pmloSoilsGL, this.pmloSoilLabelsGL, this.sliderValue, this.isOrangeSymbol, true);
       }
     });
   }
@@ -225,12 +247,7 @@ export class SoilsComponent implements OnInit {
   }
 
   updateSliderValue(value: number):void {
-    if (value < 75 || value === 100) {
-      this.isOrangeSymbol = false;
-    } else {
-      this.isOrangeSymbol = true;
-    }
-    this.soilsService.updateGraphicsOpacity(this.pmloSoilsGL, this.pmloSoilLabelsGL, value, this.isOrangeSymbol);
+    this.soilsService.updateSliderValue.emit({sliderVal: value, isFromSoils:true, selectedRadioVal: null});
   }
 
   toggleTable():void {

@@ -1,0 +1,7 @@
+<fieldset class="legendFieldset">
+    <legend class="py-1 px-2 mx-1">Legend</legend>
+    <div class="flex my-2" *ngFor="let legendItem of legendItems">
+        <div class="legendSymbol" [ngStyle]="{'background-color': legendItem.backgroundColor}"></div>
+        <div class="pl-2">{{legendItem.label}}</div>
+    </div>
+</fieldset>

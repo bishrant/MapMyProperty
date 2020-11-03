@@ -16,6 +16,8 @@ import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModalModule } from 'src/app/shared/lib/angular-modal/modal/modal-module';
 import { SoilsTableComponent } from '../sidebar/soils/soils-table/soils-table.component';
+import { HarvestOperationsComponent } from '../sidebar/harvest-operations/harvest-operations.component';
+import { OperationLegendComponent } from '../operation-legend/operation-legend.component';
 import { CulvertSizeModule } from '../sidebar/culvert-size/culvert-size.module';
 
 @NgModule({
@@ -24,7 +26,9 @@ import { CulvertSizeModule } from '../sidebar/culvert-size/culvert-size.module';
     SensAreasComponent,
     SoilsComponent,
     ProgressBarComponent,
-    SoilsTableComponent
+    SoilsTableComponent,
+    HarvestOperationsComponent,
+    OperationLegendComponent
   ],
   imports: [
     CommonModule,
