@@ -66,6 +66,8 @@ export class PrintToolComponent implements OnInit {
       }
     });
 
+    console.log((this.printTask as any)._getPrintDefinition(this.popupMapView, printParameters));
+
     this.printTask.execute(printParameters)
       .then((success: any) => {
         console.log(success.url);
