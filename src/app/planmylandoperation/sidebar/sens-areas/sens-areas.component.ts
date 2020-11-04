@@ -198,10 +198,9 @@ export class SensAreasComponent implements OnInit {
           zzWetAreasBufferAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'wetlandsBuffer')), 1) + ' acres'
         };
         this.reportsService.getSMZReports({content: JSON.stringify(reportParams)}).subscribe(
-          response => {
-            console.log(response);
-            this.customSnackBarService.open({url: response.fileName});
+        (response:any) => {
             this.loaderService.isLoading.next(false);
+            window.open(response.fileName, '_blank', 'noopener');
           }
         );
       }

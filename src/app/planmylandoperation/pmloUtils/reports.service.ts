@@ -11,6 +11,7 @@ export class ReportsService {
   private apiDomain = this.backendServer + 'api/';
   private smzReportUrl = this.apiDomain + 'CreateSensAreasReport';
   private soilsReportUrl = this.apiDomain + 'CreatePMLOSoilsReport';
+  private opConsReportUrl =  this.apiDomain + 'CreateOpConsReport';
 
   constructor(
     private http: HttpClient
@@ -23,6 +24,11 @@ export class ReportsService {
 
   getSoilsReport(data : {content:string}): Observable<any>{
     const url = this.soilsReportUrl;
+    return this.http.post<any>(url, data);
+  }
+
+  getOperationalConsiderationsReport(data: {content:string}):Observable<any> {
+    const url = this.opConsReportUrl;
     return this.http.post<any>(url, data);
   }
 }

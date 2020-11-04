@@ -42,7 +42,7 @@ export class SoilsComponent implements OnInit {
   sliderValue: number = 0;
   isOrangeSymbol:boolean = false;
 
-  soReportTitle = '';
+  soReportTitle:string = '';
 
   private soilsDynamicLayer: __esri.WMSLayer;
   private soilsIdentifyClickEvent: any = null;
@@ -240,10 +240,7 @@ export class SoilsComponent implements OnInit {
   }
 
   clearSoilGLayers():void {
-    this.pmloSoilLabelsGL.removeAll();
-    this.pmloSoilsGL.removeAll();
-    this.soilsService.showTableModal.emit(false);
-    this.soilsService.shareMultiSoils.emit([]);
+    this.soilsService.clearSoilGLayers(this.pmloSoilsGL, this.pmloSoilLabelsGL);
   }
 
   updateSliderValue(value: number):void {
@@ -298,7 +295,7 @@ export class SoilsComponent implements OnInit {
       this.reportsService.getSoilsReport({content: JSON.stringify(reportParams)}).subscribe(
         (response:any) => {
           this.loaderService.isLoading.next(false);
-          window.open(response.fileName, '_blank');
+          window.open(response.fileName, '_blank', 'noopener');
         },
         (error:any) => {
           this.loaderService.isLoading.next(false);

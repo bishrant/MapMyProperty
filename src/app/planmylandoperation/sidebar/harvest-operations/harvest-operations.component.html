@@ -72,5 +72,24 @@
         <div class="mt-3">
             <pmlo-operation-legend></pmlo-operation-legend>
         </div>
+
+        <div class="flex justify-center mt-3">
+            <button type="button" class="pmlo-btn generalBtn" (click)="clearSoilGLayers()">Clear Layer</button>
+        </div>
+
+        <div class="flex mt-3">
+            <div class="md-input-main mx-3">
+              <div class="md-input-box">
+                <input id="soReportTitle" name="soReportTitle" type="text" class="pmlo-md-input md-input" placeholder=" "
+                  [(ngModel)]="hoReportTitle" maxlength="40" />
+                <label for="soReportTitle" class="md-label text-pmlo_primary">Report Title</label>
+                <div class="pmlo-md-input-underline md-input-underline"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-center mt-3">
+            <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="buildOperationsReport()">Create A Report</button>
+          </div>
     </ng-container>
 </div>
