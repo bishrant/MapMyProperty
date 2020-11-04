@@ -2,7 +2,6 @@
   "loggingURL": "https://txfipdev.tfs.tamu.edu/AppErrorLogger/api/logs",
   "printGPServiceURL": "https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Shared/PrintUsingPro/GPServer/PrintUsingPro",
   "exportMapGPServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/Shared/ExportWebMap/GPServer/Export%20Web%20Map/execute",
-  "culvertSizeGPServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/PMLO/CreateWatershedOld/GPServer/Create%20Watershed",
   "elevationProfileReportURL": "https://txfipdev.tfs.tamu.edu/MMPReport/api/CreateElevationProfileReport",
   "elevationGPServiceURL": "https://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile/execute",
   "sensAreasGPServiceURL": "https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/PMLO/ClipSensitiveAreas/GPServer/Clip%20Sensitive%20Areas",
@@ -14,5 +13,9 @@
   "soilsReportHydroParamsGPServiceURL": "https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/PMLO/SoilsReportHydroParams/GPServer/Soils%20Report%20Hydrology%20Parameters",
   "geometryServiceURL": "https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Utilities/Geometry/GeometryServer",
   "ssurgoTabularURL":  "https://SDMDataAccess.sc.egov.usda.gov/Tabular/post.rest",
-  "ssurgoWMSURL": "https://sdmdataaccess.nrcs.usda.gov/Spatial/sdm.wms?"
+  "ssurgoWMSURL": "https://sdmdataaccess.nrcs.usda.gov/Spatial/sdm.wms?",
+  "culvertSize": {
+    "reportURL": "https://localhost:44358/api/CreateCulvertSizeReport",
+    "gpServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/PMLO/CreateWatershed/GPServer/Create%20Watershed"
+  }
 }
