@@ -1,0 +1,74 @@
+$right: 1em;
+
+.basemapContainer {
+  position: absolute;
+  right: $right;
+  top: 1em;
+  background: gray;
+}
+
+.basemapContainer.basemap-open {
+  background: gray;
+  width: 24em;
+  height: 24em;
+  overflow: auto;
+}
+
+.basemapToggleBtn {
+  position: absolute;
+  top: 1em;
+  right: $right;
+  height: 3em;
+  width: 3em;
+}
+
+.basemapBody {
+  position: absolute;
+  top: 4.5em;
+  right: $right;
+  height: 25em;
+  width: 25em;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.basemapLabel {
+  right: $right + 3.5em;
+  position: absolute;
+  background: black;
+  color: white;
+  top: 2em;
+}
+.basemapcard {
+  width: 7em;
+  display: flex;
+  flex-direction: column;
+  height: 6em;
+  justify-content: center;
+  align-items: center;
+}
+title {
+  display: block;
+}
+
+.basemapcard:last-of-type {
+  grid-column-start: 2;
+  grid-column-end: 2;
+}
+
+.basemapgrid {
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 1em;
+  margin: a;
+  margin: 1em;
+}
+
+
+.basemapcard>img {
+  box-shadow: 0 0 9px black;
+  border: 1px solid white;
+}
