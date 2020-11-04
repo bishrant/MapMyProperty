@@ -30,17 +30,14 @@
     Silt (%): {{culvertData.Silt_WA | number: '1.2'}}<br>
     Clay (%): {{culvertData.Clay_WA | number: '1.2'}}<br>
     Slope (%): {{culvertData.Avg_Slope | number: '1.2'}}<br>
-
-
   </ng-container>
   <ng-container class="app-modal-footer">
-
-
     <span class="createreportBar">
       <label class="inline-block text-gray-700 text-sm font-bold mb-2 mr-2" for="elevationProfileTitle">
         Project Name:
       </label>
-      <input class="shadow appearance-none border rounded w-150 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2" id="elevationProfileTitles" aria-label="project name" type="text"/>
+      <input class="shadow appearance-none border rounded w-150 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mr-2"
+      aria-label="project name" type="text" [(ngModel)]="culvertReportTitle" maxlength="40"/>
       <button (click)="createReport()" class="pmlo-btn pmlo-secondary py-2 px-4">Create Report</button>
     </span>
   </ng-container>
