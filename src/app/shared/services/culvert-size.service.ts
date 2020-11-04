@@ -15,6 +15,20 @@ import PrintTask from 'esri/tasks/PrintTask';
 import PrintParameters from 'esri/tasks/support/PrintParameters';
 import { HttpClient } from '@angular/common/http';
 
+interface CulvertSizeReportParams {
+  watershedImageURL: string,
+  zzProjName: string,
+  zzLatitude: string,
+  zzLongitude: string,
+  zzAcresDrained: string,
+  zzSlope: string,
+  zzTexture: string,
+  zzSilt: string,
+  zzSand: string,
+  zzClay: string,
+  zzCulvertDiam: string,
+}
+
 @Injectable()
 export class CulvertSizeService {
   chartData$: ReplaySubject<any> = new ReplaySubject(1);
@@ -71,10 +85,10 @@ export class CulvertSizeService {
       spatialReference: { wkid: 3857 }
     });
     const geoprocessor: Geoprocessor = new Geoprocessor({
-      url: this.config.culvertSizeGPServiceURL
+      url: this.config.culvertSize.gpServiceURL
     });
     const params = {
-      inPourPoint: featureSet
+      Input_Pour_Point: featureSet
     }
     console.log(featureSet.toJSON());
     return [geoprocessor, params];
@@ -90,6 +104,14 @@ export class CulvertSizeService {
   public close() {
     this._graphicsLayer.removeAll();
     this.sketchVM.destroy();
+  }
+
+
+  async GeneratePDFReport(params: CulvertSizeReportParams) {
+    this.http.post(this.config.culvertSize.reportURL, params).subscribe((d: any) => {
+      window.open(d.fileName);
+      this.loaderService.isLoading.next(false);
+    })
   }
 
   async createReport(watershedGeometry: __esri.Polygon, graphicsLayer: GraphicsLayer, culvertData) {
@@ -135,6 +157,11 @@ export class CulvertSizeService {
         const jobDetails = await printMapGpService.waitForJobCompletion(gp.jobId);
         if (jobDetails.jobStatus === 'job-succeeded') {
           const file = await printMapGpService.getResultData(gp.jobId, 'Output_File');
+          const _culvertData = culvertData;
+          _culvertData.watershedImageURL = file.value.url;
+
+          this.GeneratePDFReport(_culvertData);
+
           console.log(file.value.url);
         }
 
