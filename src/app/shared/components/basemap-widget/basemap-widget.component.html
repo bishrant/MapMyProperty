@@ -1,0 +1,24 @@
+<span class="basemapLabel">
+  {{state.basemap}}
+</span>
+<button (click)="toggle()" class="basemapToggleBtn">
+  <img src="assets/icons/basemaps.png" aria-label="basemaps" />
+</button>
+
+<div [hidden]="!state.open" class="basemapBody basemap-open">
+  <title>Basemaps</title>
+  <div style="flex: 1;">
+    <div class="basemapgrid">
+      <div class="basemapcard" *ngFor="let basemap of basemaps">
+        <img src="assets/icons/basemap/{{basemap.image}}.png" aria-label="im" attr.aria-label="{{basemap.image}}" />
+        {{basemap.label}}
+      </div>
+
+
+
+
+    </div>
+  </div>
+
+
+</div>
