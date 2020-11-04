@@ -181,4 +181,11 @@ export class SoilsService {
       g.symbol = symbol;
     });
   }
+
+  clearSoilGLayers(soilsgl: __esri.GraphicsLayer, labelsgl: __esri.GraphicsLayer): void {
+    labelsgl.removeAll();
+    soilsgl.removeAll();
+    this.showTableModal.emit(false);
+    this.shareMultiSoils.emit([]);
+  }
 }

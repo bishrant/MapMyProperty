@@ -23,6 +23,8 @@ export class HarvestOperationsComponent implements OnInit {
   sliderValue: number = 0;
   selectedRadio: string = 'drclassdcd';
 
+  hoReportTitle:string = ''
+
   private pmloSoilsGL: __esri.GraphicsLayer;
   private pmloSoilLabelsGL: __esri.GraphicsLayer;
   private userGL: __esri.GraphicsLayer;
@@ -112,5 +114,18 @@ export class HarvestOperationsComponent implements OnInit {
   radioChanged(value: string): void {
     this.operationLegendService.setOperationLegendSymbols(value, this.pmloSoilsGL, this.sliderValue);
     this.operationLegendService.setOperationLegend(value);
+  }
+
+  clearSoilGLayers():void {
+    this.soilsService.clearSoilGLayers(this.pmloSoilsGL, this.pmloSoilLabelsGL);
+  }
+
+  buildOperationsReport():void {
+    this.loaderService.isLoading.next(true);
+    const boundary:__esri.Graphic= this.userGL.graphics.getItemAt(0);
+    this.harvestOperationsService.createOperationsReport(this.selectedRadio, this.mapView, this.pmloSoilsGL, boundary.geometry.extent.clone().expand(1.05), this.hoReportTitle).then((reportUrl:string) => {
+      this.loaderService.isLoading.next(false);
+      window.open(reportUrl, '_blank', 'noopener');
+    });
   }
 }
