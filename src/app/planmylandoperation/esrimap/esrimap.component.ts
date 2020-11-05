@@ -24,8 +24,9 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
   @ViewChild('soilsTableModal') soilsTableModal: any;
-  @ViewChild('harvestAccPanel') harvestAccPanel:AccordionPanelComponent;
   @ViewChild('soilsAccPanel') soilsAccPanel:AccordionPanelComponent;
+  @ViewChild('harvestAccPanel') harvestAccPanel:AccordionPanelComponent;
+  @ViewChild('regenerationAccPanel') regenerationAccPanel:AccordionPanelComponent;
 
   private graphicsSubcription$: any;
   mapView!: __esri.MapView // = createMapView(this.mapViewEl, this.searchBarDiv);
@@ -138,14 +139,19 @@ export class EsrimapComponent implements OnInit {
     });
   };
 
-  toggleHarvOp()
-  {
-    this.esrimapService.toggleHarvOp.emit(!this.harvestAccPanel.opened);
-  }
-
   toggleSoilsAccordion()
   {
-    this.esrimapService.toggleSoilsAccordion.emit(!this.harvestAccPanel.opened);
+    this.esrimapService.toggleSoilsAccordion.emit(!this.soilsAccPanel.opened);
+  }
+
+  toggleHarvOpAccordion()
+  {
+    this.esrimapService.toggleHarvOpAccordion.emit(!this.harvestAccPanel.opened);
+  }
+
+  toggleRegOpAccordion()
+  {
+    this.esrimapService.toggleRegOpAccordion.emit(!this.regenerationAccPanel.opened);
   }
 
   ngOnInit () {

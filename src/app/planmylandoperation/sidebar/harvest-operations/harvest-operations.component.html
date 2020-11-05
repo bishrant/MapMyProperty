@@ -70,7 +70,7 @@
             </div>
         </div>
         <div class="mt-3">
-            <pmlo-operation-legend></pmlo-operation-legend>
+            <pmlo-operation-legend [initialValue]="selectedRadio" [isFromHarvest]="true"></pmlo-operation-legend>
         </div>
 
         <div class="flex justify-center mt-3">
@@ -80,9 +80,9 @@
         <div class="flex mt-3">
             <div class="md-input-main mx-3">
               <div class="md-input-box">
-                <input id="soReportTitle" name="soReportTitle" type="text" class="pmlo-md-input md-input" placeholder=" "
+                <input id="hoReportTitle" name="soReportTitle" type="text" class="pmlo-md-input md-input" placeholder=" "
                   [(ngModel)]="hoReportTitle" maxlength="40" />
-                <label for="soReportTitle" class="md-label text-pmlo_primary">Report Title</label>
+                <label for="hoReportTitle" class="md-label text-pmlo_primary">Report Title</label>
                 <div class="pmlo-md-input-underline md-input-underline"></div>
               </div>
             </div>

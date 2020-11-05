@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { PMLOOperationLegItem } from '../models/pmloOperationLegend.model';
 import { OperationLegendService } from './operation-legend.service';
 
@@ -8,6 +8,9 @@ import { OperationLegendService } from './operation-legend.service';
   styleUrls: ['./operation-legend.component.scss']
 })
 export class OperationLegendComponent implements OnInit {
+
+  @Input() initialValue:string;
+  @Input() isFromHarvest:boolean;
 
   legendItems: PMLOOperationLegItem[] = [];
 
@@ -20,6 +23,6 @@ export class OperationLegendComponent implements OnInit {
       this.legendItems = items;
     });
 
-    this.operationLegendService.setOperationLegend('drclassdcd');
+    this.operationLegendService.setOperationLegend(this.initialValue, this.isFromHarvest);
   }
 }

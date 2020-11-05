@@ -1,33 +1,34 @@
-const excessDr = 'Excessively drained';
-const someExcessDr = 'Somewhat excessively drained';
-const wellDr = 'Well drained';
-const modWellDr = 'Moderately well drained';
-const somePoorDr = 'Somewhat poorly drained';
-const poorDr = 'Poorly drained';
-const veryPoorDr = 'Very poorly drained';
-const verySevere = 'Very severe';
-const severe = 'Severe';
-const moderate = 'Moderate';
-const slight = 'Slight';
-const poorSuited = 'Poorly suited';
-const modSuited = 'Moderately suited';
-const wellSuited = 'Well suited';
-const notRated = 'Not rated';
+const OperationValues = {
+    excessDr: 'Excessively drained',
+    someExcessDr: 'Somewhat excessively drained',
+    wellDr: 'Well drained',
+    modWellDr: 'Moderately well drained',
+    somePoorDr: 'Somewhat poorly drained',
+    poorDr: 'Poorly drained',
+    veryPoorDr: 'Very poorly drained',
+    verySevere: 'Very severe',
+    severe: 'Severe',
+    moderate: 'Moderate',
+    slight: 'Slight',
+    poorSuited: 'Poorly suited',
+    modSuited: 'Moderately suited',
+    wellSuited: 'Well suited',
+    notRated: 'Not rated',
+    high: 'High',
+    low: 'Low',
+    unsuited: 'Unsuited',
+    darkBrownLegColor: {r: 140, g: 81, b: 10},
+    mediumBrownLegColor: {r: 216, g: 179, b: 101},
+    lightBrownLegColor: {r: 246, g: 232, b: 195},
+    whiteLegColor: {r: 255, g: 255, b: 255},
+    lightBlueLegColor: {r: 199, g: 234, b: 229},
+    mediumBlueLegColor: {r: 90, g: 180, b: 172},
+    darkBlueLegColor: {r: 1, g: 102, b: 94},
+    darkRedLegColor: {r: 215, g: 25, b: 28},
+    orangeLegColor: {r: 252, g: 141, b: 89},
+    yellowLegColor: {r: 255, g: 255, b: 191},
+    greenLegColor: {r: 145, g: 207, b: 96},
+    greyLegColor: {r: 192, g: 192, b: 192}
+};
 
-export {
-    excessDr,
-    someExcessDr,
-    wellDr,
-    modWellDr,
-    somePoorDr,
-    poorDr,
-    veryPoorDr,
-    verySevere,
-    severe,
-    moderate,
-    slight,
-    poorSuited,
-    modSuited,
-    wellSuited,
-    notRated
-}
+export { OperationValues }
