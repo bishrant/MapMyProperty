@@ -26,13 +26,14 @@ $right: 1em;
   position: absolute;
   top: 4.5em;
   right: $right;
-  height: 25em;
+  height: 27em;
   width: 25em;
   background: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 0 10px #0000009c;
 }
 
 .basemapLabel {
@@ -53,11 +54,11 @@ $right: 1em;
 title {
   display: block;
 }
-
-.basemapcard:last-of-type {
-  grid-column-start: 2;
-  grid-column-end: 2;
+.basemapcard.selected {
+  font-weight: bold;
 }
+
+
 
 .basemapgrid {
   display: inline-grid;
@@ -65,10 +66,100 @@ title {
   grid-gap: 1em;
   margin: a;
   margin: 1em;
+  margin-bottom: 0;
 }
 
-
-.basemapcard>img {
+.basemapcard > img {
   box-shadow: 0 0 9px black;
   border: 1px solid white;
+  width: 6em;
+}
+
+.basemapcard.selected > img {
+  box-shadow: 0 0 9px black;
+  border: 2px solid black;
+}
+
+.basemapcard>span {
+  font-size: 13px;
+  padding-top: 4px;
+}
+
+select {
+  display: block;
+  margin: auto;
+  width: 10em;
+    height: 2em;
+    border: 1px solid black;
+    box-shadow: 0 0 1px;
+}
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 6px solid #3498db;
+  width: 30px;
+  height: 30px;
+  -webkit-animation: spin 0.5s linear infinite; /* Safari */
+  animation: spin 0.5s linear infinite;
+  display: inline-block;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingContainer {
+  position: absolute;
+  bottom: 1em;
+  left: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loadingContainer>span {
+  padding-left: 5px;
+}
+
+.texasimagery {
+  height: 8em;
+  width: 12em;
+  display: block;
+  margin: 1em auto 0em;
+  text-align: center;
+}
+
+.texasimagery>* {
+  margin: auto;
+}
+
+.texasimagery>select {
+  margin-top: 10px;
+}
+
+.basemapTitle {
+  height: 2.5em;
+    display: flex;
+    background: black;
+    width: 100%;
+    color: white;
+    /* justify-content: center; */
+    align-items: center;
+    text-align: left;
+    padding-left: 15px;
 }
