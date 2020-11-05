@@ -141,22 +141,22 @@ export class SoilsComponent implements OnInit {
     });
 
     this.soilsService.updateSliderValue.subscribe((res:any) => {
+      this.checkIfOrange(res.sliderVal);
       if (res.isFromSoils)
       {
-        if (res.sliderVal < 75 || res.sliderVal === 100) {
-          this.isOrangeSymbol = false;
-        } else {
-          this.isOrangeSymbol = true;
-        }
         this.soilsService.updateGraphicsOpacity(this.pmloSoilsGL, this.pmloSoilLabelsGL, res.sliderVal, this.isOrangeSymbol, true);
       }
       this.sliderValue = res.sliderVal;
     });
 
     this.esriMapService.toggleSoilsAccordion.subscribe((opened) => {
-      if (this.pmloSoilsGL.graphics.length > 0)
+      if (opened)
       {
-        this.soilsService.updateGraphicsOpacity(this.pmloSoilsGL, this.pmloSoilLabelsGL, this.sliderValue, this.isOrangeSymbol, true);
+        if (this.pmloSoilsGL.graphics.length > 0)
+        {
+          this.soilsService.updateGraphicsOpacity(this.pmloSoilsGL, this.pmloSoilLabelsGL, this.sliderValue, this.isOrangeSymbol, true);
+        }
+        this.pmloSoilLabelsGL.visible = true;
       }
     });
   }
@@ -309,5 +309,13 @@ export class SoilsComponent implements OnInit {
       const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
       throw gpError;
     });
+  }
+
+  private checkIfOrange(val:number):void {
+    if (val < 75 || val === 100) {
+      this.isOrangeSymbol = false;
+    } else {
+      this.isOrangeSymbol = true;
+    }
   }
 }

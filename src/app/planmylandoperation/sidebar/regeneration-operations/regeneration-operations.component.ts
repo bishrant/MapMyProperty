@@ -6,24 +6,24 @@ import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { GreaterThanMaxArea } from 'src/app/shared/utils/GeometryEngine';
 import { EsrimapService } from '../../esrimap/esrimap.service';
 import { OperationLegendService } from '../../operation-legend/operation-legend.service';
+import { HarvestOperationsService } from '../harvest-operations/harvest-operations.service';
 import { SoilsService } from '../soils/soils.service';
-import { HarvestOperationsService } from './harvest-operations.service';
 
 @Component({
-  selector: 'pmlo-harvest-operations',
-  templateUrl: './harvest-operations.component.html',
-  styleUrls: ['./harvest-operations.component.scss']
+  selector: 'pmlo-regeneration-operations',
+  templateUrl: './regeneration-operations.component.html',
+  styleUrls: ['./regeneration-operations.component.scss']
 })
-export class HarvestOperationsComponent implements OnInit {
+export class RegenerationOperationsComponent implements OnInit {
 
   @Input() mapView: __esri.MapView;
 
   faQuestionCircle = faQuestionCircle;
   hasBoundary:boolean = false;
   sliderValue: number = 0;
-  selectedRadio: string = 'drclassdcd';
+  selectedRadio: string = 'SeedMortal';
 
-  hoReportTitle:string = ''
+  roReportTitle:string = '';
 
   private pmloSoilsGL: __esri.GraphicsLayer;
   private pmloSoilLabelsGL: __esri.GraphicsLayer;
@@ -34,13 +34,13 @@ export class HarvestOperationsComponent implements OnInit {
   };
 
   constructor(
-    private esrimapService:EsrimapService,
     private soilsService:SoilsService,
+    private loaderService:LoaderService,
+    private operationLegendService:OperationLegendService,
+    private harvestOperationsService:HarvestOperationsService,
+    private esrimapService:EsrimapService,
     private dialogService:DialogService,
-    private loaderService:LoaderService, 
-    private harvestOperationsService: HarvestOperationsService,
-    private decimalPipe: DecimalPipe,
-    private operationLegendService: OperationLegendService
+    private decimalPipe:DecimalPipe
   ) { }
 
   ngOnInit(): void {
@@ -48,7 +48,7 @@ export class HarvestOperationsComponent implements OnInit {
     this.pmloSoilLabelsGL = this.mapView.map.findLayerById('pmloSoilLabelsGL') as __esri.GraphicsLayer;
     this.userGL = this.mapView.map.findLayerById('userGraphicsLayer') as __esri.GraphicsLayer;
 
-    this.esrimapService.toggleHarvOpAccordion.subscribe((opened) => {
+    this.esrimapService.toggleRegOpAccordion.subscribe((opened) => {
       if (opened)
       {
         if (this.pmloSoilsGL.graphics.length > 0)
@@ -56,21 +56,21 @@ export class HarvestOperationsComponent implements OnInit {
           this.soilsService.showTableModal.emit(false);
           this.pmloSoilLabelsGL.visible = false;
           this.operationLegendService.setOperationLegendSymbols(this.selectedRadio, this.pmloSoilsGL, this.sliderValue);
-          this.operationLegendService.setOperationLegend(this.selectedRadio, true);
+          this.operationLegendService.setOperationLegend(this.selectedRadio, false);
           this.hasBoundary = true;
-        }
-        else if (this.userGL.graphics.length > 1) {
-          this.opt.message = 'You can only get harvest operations information from one polygon at a time.';
+        } else if (this.userGL.graphics.length > 1) {
+          this.opt.message = 'You can only get regeneration operations information from one polygon at a time.';
           this.dialogService.open(this.opt);
         } else if (this.userGL.graphics.length > 0) {
-          if (GreaterThanMaxArea(this.userGL.graphics.getItemAt(0).geometry, 100000, 'acres')) {
+          if (GreaterThanMaxArea(this.userGL.graphics.getItemAt(0).geometry, 100000, 'acres'))
+          {
             this.opt.message = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(100000) + ' acres';
             this.dialogService.open(this.opt);
           } else {
             this.loaderService.isLoading.next(true);
             this.hasBoundary = true;
             const inputBoundary: __esri.Graphic = this.userGL.graphics.getItemAt(0);
-            this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
+            this.soilsService.getSoils(inputBoundary).then((result:__esri.FeatureSet[]) => {
               if (result.length === 0)
               {
                 this.loaderService.isLoading.next(false);
@@ -95,13 +95,13 @@ export class HarvestOperationsComponent implements OnInit {
     this.soilsService.updateSliderValue.subscribe((res:any) => {
       this.sliderValue = res.sliderVal;
       if (!res.isFromSoils)
-      {        
+      {
         this.operationLegendService.setOperationLegendSymbols(res.selectedRadioVal, this.pmloSoilsGL, res.sliderVal);
         this.pmloSoilLabelsGL.visible = false;
       }
     });
 
-    this.operationLegendService.SetActiveHarvOperationLegenRadio.subscribe((radioBtnValue:string) => {
+    this.operationLegendService.SetActiveRegOperationLegenRadio.subscribe((radioBtnValue:string) => {
       this.selectedRadio = radioBtnValue;
     });
   }
@@ -112,7 +112,7 @@ export class HarvestOperationsComponent implements OnInit {
 
   radioChanged(value: string): void {
     this.operationLegendService.setOperationLegendSymbols(value, this.pmloSoilsGL, this.sliderValue);
-    this.operationLegendService.setOperationLegend(value, true);
+    this.operationLegendService.setOperationLegend(value, false);
   }
 
   clearSoilGLayers():void {
@@ -122,7 +122,7 @@ export class HarvestOperationsComponent implements OnInit {
   buildOperationsReport():void {
     this.loaderService.isLoading.next(true);
     const boundary:__esri.Graphic= this.userGL.graphics.getItemAt(0);
-    this.harvestOperationsService.createOperationsReport(this.selectedRadio, this.mapView, this.pmloSoilsGL, boundary.geometry.extent.clone().expand(1.05), this.hoReportTitle).then((reportUrl:string) => {
+    this.harvestOperationsService.createOperationsReport(this.selectedRadio, this.mapView, this.pmloSoilsGL, boundary.geometry.extent.clone().expand(1.05), this.roReportTitle).then((reportUrl:string) => {
       this.loaderService.isLoading.next(false);
       window.open(reportUrl, '_blank', 'noopener');
     });

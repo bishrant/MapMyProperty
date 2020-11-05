@@ -19,6 +19,7 @@ import { SoilsTableComponent } from '../sidebar/soils/soils-table/soils-table.co
 import { HarvestOperationsComponent } from '../sidebar/harvest-operations/harvest-operations.component';
 import { OperationLegendComponent } from '../operation-legend/operation-legend.component';
 import { CulvertSizeModule } from '../sidebar/culvert-size/culvert-size.module';
+import { RegenerationOperationsComponent } from '../sidebar/regeneration-operations/regeneration-operations.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { CulvertSizeModule } from '../sidebar/culvert-size/culvert-size.module';
     ProgressBarComponent,
     SoilsTableComponent,
     HarvestOperationsComponent,
-    OperationLegendComponent
+    OperationLegendComponent,
+    RegenerationOperationsComponent
   ],
   imports: [
     CommonModule,
