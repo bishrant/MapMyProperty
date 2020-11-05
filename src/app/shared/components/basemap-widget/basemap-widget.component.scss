@@ -58,8 +58,6 @@ title {
   font-weight: bold;
 }
 
-
-
 .basemapgrid {
   display: inline-grid;
   grid-template-columns: auto auto auto;
@@ -80,7 +78,7 @@ title {
   border: 2px solid black;
 }
 
-.basemapcard>span {
+.basemapcard > span {
   font-size: 13px;
   padding-top: 4px;
 }
@@ -89,9 +87,9 @@ select {
   display: block;
   margin: auto;
   width: 10em;
-    height: 2em;
-    border: 1px solid black;
-    box-shadow: 0 0 1px;
+  height: 2em;
+  border: 1px solid black;
+  box-shadow: 0 0 1px;
 }
 
 .loader {
@@ -132,7 +130,7 @@ select {
   justify-content: center;
   align-items: center;
 }
-.loadingContainer>span {
+.loadingContainer > span {
   padding-left: 5px;
 }
 
@@ -144,22 +142,26 @@ select {
   text-align: center;
 }
 
-.texasimagery>* {
+.texasimagery > * {
   margin: auto;
 }
 
-.texasimagery>select {
+.texasimagery > select {
   margin-top: 10px;
 }
 
 .basemapTitle {
   height: 2.5em;
-    display: flex;
-    background: black;
-    width: 100%;
-    color: white;
-    /* justify-content: center; */
-    align-items: center;
-    text-align: left;
-    padding-left: 15px;
+  display: flex;
+  background: black;
+  width: 100%;
+  color: white;
+  align-items: center;
+  text-align: left;
+  padding-left: 15px;
+}
+
+.imageryDate {
+  float: right;
+  padding-right: 10px;
 }

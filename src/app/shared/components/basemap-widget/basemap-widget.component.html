@@ -28,7 +28,7 @@
 
     </div>
 
-    <span *ngIf='updatedDate'>{{updatedDate | date: 'longDate'}}</span>
+    <span *ngIf='updatedDate' class="imageryDate">Imagery updated on: {{updatedDate | date: 'longDate'}}</span>
     <div *ngIf="loadingBaseLayer">
       <div class="loadingContainer" *ngIf="loadingBaseLayer.loadStatus === 'loading'">
         <div class="loader"></div>
