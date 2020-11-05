@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, EventEmitter, Input, Output, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import Basemap from 'esri/Basemap';
 import BingMapsLayer from 'esri/layers/BingMapsLayer';
 import ImageryLayer from 'esri/layers/ImageryLayer';
@@ -78,10 +78,6 @@ export class BasemapWidgetComponent implements AfterViewInit {
     this.state.open = !this.state.open;
   }
 
-  getLabel() {
-    return '';
-  }
-
   toggleTexasImagery() {
     this.texasImageryVisible = !this.texasImageryVisible;
     this.changeTexasBasemap(!this.texasImageryVisible);
@@ -100,9 +96,6 @@ export class BasemapWidgetComponent implements AfterViewInit {
       this.basemapObject = this.mapView.map.basemap;
       this.loadingBaseLayer = this.mapView.map.basemap.baseLayers.getItemAt(1);
     }
-    // this.basemapObject = this.createBasemap(this.texasBasemapsDict[$e], $e);
-    // this.basemapObject.load();
-    // this.mapView.map.basemap = this.basemapObject;
   }
 
 
@@ -138,12 +131,12 @@ export class BasemapWidgetComponent implements AfterViewInit {
       this.mapView.map.basemap = this.basemapObject;
 
       this.loadingBaseLayer = this.mapView.map.basemap.baseLayers.getItemAt(0);
-      // this.updateImageryDate();
+      this.updateImageryDate();
     }
   }
 
   updateImageryDate() {
-    if (this.state.basemap.value === 'aerial') {
+    if (this.state.basemap.value === 'satellite') {
       const params: any = {
         returnGeometry: false,
         returnDistinctValues: false,
@@ -172,19 +165,14 @@ export class BasemapWidgetComponent implements AfterViewInit {
 
 
   ngAfterViewInit() {
-    // watchUtils.whenTrue(this.mapView, 'stationary', () => {
-    //   if (this.mapView.center) {
-    //     if (this.mapView.scale < 4000000) {
-    //       this.updateImageryDate();
-    //     }
-    //   }
-    // })
-
-    watchUtils.watch(this.mapView.map.basemap, "loadStatus", (a: any) => {
-      console.log(a)
+    watchUtils.whenTrue(this.mapView, 'stationary', () => {
+      if (this.mapView.center) {
+        if (this.mapView.scale < 4000000) {
+          this.updateImageryDate();
+        }
+      }
     })
 
-    console.log(this.mapView.scale)
   }
 
   constructor(private http: HttpClient) { }
