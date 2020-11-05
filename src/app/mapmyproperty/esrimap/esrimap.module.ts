@@ -8,12 +8,13 @@ import { PrintToolModule } from 'src/app/shared/components/print-tool/print-tool
 import { AccordionPanelModule } from 'src/app/shared/components/accordion-panel/accordion.panel.module';
 import { SliderModule } from 'src/app/shared/components/slider/slider.module';
 import { MMPThemesModule } from '../sidebar/themes/themes.module';
+import { BasemapWidgetModule } from 'src/app/shared/components/basemap-widget/basemap-widget.module';
 
 @NgModule({
   declarations: [EsrimapComponent],
   imports: [CommonModule, GraphicsStoreModule,  DrawtoolsModule,
     SliderModule, MMPThemesModule,
-    ImportExportModule, PrintToolModule, AccordionPanelModule],
+    ImportExportModule, PrintToolModule, AccordionPanelModule, BasemapWidgetModule],
   exports: [EsrimapComponent]
 })
 export class EsriMapModule {}

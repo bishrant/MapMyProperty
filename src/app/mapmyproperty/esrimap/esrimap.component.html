@@ -10,7 +10,7 @@
 
       <app-accordion-panel title="Themes">
         <app-mmp-themes [mapView]="mapView">
-          </app-mmp-themes>
+        </app-mmp-themes>
       </app-accordion-panel>
 
       <app-accordion-panel title="Import | Export">
@@ -43,6 +43,7 @@
   <div class="translucentPadding mapViewNodeBlanket">
     <div #mapViewNode class="mapViewNode " id="parent">
       <div id="textboxes"></div>
+      <app-basemap-widget [mapView]="mapView"></app-basemap-widget>
     </div>
     <app-graphic-store #graphicsStore [sketchVM]="sketchVM" [textGraphicsLayer]="textGraphicsLayer"
       class="graphicsControls">

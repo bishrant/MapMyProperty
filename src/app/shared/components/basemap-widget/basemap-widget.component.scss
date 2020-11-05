@@ -1,0 +1,167 @@
+$right: 1em;
+
+.basemapContainer {
+  position: absolute;
+  right: $right;
+  top: 1em;
+  background: gray;
+}
+
+.basemapContainer.basemap-open {
+  background: gray;
+  width: 24em;
+  height: 24em;
+  overflow: auto;
+}
+
+.basemapToggleBtn {
+  position: absolute;
+  top: 1em;
+  right: $right;
+  height: 3em;
+  width: 3em;
+}
+
+.basemapBody {
+  position: absolute;
+  top: 4.5em;
+  right: $right;
+  height: 27em;
+  width: 25em;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px #0000009c;
+}
+
+.basemapLabel {
+  right: $right + 3.5em;
+  position: absolute;
+  background: black;
+  color: white;
+  top: 2em;
+}
+.basemapcard {
+  width: 7em;
+  display: flex;
+  flex-direction: column;
+  height: 6em;
+  justify-content: center;
+  align-items: center;
+}
+title {
+  display: block;
+}
+.basemapcard.selected {
+  font-weight: bold;
+}
+
+.basemapgrid {
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 1em;
+  margin: a;
+  margin: 1em;
+  margin-bottom: 0;
+}
+
+.basemapcard > img {
+  box-shadow: 0 0 9px black;
+  border: 1px solid white;
+  width: 6em;
+}
+
+.basemapcard.selected > img {
+  box-shadow: 0 0 9px black;
+  border: 2px solid black;
+}
+
+.basemapcard > span {
+  font-size: 13px;
+  padding-top: 4px;
+}
+
+select {
+  display: block;
+  margin: auto;
+  width: 10em;
+  height: 2em;
+  border: 1px solid black;
+  box-shadow: 0 0 1px;
+}
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 6px solid #3498db;
+  width: 30px;
+  height: 30px;
+  -webkit-animation: spin 0.5s linear infinite; /* Safari */
+  animation: spin 0.5s linear infinite;
+  display: inline-block;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingContainer {
+  position: absolute;
+  bottom: 1em;
+  left: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loadingContainer > span {
+  padding-left: 5px;
+}
+
+.texasimagery {
+  height: 8em;
+  width: 12em;
+  display: block;
+  margin: 1em auto 0em;
+  text-align: center;
+}
+
+.texasimagery > * {
+  margin: auto;
+}
+
+.texasimagery > select {
+  margin-top: 10px;
+}
+
+.basemapTitle {
+  height: 2.5em;
+  display: flex;
+  background: black;
+  width: 100%;
+  color: white;
+  align-items: center;
+  text-align: left;
+  padding-left: 15px;
+}
+
+.imageryDate {
+  float: right;
+  padding-right: 10px;
+}
