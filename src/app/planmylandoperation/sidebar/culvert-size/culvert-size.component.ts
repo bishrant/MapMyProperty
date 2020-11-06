@@ -10,6 +10,7 @@ import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import Graphic from 'esri/Graphic';
 import { Point, Polygon, SpatialReference } from 'esri/geometry';
 import { SimpleFillSymbol, SimpleMarkerSymbol } from 'esri/symbols';
+import { getSoilTextureClass } from './CulvertDetailsUtils';
 const projection = require('arcgis-js-api/geometry/projection');
 
 @Component({
@@ -63,8 +64,8 @@ export class CulvertSizeComponent implements AfterViewInit {
         const gp: [Geoprocessor, any] = this.culvertService.GetCulvertData(graphics);
         const jobInfo: JobInfo = await gp[0].submitJob(gp[1]);
         await gp[0].waitForJobCompletion(jobInfo.jobId);
-        const finalPourPoint = await gp[0].getResultData(jobInfo.jobId, 'finalPourPoint')
-        const outFeatureWatershed = await gp[0].getResultData(jobInfo.jobId, 'outFeatureWatershed')
+        const finalPourPoint = await gp[0].getResultData(jobInfo.jobId, 'Final_Pour_Point')
+        const outFeatureWatershed = await gp[0].getResultData(jobInfo.jobId, 'Watershed_Feature')
         const pourPt0: any = finalPourPoint.value.toJSON();
         const wsJSON = outFeatureWatershed.value.toJSON();
 
@@ -153,7 +154,7 @@ export class CulvertSizeComponent implements AfterViewInit {
       zzLongitude: Math.round(this.pourPointReportWGS.longitude * 1000000)/1000000,
       zzAcresDrained: c.POLY_AREA.toFixed(2),
       zzSlope: c.Avg_Slope.toFixed(2),
-      zzTexture: 'test',
+      zzTexture: getSoilTextureClass(c.Clay_WA, c.Sand_WA, c.Silt_WA),
       zzSilt: c.Silt_WA.toFixed(2),
       zzSand: c.Sand_WA.toFixed(2),
       zzClay: c.Clay_WA.toFixed(2),
