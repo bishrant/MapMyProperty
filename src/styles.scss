@@ -9,6 +9,11 @@
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 @import './icons.scss';
 
+:root{
+  --map-button-width: 2.5em;
+  --map-button-height: 2.5em;
+}
+
 html,
 body {
   height: 100%;

@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, Input } from '@angular/core';
 import Basemap from 'esri/Basemap';
-import BingMapsLayer from 'esri/layers/BingMapsLayer';
 import ImageryLayer from 'esri/layers/ImageryLayer';
 import Layer from 'esri/layers/Layer';
 import MapImageLayer from 'esri/layers/MapImageLayer';
 import WMSLayer from 'esri/layers/WMSLayer';
+import { createBingBasemap } from '../../utils/CreateMapView';
 const watchUtils = require('esri/core/watchUtils');
 
 @Component({
@@ -19,11 +19,11 @@ export class BasemapWidgetComponent implements AfterViewInit {
   @Input() mapView: __esri.MapView;
   texasImageryVisible = false;
   updatedDate: Date;
+  loading = false;
+  _tnrisURL = "https://webservices.tnris.org/arcgis/rest/services/";
 
-
-  bing = new BingMapsLayer({ style: 'hybrid', key: '' })
   basemaps: any = [
-    { label: 'Bing Hybrid', value: 'hybrid', image: 'bing' },
+    { label: 'Bing Hybrid', value: 'bing', image: 'bing' },
     { label: 'Aerial', value: 'satellite', image: 'aerial' },
     { label: 'Streets', value: 'streets', image: 'streets' },
     { label: 'Topographic', value: 'topo', image: 'topo' },
@@ -31,7 +31,11 @@ export class BasemapWidgetComponent implements AfterViewInit {
     { label: 'USGS', value: 'usgs', image: 'usgs' },
   ];
 
-  _tnrisURL = "https://webservices.tnris.org/arcgis/rest/services/";
+  state: any = {
+    open: false,
+    basemap: this.basemaps[0]
+  };
+
   topo1996 = new ImageryLayer({ url: this._tnrisURL + "TOP/TOP96_CIR_1m/ImageServer", id: 'topo1996' });
   naip2004 = new ImageryLayer({ url: this._tnrisURL + "NAIP/NAIP04_CIR_1m/ImageServer", id: 'TX NAIP 2004' });
   topo2008 = new ImageryLayer({ url: this._tnrisURL + "TOP/TOP08_NC_50cm/ImageServer", id: 'TX TOPO 2008' });
@@ -69,11 +73,6 @@ export class BasemapWidgetComponent implements AfterViewInit {
 
   selectedTexasBasemap = this.texasBasemaps[0];
 
-  state: any = {
-    open: true,
-    basemap: this.basemaps[0]
-  }
-
   toggle() {
     this.state.open = !this.state.open;
   }
@@ -105,12 +104,15 @@ export class BasemapWidgetComponent implements AfterViewInit {
       id: id
     });
   }
+
   usa_topo = this.createBasemap(new MapImageLayer({ url: 'https://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer', id: 'usa-topo' }), 'usa-topo');
   usgs = this.createBasemap(new MapImageLayer({ url: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer' }), 'usgs');
   google = this.createBasemap(this.googleWMSlayer, 'texas');
+  bing = createBingBasemap();
 
 
   _basemapObj = {
+    'bing': this.bing,
     'usa-topo': this.usa_topo,
     'usgs': this.usgs,
     'texas': this.google
@@ -149,7 +151,6 @@ export class BasemapWidgetComponent implements AfterViewInit {
       }
       this.http.get('https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/0/query', { params: params })
         .subscribe((d: any) => {
-          console.log(d)
           if (d.features.length > 0) {
             const f = d.features[0];
             this.updatedDate = f.attributes['SRC_DATE2'];
@@ -163,16 +164,30 @@ export class BasemapWidgetComponent implements AfterViewInit {
   }
 
 
+  layerViewEvent: any;
+  mapViewListener: any;
 
   ngAfterViewInit() {
-    watchUtils.whenTrue(this.mapView, 'stationary', () => {
+    this.mapViewListener = watchUtils.whenTrue(this.mapView, 'stationary', () => {
       if (this.mapView.center) {
         if (this.mapView.scale < 4000000) {
           this.updateImageryDate();
         }
       }
+    });
+
+    this.layerViewEvent = this.mapView.on('layerview-create', (evt: any) => {
+      this.loading = true;
+      if (evt.layer.loadStatus === 'loaded') {
+        this.loading = false;
+      }
     })
 
+  }
+
+  ngOnDestroy() {
+    this.mapViewListener.remove();
+    this.layerViewEvent.remove();
   }
 
   constructor(private http: HttpClient) { }

@@ -1,8 +1,8 @@
 <span class="basemapLabel">
   {{state.basemap.label}}
 </span>
-<button (click)="toggle()" class="basemapToggleBtn">
-  <img src="assets/icons/basemaps.png" aria-label="basemaps" />
+<button (click)="toggle()" class="basemapToggleBtn" [ngClass]="{selectedBtn: state.open}">
+  <img src="assets/icons/basemaps.png" aria-label="basemap gallery" />
 </button>
 
 <div [hidden]="!state.open" class="basemapBody basemap-open">
@@ -29,13 +29,11 @@
     </div>
 
     <span *ngIf='updatedDate' class="imageryDate">Imagery updated on: {{updatedDate | date: 'longDate'}}</span>
-    <div *ngIf="loadingBaseLayer">
-      <div class="loadingContainer" *ngIf="loadingBaseLayer.loadStatus === 'loading'">
-        <div class="loader"></div>
-        <span>
-          Loading..
-        </span>
-      </div>
+    <div class="loadingContainer" *ngIf="loading">
+      <div class="loader"></div>
+      <span>
+        Loading..
+      </span>
     </div>
   </div>
 </div>
