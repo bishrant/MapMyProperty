@@ -18,6 +18,7 @@ export class SoilsService {
   @Output() showTableModal:EventEmitter<boolean> = new EventEmitter();
   @Output() shareMultiSoils:EventEmitter<Graphic[]> = new EventEmitter();
   @Output() selectPolygonFromTable:EventEmitter<Graphic> = new EventEmitter();
+  @Output() updateSliderValue:EventEmitter<any> = new EventEmitter();
   
   constructor(
     private http: HttpClient,
@@ -133,26 +134,33 @@ export class SoilsService {
     }
   }
 
-  updateGraphicsOpacity(soilsgl: __esri.GraphicsLayer, labelsgl: __esri.GraphicsLayer, sliderValue: number, isOrange:boolean): void {
+  updateGraphicsOpacity(soilsgl: __esri.GraphicsLayer, labelsgl: __esri.GraphicsLayer, sliderValue: number, isOrange:boolean, isFromSoils:boolean): void {
     const graphicTransparency:number = (100 - sliderValue) / 100;
-    if (!isOrange)
+    debugger
+    if (isFromSoils)
     {
+      if (isOrange === false)
+      {
+        this.setSymbolColor(soilsgl, false, graphicTransparency);
+        this.setSymbolColor(labelsgl, false, graphicTransparency);
+      } else {
+        this.setSymbolColor(soilsgl, true, 0);
+        this.setSymbolColor(labelsgl, true, graphicTransparency);
+      }
+    } else {
       this.setSymbolColor(soilsgl, false, graphicTransparency);
-      this.setSymbolColor(labelsgl, false, graphicTransparency);
-    } else{
-      this.setSymbolColor(soilsgl, true, 0);
-      this.setSymbolColor(labelsgl, true, graphicTransparency);
+      this.setSymbolColor(labelsgl, true, 0);
     }
   }
 
-  private setSymbolColor(gl: __esri.GraphicsLayer, isOrange:boolean, alpha: number): void {
+  setSymbolColor(gl: __esri.GraphicsLayer, isOrange:boolean, alpha: number): void {
     gl.graphics.forEach((g: __esri.Graphic) => {
       let symbol: any;
       switch (g.geometry.type)
       {
         case 'polygon':
           let lineProps: LineProps;
-          if (!isOrange)
+          if (isOrange === false)
           {
             lineProps = GetDefaultSoilsLineProps(alpha);
           } else {
@@ -163,7 +171,7 @@ export class SoilsService {
           break;
 
         case 'point':
-          if (isOrange)
+          if (isOrange === true)
           {
             alpha = 1;
           }
@@ -173,5 +181,12 @@ export class SoilsService {
 
       g.symbol = symbol;
     });
+  }
+
+  clearSoilGLayers(soilsgl: __esri.GraphicsLayer, labelsgl: __esri.GraphicsLayer): void {
+    labelsgl.removeAll();
+    soilsgl.removeAll();
+    this.showTableModal.emit(false);
+    this.shareMultiSoils.emit([]);
   }
 }

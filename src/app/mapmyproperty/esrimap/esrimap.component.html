@@ -1,27 +1,31 @@
 <div #sidebar class="sidebarBlanket">
   <div class="sidebar">
-    <app-sidebar>
-      <app-accordion>
+    <app-accordion>
 
-        <app-accordion-panel title="Draw">
-          <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
-          (selectedTextGraphicsChanged)="textGraphicsChanged($event)"
-          >
-          </app-drawtools>
-        </app-accordion-panel>
+      <app-accordion-panel title="Draw">
+        <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
+          (selectedTextGraphicsChanged)="textGraphicsChanged($event)">
+        </app-drawtools>
+      </app-accordion-panel>
 
-        <app-accordion-panel title="Import | Export">
-          <app-import-export></app-import-export>
-        </app-accordion-panel>
+      <app-accordion-panel title="Themes">
+        <app-mmp-themes [mapView]="mapView">
+        </app-mmp-themes>
+      </app-accordion-panel>
 
-        <app-accordion-panel title="Export Map to PDF">
-          <app-print-tool [map]="mapView"></app-print-tool>
-        </app-accordion-panel>
+      <app-accordion-panel title="Import | Export">
+        <app-import-export></app-import-export>
+      </app-accordion-panel>
 
-      </app-accordion>
+      <app-accordion-panel title="Export Map to PDF">
+        <app-print-tool [map]="mapView"></app-print-tool>
+      </app-accordion-panel>
 
-      <app-slider></app-slider>
-    </app-sidebar>
+
+
+    </app-accordion>
+
+    <!-- <app-slider></app-slider> -->
   </div>
 
 </div>
@@ -29,7 +33,7 @@
   <div class="headerBlanket">
     <div class="header headerRow secondary">
       <div #searchBar></div>
-      <div class="coordsDisplay">
+      <div class="coordsDisplay hidden md:inline">
         Mouse Coordinates [ {{mapCoords}} ]
 
         <div id="widgetDiv" class="esri-widget"></div>
@@ -39,9 +43,10 @@
   <div class="translucentPadding mapViewNodeBlanket">
     <div #mapViewNode class="mapViewNode " id="parent">
       <div id="textboxes"></div>
+      <app-basemap-widget [mapView]="mapView"></app-basemap-widget>
     </div>
-    <app-graphic-store #graphicsStore [sketchVM]="sketchVM"
-      [textGraphicsLayer]="textGraphicsLayer" class="graphicsControls">
+    <app-graphic-store #graphicsStore [sketchVM]="sketchVM" [textGraphicsLayer]="textGraphicsLayer"
+      class="graphicsControls">
     </app-graphic-store>
   </div>
 </div>

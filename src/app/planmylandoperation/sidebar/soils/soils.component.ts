@@ -16,6 +16,10 @@ import { GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import Collection from 'esri/core/Collection';
 import { SquareMetersToAcres } from 'src/app/shared/utils/ConversionTools';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
+import { TraceGPError } from 'src/app/shared/services/error/GPServiceError';
+import { AppConfiguration } from 'src/config';
+import { ReportsService } from '../../pmloUtils/reports.service';
+import { EsrimapService } from '../../esrimap/esrimap.service';
 
 @Component({
   selector: 'pmlo-soils',
@@ -38,7 +42,7 @@ export class SoilsComponent implements OnInit {
   sliderValue: number = 0;
   isOrangeSymbol:boolean = false;
 
-  soReportTitle = '';
+  soReportTitle:string = '';
 
   private soilsDynamicLayer: __esri.WMSLayer;
   private soilsIdentifyClickEvent: any = null;
@@ -56,7 +60,10 @@ export class SoilsComponent implements OnInit {
     private mapViewService: MapviewService,
     private dialogService: DialogService,
     private soilsReportService: SoilsReportService,
-    private sensAreasService: SensAreasService
+    private sensAreasService: SensAreasService,
+    private appConfig: AppConfiguration,
+    private reportsService: ReportsService,
+    private esriMapService: EsrimapService
   ) { }
 
   ngOnInit(): void {
@@ -130,6 +137,26 @@ export class SoilsComponent implements OnInit {
         clonedGrahic.attributes.isFromSelection = true;
         clonedGrahic.symbol = CreatePolygonSymbol(lineProps, fillProps);
         this.pmloSoilsGL.add(clonedGrahic);
+      }
+    });
+
+    this.soilsService.updateSliderValue.subscribe((res:any) => {
+      this.checkIfOrange(res.sliderVal);
+      if (res.isFromSoils)
+      {
+        this.soilsService.updateGraphicsOpacity(this.pmloSoilsGL, this.pmloSoilLabelsGL, res.sliderVal, this.isOrangeSymbol, true);
+      }
+      this.sliderValue = res.sliderVal;
+    });
+
+    this.esriMapService.toggleSoilsAccordion.subscribe((opened) => {
+      if (opened)
+      {
+        if (this.pmloSoilsGL.graphics.length > 0)
+        {
+          this.soilsService.updateGraphicsOpacity(this.pmloSoilsGL, this.pmloSoilLabelsGL, this.sliderValue, this.isOrangeSymbol, true);
+        }
+        this.pmloSoilLabelsGL.visible = true;
       }
     });
   }
@@ -213,19 +240,11 @@ export class SoilsComponent implements OnInit {
   }
 
   clearSoilGLayers():void {
-    this.pmloSoilLabelsGL.removeAll();
-    this.pmloSoilsGL.removeAll();
-    this.soilsService.showTableModal.emit(false);
-    this.soilsService.shareMultiSoils.emit([]);
+    this.soilsService.clearSoilGLayers(this.pmloSoilsGL, this.pmloSoilLabelsGL);
   }
 
   updateSliderValue(value: number):void {
-    if (value < 75 || value === 100) {
-      this.isOrangeSymbol = false;
-    } else {
-      this.isOrangeSymbol = true;
-    }
-    this.soilsService.updateGraphicsOpacity(this.pmloSoilsGL, this.pmloSoilLabelsGL, value, this.isOrangeSymbol);
+    this.soilsService.updateSliderValue.emit({sliderVal: value, isFromSoils:true, selectedRadioVal: null});
   }
 
   toggleTable():void {
@@ -246,36 +265,57 @@ export class SoilsComponent implements OnInit {
       soil.attributes.Acres = SquareMetersToAcres(soil.attributes.Shape_Area);
       return soil.attributes;
     });
-    this.mapView.goTo(boundary.geometry.extent.clone().expand(1.2)).then(
-      () => {
-        Promise.all([
-          this.soilsReportService.printMaps(this.mapView, this.pmloSoilsGL, this.pmloSoilLabelsGL),
-          this.soilsReportService.getCountyFromCentroid((boundary.geometry as __esri.Polygon).centroid),
-          this.soilsReportService.getWatershedFromCentroid((boundary.geometry as __esri.Polygon).centroid),
-          this.soilsReportService.getSoilsReportHydroParams(boundary),
-          this.sensAreasService.isWithinTexas(boundary.geometry)
-        ]).then((value) => {
-          const reportParams:any = {
-            projectName: this.soReportTitle,
-            boundaryImageUrl: value[0].boundaryImage,
-            soilsImageUrl: value[0].soilsImage,
-            countyName: value[1].countyName,
-            countyFips: value[1].countyFips,
-            whatershed: value[2],
-            ephemeralFeet: value[3].ephemeralFeet,
-            intermittentFeet: value[3].intermittentFeet,
-            perennialFeet: value[3].perennialFeet,
-            wetlandsAcres: value[3].wetlandsAcres,
-            isWithinTexas: value[4],
-            projectAcres: GetFeaturesAreaAcres(boundaryCollection),
-            latitude: (boundary.geometry as __esri.Polygon).centroid.latitude,
-            longitude: (boundary.geometry as __esri.Polygon).centroid.longitude,
-            soils: soilsAttributes.items
-          };
-          // const reportUrl:string = this.soilsReportService.createReport(reportParams);      
+    Promise.all([
+      this.soilsReportService.printMaps(this.mapView, this.pmloSoilsGL, this.pmloSoilLabelsGL, boundary.geometry.extent.clone().expand(1.05)),
+      this.soilsReportService.getCountyFromCentroid((boundary.geometry as __esri.Polygon).centroid),
+      this.soilsReportService.getWatershedFromCentroid((boundary.geometry as __esri.Polygon).centroid),
+      this.soilsReportService.getSoilsReportHydroParams(boundary),
+      this.sensAreasService.isWithinTexas(boundary.geometry)
+    ]).then((value) => {
+      const reportParams:any = {
+        projectName: this.soReportTitle,
+        boundaryImageUrl: value[0].boundaryImage,
+        soilsImageUrl: value[0].soilsImage,
+        countyName: value[1].countyName,
+        countyFips: value[1].countyFips,
+        watershed: value[2],
+        ephemeralFeet: value[3].ephemeralFeet,
+        intermittentFeet: value[3].intermittentFeet,
+        perennialFeet: value[3].perennialFeet,
+        wetlandsAcres: value[3].wetlandsAcres,
+        isWithinTexas: value[4],
+        projectAcres: GetFeaturesAreaAcres(boundaryCollection),
+        latitude: (boundary.geometry as __esri.Polygon).centroid.latitude,
+        longitude: (boundary.geometry as __esri.Polygon).centroid.longitude,
+        soils: soilsAttributes.items
+      };
+
+      console.log(reportParams);
+
+      this.reportsService.getSoilsReport({content: JSON.stringify(reportParams)}).subscribe(
+        (response:any) => {
           this.loaderService.isLoading.next(false);
-          // window.open(reportUrl, '_blank');
-        });
-      });
+          window.open(response.fileName, '_blank', 'noopener');
+        },
+        (error:any) => {
+          this.loaderService.isLoading.next(false);
+          const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
+          throw gpError;
+        }
+      );
+    })
+    .catch((error:any) => {
+      this.loaderService.isLoading.next(false);
+      const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
+      throw gpError;
+    });
+  }
+
+  private checkIfOrange(val:number):void {
+    if (val < 75 || val === 100) {
+      this.isOrangeSymbol = false;
+    } else {
+      this.isOrangeSymbol = true;
+    }
   }
 }

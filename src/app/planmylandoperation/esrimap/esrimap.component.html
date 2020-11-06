@@ -12,13 +12,26 @@
           <pmlo-sens-areas [mapView]="mapView"></pmlo-sens-areas>
         </app-accordion-panel>
 
-        <app-accordion-panel title="Soils">
+        <app-accordion-panel #soilsAccPanel title="Soils" (toggle)="toggleSoilsAccordion()">
           <pmlo-soils [mapView]="mapView"></pmlo-soils>
+        </app-accordion-panel>
+
+        <app-accordion-panel #harvestAccPanel title="Harvest Operations" (toggle)="toggleHarvOpAccordion()">
+          <pmlo-harvest-operations [mapView]="mapView"></pmlo-harvest-operations>
+        </app-accordion-panel>
+
+        <app-accordion-panel #regenerationAccPanel title="Regeneration Operations" (toggle)="toggleRegOpAccordion()">
+          <pmlo-regeneration-operations [mapView]="mapView"></pmlo-regeneration-operations>
         </app-accordion-panel>
 
         <app-accordion-panel title="Elevation Profile">
           <app-elevation-profile [mapView]="mapView"></app-elevation-profile>
         </app-accordion-panel>
+
+        <app-accordion-panel title="Culvert Size">
+          <app-culvert-size [mapView]="mapView"></app-culvert-size>
+        </app-accordion-panel>
+
       </app-accordion>
     </app-sidebar>
   </div>

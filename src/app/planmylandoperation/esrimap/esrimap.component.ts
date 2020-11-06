@@ -6,11 +6,13 @@ import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.compo
 import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
-import createMapView from 'src/app/shared/utils/CreateMapView';
+import { createMapView } from 'src/app/shared/utils/CreateMapView';
 import { CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { SoilsService } from '../sidebar/soils/soils.service';
 import { AppConfiguration } from 'src/config';
+import { AccordionPanelComponent } from 'src/app/shared/components/accordion-panel/accordion-panel.component';
+import { EsrimapService } from './esrimap.service';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -22,6 +24,9 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
   @ViewChild('soilsTableModal') soilsTableModal: any;
+  @ViewChild('soilsAccPanel') soilsAccPanel:AccordionPanelComponent;
+  @ViewChild('harvestAccPanel') harvestAccPanel:AccordionPanelComponent;
+  @ViewChild('regenerationAccPanel') regenerationAccPanel:AccordionPanelComponent;
 
   private graphicsSubcription$: any;
   mapView!: __esri.MapView // = createMapView(this.mapViewEl, this.searchBarDiv);
@@ -37,7 +42,8 @@ export class EsrimapComponent implements OnInit {
     private store: Store<AppState>,
     private mapViewService: MapviewService,
     private soilsService:SoilsService,
-    private appConfig:AppConfiguration
+    private appConfig:AppConfiguration,
+    private esrimapService:EsrimapService
     ) {}
   @HostListener('keydown.control.z') undoFromKeyboard () {
     this.graphicsStoreEl.undo();
@@ -132,6 +138,21 @@ export class EsrimapComponent implements OnInit {
       }
     });
   };
+
+  toggleSoilsAccordion()
+  {
+    this.esrimapService.toggleSoilsAccordion.emit(!this.soilsAccPanel.opened);
+  }
+
+  toggleHarvOpAccordion()
+  {
+    this.esrimapService.toggleHarvOpAccordion.emit(!this.harvestAccPanel.opened);
+  }
+
+  toggleRegOpAccordion()
+  {
+    this.esrimapService.toggleRegOpAccordion.emit(!this.regenerationAccPanel.opened);
+  }
 
   ngOnInit () {
     this.initializeMap();
