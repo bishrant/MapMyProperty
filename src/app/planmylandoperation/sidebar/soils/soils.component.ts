@@ -258,7 +258,7 @@ export class SoilsComponent implements OnInit {
 
   buildSoilsReport():void {
     this.loaderService.isLoading.next(true);
-    const boundary:__esri.Graphic= this.userGL.graphics.getItemAt(0);
+    const boundary:__esri.Graphic= this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
     const boundaryCollection:Collection<__esri.Graphic> = new Collection<__esri.Graphic>();
     boundaryCollection.add(boundary);
     const soilsAttributes:any = this.pmloSoilsGL.graphics.map((soil:__esri.Graphic) => {

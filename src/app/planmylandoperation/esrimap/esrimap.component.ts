@@ -24,6 +24,7 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
   @ViewChild('soilsTableModal') soilsTableModal: any;
+  @ViewChild('sensAreasAccPanel') sensAreasAccPanel:AccordionPanelComponent;
   @ViewChild('soilsAccPanel') soilsAccPanel:AccordionPanelComponent;
   @ViewChild('harvestAccPanel') harvestAccPanel:AccordionPanelComponent;
   @ViewChild('regenerationAccPanel') regenerationAccPanel:AccordionPanelComponent;
@@ -138,6 +139,11 @@ export class EsrimapComponent implements OnInit {
       }
     });
   };
+
+  toggleSensAreasAccordion()
+  {
+    this.esrimapService.toggleSensAreasAccordion.emit(!this.sensAreasAccPanel.opened);
+  }
 
   toggleSoilsAccordion()
   {

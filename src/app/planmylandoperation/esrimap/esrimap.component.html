@@ -8,7 +8,7 @@
           </app-drawtools>
         </app-accordion-panel>
 
-        <app-accordion-panel title="Sensitive Areas">
+        <app-accordion-panel #sensAreasAccPanel title="Sensitive Areas" (toggle)="toggleSensAreasAccordion()">
           <pmlo-sens-areas [mapView]="mapView"></pmlo-sens-areas>
         </app-accordion-panel>
 
