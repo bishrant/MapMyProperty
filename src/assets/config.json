@@ -15,7 +15,10 @@
   "ssurgoTabularURL":  "https://SDMDataAccess.sc.egov.usda.gov/Tabular/post.rest",
   "ssurgoWMSURL": "https://sdmdataaccess.nrcs.usda.gov/Spatial/sdm.wms?",
   "culvertSize": {
-    "reportURL": "https://localhost:44358/api/CreateCulvertSizeReport",
+    "reportURL": "https://txfipdev.tfs.tamu.edu/MMPReport/api/CreateCulvertSizeReport",
     "gpServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/PMLO/CreateWatershed/GPServer/Create%20Watershed"
+  },
+  "others": {
+
   }
 }

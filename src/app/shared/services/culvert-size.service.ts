@@ -117,7 +117,7 @@ export class CulvertSizeService {
     try {
       this.loaderService.isLoading.next(true);
       const printTask: PrintTask = new PrintTask({
-        url: 'https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Shared/PrintUsingPro/GPServer/PrintUsingPro'
+        url: this.config.printGPServiceURL
       });
 
       const printParameters: PrintParameters = new PrintParameters({
