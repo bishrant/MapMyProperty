@@ -1,5 +1,4 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import Graphic from 'esri/Graphic';
 import { ReplaySubject } from 'rxjs';
@@ -8,9 +7,6 @@ import { LoaderService } from './Loader.service';
 import FeatureSet from 'esri/tasks/support/FeatureSet';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
 import JobInfo from 'esri/tasks/support/JobInfo';
-import MapView from 'esri/views/MapView';
-import Map from 'arcgis-js-api/Map';
-import { SpatialReference } from 'esri/geometry';
 import PrintTask from 'esri/tasks/PrintTask';
 import PrintParameters from 'esri/tasks/support/PrintParameters';
 import { HttpClient } from '@angular/common/http';
@@ -111,77 +107,69 @@ export class CulvertSizeService {
     this.http.post(this.config.culvertSize.reportURL, params).subscribe((d: any) => {
       window.open(d.fileName);
       this.loaderService.isLoading.next(false);
+    }, (error : any) =>  {
+      this.loaderService.isLoading.next(false);
+      throw new Error("Failed to generate report. Please try again");
     })
   }
 
-  async createReport(watershedGeometry: __esri.Polygon, graphicsLayer: GraphicsLayer, culvertData) {
-    this.loaderService.isLoading.next(true);
-    const printTask: PrintTask = new PrintTask({
-      url: 'https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Shared/PrintUsingPro/GPServer/PrintUsingPro'
-    });
+  async createReport(watershedGeometry: __esri.Polygon, culvertData) {
+    try {
+      this.loaderService.isLoading.next(true);
+      const printTask: PrintTask = new PrintTask({
+        url: 'https://tfsgis-dfe02.tfs.tamu.edu/arcgis/rest/services/Shared/PrintUsingPro/GPServer/PrintUsingPro'
+      });
 
-    const printParameters: PrintParameters = new PrintParameters({
-      view: this.mapView,
-      extraParameters: {
-        Format: 'PDF',
-      }
-    });
-
-    const printMapGpService = new Geoprocessor({
-      url: this.config.printGPServiceURL
-    })
-
-    await this.mapView.goTo(watershedGeometry.extent.expand(1.5));
-    (printTask as any)._getPrintDefinition(printParameters, this.mapView)
-      .then(async (webmapJson: any) => {
-
-        const usa_topo = { "id": "ArcGISTiledMapServiceLayer1661", "url": "http://server.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer", "title": "ArcGISTiledMapServiceLayer1659", "minScale": 0, "maxScale": 0 }
-
-        const operationalLayers = [usa_topo];
-        const culvertLr = webmapJson.operationalLayers.filter((lr) => lr.id === 'culvertGraphics')[0];
-
-        operationalLayers.push(culvertLr);
-
-        webmapJson.operationalLayers = operationalLayers;
-        console.log(webmapJson);
-
-        const gpParams = {
-          Web_Map_as_JSON: webmapJson,
-          Format: 'jpg',
-          Layout_Template: 'CulvertSize',
-          f: 'json'
-        };
-
-
-        const gp: JobInfo = await printMapGpService.submitJob(gpParams);
-        const jobDetails = await printMapGpService.waitForJobCompletion(gp.jobId);
-        if (jobDetails.jobStatus === 'job-succeeded') {
-          const file = await printMapGpService.getResultData(gp.jobId, 'Output_File');
-          const _culvertData = culvertData;
-          _culvertData.watershedImageURL = file.value.url;
-
-          this.GeneratePDFReport(_culvertData);
-
-          console.log(file.value.url);
+      const printParameters: PrintParameters = new PrintParameters({
+        view: this.mapView,
+        extraParameters: {
+          Format: 'PDF',
         }
+      });
+
+      const printMapGpService = new Geoprocessor({
+        url: this.config.printGPServiceURL
+      })
+
+      await this.mapView.goTo(watershedGeometry.extent.expand(1.5));
+      (printTask as any)._getPrintDefinition(printParameters, this.mapView)
+        .then(async (webmapJson: any) => {
+          const usa_topo = {
+            "id": "ArcGISTiledMapServiceLayer1661",
+            "url": "http://server.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer",
+            "title": "ArcGISTiledMapServiceLayer1659", "minScale": 0, "maxScale": 0
+          }
+
+          const operationalLayers = [usa_topo];
+          const culvertLr = webmapJson.operationalLayers.filter((lr) => lr.id === 'culvertGraphics')[0];
+
+          operationalLayers.push(culvertLr);
+
+          webmapJson.operationalLayers = operationalLayers;
+          console.log(webmapJson);
+
+          const gpParams = {
+            Web_Map_as_JSON: webmapJson,
+            Format: 'jpg',
+            Layout_Template: 'CulvertSize',
+            f: 'json'
+          };
 
 
-      },
-        (e: any) => console.error(e));
+          const gp: JobInfo = await printMapGpService.submitJob(gpParams);
+          const jobDetails = await printMapGpService.waitForJobCompletion(gp.jobId);
+          if (jobDetails.jobStatus === 'job-succeeded') {
+            const file = await printMapGpService.getResultData(gp.jobId, 'Output_File');
+            const _culvertData = culvertData;
+            _culvertData.watershedImageURL = file.value.url;
+            this.GeneratePDFReport(_culvertData);
+          }
+        }, (e: any) => console.error(e));
+    } catch (error) {
+      console.error(error);
+      this.loaderService.isLoading.next(false);
+    }
 
-
-
-    // this.viewModel.printReport(this.mapView, this.config.elevationProfileReportURL, this.config.exportMapGPServiceURL)
-    // .then((response: any) => {
-    //   console.log(response);
-    //   window.open(response.fileName, "_blank");
-    // })
-    // .catch((e:any) => {
-    //   console.error(e);
-    // })
-    // .finally(() => {
-    //   this.loaderService.isLoading.next(false);
-    // })
 
   }
 }

@@ -22,6 +22,7 @@ import { CulvertSizeModule } from '../sidebar/culvert-size/culvert-size.module';
 import { RegenerationOperationsComponent } from '../sidebar/regeneration-operations/regeneration-operations.component';
 import { PrintToolModule } from 'src/app/shared/components/print-tool/print-tool.module';
 import { BasemapWidgetModule } from 'src/app/shared/components/basemap-widget/basemap-widget.module';
+import { ImportExportModule } from 'src/app/shared/components/import-export/ImportExport.module';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { BasemapWidgetModule } from 'src/app/shared/components/basemap-widget/ba
     ModalModule,
     CulvertSizeModule,
     PrintToolModule,
-    BasemapWidgetModule
+    BasemapWidgetModule,
+    ImportExportModule
   ],
   exports: [EsrimapComponent]
 })

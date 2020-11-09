@@ -10,7 +10,7 @@ import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import Graphic from 'esri/Graphic';
 import { Point, Polygon, SpatialReference } from 'esri/geometry';
 import { SimpleFillSymbol, SimpleMarkerSymbol } from 'esri/symbols';
-import { getSoilTextureClass } from './CulvertDetailsUtils';
+import { getSoilTextureClass,getCulvertSize } from './CulvertDetailsUtils';
 const projection = require('arcgis-js-api/geometry/projection');
 
 @Component({
@@ -31,14 +31,16 @@ export class CulvertSizeComponent implements AfterViewInit {
     Sand_WA: 34,
     Shape_Area: 1416,
     Shape_Length: 194,
-    Silt_WA: 37
+    Silt_WA: 37,
+    Soil_Texture: 'Clay Loam',
+    CulvertSize: '12 inches'
   };
 
   graphicsLayer: GraphicsLayer = new GraphicsLayer({ id: "culvertGraphics" });
 
   headerBgColor = '#353535'
   drawTool: String;
-  isElevationProfileToolActive = false;
+  isCulvertToolActive = false;
   faQuestionCircle = faQuestionCircle;
   culvertUtils: any;
 
@@ -51,15 +53,16 @@ export class CulvertSizeComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     console.log(projection);
-    this.culvertUtils = this.culvertService.initialize({ mapView: this.mapView, graphicsLayer: this.graphicsLayer });
+
   }
 
   drawPourPoint() {
+    this.culvertUtils = this.culvertService.initialize({ mapView: this.mapView, graphicsLayer: this.graphicsLayer });
     this.culvertUtils.start();
 
     this.drawingObservable$ = this.culvertService.drawingComplete.subscribe(async (graphics: any) => {
+      this.isCulvertToolActive = true;
       this.loaderService.isLoading.next(true);
-      // console.time('graph')
       try {
         const gp: [Geoprocessor, any] = this.culvertService.GetCulvertData(graphics);
         const jobInfo: JobInfo = await gp[0].submitJob(gp[1]);
@@ -69,28 +72,11 @@ export class CulvertSizeComponent implements AfterViewInit {
         const pourPt0: any = finalPourPoint.value.toJSON();
         const wsJSON = outFeatureWatershed.value.toJSON();
 
-
-        // simulate the data for now
-        // const pourPt0: any = {
-        //   "displayFieldName": "", "features":
-        //     [{
-        //       "geometry": { "spatialReference": { "latestWkid": 3665, "wkid": 3665 }, "x": 1497452.9382958077, "y": 7607725.866491848 },
-        //       "symbol": null, "attributes": { "OBJECTID": 1, "pointid": 1, "grid_code": 1 }, "popupTemplate": null
-        //     }],
-        //   "fields": [{ "alias": "OBJECTID", "editable": true, "length": -1, "name": "OBJECTID", "nullable": true, "type": "esriFieldTypeOID" },
-        //   { "alias": "pointid", "editable": true, "length": -1, "name": "pointid", "nullable": true, "type": "esriFieldTypeInteger" },
-        //   { "alias": "grid_code", "editable": true, "length": -1, "name": "grid_code", "nullable": true, "type": "esriFieldTypeInteger" }],
-        //   "geometryType": "esriGeometryPoint", "spatialReference": { "latestWkid": 3665, "wkid": 3665 }
-        // };
-
-        // console.log(finalPourPoint.value.toJSON(), outFeatureWatershed.value.toJSON());
         const pourPt = new Point({
           x: pourPt0.features[0].geometry.x,
           y: pourPt0.features[0].geometry.y,
           spatialReference: { wkid: pourPt0.spatialReference.wkid }
         });
-
-        // const wsJSON = { "displayFieldName": "", "features": [{ "geometry": { "spatialReference": { "latestWkid": 3665, "wkid": 3665 }, "rings": [[[1497517.9382999986, 7607170.8665], [1497443.3381000012, 7607181.2809], [1497439.2840999998, 7607379.9204], [1497453.2221000008, 7607735.7664], [1497463.0384000018, 7607715.9666], [1497477.4085000008, 7607495.7182], [1497503.0384000018, 7607445.9666], [1497512.8381999992, 7607365.7664], [1497526.4448000006, 7607352.6933], [1497522.8381999992, 7607175.9666], [1497517.9382999986, 7607170.8665]]] }, "symbol": null, "attributes": { "OBJECTID": 1, "Sand_WA": 46.20000076293945, "Silt_WA": 29.600000381469727, "Clay_WA": 24.200000762939453, "Avg_Slope": 1.7000000476837158, "POLY_AREA": 7.033543813283964, "Shape_Length": 1212.4067848757138, "Shape_Area": 28463.767116226343 }, "popupTemplate": null }], "fields": [{ "alias": "OBJECTID", "editable": true, "length": -1, "name": "OBJECTID", "nullable": true, "type": "esriFieldTypeOID" }, { "alias": "Sand_WA", "editable": true, "length": -1, "name": "Sand_WA", "nullable": true, "type": "esriFieldTypeSingle" }, { "alias": "Silt_WA", "editable": true, "length": -1, "name": "Silt_WA", "nullable": true, "type": "esriFieldTypeSingle" }, { "alias": "Clay_WA", "editable": true, "length": -1, "name": "Clay_WA", "nullable": true, "type": "esriFieldTypeSingle" }, { "alias": "Avg_Slope", "editable": true, "length": -1, "name": "Avg_Slope", "nullable": true, "type": "esriFieldTypeSingle" }, { "alias": "POLY_AREA", "editable": true, "length": -1, "name": "POLY_AREA", "nullable": true, "type": "esriFieldTypeDouble" }, { "alias": "Shape_Length", "editable": true, "length": -1, "name": "Shape_Length", "nullable": true, "type": "esriFieldTypeDouble" }, { "alias": "Shape_Area", "editable": true, "length": -1, "name": "Shape_Area", "nullable": true, "type": "esriFieldTypeDouble" }], "geometryType": "esriGeometryPolygon", "spatialReference": { "latestWkid": 3665, "wkid": 3665 } };
 
         const waterShedPolygon = new Polygon({
           rings: wsJSON.features[0].geometry.rings,
@@ -98,6 +84,9 @@ export class CulvertSizeComponent implements AfterViewInit {
         });
 
         this.culvertData = wsJSON.features[0].attributes;
+
+        this.culvertData.SoilTexture = getSoilTextureClass(this.culvertData.Clay_WA, this.culvertData.Sand_WA, this.culvertData.Silt_WA);
+        this.culvertData.CulvertSize = getCulvertSize(this.culvertData.SoilTexture, this.culvertData.Avg_Slope, this.culvertData.POLY_AREA);
         await projection.load();
 
         this.pourPointReportWGS = projection.project(pourPt, new SpatialReference({wkid: 4326}));
@@ -135,9 +124,11 @@ export class CulvertSizeComponent implements AfterViewInit {
     this.drawTool = undefined;
   }
 
-  clearElevationProfile() {
-    console.log('clear profile');
+  clearCulvertTool() {
+    this.isCulvertToolActive = false;
+    this.drawingObservable$.unsubscribe();
     this.culvertModal.hide();
+    this.culvertService.close();
   }
 
   ngOnDestroy() {
@@ -154,12 +145,12 @@ export class CulvertSizeComponent implements AfterViewInit {
       zzLongitude: Math.round(this.pourPointReportWGS.longitude * 1000000)/1000000,
       zzAcresDrained: c.POLY_AREA.toFixed(2),
       zzSlope: c.Avg_Slope.toFixed(2),
-      zzTexture: getSoilTextureClass(c.Clay_WA, c.Sand_WA, c.Silt_WA),
+      zzTexture: c.SoilTexture,
       zzSilt: c.Silt_WA.toFixed(2),
       zzSand: c.Sand_WA.toFixed(2),
       zzClay: c.Clay_WA.toFixed(2),
-      zzCulvertDiam: 'test',
+      zzCulvertDiam: c.CulvertSize,
     };
-    this.culvertService.createReport(this.watershedGeometry,  this.graphicsLayer, culvertData);
+    this.culvertService.createReport(this.watershedGeometry,  culvertData);
   }
 }
