@@ -136,7 +136,6 @@ export class SoilsService {
 
   updateGraphicsOpacity(soilsgl: __esri.GraphicsLayer, labelsgl: __esri.GraphicsLayer, sliderValue: number, isOrange:boolean, isFromSoils:boolean): void {
     const graphicTransparency:number = (100 - sliderValue) / 100;
-    debugger
     if (isFromSoils)
     {
       if (isOrange === false)

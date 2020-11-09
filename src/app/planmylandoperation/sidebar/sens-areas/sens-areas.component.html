@@ -9,7 +9,7 @@
       <p>Clipping Sensitive Areas...</p>
       <p>The clipping of the sensitive areas is in progress. Pleas wait.</p>
     </ng-container>
-    <ng-container>
+    <ng-container *ngIf="state == 'clipped'">
       <div>
         Transparency<br>
       </div>

@@ -59,17 +59,17 @@ export class HarvestOperationsComponent implements OnInit {
           this.operationLegendService.setOperationLegend(this.selectedRadio, true);
           this.hasBoundary = true;
         }
-        else if (this.userGL.graphics.length > 1) {
+        else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 1) {
           this.opt.message = 'You can only get harvest operations information from one polygon at a time.';
           this.dialogService.open(this.opt);
-        } else if (this.userGL.graphics.length > 0) {
-          if (GreaterThanMaxArea(this.userGL.graphics.getItemAt(0).geometry, 100000, 'acres')) {
+        } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 0) {
+          if (GreaterThanMaxArea(this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry, 100000, 'acres')) {
             this.opt.message = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(100000) + ' acres';
             this.dialogService.open(this.opt);
           } else {
             this.loaderService.isLoading.next(true);
             this.hasBoundary = true;
-            const inputBoundary: __esri.Graphic = this.userGL.graphics.getItemAt(0);
+            const inputBoundary: __esri.Graphic = this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
             this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
               if (result.length === 0)
               {
@@ -121,7 +121,7 @@ export class HarvestOperationsComponent implements OnInit {
 
   buildOperationsReport():void {
     this.loaderService.isLoading.next(true);
-    const boundary:__esri.Graphic= this.userGL.graphics.getItemAt(0);
+    const boundary:__esri.Graphic= this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
     this.harvestOperationsService.createOperationsReport(this.selectedRadio, this.mapView, this.pmloSoilsGL, boundary.geometry.extent.clone().expand(1.05), this.hoReportTitle).then((reportUrl:string) => {
       this.loaderService.isLoading.next(false);
       window.open(reportUrl, '_blank', 'noopener');
