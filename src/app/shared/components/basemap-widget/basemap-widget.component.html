@@ -1,0 +1,38 @@
+<span class="basemapLabel">
+  {{state.basemap.label}}
+</span>
+<button (click)="toggle()" class="basemapToggleBtn" [ngClass]="{selectedBtn: state.open}">
+  <img src="assets/icons/basemaps.png" aria-label="basemap gallery" />
+</button>
+
+<div [hidden]="!state.open" class="basemapBody basemap-open">
+  <div class="basemapTitle">Basemaps</div>
+  <div style="flex: 1;">
+    <div class="basemapgrid">
+      <div class="basemapcard" *ngFor="let basemap of basemaps" (click)="setBasemap(basemap)"
+        [ngClass]="{selected: basemap===state.basemap}">
+        <img src="assets/icons/basemap/{{basemap.image}}.png" aria-label="im" attr.aria-label="{{basemap.image}}" />
+        <span> {{basemap.label}}</span>
+      </div>
+    </div>
+    <div class="basemapcard texasimagery" [ngClass]="{selected: texasImageryVisible}">
+      <img src="assets/icons/basemap/texas.png" aria-label="texas imagery" (click)="toggleTexasImagery()" />
+      <span *ngIf="!texasImageryVisible"> Texas Imagery</span>
+
+      <select *ngIf="texasImageryVisible" [(ngModel)]="selectedTexasBasemap" aria-label="Basemap"
+        (ngModelChange)="changeTexasBasemap(false)">
+        <option *ngFor="let x of texasBasemaps" [value]="x">
+          {{x}}
+        </option>
+      </select>
+    </div>
+
+    <span *ngIf='updatedDate' class="imageryDate">Imagery updated on: {{updatedDate | date: 'longDate'}}</span>
+    <div class="loadingContainer" *ngIf="loading">
+      <div class="loader"></div>
+      <span>
+        Loading..
+      </span>
+    </div>
+  </div>
+</div>

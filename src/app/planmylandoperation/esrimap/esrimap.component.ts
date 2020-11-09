@@ -6,7 +6,7 @@ import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.compo
 import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
-import createMapView from 'src/app/shared/utils/CreateMapView';
+import { createMapView } from 'src/app/shared/utils/CreateMapView';
 import { CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { SoilsService } from '../sidebar/soils/soils.service';
