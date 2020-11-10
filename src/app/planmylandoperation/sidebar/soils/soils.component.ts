@@ -4,7 +4,6 @@ import { PMLOSoil } from '../../models/pmloSoil.model';
 import { GetPMLOSoilPopupContent } from '../../pmloUtils/popupContent';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
-import { DialogService } from 'src/app/shared/components/dialogs/dialog.service';
 import { CreateGL } from '../../pmloUtils/layers';
 import { GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { CreatePolygonSymbol } from 'src/app/shared/utils/GraphicStyles';
@@ -20,6 +19,8 @@ import { TraceGPError } from 'src/app/shared/services/error/GPServiceError';
 import { AppConfiguration } from 'src/config';
 import { ReportsService } from '../../pmloUtils/reports.service';
 import { EsrimapService } from '../../esrimap/esrimap.service';
+import { PMLONotification } from '../../models/pmloNotification.model';
+import { NotificationsService } from '../../pmloUtils/notifications.service';
 
 @Component({
   selector: 'pmlo-soils',
@@ -50,20 +51,18 @@ export class SoilsComponent implements OnInit {
   private pmloSoilsGL: __esri.GraphicsLayer = CreateGL('pmloSoilsGL', 1);
   private pmloSoilLabelsGL: __esri.GraphicsLayer = CreateGL('pmloSoilLabelsGL', 1);
 
-  private opt = {
-    message: ''
-  };
+  private pmloNote:PMLONotification = new PMLONotification();
 
   constructor(
     private soilsService: SoilsService,
     private loaderService: LoaderService,
     private mapViewService: MapviewService,
-    private dialogService: DialogService,
     private soilsReportService: SoilsReportService,
     private sensAreasService: SensAreasService,
     private appConfig: AppConfiguration,
     private reportsService: ReportsService,
-    private esriMapService: EsrimapService
+    private esriMapService: EsrimapService,
+    private notificationsService:NotificationsService
   ) { }
 
   ngOnInit(): void {
@@ -174,12 +173,12 @@ export class SoilsComponent implements OnInit {
     const polygonGraphics = GetPolygonGraphics(this.userGL);
     if (polygonGraphics.length === 0)
     {
-      this.opt.message = 'Please make sure you draw a boundary or load a file using the tools in the previous toolbox before running this tool.';
-      this.dialogService.open(this.opt);
+      this.pmloNote.body = 'Please make sure you draw a boundary or load a file using the tools in the previous toolbox before running this tool.';
+      this.notificationsService.openNotificationsModal.emit(this.pmloNote);
     } else if (polygonGraphics.length > 1)
     {
-      this.opt.message = 'You can only clip soils areas from one polygon at a time.';
-      this.dialogService.open(this.opt);
+      this.pmloNote.body = 'You can only clip soils areas from one polygon at a time.';
+      this.notificationsService.openNotificationsModal.emit(this.pmloNote);
     } else {
       this.loaderService.isLoading.next(true);
       const inputBoundary: __esri.Graphic = polygonGraphics.getItemAt(0);
@@ -187,8 +186,8 @@ export class SoilsComponent implements OnInit {
         if (result.length === 0)
         {
           this.loaderService.isLoading.next(false);
-          this.opt.message = 'There was an error while clipping the soils. Please try again and, if the problem persists, contact the administrator.';
-          this.dialogService.open(this.opt);
+          this.pmloNote.body = 'There was an error while clipping the soils. Please try again and, if the problem persists, contact the administrator.';
+          this.notificationsService.openNotificationsModal.emit(this.pmloNote);
         } else {
           const boundaryId:string = inputBoundary.attributes.id;
           this.soilsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId, this.sliderValue, this.isOrangeSymbol);

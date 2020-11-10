@@ -1,11 +1,12 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { DialogService } from 'src/app/shared/components/dialogs/dialog.service';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { GreaterThanMaxArea } from 'src/app/shared/utils/GeometryEngine';
 import { EsrimapService } from '../../esrimap/esrimap.service';
+import { PMLONotification } from '../../models/pmloNotification.model';
 import { OperationLegendService } from '../../operation-legend/operation-legend.service';
+import { NotificationsService } from '../../pmloUtils/notifications.service';
 import { SoilsService } from '../soils/soils.service';
 import { HarvestOperationsService } from './harvest-operations.service';
 
@@ -29,18 +30,16 @@ export class HarvestOperationsComponent implements OnInit {
   private pmloSoilLabelsGL: __esri.GraphicsLayer;
   private userGL: __esri.GraphicsLayer;
 
-  private opt = {
-    message: ''
-  };
+  private pmloNote:PMLONotification = new PMLONotification();
 
   constructor(
     private esrimapService:EsrimapService,
     private soilsService:SoilsService,
-    private dialogService:DialogService,
     private loaderService:LoaderService, 
     private harvestOperationsService: HarvestOperationsService,
     private decimalPipe: DecimalPipe,
-    private operationLegendService: OperationLegendService
+    private operationLegendService: OperationLegendService,
+    private notificationsService:NotificationsService
   ) { }
 
   ngOnInit(): void {
@@ -60,12 +59,12 @@ export class HarvestOperationsComponent implements OnInit {
           this.hasBoundary = true;
         }
         else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 1) {
-          this.opt.message = 'You can only get harvest operations information from one polygon at a time.';
-          this.dialogService.open(this.opt);
+          this.pmloNote.body = 'You can only get harvest operations information from one polygon at a time.';
+          this.notificationsService.openNotificationsModal.emit(this.pmloNote);
         } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 0) {
           if (GreaterThanMaxArea(this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry, 100000, 'acres')) {
-            this.opt.message = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(100000) + ' acres';
-            this.dialogService.open(this.opt);
+            this.pmloNote.body = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(100000) + ' acres';
+            this.notificationsService.openNotificationsModal.emit(this.pmloNote);
           } else {
             this.loaderService.isLoading.next(true);
             this.hasBoundary = true;
@@ -74,8 +73,8 @@ export class HarvestOperationsComponent implements OnInit {
               if (result.length === 0)
               {
                 this.loaderService.isLoading.next(false);
-                this.opt.message = 'There was an error while getting harvest operations information. Please try again and, if the problem persists, contact the administrator.';
-                this.dialogService.open(this.opt);
+                this.pmloNote.body = 'There was an error while getting harvest operations information. Please try again and, if the problem persists, contact the administrator.';
+                this.notificationsService.openNotificationsModal.emit(this.pmloNote);
               } else {
                 const boundaryId:string = inputBoundary.attributes.id;
                 this.harvestOperationsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId, this.sliderValue);
