@@ -19,4 +19,5 @@ export class AppConfiguration {
   severeSlopesGPServiceURL: string;
   ssurgoTabularURL: string;
   ssurgoWMSURL: string;
+  others: any
 }
