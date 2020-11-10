@@ -4,7 +4,6 @@ import { PMLOSoil } from '../../models/pmloSoil.model';
 import { GetPMLOSoilPopupContent } from '../../pmloUtils/popupContent';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
-import { DialogService } from 'src/app/shared/components/dialogs/dialog.service';
 import { CreateGL } from '../../pmloUtils/layers';
 import { GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { CreatePolygonSymbol } from 'src/app/shared/utils/GraphicStyles';
@@ -58,7 +57,6 @@ export class SoilsComponent implements OnInit {
     private soilsService: SoilsService,
     private loaderService: LoaderService,
     private mapViewService: MapviewService,
-    private dialogService: DialogService,
     private soilsReportService: SoilsReportService,
     private sensAreasService: SensAreasService,
     private appConfig: AppConfiguration,
@@ -175,11 +173,11 @@ export class SoilsComponent implements OnInit {
     if (polygonGraphics.length === 0)
     {
       this.opt.message = 'Please make sure you draw a boundary or load a file using the tools in the previous toolbox before running this tool.';
-      this.dialogService.open(this.opt);
+      // this.dialogService.open(this.opt);
     } else if (polygonGraphics.length > 1)
     {
       this.opt.message = 'You can only clip soils areas from one polygon at a time.';
-      this.dialogService.open(this.opt);
+      // this.dialogService.open(this.opt);
     } else {
       this.loaderService.isLoading.next(true);
       const inputBoundary: __esri.Graphic = polygonGraphics.getItemAt(0);
@@ -188,7 +186,7 @@ export class SoilsComponent implements OnInit {
         {
           this.loaderService.isLoading.next(false);
           this.opt.message = 'There was an error while clipping the soils. Please try again and, if the problem persists, contact the administrator.';
-          this.dialogService.open(this.opt);
+          // this.dialogService.open(this.opt);
         } else {
           const boundaryId:string = inputBoundary.attributes.id;
           this.soilsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId, this.sliderValue, this.isOrangeSymbol);

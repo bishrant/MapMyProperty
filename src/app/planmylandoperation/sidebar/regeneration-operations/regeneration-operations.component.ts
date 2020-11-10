@@ -1,7 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { DialogService } from 'src/app/shared/components/dialogs/dialog.service';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { GreaterThanMaxArea } from 'src/app/shared/utils/GeometryEngine';
 import { EsrimapService } from '../../esrimap/esrimap.service';
@@ -39,7 +38,6 @@ export class RegenerationOperationsComponent implements OnInit {
     private operationLegendService:OperationLegendService,
     private harvestOperationsService:HarvestOperationsService,
     private esrimapService:EsrimapService,
-    private dialogService:DialogService,
     private decimalPipe:DecimalPipe
   ) { }
 
@@ -60,12 +58,12 @@ export class RegenerationOperationsComponent implements OnInit {
           this.hasBoundary = true;
         } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 1) {
           this.opt.message = 'You can only get regeneration operations information from one polygon at a time.';
-          this.dialogService.open(this.opt);
+          // this.dialogService.open(this.opt);
         } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 0) {
           if (GreaterThanMaxArea(this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry, 100000, 'acres'))
           {
             this.opt.message = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(100000) + ' acres';
-            this.dialogService.open(this.opt);
+            // this.dialogService.open(this.opt);
           } else {
             this.loaderService.isLoading.next(true);
             this.hasBoundary = true;
@@ -75,7 +73,7 @@ export class RegenerationOperationsComponent implements OnInit {
               {
                 this.loaderService.isLoading.next(false);
                 this.opt.message = 'There was an error while getting harvest operations information. Please try again and, if the problem persists, contact the administrator.';
-                this.dialogService.open(this.opt);
+                // this.dialogService.open(this.opt);
               } else {
                 const boundaryId:string = inputBoundary.attributes.id;
                 this.harvestOperationsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId, this.sliderValue);

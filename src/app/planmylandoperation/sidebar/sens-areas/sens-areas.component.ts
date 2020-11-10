@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { CreateGL } from '../../pmloUtils/layers';
-import { DialogService } from 'src/app/shared/components/dialogs/dialog.service';
 import { GreaterThanMaxArea, GetFeaturesLength, GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import { DecimalPipe } from '@angular/common';
 import { SensAreasService } from './sens-areas.service';
@@ -47,7 +46,6 @@ export class SensAreasComponent implements OnInit {
   };
 
   constructor (
-    private dialogService: DialogService,
     private decimalPipe: DecimalPipe,
     private sensAreasService: SensAreasService,
     private loaderService: LoaderService,
@@ -79,11 +77,11 @@ export class SensAreasComponent implements OnInit {
         } else if (this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').length > 1) {
           this.sensAreaToolHeader.close();
           this.opt.message = 'You can only display sensitive areas from one polygon at a time.';
-          this.dialogService.open(this.opt);
+          // this.dialogService.open(this.opt);
         } else if (GreaterThanMaxArea(this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry, maxAcres, 'acres')) {
           this.sensAreaToolHeader.close();
           this.opt.message = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(maxAcres) + ' acres';
-          this.dialogService.open(this.opt);
+          // this.dialogService.open(this.opt);
         } else if (this.sensAreaGL.graphics.length === 0) {
           this.state = 'clipping';
           this.loaderService.isLoading.next(true);
@@ -99,7 +97,7 @@ export class SensAreasComponent implements OnInit {
                   this.loaderService.isLoading.next(false);
                   this.sensAreaToolHeader.close();
                   this.opt.message = 'There was an error calculating "Sensitive Areas". Please try again and, if the problem persists, contact the administrator.';
-                  this.dialogService.open(this.opt);
+                  // this.dialogService.open(this.opt);
                 } else {
                   this.sensAreasService.addSensAreasToMap(this.sensAreaGL, result, this.sliderValue);
                   this.state = 'clipped';
@@ -110,7 +108,7 @@ export class SensAreasComponent implements OnInit {
               this.loaderService.isLoading.next(false);
               this.sensAreaToolHeader.close();
               this.opt.message = 'Please make sure that your project area is totally within Texas.';
-              this.dialogService.open(this.opt);
+              // this.dialogService.open(this.opt);
             }
           });
         } else {
@@ -186,7 +184,7 @@ export class SensAreasComponent implements OnInit {
         {
           this.loaderService.isLoading.next(false);
           this.opt.message = 'There was an error creating the buffer. Please try again and, if the problem persists, contact the administrator.';
-          this.dialogService.open(this.opt);
+          // this.dialogService.open(this.opt);
         } else {
           this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue);
           this.loaderService.isLoading.next(false);
@@ -210,7 +208,7 @@ export class SensAreasComponent implements OnInit {
       {
         this.loaderService.isLoading.next(false);
         this.opt.message = 'There was an error setting the severe slope. Please try again and, if the problem persists, contact the administrator.';
-        this.dialogService.open(this.opt);
+        // this.dialogService.open(this.opt);
       } else {
         this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue);
         this.loaderService.isLoading.next(false);
@@ -230,7 +228,7 @@ export class SensAreasComponent implements OnInit {
       {
         this.loaderService.isLoading.next(false);
         this.opt.message = 'There was an error creating the report. Please try again and, if the problem persists, contact the administrator.';
-        this.dialogService.open(this.opt);
+        // this.dialogService.open(this.opt);
       } else {
         let severeSlopeArea: number = 0;
         if(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'slopes').length > 0)
