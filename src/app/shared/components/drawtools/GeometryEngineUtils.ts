@@ -1,11 +1,14 @@
-import {geodesicArea} from 'arcgis-js-api/geometry/geometryEngine';
+import {geodesicArea, geodesicLength} from 'arcgis-js-api/geometry/geometryEngine';
 import Graphic from 'esri/Graphic';
 
 const createAreaLabels = (graphic: Graphic) => {
   const area = geodesicArea(graphic.geometry, 'acres');
-  console.log(area);
-
   return Math.round(area*100)/100 + " acres";
 }
 
-export {createAreaLabels};
+const createDistanceLabels = (graphic: Graphic) => {
+  const area = geodesicLength(graphic.geometry, 'miles');
+  return Math.round(area*100)/100 + " miles";
+}
+
+export {createAreaLabels, createDistanceLabels};

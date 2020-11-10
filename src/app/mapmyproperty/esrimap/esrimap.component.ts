@@ -10,6 +10,8 @@ import { Store } from '@ngrx/store';
 import { createMapView } from 'src/app/shared/utils/CreateMapView';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import { TextControlService } from 'src/app/shared/services/TextControl-service';
+import { createAreaLabels } from 'src/app/shared/components/drawtools/GeometryEngineUtils';
+import { Point } from 'esri/geometry';
 
 
 @Component({
@@ -34,7 +36,7 @@ export class EsrimapComponent implements OnInit {
   mapCoords: any;
 
   geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
-  geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({id: "geomlabels"});
+  geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: "geomlabels" });
 
 
   readonly graphics$ = this.store.select((state) => state.app.graphics);
@@ -153,19 +155,60 @@ export class EsrimapComponent implements OnInit {
   syncLabelsToGeometry = () => {
     const labels = [];
     this.polygonGraphicsLayer.graphics.forEach((parent: Graphic) => {
-      if (parent.geometry.type === 'polygon') {
+      let anchorPt: Point;
+      const parentType = parent.geometry.type;
+      if (['polygon', 'polyline'].includes(parent.geometry.type)) {
+        if (parent.geometry.type === 'polygon') {
+          anchorPt = (parent.geometry as any).centroid
+        } else {
+          const firstPt = (parent.geometry as any).paths[0][0];
+          anchorPt = new Point({
+            x: firstPt[0],
+            y: firstPt[1],
+            spatialReference: this.mapView.spatialReference
+          });
+        }
         // need to check if the user has deleted the graphic themselves
         // check if the graphics with that parent id already exists
-        const specificLabel = this.geomLabelsGraphicsLayer.graphics.filter((graphic: Graphic) => graphic.attributes.parentId ===  parent.attributes.id);
-        if (specificLabel.length < 1) {
-          // no labels exists
+        const specificLabel = [];
+        this.geomLabelsGraphicsLayer.graphics.forEach((graphic: Graphic) => {
+          if (graphic.attributes.parentId === parent.attributes.id) {
+            specificLabel.push(graphic);
+          }
+        });
+        if (specificLabel.length >= 1) {
+          // graphic exists
+          const _g = specificLabel[0]
+          // check if it was previously deleted
+          if (typeof _g.geometry === 'undefined') {
+            labels.push(specificLabel[0]);
+          } else {
+            let a = this.TextService.creatGeomLabelGraphic(anchorPt, specificLabel[0].attributes.symbol, parent);
+            labels.push(a);
+          }
 
+        } else {
+          const _symbol = {
+            type: "text",
+            color: (parent.geometry.type === 'polyline') ? parent.attributes.symbol.color: parent.attributes.symbol.outline.color,
+            text: '0',
+            xoffset: 3,
+            yoffset: 3,
+            font: {
+              decoration: "none",
+              family: "Arial",
+              size: "18px",
+              style: "normal",
+              weight: "normal",
+            }
+          }
+          let a = this.TextService.creatGeomLabelGraphic(anchorPt, _symbol, parent);
+          labels.push(a);
         }
-        let a = this.TextService.creatGeomLabelGraphic((parent.geometry as any).centroid, parent.attributes.symbol, parent);
-        labels.push(a);
-      } else if (parent.geometry.type === 'polyline') {
+
 
       }
+
     });
     console.log(labels);
     this.geomLabelsGraphicsLayer.removeAll();

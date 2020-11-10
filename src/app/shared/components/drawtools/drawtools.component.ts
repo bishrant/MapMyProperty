@@ -71,6 +71,10 @@ export class DrawtoolsComponent implements OnInit {
     });
   };
 
+  toggleLabels() {
+    this.geomLabelsGraphicsLayer.visible = !this.geomLabelsGraphicsLayer.visible;
+  }
+
   private CreateDraggableTextbox = (textGraphic: any, graphicsLayer: __esri.GraphicsLayer) => {
     const graphicCenter = this.mapView.toScreen(textGraphic.geometry);
     const input = this.TextSelectionService.createInputWithFrame(

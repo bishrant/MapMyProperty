@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Point } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
-import { createAreaLabels } from '../components/drawtools/GeometryEngineUtils';
+import { createAreaLabels, createDistanceLabels } from '../components/drawtools/GeometryEngineUtils';
 import { CreateTextSymbolFromHTML, getTextParamsFromHTML, SetInputStyleAttributes } from '../components/drawtools/TextUtils';
 import { addGraphics, updateGraphics } from '../store/graphics.actions';
 import { id } from '../store/todo';
@@ -15,24 +15,14 @@ export class TextControlService {
   windowListener: any;
   constructor() { }
 
-  creatGeomLabelGraphic = (anchorPoint: Point, parentSymbol: any, parent: Graphic) => {
+  creatGeomLabelGraphic = (anchorPoint: Point, textSymbol: any, parent: Graphic) => {
     // add text labels for polygon and polylines
-    const area = createAreaLabels(parent);
-
-    var textSymbol = {
-      type: "text",
-      color: parentSymbol.outline.color,
-      text: area,
-      xoffset: 3,
-      yoffset: 3,
-      font: {
-        decoration: "none",
-        family: "Arial",
-        size: "18px",
-        style: "normal",
-        weight: "normal",
-      }
+    if (parent.geometry.type === 'polygon') {
+      textSymbol.text = createAreaLabels(parent);
+    } else if (parent.geometry.type === 'polyline') {
+      textSymbol.text = createDistanceLabels(parent);
     }
+
 
     const gr = new Graphic({
       geometry: anchorPoint,
@@ -40,7 +30,7 @@ export class TextControlService {
       attributes: {
         id: id(),
         symbol: textSymbol,
-        parentid: parent.attributes.id,
+        parentId: parent.attributes.id,
         readonly: true,
         geometryType: 'text'
       }
@@ -52,8 +42,9 @@ export class TextControlService {
     return gr;
   }
 
-  DeleteGraphics() {
-
+  HideOnlyTextGraphics(textGraphic: Graphic, graphicsLayer: __esri.GraphicsLayer) {
+    textGraphic.geometry = undefined;
+    graphicsLayer.add(textGraphic);
   }
 
   AddTextToMap(id: any, mapX: any, mapY: any, textSymbol: any, store: any, isUpdate = false, readonly = false, graphicsLayer) {
