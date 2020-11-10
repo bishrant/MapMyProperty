@@ -13,6 +13,9 @@ import { SoilsService } from '../sidebar/soils/soils.service';
 import { AppConfiguration } from 'src/config';
 import { AccordionPanelComponent } from 'src/app/shared/components/accordion-panel/accordion-panel.component';
 import { EsrimapService } from './esrimap.service';
+import { NotificationsService } from '../pmloUtils/notifications.service';
+import { ModalComponent } from 'src/app/shared/lib/angular-modal/modal/modal.component';
+import { PMLONotification } from '../models/pmloNotification.model';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -23,11 +26,12 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
-  @ViewChild('soilsTableModal') soilsTableModal: any;
+  @ViewChild('soilsTableModal') soilsTableModal: ModalComponent;
   @ViewChild('sensAreasAccPanel') sensAreasAccPanel:AccordionPanelComponent;
   @ViewChild('soilsAccPanel') soilsAccPanel:AccordionPanelComponent;
   @ViewChild('harvestAccPanel') harvestAccPanel:AccordionPanelComponent;
   @ViewChild('regenerationAccPanel') regenerationAccPanel:AccordionPanelComponent;
+  @ViewChild('notificationsModal') notificationsModal: ModalComponent;
 
   private graphicsSubcription$: any;
   mapView!: __esri.MapView // = createMapView(this.mapViewEl, this.searchBarDiv);
@@ -38,13 +42,16 @@ export class EsrimapComponent implements OnInit {
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   polygonGraphicsLayer:__esri.GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
+  notificationHeader = '';
+  notificationBody = '';
 
   constructor (
     private store: Store<AppState>,
     private mapViewService: MapviewService,
     private soilsService:SoilsService,
     private appConfig:AppConfiguration,
-    private esrimapService:EsrimapService
+    private esrimapService:EsrimapService,
+    private notificationsService:NotificationsService
     ) {}
   @HostListener('keydown.control.z') undoFromKeyboard () {
     this.graphicsStoreEl.undo();
@@ -170,6 +177,11 @@ export class EsrimapComponent implements OnInit {
       } else {
         this.soilsTableModal.hide();
       }
+    });
+    this.notificationsService.openNotificationsModal.subscribe((notification:PMLONotification) => {
+      this.notificationHeader = notification.header;
+      this.notificationBody = notification.body;
+      this.notificationsModal.show();
     });
   }
 
