@@ -57,7 +57,8 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: __esri.MapView): __es
     updateOnGraphicClick: true,
     defaultUpdateOptions: {
       enableRotation: false,
-      enableScaling: false
+      enableScaling: false,
+      tool: 'reshape'
     },
     defaultCreateOptions: {
       mode: 'click'

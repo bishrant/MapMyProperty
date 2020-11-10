@@ -21,6 +21,8 @@
     </mat-button-toggle-group>
   </div>
   <br>
+  <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleLabels" checked aria-label="show/hide area and distance labels">
+  <label for ="toggleLables">Show distance and area labels</label>
 
   <app-pointcontrol #pointcontrol [selectedGraphics]="selectedGraphics"
     [hidden]="!((selectedGraphics.length > 0 && selectedGraphics[0].geometry.type=== 'point') || drawingTool === 'point')">

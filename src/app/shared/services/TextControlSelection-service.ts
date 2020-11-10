@@ -30,7 +30,9 @@ export class TextControlSelectionService {
         `
       )
     );
-    this.deleteBtn = <HTMLElement>(htmlToElement(`<div class="deleteBTN" id="${inputId}_delete" style="position: absolute; top: 0px; right: -40px; line-height: 38px;">🗑️</div>`));
+    this.deleteBtn = <HTMLElement>(htmlToElement(`<div class="deleteBTN" id="${inputId}_delete" style="position: absolute; top: 0px; right: -37px; line-height: 38px; background: #ffffff8a; border-radius: 5px; padding: 0 10px;">
+    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" class="svg-inline--fa fa-trash fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"></path></svg>
+    </div>`));
 
 
 
@@ -47,10 +49,14 @@ export class TextControlSelectionService {
 
     const CleanupListenerForInputFrame = (target: any) => {
       // remove parent div
-      (document.getElementById(target.id + '_container') as any).remove();
-      target.remove();
-      window.removeEventListener('click', this.windowListener);
-      this._input.removeEventListener('keyup', this.enterKeylistener);
+      setTimeout(() => {
+        const _containerEl = (document.getElementById(target.id + '_container') as any)
+        if (_containerEl){_containerEl.remove()};
+        target.remove();
+        window.removeEventListener('click', this.windowListener);
+        this._input.removeEventListener('keyup', this.enterKeylistener);
+      }, 10);
+
     };
 
     const _AddTextToMap = (target: any) => {
@@ -92,10 +98,14 @@ export class TextControlSelectionService {
     };
 
     this.deleteListener = (e:any) => {
-      console.log('dlete this ', e);
-      let i = document.getElementById(e.target.id.split("_")[0]);
-      console.log(i);
-      CleanupListenerForInputFrame(i);
+      setTimeout(() => {
+        const _gid = e.target.id.split("_")[0];
+        let i = document.getElementById(_gid);
+        console.log(i);
+        this.TextService.HideOnlyTextGraphics(textGraphic, graphicsLayer);
+        CleanupListenerForInputFrame(i);
+      }, 10);
+
     }
 
     this._input.addEventListener('keyup', this.enterKeylistener);
