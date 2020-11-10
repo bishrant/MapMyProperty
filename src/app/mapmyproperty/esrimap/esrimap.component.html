@@ -4,6 +4,7 @@
 
       <app-accordion-panel title="Draw">
         <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
+        [geomLabelsSketchVM]= "geomLabelsSketchVM" [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer"
           (selectedTextGraphicsChanged)="textGraphicsChanged($event)">
         </app-drawtools>
       </app-accordion-panel>

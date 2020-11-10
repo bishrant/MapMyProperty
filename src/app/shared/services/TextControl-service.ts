@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Point } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
-import { CreateTextSymbolFromHTML, SetInputStyleAttributes } from '../components/drawtools/TextUtils';
+import { createAreaLabels } from '../components/drawtools/GeometryEngineUtils';
+import { CreateTextSymbolFromHTML, getTextParamsFromHTML, SetInputStyleAttributes } from '../components/drawtools/TextUtils';
 import { addGraphics, updateGraphics } from '../store/graphics.actions';
+import { id } from '../store/todo';
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +13,52 @@ export class TextControlService {
   private WIDTH = 200;
   private PADDING = 10;
   windowListener: any;
-  constructor () {}
+  constructor() { }
 
-  AddTextToMap(targetElement: any, store: any, textProps: any, isUpdate: boolean = false) {
-    const mapX = targetElement.getAttribute('mapX');
-    const mapY = targetElement.getAttribute('mapY');
+  creatGeomLabelGraphic = (anchorPoint: Point, parentSymbol: any, parent: Graphic) => {
+    // add text labels for polygon and polylines
+    const area = createAreaLabels(parent);
 
-    const textSymbol = CreateTextSymbolFromHTML(targetElement, textProps);
+    var textSymbol = {
+      type: "text",
+      color: parentSymbol.outline.color,
+      text: area,
+      xoffset: 3,
+      yoffset: 3,
+      font: {
+        decoration: "none",
+        family: "Arial",
+        size: "18px",
+        style: "normal",
+        weight: "normal",
+      }
+    }
+
+    const gr = new Graphic({
+      geometry: anchorPoint,
+      symbol: textSymbol,
+      attributes: {
+        id: id(),
+        symbol: textSymbol,
+        parentid: parent.attributes.id,
+        readonly: true,
+        geometryType: 'text'
+      }
+    });
+    // const _g = gr.toJSON();
+    // _g.symbol = textSymbol;
+    // _g.geometry.type = 'point';
+
+    return gr;
+  }
+
+  DeleteGraphics() {
+
+  }
+
+  AddTextToMap(id: any, mapX: any, mapY: any, textSymbol: any, store: any, isUpdate = false, readonly = false, graphicsLayer) {
+
+
     const point: any = {
       type: 'point',
       x: mapX,
@@ -27,22 +69,29 @@ export class TextControlService {
       geometry: point,
       symbol: textSymbol,
       attributes: {
-        id: targetElement.id,
+        id: id,
         symbol: textSymbol,
+        parentid: 0,
+        readonly: readonly,
         geometryType: 'text'
       }
     });
     const _g = gr.toJSON();
-    _g.symbol = textSymbol;
-    _g.geometry.type = 'point';
-    if (isUpdate) {
-      store.dispatch(updateGraphics({ graphics: JSON.stringify([_g]) }));
+    if (graphicsLayer) {
+      graphicsLayer.graphics.add(gr);
     } else {
-      store.dispatch(addGraphics({ graphics: [JSON.stringify(_g)] }));
+
+      _g.symbol = textSymbol;
+      _g.geometry.type = 'point';
+      if (isUpdate) {
+        store.dispatch(updateGraphics({ graphics: JSON.stringify([_g]) }));
+      } else {
+        store.dispatch(addGraphics({ graphics: [JSON.stringify(_g)] }));
+      }
     }
   };
 
-  createInput (mapEvt: any, inputId = '0', store: any, textProps: any) {
+  createInput(mapEvt: any, inputId = '0', store: any, textProps: any) {
     const fontSize = parseInt(textProps.font.size.split('px')[0]);
     const height = fontSize + 2 * this.PADDING;
     let _input = document.createElement('input');
@@ -99,6 +148,7 @@ export class TextControlService {
         }
       }
     };
+
     const CleanupListenerForInput = (target: any) => {
       target.remove();
       window.removeEventListener('click', this.windowListener);
@@ -107,13 +157,14 @@ export class TextControlService {
 
     const ExecuteAddTextToMap = (target: any) => {
       if (target.value !== '') {
-        this.AddTextToMap(target, store, textProps, false);
+        const params = getTextParamsFromHTML(target, textProps);
+        this.AddTextToMap(target.id, params.mapX, params.mapY, params.textSymbol, store, false);
       }
       CleanupListenerForInput(target);
     };
 
     _input.addEventListener('keyup', enterKeylistener);
-    window.addEventListener('click', this.windowListener, {once: true});
+    window.addEventListener('click', this.windowListener, { once: true });
     return _input;
   };
 }
