@@ -8,6 +8,8 @@ import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls'
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import { createMapView } from 'src/app/shared/utils/CreateMapView';
+import GraphicsLayer from 'esri/layers/GraphicsLayer';
+import { TextControlService } from 'src/app/shared/services/TextControl-service';
 
 
 @Component({
@@ -24,14 +26,21 @@ export class EsrimapComponent implements OnInit {
   private graphicsSubcription$: any;
   mapView!: __esri.MapView; // = createMapView(this.mapViewEl, this.searchBarDiv);
   clickToAddText = false;
+
   sketchVM: any = new SketchViewModel();
+
   selectedGraphics!: any[] | undefined;
   selectedTextGraphics: any[] = [];
   mapCoords: any;
+
+  geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
+  geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({id: "geomlabels"});
+
+
   readonly graphics$ = this.store.select((state) => state.app.graphics);
-  polygonGraphicsLayer = CreatePolygonGraphicsLayer();
+  polygonGraphicsLayer: GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
-  constructor(private store: Store<AppState>) { }
+  constructor(private store: Store<AppState>, private TextService: TextControlService) { }
   @HostListener('keydown.control.z') undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
@@ -72,8 +81,11 @@ export class EsrimapComponent implements OnInit {
   private initializeMap = async () => {
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
-      this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer]);
+      this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer]);
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
+
+      // this.geomLabelsSketchVM = SetupSketchViewModel(this.geomLabelsGraphicsLayer, this.mapView);
+
       const p = {
         type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
         style: 'circle',
@@ -105,6 +117,9 @@ export class EsrimapComponent implements OnInit {
 
   private listenToGraphicsStore = () => {
     return this.graphics$.subscribe((g: any) => {
+
+      console.log(g);
+
       if (g.length > 0) {
         const graphicsArray = g.map((_g: any) => {
           const gr = JSON.parse(_g);
@@ -119,6 +134,9 @@ export class EsrimapComponent implements OnInit {
         this.polygonGraphicsLayer.removeAll();
         this.textGraphicsLayer.removeAll();
       }
+
+      this.syncLabelsToGeometry();
+
     });
   };
 
@@ -129,5 +147,28 @@ export class EsrimapComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.graphicsSubcription$.unsubscribe();
+  }
+
+
+  syncLabelsToGeometry = () => {
+    const labels = [];
+    this.polygonGraphicsLayer.graphics.forEach((parent: Graphic) => {
+      if (parent.geometry.type === 'polygon') {
+        // need to check if the user has deleted the graphic themselves
+        // check if the graphics with that parent id already exists
+        const specificLabel = this.geomLabelsGraphicsLayer.graphics.filter((graphic: Graphic) => graphic.attributes.parentId ===  parent.attributes.id);
+        if (specificLabel.length < 1) {
+          // no labels exists
+
+        }
+        let a = this.TextService.creatGeomLabelGraphic((parent.geometry as any).centroid, parent.attributes.symbol, parent);
+        labels.push(a);
+      } else if (parent.geometry.type === 'polyline') {
+
+      }
+    });
+    console.log(labels);
+    this.geomLabelsGraphicsLayer.removeAll();
+    this.geomLabelsGraphicsLayer.addMany(labels);
   }
 }

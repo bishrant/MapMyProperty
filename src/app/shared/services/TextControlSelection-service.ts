@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { htmlToElement, SetInputStyleAttributes } from '../components/drawtools/TextUtils';
+import { getTextParamsFromHTML, htmlToElement, SetInputStyleAttributes } from '../components/drawtools/TextUtils';
 import { TextControlService } from './TextControl-service';
 
 @Injectable({
@@ -9,25 +9,35 @@ export class TextControlSelectionService {
   private WIDTH = 200;
   private PADDING = 10;
   _input: any;
+  deleteBtn:HTMLElement;
   enterKeylistener: any;
   windowListener: any;
+  deleteListener: any;
   frame: any;
   inputBox: any;
   constructor(private TextService: TextControlService) { }
 
-  createInputWithFrame(graphicCenter: any, textGraphic: any, textProps: any, store: any, mapView: any) {
+  createInputWithFrame(graphicCenter: any, textGraphic: any, textProps: any, store: any, mapView: any, graphicsLayer) {
     const inputId = textGraphic.attributes.id;
+
     this.frame = <HTMLElement>htmlToElement(`<div id="${inputId}_container" class="mapTextInputContainer">
 
     </div>`);
     const headerDiv = <HTMLElement>(
       htmlToElement(
-        `<div class='textBoxHeaderDrag' id="${inputId}_header"><span class='sep'>|</span><span>..<br></span><span>..<br></span><span>..<br></span></div>`
+        `<div><div class='textBoxHeaderDrag' id="${inputId}_header"><span class='sep'>|</span><span>..<br></span><span>..<br></span><span>..<br></span></div>
+        </div>
+        `
       )
     );
+    this.deleteBtn = <HTMLElement>(htmlToElement(`<div class="deleteBTN" id="${inputId}_delete" style="position: absolute; top: 0px; right: -40px; line-height: 38px;">🗑️</div>`));
+
+
+
     const fontSize = parseInt(textProps.font.size.split('px')[0]);
     const textHeight = fontSize + 2 * this.PADDING;
     this._input = document.createElement('input');
+    this._input.setAttribute('readonly', textGraphic.attributes.readonly);
     this._input.style.height = textHeight + 'px';
 
     this._input = SetInputStyleAttributes(this._input, textProps, textGraphic.geometry, inputId);
@@ -43,7 +53,7 @@ export class TextControlSelectionService {
       this._input.removeEventListener('keyup', this.enterKeylistener);
     };
 
-    const AddTextToMap = (target: any) => {
+    const _AddTextToMap = (target: any) => {
       const container = document.getElementById(inputId + '_container') as any;
       const _screenPt = {
         x: container.offsetLeft + target.clientWidth / 2,
@@ -52,14 +62,19 @@ export class TextControlSelectionService {
       const _mapPoint = mapView.toMap(_screenPt);
       target.setAttribute('mapX', _mapPoint.x);
       target.setAttribute('mapY', _mapPoint.y);
-      this.TextService.AddTextToMap(target, store, textProps, true);
+
+      const params = getTextParamsFromHTML(target, textProps);
+
+      this.TextService.AddTextToMap(target.id, params.mapX, params.mapY, params.textSymbol, store, true, false, graphicsLayer);
+
+
       this.inputBox = target;
       CleanupListenerForInputFrame(target);
     };
 
     this.enterKeylistener = (evt: any) => {
       if (evt.keyCode === 13) {
-        AddTextToMap(evt.target);
+        _AddTextToMap(evt.target);
       }
     };
 
@@ -69,18 +84,27 @@ export class TextControlSelectionService {
           const inputBox = document.getElementById(inputId);
           if (e.target !== inputBox && (e.target as any).classList.contains('esri-view-surface')) {
             if (inputBox) {
-              AddTextToMap(inputBox);
+              _AddTextToMap(inputBox);
             }
           }
         }
       }
     };
 
+    this.deleteListener = (e:any) => {
+      console.log('dlete this ', e);
+      let i = document.getElementById(e.target.id.split("_")[0]);
+      console.log(i);
+      CleanupListenerForInputFrame(i);
+    }
+
     this._input.addEventListener('keyup', this.enterKeylistener);
     window.addEventListener('click', this.windowListener);
+    this.deleteBtn.addEventListener('click', this.deleteListener);
 
     this.frame.appendChild(this._input);
     this.frame.appendChild(headerDiv);
+    this.frame.appendChild(this.deleteBtn);
 
     this.frame.style.left = graphicCenter.x - this.WIDTH / 2 + this.PADDING + 'px';
     this.frame.style.width = this.WIDTH + 'px';
@@ -94,6 +118,7 @@ export class TextControlSelectionService {
     target.remove();
     window.removeEventListener('click', this.windowListener);
     this._input.removeEventListener('keyup', this.enterKeylistener);
+    this.deleteBtn.removeEventListener('click', this.deleteListener);
   };
 
   Delete(id: string) {
@@ -103,7 +128,7 @@ export class TextControlSelectionService {
 
     // window.removeEventListener('click', this.windowListener);
     // this._input.removeEventListener('keyup', this.enterKeylistener);
-    let a=1;
+    let a = 1;
     // this.CleanupListenerForInputFrame(this.inputBox);
   }
 }

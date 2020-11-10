@@ -19,6 +19,8 @@ import { dragElement } from './drag';
 import { AreGraphicsEqual } from '../../utils/GeometryEngine';
 import { TextControlService } from '../../services/TextControl-service';
 import { TextControlSelectionService } from '../../services/TextControlSelection-service';
+import { createAreaLabels } from './GeometryEngineUtils';
+import Graphic from 'esri/Graphic';
 
 @Component({
   selector: 'app-drawtools',
@@ -27,6 +29,9 @@ import { TextControlSelectionService } from '../../services/TextControlSelection
 })
 export class DrawtoolsComponent implements OnInit {
   @Input() sketchVM: any;
+  @Input() geomLabelsSketchVM: __esri.SketchViewModel;
+  @Input() geomLabelsGraphicsLayer: __esri.GraphicsLayer;
+
   @Input() mapView: any;
   @Input() textGraphicsLayer: any;
   @Output() selectedTextGraphicsChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -37,17 +42,20 @@ export class DrawtoolsComponent implements OnInit {
   @ViewChild('fillstyle') fillStyleElmRef: any;
   @ViewChild('linestyle') lineStyleElmRef: any;
   id = (): string => Math.random().toString(36).substr(2, 9);
+
   selectedGraphics: any[] = [];
   selectedTextGraphics: any = [];
+  selectedLabelsGraphics: any = [];
+
   radius: number;
   drawingMode: string = 'click';
   drawingTool: string = '';
   clickToAddTextboxHandler: any;
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
 
-  constructor (private store: Store<AppState>, private TextService: TextControlService,
+  constructor(private store: Store<AppState>, private TextService: TextControlService,
     private TextSelectionService: TextControlSelectionService
-    ) {}
+  ) { }
 
   private ClickToAddTextbox = () => {
     if (this.clickToAddTextboxHandler) {
@@ -63,17 +71,18 @@ export class DrawtoolsComponent implements OnInit {
     });
   };
 
-  private CreateDraggableTextbox = (textGraphic: any) => {
+  private CreateDraggableTextbox = (textGraphic: any, graphicsLayer: __esri.GraphicsLayer) => {
     const graphicCenter = this.mapView.toScreen(textGraphic.geometry);
     const input = this.TextSelectionService.createInputWithFrame(
       graphicCenter,
       textGraphic,
       textGraphic.attributes.symbol,
       this.store,
-      this.mapView
+      this.mapView,
+      graphicsLayer
     );
 
-    this.textGraphicsLayer.remove(textGraphic);
+    graphicsLayer.remove(textGraphic);
     (document.getElementById('textboxes') as any).appendChild(input);
     dragElement(textGraphic.attributes.id, 'parent');
   };
@@ -84,13 +93,27 @@ export class DrawtoolsComponent implements OnInit {
 
       this.mapView.hitTest(evt).then((response: any) => {
         if (response.results.length < 1) {
-          this.selectedTextGraphics = [];
-          this.selectedTextGraphicsChanged.emit(this.selectedTextGraphics);
+          if (this.selectedGraphics.length > 0) {
+            this.selectedTextGraphics = [];
+            this.selectedTextGraphicsChanged.emit(this.selectedTextGraphics);
+          }
           return;
         }
 
         this.selectedTextGraphics = response.results.filter((res: any) => res.graphic.layer === this.textGraphicsLayer);
+
+        this.selectedLabelsGraphics = response.results.filter((res: any) => res.graphic.layer === this.geomLabelsGraphicsLayer);
+
+        if (this.selectedLabelsGraphics.length > 0) {
+          console.log(1);
+          this.CreateDraggableTextbox(this.selectedLabelsGraphics[0].graphic, this.geomLabelsGraphicsLayer);
+        }
+
+        // @todo might not even need this
         this.selectedTextGraphicsChanged.emit(this.selectedTextGraphics);
+
+        // end todo
+
         if (this.selectedTextGraphics.length > 0) {
           const textGraphic = this.selectedTextGraphics[0].graphic;
           const extent = this.mapView.extent.clone().expand(0.85);
@@ -98,10 +121,10 @@ export class DrawtoolsComponent implements OnInit {
           if (!isPointInside) {
             // @todo maake it so that the textbox just pans the map just enough to fit it in frame
             this.mapView.goTo(textGraphic).then(() => {
-              this.CreateDraggableTextbox(textGraphic);
+              this.CreateDraggableTextbox(textGraphic, this.textGraphicsLayer);
             });
           } else {
-            this.CreateDraggableTextbox(textGraphic);
+            this.CreateDraggableTextbox(textGraphic, this.textGraphicsLayer);
           }
         }
       });
@@ -161,6 +184,8 @@ export class DrawtoolsComponent implements OnInit {
         if (this.sketchVM.createCircleFromPoint) {
           createdGraphic = CreatecircleFromPoint(evt, this.radius, this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
         }
+
+
         this.store.dispatch(addGraphics({ graphics: [JSON.stringify(createdGraphic)] }));
       }
     });
@@ -268,7 +293,7 @@ export class DrawtoolsComponent implements OnInit {
     this.drawingMode = '';
   };
 
-  ngOnInit (): void {
+  ngOnInit(): void {
     if (this.sketchVM) {
       this.sketchVM.on('update', (e: any) => {
         if (e.state === 'complete') {

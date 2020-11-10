@@ -11,7 +11,7 @@ import { maxZIndex, findAncestor } from '../utils/utils';
   encapsulation: ViewEncapsulation.None,
 })
 export class ModalComponent implements AfterViewChecked {
-
+  @Input() dragEnabled = true;
   @Input() scrollTopEnable = true;
   @Input() maximizable: boolean;
   @Input() backdrop = true;
