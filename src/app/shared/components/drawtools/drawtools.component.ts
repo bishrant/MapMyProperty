@@ -59,6 +59,7 @@ export class DrawtoolsComponent implements OnInit {
 
   private ClickToAddTextbox = () => {
     if (this.clickToAddTextboxHandler) {
+      this.clickToAddTextboxHandler.remove();
       this.clickToAddTextboxHandler = undefined;
     }
     this.clickToAddTextboxHandler = this.mapView.on('click', (mapEvt: any) => {
@@ -296,6 +297,12 @@ export class DrawtoolsComponent implements OnInit {
     this.drawingTool = '';
     this.drawingMode = '';
   };
+
+  clearDrawTools = () => {
+    this.sketchVM.cancel();
+    if ( this.clickToAddTextboxHandler)  this.clickToAddTextboxHandler.remove();
+    this.ResetDrawControls();
+  }
 
   ngOnInit(): void {
     if (this.sketchVM) {

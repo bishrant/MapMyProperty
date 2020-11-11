@@ -22,8 +22,6 @@ export class TextControlService {
     } else if (parent.geometry.type === 'polyline') {
       textSymbol.text = createDistanceLabels(parent);
     }
-
-
     const gr = new Graphic({
       geometry: anchorPoint,
       symbol: textSymbol,
@@ -35,10 +33,6 @@ export class TextControlService {
         geometryType: 'text'
       }
     });
-    // const _g = gr.toJSON();
-    // _g.symbol = textSymbol;
-    // _g.geometry.type = 'point';
-
     return gr;
   }
 
@@ -48,8 +42,6 @@ export class TextControlService {
   }
 
   AddTextToMap(id: any, mapX: any, mapY: any, textSymbol: any, store: any, isUpdate = false, readonly = false, graphicsLayer) {
-
-
     const point: any = {
       type: 'point',
       x: mapX,
@@ -149,7 +141,7 @@ export class TextControlService {
     const ExecuteAddTextToMap = (target: any) => {
       if (target.value !== '') {
         const params = getTextParamsFromHTML(target, textProps);
-        this.AddTextToMap(target.id, params.mapX, params.mapY, params.textSymbol, store, false);
+        this.AddTextToMap(target.id, params.mapX, params.mapY, params.textSymbol, store, false, false, null);
       }
       CleanupListenerForInput(target);
     };
