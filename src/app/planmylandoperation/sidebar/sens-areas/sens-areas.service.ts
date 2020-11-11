@@ -20,8 +20,6 @@ import { AppConfiguration } from 'src/config';
   providedIn: 'root'
 })
 export class SensAreasService {
-  @Output() updateState: EventEmitter<string> = new EventEmitter();
-
   constructor(
     private appConfig:AppConfiguration
   ) {}

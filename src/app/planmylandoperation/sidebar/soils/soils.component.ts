@@ -148,7 +148,7 @@ export class SoilsComponent implements OnInit {
       this.sliderValue = res.sliderVal;
     });
 
-    this.esriMapService.toggleSoilsAccordion.subscribe((opened) => {
+    this.esriMapService.soilsAccordionOpen.subscribe((opened) => {
       if (opened)
       {
         if (this.pmloSoilsGL.graphics.length > 0)

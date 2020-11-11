@@ -47,7 +47,7 @@ export class HarvestOperationsComponent implements OnInit {
     this.pmloSoilLabelsGL = this.mapView.map.findLayerById('pmloSoilLabelsGL') as __esri.GraphicsLayer;
     this.userGL = this.mapView.map.findLayerById('userGraphicsLayer') as __esri.GraphicsLayer;
 
-    this.esrimapService.toggleHarvOpAccordion.subscribe((opened) => {
+    this.esrimapService.harvOpAccordionOpen.subscribe((opened) => {
       if (opened)
       {
         if (this.pmloSoilsGL.graphics.length > 0)

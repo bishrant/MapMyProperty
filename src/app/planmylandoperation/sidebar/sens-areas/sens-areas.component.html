@@ -1,15 +1,6 @@
   <div class="py-3">
     <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle"></fa-icon>
     <br>
-    <ng-container *ngIf="state == 'noBoundary'">
-      <p>A drawn boundary is needed to be able to calculate sensitive areas.</p>
-    </ng-container>
-    <ng-container *ngIf="state == 'clipping'">
-      <pmlo-progress-bar></pmlo-progress-bar>
-      <p>Clipping Sensitive Areas...</p>
-      <p>The clipping of the sensitive areas is in progress. Pleas wait.</p>
-    </ng-container>
-    <ng-container *ngIf="state == 'clipped'">
       <div>
         Transparency<br>
       </div>
@@ -137,5 +128,4 @@
         <button type="button" class="pmlo-btn pmlo-secondary generalBtn"
           (click)="buildSMZReport()">Create a Report</button>
       </div>
-    </ng-container>
   </div>

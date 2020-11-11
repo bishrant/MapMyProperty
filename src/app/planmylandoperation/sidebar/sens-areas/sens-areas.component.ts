@@ -18,11 +18,9 @@ import { NotificationsService } from '../../pmloUtils/notifications.service';
   styleUrls: ['./sens-areas.component.scss']
 })
 export class SensAreasComponent implements OnInit {
-  @ViewChild('sensAreaToolHeader') sensAreaToolHeader: any;
 
   faQuestionCircle = faQuestionCircle;
 
-  state: string = 'noBoundary';
   streamCollapsed: boolean = true;
   slopeCollapsed: boolean = true;
   wetCollapsed: boolean = true;
@@ -56,35 +54,35 @@ export class SensAreasComponent implements OnInit {
     ) {}
 
   ngOnInit (): void {
-    this.sensAreasService.updateState.subscribe((st: any) => {
-      this.state = st;
-    });
     this.boundaryLayer = this.mapView.map.findLayerById('userGraphicsLayer');
     this.boundaryLayer.graphics.on('change', (evt: any) => {
       const graphNumber: number = evt.target.filter(g => g.geometry.type === 'polygon').length;
       if (graphNumber === 0) {
-        this.state = 'noBoundary';
+        this.esrimapService.sensAreasAccordionOpen.emit(false);
+        this.pmloNote.body = 'A drawn boundary is needed to be able to calculate sensitive areas.';
+        this.notificationsService.openNotificationsModal.emit(this.pmloNote);
       }
     });
     this.mapView.map.add(this.sensAreaGL);
 
-    this.esrimapService.toggleSensAreasAccordion.subscribe((opened) => {
+    this.esrimapService.sensAreasAccordionOpen.subscribe((opened:boolean) => {
       if (opened)
       {
         const maxAcres: number = 10000;
 
         if (this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').length === 0) {
-          this.state = 'noBoundary';
+          this.esrimapService.sensAreasAccordionOpen.emit(false);
+          this.pmloNote.body = 'A drawn boundary is needed to be able to calculate sensitive areas.';
+          this.notificationsService.openNotificationsModal.emit(this.pmloNote);
         } else if (this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').length > 1) {
-          this.sensAreaToolHeader.close();
+          this.esrimapService.sensAreasAccordionOpen.emit(false);
           this.pmloNote.body = 'You can only display sensitive areas from one polygon at a time.';
           this.notificationsService.openNotificationsModal.emit(this.pmloNote);
         } else if (GreaterThanMaxArea(this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry, maxAcres, 'acres')) {
-          this.sensAreaToolHeader.close();
+          this.esrimapService.sensAreasAccordionOpen.emit(false);
           this.pmloNote.body = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(maxAcres) + ' acres';
           this.notificationsService.openNotificationsModal.emit(this.pmloNote);
         } else if (this.sensAreaGL.graphics.length === 0) {
-          this.state = 'clipping';
           this.loaderService.isLoading.next(true);
     
           const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
@@ -96,31 +94,27 @@ export class SensAreasComponent implements OnInit {
                 if (result.length === 0)
                 {
                   this.loaderService.isLoading.next(false);
-                  this.sensAreaToolHeader.close();
+                  this.esrimapService.sensAreasAccordionOpen.emit(false);
                   this.pmloNote.body = 'There was an error calculating "Sensitive Areas". Please try again and, if the problem persists, contact the administrator.';
                   this.notificationsService.openNotificationsModal.emit(this.pmloNote);
                 } else {
                   this.sensAreasService.addSensAreasToMap(this.sensAreaGL, result, this.sliderValue);
-                  this.state = 'clipped';
                   this.loaderService.isLoading.next(false);
                 }
               });
             } else {
               this.loaderService.isLoading.next(false);
-              this.sensAreaToolHeader.close();
+              this.esrimapService.sensAreasAccordionOpen.emit(false);
               this.pmloNote.body = 'Please make sure that your project area is totally within Texas.';
               this.notificationsService.openNotificationsModal.emit(this.pmloNote);
             }
           });
-        } else {
-          this.state = 'clipped';
         }
       }
     });
   }
 
   updateSliderValue(value: number):void {
-    // this.sensAreaGL.opacity = (100 - value) / 100;
     this.sensAreasService.updateGraphicsOpacity(this.sensAreaGL, value);
   }
 
@@ -172,7 +166,7 @@ export class SensAreasComponent implements OnInit {
 
   clearSMZGraphics(): void {
     this.sensAreaGL.removeAll();
-    this.sensAreaToolHeader.close();
+    this.esrimapService.sensAreasAccordionOpen.emit(false);
   }
 
   buildSMZReport(): void {

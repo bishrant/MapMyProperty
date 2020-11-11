@@ -8,19 +8,19 @@
           </app-drawtools>
         </app-accordion-panel>
 
-        <app-accordion-panel #sensAreasAccPanel title="Sensitive Areas" (toggle)="toggleSensAreasAccordion()">
+        <app-accordion-panel #sensAreasAccPanel title="Sensitive Areas">
           <pmlo-sens-areas [mapView]="mapView"></pmlo-sens-areas>
         </app-accordion-panel>
 
-        <app-accordion-panel #soilsAccPanel title="Soils" (toggle)="toggleSoilsAccordion()">
+        <app-accordion-panel #soilsAccPanel title="Soils">
           <pmlo-soils [mapView]="mapView"></pmlo-soils>
         </app-accordion-panel>
 
-        <app-accordion-panel #harvestAccPanel title="Harvest Operations" (toggle)="toggleHarvOpAccordion()">
+        <app-accordion-panel #harvestAccPanel title="Harvest Operations">
           <pmlo-harvest-operations [mapView]="mapView"></pmlo-harvest-operations>
         </app-accordion-panel>
 
-        <app-accordion-panel #regenerationAccPanel title="Regeneration Operations" (toggle)="toggleRegOpAccordion()">
+        <app-accordion-panel #regenerationAccPanel title="Regeneration Operations">
           <pmlo-regeneration-operations [mapView]="mapView"></pmlo-regeneration-operations>
         </app-accordion-panel>
 

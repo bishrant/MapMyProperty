@@ -16,6 +16,7 @@ import { EsrimapService } from './esrimap.service';
 import { NotificationsService } from '../pmloUtils/notifications.service';
 import { ModalComponent } from 'src/app/shared/lib/angular-modal/modal/modal.component';
 import { PMLONotification } from '../models/pmloNotification.model';
+import { AccordionPanelService } from 'src/app/shared/components/accordion-panel/accordion-panel.service';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -51,7 +52,8 @@ export class EsrimapComponent implements OnInit {
     private soilsService:SoilsService,
     private appConfig:AppConfiguration,
     private esrimapService:EsrimapService,
-    private notificationsService:NotificationsService
+    private notificationsService:NotificationsService, 
+    private accordionPanelService:AccordionPanelService
     ) {}
   @HostListener('keydown.control.z') undoFromKeyboard () {
     this.graphicsStoreEl.undo();
@@ -147,25 +149,25 @@ export class EsrimapComponent implements OnInit {
     });
   };
 
-  toggleSensAreasAccordion()
-  {
-    this.esrimapService.toggleSensAreasAccordion.emit(!this.sensAreasAccPanel.opened);
-  }
+  // toggleSensAreasAccordion()
+  // {
+  //   this.esrimapService.sensAreasAccordionOpen.emit(!this.sensAreasAccPanel.opened);
+  // }
 
-  toggleSoilsAccordion()
-  {
-    this.esrimapService.toggleSoilsAccordion.emit(!this.soilsAccPanel.opened);
-  }
+  // toggleSoilsAccordion()
+  // {
+  //   this.esrimapService.soilsAccordionOpen.emit(!this.soilsAccPanel.opened);
+  // }
 
-  toggleHarvOpAccordion()
-  {
-    this.esrimapService.toggleHarvOpAccordion.emit(!this.harvestAccPanel.opened);
-  }
+  // toggleHarvOpAccordion()
+  // {
+  //   this.esrimapService.harvOpAccordionOpen.emit(!this.harvestAccPanel.opened);
+  // }
 
-  toggleRegOpAccordion()
-  {
-    this.esrimapService.toggleRegOpAccordion.emit(!this.regenerationAccPanel.opened);
-  }
+  // toggleRegOpAccordion()
+  // {
+  //   this.esrimapService.regOpAccordionOpen.emit(!this.regenerationAccPanel.opened);
+  // }
 
   ngOnInit () {
     this.initializeMap();
@@ -182,6 +184,39 @@ export class EsrimapComponent implements OnInit {
       this.notificationHeader = notification.header;
       this.notificationBody = notification.body;
       this.notificationsModal.show();
+    });
+
+    this.accordionPanelService.setActivePanel.subscribe((panel:AccordionPanelComponent) => {
+      switch (panel)
+      {
+        case this.sensAreasAccPanel:
+          this.esrimapService.sensAreasAccordionOpen.emit(panel.opened);
+          break;
+
+        case this.harvestAccPanel:
+          this.esrimapService.harvOpAccordionOpen.emit(panel.opened);
+          break;
+
+        case this.regenerationAccPanel:
+          this.esrimapService.regOpAccordionOpen.emit(panel.opened);
+          break;
+
+        case this.soilsAccPanel:
+          this.esrimapService.soilsAccordionOpen.emit(panel.opened);
+          break;
+      }
+    });
+
+    this.esrimapService.sensAreasAccordionOpen.subscribe((open:boolean) => {
+      this.sensAreasAccPanel.opened = open;
+    });
+
+    this.esrimapService.harvOpAccordionOpen.subscribe((open:boolean) => {
+      this.harvestAccPanel.opened = open;
+    });
+
+    this.esrimapService.regOpAccordionOpen.subscribe((open:boolean) => {
+      this.regenerationAccPanel.opened = open;
     });
   }
 
