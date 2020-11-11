@@ -1,9 +1,6 @@
 <div class="py3">
     <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle"></fa-icon>
     <br>
-    <ng-container *ngIf="!hasBoundary">
-        <p>A drawn boundary is needed to be able to calculate regeneration operations.</p>
-    </ng-container>
     <ng-container *ngIf="hasBoundary">
         <div class="pt-3">Transparency</div>
         <div class="flex justify-between items-baseline pb-1">

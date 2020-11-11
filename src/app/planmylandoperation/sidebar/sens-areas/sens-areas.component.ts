@@ -80,7 +80,7 @@ export class SensAreasComponent implements OnInit {
           this.notificationsService.openNotificationsModal.emit(this.pmloNote);
         } else if (GreaterThanMaxArea(this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry, maxAcres, 'acres')) {
           this.esrimapService.sensAreasAccordionOpen.emit(false);
-          this.pmloNote.body = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(maxAcres) + ' acres';
+          this.pmloNote.body = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(maxAcres) + ' acres.';
           this.notificationsService.openNotificationsModal.emit(this.pmloNote);
         } else if (this.sensAreaGL.graphics.length === 0) {
           this.loaderService.isLoading.next(true);

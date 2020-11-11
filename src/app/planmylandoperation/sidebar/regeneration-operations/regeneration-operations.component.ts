@@ -57,12 +57,19 @@ export class RegenerationOperationsComponent implements OnInit {
           this.operationLegendService.setOperationLegendSymbols(this.selectedRadio, this.pmloSoilsGL, this.sliderValue);
           this.operationLegendService.setOperationLegend(this.selectedRadio, false);
           this.hasBoundary = true;
+        } else if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length === 0) {
+          this.esrimapService.regOpAccordionOpen.emit(false);
+          this.pmloNote.body = 'A drawn boundary is needed to get regeneration operations.';
+          this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+          this.hasBoundary = false;
         } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 1) {
+          this.esrimapService.regOpAccordionOpen.emit(false);
           this.pmloNote.body = 'You can only get regeneration operations information from one polygon at a time.';
           this.notificationsService.openNotificationsModal.emit(this.pmloNote);
         } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 0) {
           if (GreaterThanMaxArea(this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry, 100000, 'acres'))
           {
+            this.esrimapService.regOpAccordionOpen.emit(false);
             this.pmloNote.body = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(100000) + ' acres';
             this.notificationsService.openNotificationsModal.emit(this.pmloNote);
           } else {
@@ -73,6 +80,7 @@ export class RegenerationOperationsComponent implements OnInit {
               if (result.length === 0)
               {
                 this.loaderService.isLoading.next(false);
+                this.esrimapService.regOpAccordionOpen.emit(false);
                 this.pmloNote.body = 'There was an error while getting harvest operations information. Please try again and, if the problem persists, contact the administrator.';
                 this.notificationsService.openNotificationsModal.emit(this.pmloNote);
               } else {
@@ -84,8 +92,6 @@ export class RegenerationOperationsComponent implements OnInit {
               }
             });
           }
-        } else {
-          this.hasBoundary = false;
         }
       }
     });
