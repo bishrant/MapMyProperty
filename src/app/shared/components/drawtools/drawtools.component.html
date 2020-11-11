@@ -2,14 +2,14 @@
   <br>
   <div class="centerAlign">
     <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value)">
+      <mat-button-toggle value="polygon" aria-label="Polygon" class="toggleBtn">
+        <i class="customicon-untitled" style="line-height: 0;"></i>
+      </mat-button-toggle>
       <mat-button-toggle value="circle" aria-label="Circle" class="toggleBtn">
-        <mat-icon>radio_button_unchecked</mat-icon>
+        <mat-icon style="height: 100%; width: 100%;">radio_button_unchecked</mat-icon>
       </mat-button-toggle>
       <mat-button-toggle value="polyline" aria-label="Line" class="toggleBtn">
         <mat-icon>show_chart</mat-icon>
-      </mat-button-toggle>
-      <mat-button-toggle value="polygon" aria-label="Polygon" class="toggleBtn">
-        <i class="customicon-untitled"></i>
       </mat-button-toggle>
       <mat-button-toggle value="point" aria-label="Point" class="toggleBtn">
         <svg-icon [src]="'assets/icons/pointSymbol.svg'" [svgStyle]="{'width.px': 20, fill: 'black'}">
@@ -19,10 +19,15 @@
         Tt
       </mat-button-toggle>
     </mat-button-toggle-group>
+
+    <button class="mmp-primary primary-button clearDrawTools" *ngIf="drawingTool !== ''" (click)="clearDrawTools()">Clear</button>
   </div>
   <br>
-  <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleLabels" checked aria-label="show/hide area and distance labels">
-  <label for ="toggleLables">Show distance and area labels</label>
+  <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleLabels" checked aria-label="show/hide area labels">
+  <label for ="toggleLables">&nbsp;&nbsp;Show area labels</label><br>
+
+  <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleDistanceLabels" checked aria-label="show/hide distance labels">
+  <label for ="toggleDistanceLabels">&nbsp;&nbsp;Show distance labels</label>
 
   <app-pointcontrol #pointcontrol [selectedGraphics]="selectedGraphics"
     [hidden]="!((selectedGraphics.length > 0 && selectedGraphics[0].geometry.type=== 'point') || drawingTool === 'point')">
