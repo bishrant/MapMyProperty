@@ -19,6 +19,7 @@ export class HarvestOperationsComponent implements OnInit {
   @Input() mapView: __esri.MapView;
 
   faQuestionCircle = faQuestionCircle;
+  hasBoundary:boolean = false;
   sliderValue: number = 0;
   selectedRadio: string = 'drclassdcd';
 
@@ -52,10 +53,12 @@ export class HarvestOperationsComponent implements OnInit {
           this.pmloSoilLabelsGL.visible = false;
           this.operationLegendService.setOperationLegendSymbols(this.selectedRadio, this.pmloSoilsGL, this.sliderValue);
           this.operationLegendService.setOperationLegend(this.selectedRadio, true);
+          this.hasBoundary = true;
         } else if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length === 0) {
           this.esrimapService.harvOpAccordionOpen.emit(false);
           this.pmloNote.body = 'A drawn boundary is needed to get harvest operations.';
           this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+          this.hasBoundary = false;
         } else if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length > 1) {
           this.esrimapService.harvOpAccordionOpen.emit(false);
           this.pmloNote.body = 'You can only get harvest operations information from one polygon at a time.';
@@ -74,6 +77,7 @@ export class HarvestOperationsComponent implements OnInit {
             this.notificationsService.openNotificationsModal.emit(this.pmloNote);
           } else {
             this.loaderService.isLoading.next(true);
+            this.hasBoundary = true;
             const inputBoundary: __esri.Graphic = this.userGL.graphics
               .filter((g) => g.geometry.type === 'polygon')
               .getItemAt(0);
