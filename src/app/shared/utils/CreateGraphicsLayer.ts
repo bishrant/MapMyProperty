@@ -27,7 +27,6 @@ const GetPolygonGraphics = (gl:__esri.GraphicsLayer) => {
 };
 
 const FindGraphicById = (gl:__esri.GraphicsLayer, id:string) => {
-  debugger
   return gl.graphics.find((g:__esri.Graphic) => g.attributes.id === id);
 }
 
