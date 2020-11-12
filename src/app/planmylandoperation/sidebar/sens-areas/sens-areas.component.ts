@@ -11,6 +11,8 @@ import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { EsrimapService } from '../../esrimap/esrimap.service';
 import { PMLONotification } from '../../models/pmloNotification.model';
 import { NotificationsService } from '../../pmloUtils/notifications.service';
+import { MapviewService } from 'src/app/shared/services/mapview.service';
+import { FindGraphicById, GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
 
 @Component({
   selector: 'pmlo-sens-areas',
@@ -50,20 +52,25 @@ export class SensAreasComponent implements OnInit {
     private printTaskService: PrintTaskService,
     private reportsService: ReportsService,
     private esrimapService:EsrimapService,
-    private notificationsService:NotificationsService
+    private notificationsService:NotificationsService,
+    private mapViewService:MapviewService
     ) {}
 
   ngOnInit (): void {
     this.boundaryLayer = this.mapView.map.findLayerById('userGraphicsLayer');
-    this.boundaryLayer.graphics.on('change', (evt: any) => {
-      const graphNumber: number = evt.target.filter(g => g.geometry.type === 'polygon').length;
-      if (graphNumber === 0) {
-        this.esrimapService.sensAreasAccordionOpen.emit(false);
-        this.pmloNote.body = 'A drawn boundary is needed to be able to calculate sensitive areas.';
-        this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-      }
-    });
+    // this.boundaryLayer.graphics.on('change', (evt: any) => {
+    //   const graphNumber: number = evt.target.filter((g:__esri.Graphic) => g.geometry.type === 'polygon').length;
+    //   if (graphNumber === 0) {
+    //     this.esrimapService.sensAreasAccordionOpen.emit(false);
+    //     this.pmloNote.body = 'A drawn boundary is needed to be able to calculate sensitive areas.';
+    //     this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+    //   }
+    // });
     this.mapView.map.add(this.sensAreaGL);
+
+    this.mapViewService.clearSensAreasGraphics.subscribe(() => {
+      this.sensAreaGL.removeAll();
+    });
 
     this.esrimapService.sensAreasAccordionOpen.subscribe((opened:boolean) => {
       if (opened)
@@ -98,7 +105,8 @@ export class SensAreasComponent implements OnInit {
                   this.pmloNote.body = 'There was an error calculating "Sensitive Areas". Please try again and, if the problem persists, contact the administrator.';
                   this.notificationsService.openNotificationsModal.emit(this.pmloNote);
                 } else {
-                  this.sensAreasService.addSensAreasToMap(this.sensAreaGL, result, this.sliderValue);
+                  const boundaryId: string = inputBoundary.attributes.id;
+                  this.sensAreasService.addSensAreasToMap(this.sensAreaGL, result, boundaryId, this.sliderValue);
                   this.loaderService.isLoading.next(false);
                 }
               });
@@ -134,7 +142,8 @@ export class SensAreasComponent implements OnInit {
           this.pmloNote.body = 'There was an error creating the buffer. Please try again and, if the problem persists, contact the administrator.';
           this.notificationsService.openNotificationsModal.emit(this.pmloNote);
         } else {
-          this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue);
+          const boundaryId: string = inputBoundary.attributes.id;
+          this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue, boundaryId);
           this.loaderService.isLoading.next(false);
         }
       });
@@ -158,7 +167,8 @@ export class SensAreasComponent implements OnInit {
         this.pmloNote.body = 'There was an error setting the severe slope. Please try again and, if the problem persists, contact the administrator.';
         this.notificationsService.openNotificationsModal.emit(this.pmloNote);
       } else {
-        this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue);
+        const boundaryId: string = inputBoundary.attributes.id;
+        this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue, boundaryId);
         this.loaderService.isLoading.next(false);
       }
     });

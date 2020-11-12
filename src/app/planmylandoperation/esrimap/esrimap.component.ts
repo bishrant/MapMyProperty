@@ -100,14 +100,18 @@ export class EsrimapComponent implements OnInit {
         boundaryLayerView.watch('updating', (val) => {
           if (val)
           {
-            let glHasPolygons: boolean = true;
+            let soilsGLHasPolygons: boolean = true;
             const pmloSoilsGL:__esri.GraphicsLayer = this.mapView.map.findLayerById('pmloSoilsGL') as __esri.GraphicsLayer;
 
             if (GetPolygonGraphics(boundaryLayerView.layer as __esri.GraphicsLayer).length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined))
             {
-              glHasPolygons = false;
+              soilsGLHasPolygons = false;
+              this.mapViewService.clearSensAreasGraphics.emit();
+              this.harvestAccPanel.opened = false;
+              this.regenerationAccPanel.opened = false;
+              this.sensAreasAccPanel.opened = false;
             }
-            this.mapViewService.glHasPolygons.emit(glHasPolygons);
+            this.mapViewService.soilsGLHasPolygons.emit(soilsGLHasPolygons);
           }
         });
       });

@@ -87,7 +87,7 @@ export class SoilsComponent implements OnInit {
         this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
       }
     });
-    this.mapViewService.glHasPolygons.subscribe((val:boolean) => {
+    this.mapViewService.soilsGLHasPolygons.subscribe((val:boolean) => {
       this.polygonGraphicsInBoundary = val;
       if (!val)
       {
