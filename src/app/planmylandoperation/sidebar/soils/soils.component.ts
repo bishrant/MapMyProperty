@@ -226,7 +226,7 @@ export class SoilsComponent implements OnInit {
           this.loaderService.isLoading.next(false);
         })
       });
-    } else if (this.soilsIdentifyClickEvent !== null) {
+    } else if (!isChecked && this.soilsIdentifyClickEvent !== null) {
       this.soilsIdentifyClickEvent.remove();
       this.soilsIdentifyClickEvent = null;
     }
