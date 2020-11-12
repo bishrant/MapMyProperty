@@ -20,14 +20,21 @@
       </mat-button-toggle>
     </mat-button-toggle-group>
 
-    <button class="mmp-primary primary-button clearDrawTools" *ngIf="drawingTool !== ''" (click)="clearDrawTools()">Clear</button>
+    <button class="mmp-primary primary-button clearDrawTools" *ngIf="drawingTool !== ''"
+      (click)="clearDrawTools()">Clear</button>
   </div>
   <br>
-  <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleLabels" checked aria-label="show/hide area labels">
-  <label for ="toggleLables">&nbsp;&nbsp;Show area labels</label><br>
+  <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleLabels" checked
+    aria-label="show/hide area labels">
+  <label for="toggleLables">&nbsp;&nbsp; Area/Distance labels</label><br>
 
-  <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleDistanceLabels" checked aria-label="show/hide distance labels">
-  <label for ="toggleDistanceLabels">&nbsp;&nbsp;Show distance labels</label>
+  <div *ngIf="selectedLabelsGraphics.length>0">
+    <br>
+    Color of the selected label:
+  <app-color-picker [color]="selectedLabelsGraphics[0].graphic.attributes.symbol.color" [opacity]="selectedLabelsGraphics[0].graphic.attributes.symbol.color.a"
+    (colorSelected)="changeLabelsColor($event)">
+  </app-color-picker>
+</div>
 
   <app-pointcontrol #pointcontrol [selectedGraphics]="selectedGraphics"
     [hidden]="!((selectedGraphics.length > 0 && selectedGraphics[0].geometry.type=== 'point') || drawingTool === 'point')">
@@ -61,15 +68,15 @@
       </div>
     </div>
   </fieldset>
-
+<br>
   <app-linestyle #linestyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
     (changedGraphicsStyle)="onGraphicsStyleChange()">
   </app-linestyle>
-
+<br>
   <app-fillstyle #fillstyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
     (changedGraphicsStyle)="onGraphicsStyleChange()">
   </app-fillstyle>
-
+<br>
   <app-textcontrols #textcontrols [selectedTextGraphics]="selectedTextGraphics"
     [hidden]="!(selectedTextGraphics.length>0 || drawingTool === 'text')"></app-textcontrols>
 
