@@ -15,7 +15,8 @@ const createDistanceLabels = (graphic: Graphic) => {
   let length = geodesicLength(graphic.geometry, unit);
   if (length < 3) {
     unit = 'feet';
-    length = geodesicLength(graphic.geometry, unit)
+    length = geodesicLength(graphic.geometry, unit);
+    return numberWithCommas(Math.round(length*10)/10) + " "+ unit;
   }
   return numberWithCommas(Math.round(length*100)/100) + " "+ unit;
 }

@@ -47,6 +47,7 @@ export class DrawtoolsComponent implements OnInit {
   selectedTextGraphics: any = [];
   selectedLabelsGraphics: any = [];
 
+  selectedInputBox: any;
   radius: number;
   drawingMode: string = 'click';
   drawingTool: string = '';
@@ -56,6 +57,22 @@ export class DrawtoolsComponent implements OnInit {
   constructor(private store: Store<AppState>, private TextService: TextControlService,
     private TextSelectionService: TextControlSelectionService
   ) { }
+
+  changeLabelsColor = (e:any) => {
+    console.log(e);
+    console.log(this.selectedLabelsGraphics);
+    const txt = this.selectedLabelsGraphics[0].graphic;
+    const _color = e;
+    _color.a = _color.a * 100;
+    txt.symbol.color = _color;
+    txt.attributes.symbol.color = _color;
+
+    this.geomLabelsGraphicsLayer.add(txt);
+
+    const _input = document.getElementById(txt.attributes.id);
+    this.selectedInputBox.CleanupListenerForInputFrame(_input);
+    this.selectedLabelsGraphics = [];
+  }
 
   private ClickToAddTextbox = () => {
     if (this.clickToAddTextboxHandler) {
@@ -78,7 +95,7 @@ export class DrawtoolsComponent implements OnInit {
 
   private CreateDraggableTextbox = (textGraphic: any, graphicsLayer: __esri.GraphicsLayer) => {
     const graphicCenter = this.mapView.toScreen(textGraphic.geometry);
-    const input = this.TextSelectionService.createInputWithFrame(
+    this.selectedInputBox = this.TextSelectionService.createInputWithFrame(
       graphicCenter,
       textGraphic,
       textGraphic.attributes.symbol,
@@ -88,7 +105,7 @@ export class DrawtoolsComponent implements OnInit {
     );
 
     graphicsLayer.remove(textGraphic);
-    (document.getElementById('textboxes') as any).appendChild(input);
+    (document.getElementById('textboxes') as any).appendChild((this.selectedInputBox as any).frame);
     dragElement(textGraphic.attributes.id, 'parent');
   };
 
@@ -110,7 +127,6 @@ export class DrawtoolsComponent implements OnInit {
         this.selectedLabelsGraphics = response.results.filter((res: any) => res.graphic.layer === this.geomLabelsGraphicsLayer);
 
         if (this.selectedLabelsGraphics.length > 0) {
-          console.log(1);
           this.CreateDraggableTextbox(this.selectedLabelsGraphics[0].graphic, this.geomLabelsGraphicsLayer);
         }
 

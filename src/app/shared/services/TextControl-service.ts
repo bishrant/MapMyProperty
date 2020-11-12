@@ -61,17 +61,20 @@ export class TextControlService {
     });
     const _g = gr.toJSON();
     if (graphicsLayer) {
-      graphicsLayer.graphics.add(gr);
-    } else {
-
-      _g.symbol = textSymbol;
-      _g.geometry.type = 'point';
-      if (isUpdate) {
-        store.dispatch(updateGraphics({ graphics: JSON.stringify([_g]) }));
-      } else {
-        store.dispatch(addGraphics({ graphics: [JSON.stringify(_g)] }));
+      if (graphicsLayer.id !== 'userTextGraphicsLayer') {
+        graphicsLayer.graphics.add(gr);
+        return;
       }
     }
+
+    _g.symbol = textSymbol;
+    _g.geometry.type = 'point';
+    if (isUpdate) {
+      store.dispatch(updateGraphics({ graphics: JSON.stringify([_g]) }));
+    } else {
+      store.dispatch(addGraphics({ graphics: [JSON.stringify(_g)] }));
+    }
+
   };
 
   createInput(mapEvt: any, inputId = '0', store: any, textProps: any) {

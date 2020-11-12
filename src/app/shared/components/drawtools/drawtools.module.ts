@@ -38,7 +38,8 @@ import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
     InfobuttonModule,
     PointcontrolModule,
     FillstyleModule,
-    LinestyleModule
+    LinestyleModule,
+    ColorPickerModule
   ],
   exports: [DrawtoolsComponent]
 })
