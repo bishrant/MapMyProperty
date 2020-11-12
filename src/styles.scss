@@ -224,6 +224,11 @@ $sliderBase: 6px;
   /* for resize limits use min-width, min-height, max-width, max-height in css */
 }
 
-.pmloSoilsTable .ui-modal-header {
+.notificationsModal .ui-modal {
+  min-width: 22rem;
+  max-width: 37.5rem;
+}
+
+.pmloModal .ui-modal-header {
   @apply bg-pmlo_primary !important;
 }
