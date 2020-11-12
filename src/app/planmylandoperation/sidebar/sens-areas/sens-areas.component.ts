@@ -58,14 +58,6 @@ export class SensAreasComponent implements OnInit {
 
   ngOnInit (): void {
     this.boundaryLayer = this.mapView.map.findLayerById('userGraphicsLayer');
-    // this.boundaryLayer.graphics.on('change', (evt: any) => {
-    //   const graphNumber: number = evt.target.filter((g:__esri.Graphic) => g.geometry.type === 'polygon').length;
-    //   if (graphNumber === 0) {
-    //     this.esrimapService.sensAreasAccordionOpen.emit(false);
-    //     this.pmloNote.body = 'A drawn boundary is needed to be able to calculate sensitive areas.';
-    //     this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-    //   }
-    // });
     this.mapView.map.add(this.sensAreaGL);
 
     this.mapViewService.clearSensAreasGraphics.subscribe(() => {
