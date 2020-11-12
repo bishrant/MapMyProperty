@@ -2,7 +2,7 @@
   <div class="sidebar">
     <app-sidebar>
       <app-accordion>
-        <app-accordion-panel title="Draw">
+        <app-accordion-panel #drawAccPanel title="Draw">
           <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
           >
           </app-drawtools>
@@ -24,19 +24,19 @@
           <pmlo-regeneration-operations [mapView]="mapView"></pmlo-regeneration-operations>
         </app-accordion-panel>
 
-        <app-accordion-panel title="Elevation Profile">
+        <app-accordion-panel #elevationAccPanel title="Elevation Profile">
           <app-elevation-profile [mapView]="mapView"></app-elevation-profile>
         </app-accordion-panel>
 
-        <app-accordion-panel title="Culvert Size">
+        <app-accordion-panel #culvertAccPanel title="Culvert Size">
           <app-culvert-size [mapView]="mapView"></app-culvert-size>
         </app-accordion-panel>
 
-        <app-accordion-panel title="Import | Export">
+        <app-accordion-panel #importExportAccPanel title="Import | Export">
           <app-import-export></app-import-export>
         </app-accordion-panel>
 
-        <app-accordion-panel title="Export Map to PDF">
+        <app-accordion-panel #exportMapAccPanel title="Export Map to PDF">
           <app-print-tool [map]="mapView"></app-print-tool>
         </app-accordion-panel>
 
@@ -76,5 +76,22 @@
   <ng-container class="app-modal-header">{{notificationHeader}}</ng-container>
   <ng-container class="app-modal-body">
     <p [innerHTML]="notificationBody"></p>
+  </ng-container>
+</app-modal>
+
+<app-modal class="pmloModal helpModal" #helpModal [maximizable]="false" [inViewport]="true">
+  <ng-container class="app-modal-header">{{helpHeader}}</ng-container>
+  <ng-container class="app-modal-body" [ngSwitch]="helpItem">
+    <ng-container *ngSwitchCase="'draw'"></ng-container>
+    <ng-container *ngSwitchCase="'sensAreas'"></ng-container>
+    <ng-container *ngSwitchCase="'soils'">
+      <pmlo-soils-help></pmlo-soils-help>
+    </ng-container>
+    <ng-container *ngSwitchCase="'harvOperations'"></ng-container>
+    <ng-container *ngSwitchCase="'regOperations'"></ng-container>
+    <ng-container *ngSwitchCase="'elevation'"></ng-container>
+    <ng-container *ngSwitchCase="'culvert'"></ng-container>
+    <ng-container *ngSwitchCase="'importExport'"></ng-container>
+    <ng-container *ngSwitchCase="'exportMap'"></ng-container>
   </ng-container>
 </app-modal>

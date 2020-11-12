@@ -9,6 +9,7 @@ export class EsrimapService {
   @Output() soilsAccordionOpen:EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() harvOpAccordionOpen:EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() regOpAccordionOpen:EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() openHelp:EventEmitter<string> = new EventEmitter<string>();
 
   constructor() { }
 }

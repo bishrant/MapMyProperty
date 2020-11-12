@@ -310,6 +310,10 @@ export class SoilsComponent implements OnInit {
     });
   }
 
+  openHelp():void {
+    this.esriMapService.openHelp.emit('');
+  }
+
   private checkIfOrange(val:number):void {
     if (val < 75 || val === 100) {
       this.isOrangeSymbol = false;

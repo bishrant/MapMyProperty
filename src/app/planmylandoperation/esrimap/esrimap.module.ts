@@ -23,6 +23,7 @@ import { RegenerationOperationsComponent } from '../sidebar/regeneration-operati
 import { PrintToolModule } from 'src/app/shared/components/print-tool/print-tool.module';
 import { BasemapWidgetModule } from 'src/app/shared/components/basemap-widget/basemap-widget.module';
 import { ImportExportModule } from 'src/app/shared/components/import-export/ImportExport.module';
+import { SoilsHelpComponent } from '../help-templates/soils-help/soils-help.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { ImportExportModule } from 'src/app/shared/components/import-export/Impo
     SoilsTableComponent,
     HarvestOperationsComponent,
     OperationLegendComponent,
-    RegenerationOperationsComponent
+    RegenerationOperationsComponent,
+    SoilsHelpComponent
   ],
   imports: [
     CommonModule,
