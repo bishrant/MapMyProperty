@@ -53,7 +53,8 @@ export class SensAreasComponent implements OnInit {
     private reportsService: ReportsService,
     private esrimapService:EsrimapService,
     private notificationsService:NotificationsService,
-    private mapViewService:MapviewService
+    private mapViewService:MapviewService,
+    private esriMapService:EsrimapService
     ) {}
 
   ngOnInit (): void {
@@ -203,5 +204,9 @@ export class SensAreasComponent implements OnInit {
         );
       }
     });
+  }
+
+  openHelp():void {
+    this.esriMapService.openHelp.emit({header: 'Sensitive Areas', itemName: 'sensAreas'});
   }
 }

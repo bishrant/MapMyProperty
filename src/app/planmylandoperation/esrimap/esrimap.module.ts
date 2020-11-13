@@ -24,7 +24,7 @@ import { PrintToolModule } from 'src/app/shared/components/print-tool/print-tool
 import { BasemapWidgetModule } from 'src/app/shared/components/basemap-widget/basemap-widget.module';
 import { ImportExportModule } from 'src/app/shared/components/import-export/ImportExport.module';
 import { SoilsHelpComponent } from '../help-templates/soils-help/soils-help.component';
-
+import { SensAreasHelpComponent } from '../help-templates/sens-areas-help/sens-areas-help.component';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -35,7 +35,8 @@ import { SoilsHelpComponent } from '../help-templates/soils-help/soils-help.comp
     HarvestOperationsComponent,
     OperationLegendComponent,
     RegenerationOperationsComponent,
-    SoilsHelpComponent
+    SoilsHelpComponent,
+    SensAreasHelpComponent
   ],
   imports: [
     CommonModule,
