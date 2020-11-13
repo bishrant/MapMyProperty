@@ -9,10 +9,7 @@ import { TextControlSelectionService } from '../../services/TextControlSelection
 export class TextcontrolsComponent implements OnInit {
   private _selectedTextGraphics: any[];
   constructor (private TextSelectionService: TextControlSelectionService) {}
-  deleteText() {
-    console.log(this.selectedTextGraphics);
-    this.TextSelectionService.Delete(this.selectedTextGraphics[0].graphic.attributes.id);
-  }
+
   @Input() set selectedTextGraphics (value: any[]) {
     this._selectedTextGraphics = value;
     if (value.length > 0) {
@@ -33,7 +30,7 @@ export class TextcontrolsComponent implements OnInit {
   fontFamilyOptions: any[] = ['Arial', 'Montserrat'];
   fontSize: number = 18;
   public textProps: any = {
-    color: { r: 100, g: 20, b: 5, a: 1 },
+    color: { r: 255, g: 255, b: 0, a: 1 },
     font: {
       size: this.fontSize + 'px',
       family: 'Arial',

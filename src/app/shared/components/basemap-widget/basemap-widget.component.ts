@@ -54,12 +54,13 @@ export class BasemapWidgetComponent implements AfterViewInit {
     customParameters: { version: "1.1.1", visibleLayers: ["texas"] }
   });
 
-  texasBasemaps = ["TX Google 6-inch", "TX NAIP 2016", "TX TOPO 2015", "TX NAIP 2014",
+  texasBasemaps = ["TX Google 6-inch","TX NAIP 2018", "TX NAIP 2016", "TX TOPO 2015", "TX NAIP 2014",
     "TX NAIP 2012", "TX NAIP 2010",
     "TXe TOPO 2009", "TXw TOPO 2008", "TX NAIP 2004", "TX TOPO 1996"];
 
   texasBasemapsDict = {
     "TX Google 6-inch": this.googleWMSlayer,
+    "TX NAIP 2018": this.naip2018,
     "TX NAIP 2016": this.naip2016,
     "TX TOPO 2015": this.topo2015,
     "TX NAIP 2014": this.naip2014,

@@ -9,12 +9,13 @@
      (resizing)="onResize($event)"
      (resizeEnd)="resizeEnd.emit($event)"
      appDraggable
+     [dragEnabled]="dragEnabled"
      [dragEventTarget]="dragEventTarget"
      [inViewport]="inViewport"
      [style.display]="visible ? 'block' : 'none'"
      (mousedown)="moveOnTop()"
      (touchstart)="moveOnTop()" (dragEnd)="onDragEnd($event)">
-    <div class="ui-modal-header" #modalHeader [style.background]="headerBackgroundColor"
+    <div class="ui-modal-header" #modalHeader [style.background]="headerBackgroundColor" [style.cursor]="dragEnabled? 'move': null"
          (mousedown)="initDrag($event)"
          (touchstart)="initDrag($event)">
       <div class="ui-titlebar">

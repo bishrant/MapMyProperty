@@ -55,4 +55,11 @@ const htmlToElement = (html: any) => {
   return template.content.firstElementChild;
 };
 
-export { htmlToElement, SetInputStyleAttributes, CreateTextSymbolFromHTML };
+const getTextParamsFromHTML = (target: any, textProps:any) => {
+  const mapX = target.getAttribute('mapX');
+  const mapY = target.getAttribute('mapY');
+  const textSymbol = CreateTextSymbolFromHTML(target, textProps);
+  return {mapX, mapY, textSymbol};
+}
+
+export { htmlToElement, SetInputStyleAttributes, CreateTextSymbolFromHTML, getTextParamsFromHTML };

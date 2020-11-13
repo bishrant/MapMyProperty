@@ -1,13 +1,13 @@
 import {
   Directive, ElementRef, Input, Output, EventEmitter, OnDestroy, OnChanges, SimpleChanges, NgZone
 } from '@angular/core';
-import {isLeftButton, getEvent} from '../utils/utils';
+import { isLeftButton, getEvent } from '../utils/utils';
 
 @Directive({
   selector: '[appDraggable]'
 })
 export class DraggableDirective implements OnChanges, OnDestroy {
-
+  @Input() dragEnabled = true;
   @Input() dragEventTarget: MouseEvent | TouchEvent;
   @Input() dragX = true;
   @Input() dragY = true;
@@ -33,8 +33,10 @@ export class DraggableDirective implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.dragEventTarget && changes.dragEventTarget.currentValue) {
-      this.onMousedown(this.dragEventTarget);
+    if (this.dragEnabled) {
+      if (changes.dragEventTarget && changes.dragEventTarget.currentValue) {
+        this.onMousedown(this.dragEventTarget);
+      }
     }
   }
 
@@ -65,7 +67,7 @@ export class DraggableDirective implements OnChanges, OnDestroy {
     this.removeEventListener();
 
     const st: any = this.element.nativeElement.style
-    this.dragEnd.emit({left: st.left, top: st.top});
+    this.dragEnd.emit({ left: st.left, top: st.top });
   }
 
   addEventListeners(event: MouseEvent | TouchEvent) {
@@ -74,14 +76,14 @@ export class DraggableDirective implements OnChanges, OnDestroy {
     const upEvent = isTouchEvent ? 'touchend' : 'mouseup';
 
     this.globalListeners
-    .set(moveEvent, {
-      handler: this.onMousemove.bind(this),
-      options: false
-    })
-    .set(upEvent, {
-      handler: this.onMouseup.bind(this),
-      options: false
-    });
+      .set(moveEvent, {
+        handler: this.onMousemove.bind(this),
+        options: false
+      })
+      .set(upEvent, {
+        handler: this.onMouseup.bind(this),
+        options: false
+      });
 
     this.ngZone.runOutsideAngular(() => {
       this.globalListeners.forEach((config, name) => {
@@ -97,15 +99,15 @@ export class DraggableDirective implements OnChanges, OnDestroy {
   }
 
   initDrag(pageX: number, pageY: number) {
-      this.isDragging = true;
-      this.lastPageX = pageX;
-      this.lastPageY = pageY;
-      this.element.nativeElement.classList.add('dragging');
+    this.isDragging = true;
+    this.lastPageX = pageX;
+    this.lastPageY = pageY;
+    this.element.nativeElement.classList.add('dragging');
 
-      this.elementWidth = this.element.nativeElement.offsetWidth;
-      this.elementHeight = this.element.nativeElement.offsetHeight;
-      this.vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-      this.vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    this.elementWidth = this.element.nativeElement.offsetWidth;
+    this.elementHeight = this.element.nativeElement.offsetHeight;
+    this.vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    this.vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
   }
 
   onDrag(pageX: number, pageY: number) {

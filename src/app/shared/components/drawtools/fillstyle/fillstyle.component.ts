@@ -33,7 +33,7 @@ export class FillstyleComponent {
   }
 
   public fillProps: FillPropsRGBA = {
-    color: { r: 0, g: 0, b: 0, a: 0.5 },
+    color: { r: 0, g: 0, b: 0, a: 0 },
     style: 'solid'
   };
 
