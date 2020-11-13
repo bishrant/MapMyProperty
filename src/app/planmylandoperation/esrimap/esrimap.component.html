@@ -83,23 +83,33 @@
   <ng-container class="app-modal-header">{{helpHeader}}</ng-container>
   <ng-container class="app-modal-body" [ngSwitch]="helpItem">
     <ng-container *ngSwitchCase="'draw'"></ng-container>
+
     <ng-container *ngSwitchCase="'sensAreas'">
       <pmlo-sens-areas-help></pmlo-sens-areas-help>
     </ng-container>
+
     <ng-container *ngSwitchCase="'soils'">
       <pmlo-soils-help></pmlo-soils-help>
     </ng-container>
+
     <ng-container *ngSwitchCase="'harvOperations'">
       <pmlo-harvest-operations-help></pmlo-harvest-operations-help>
     </ng-container>
+
     <ng-container *ngSwitchCase="'regOperations'">
       <pmlo-regeneration-operations-help></pmlo-regeneration-operations-help>
     </ng-container>
-    <ng-container *ngSwitchCase="'elevation'"></ng-container>
+
+    <ng-container *ngSwitchCase="'elevation'">
+      <pmlo-elevation-help></pmlo-elevation-help>
+    </ng-container>
+
     <ng-container *ngSwitchCase="'culvert'">
       <pmlo-culvert-help></pmlo-culvert-help>
     </ng-container>
+
     <ng-container *ngSwitchCase="'importExport'"></ng-container>
+
     <ng-container *ngSwitchCase="'exportMap'"></ng-container>
   </ng-container>
 </app-modal>

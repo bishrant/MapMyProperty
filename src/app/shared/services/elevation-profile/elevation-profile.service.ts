@@ -7,6 +7,7 @@ import Graphic from 'esri/Graphic';
 import { ReplaySubject } from 'rxjs';
 import { AppConfiguration } from 'src/config';
 import { LoaderService } from '../Loader.service';
+import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.service';
 
 @Injectable()
 export class ElevationProfileService {
@@ -22,7 +23,7 @@ export class ElevationProfileService {
   private graphicsLayer = new GraphicsLayer();
   viewModel: ElevationProfileViewModel = new ElevationProfileViewModel();
 
-  constructor(private config: AppConfiguration, private loaderService: LoaderService) {  }
+  constructor(private config: AppConfiguration, private loaderService: LoaderService, private esriMapService:EsrimapService) {  }
 
   public initialize(props: ElevationProfileProperties) {
     this.mapView = props.mapView;
@@ -157,5 +158,9 @@ export class ElevationProfileService {
       this.loaderService.isLoading.next(false);
     })
 
+  }
+
+  public openHelp():void {
+    this.esriMapService.openHelp.emit({header: 'Elevation Profiles', itemName: 'elevation'});
   }
 }

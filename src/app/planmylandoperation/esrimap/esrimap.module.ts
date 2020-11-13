@@ -12,7 +12,6 @@ import { SensAreasComponent } from '../sidebar/sens-areas/sens-areas.component';
 import { SoilsComponent } from '../sidebar/soils/soils.component';
 import { ElevationProfileModule } from '../sidebar/elevation-profile/elevation-profile.module';
 import { AccordionPanelModule } from 'src/app/shared/components/accordion-panel/accordion.panel.module';
-import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModalModule } from 'src/app/shared/lib/angular-modal/modal/modal-module';
 import { SoilsTableComponent } from '../sidebar/soils/soils-table/soils-table.component';
@@ -28,12 +27,12 @@ import { SensAreasHelpComponent } from '../help-templates/sens-areas-help/sens-a
 import { HarvestOperationsHelpComponent } from '../help-templates/harvest-operations-help/harvest-operations-help.component';
 import { RegenerationOperationsHelpComponent } from '../help-templates/regeneration-operations-help/regeneration-operations-help.component';
 import { CulvertHelpComponent } from '../help-templates/culvert-help/culvert-help.component';
+import { ElevationHelpComponent } from '../help-templates/elevation-help/elevation-help.component';
 @NgModule({
   declarations: [
     EsrimapComponent,
     SensAreasComponent,
     SoilsComponent,
-    ProgressBarComponent,
     SoilsTableComponent,
     HarvestOperationsComponent,
     OperationLegendComponent,
@@ -42,7 +41,8 @@ import { CulvertHelpComponent } from '../help-templates/culvert-help/culvert-hel
     SensAreasHelpComponent,
     HarvestOperationsHelpComponent,
     RegenerationOperationsHelpComponent,
-    CulvertHelpComponent
+    CulvertHelpComponent,
+    ElevationHelpComponent
   ],
   imports: [
     CommonModule,
