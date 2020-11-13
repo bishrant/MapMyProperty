@@ -12,7 +12,6 @@ import { SensAreasComponent } from '../sidebar/sens-areas/sens-areas.component';
 import { SoilsComponent } from '../sidebar/soils/soils.component';
 import { ElevationProfileModule } from '../sidebar/elevation-profile/elevation-profile.module';
 import { AccordionPanelModule } from 'src/app/shared/components/accordion-panel/accordion.panel.module';
-import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModalModule } from 'src/app/shared/lib/angular-modal/modal/modal-module';
 import { SoilsTableComponent } from '../sidebar/soils/soils-table/soils-table.component';
@@ -27,12 +26,13 @@ import { SoilsHelpComponent } from '../help-templates/soils-help/soils-help.comp
 import { SensAreasHelpComponent } from '../help-templates/sens-areas-help/sens-areas-help.component';
 import { HarvestOperationsHelpComponent } from '../help-templates/harvest-operations-help/harvest-operations-help.component';
 import { RegenerationOperationsHelpComponent } from '../help-templates/regeneration-operations-help/regeneration-operations-help.component';
+import { CulvertHelpComponent } from '../help-templates/culvert-help/culvert-help.component';
+import { ElevationHelpModule } from 'src/app/shared/components/elevation-help/elevation-help.module';
 @NgModule({
   declarations: [
     EsrimapComponent,
     SensAreasComponent,
     SoilsComponent,
-    ProgressBarComponent,
     SoilsTableComponent,
     HarvestOperationsComponent,
     OperationLegendComponent,
@@ -40,7 +40,8 @@ import { RegenerationOperationsHelpComponent } from '../help-templates/regenerat
     SoilsHelpComponent,
     SensAreasHelpComponent,
     HarvestOperationsHelpComponent,
-    RegenerationOperationsHelpComponent
+    RegenerationOperationsHelpComponent,
+    CulvertHelpComponent
   ],
   imports: [
     CommonModule,
@@ -58,7 +59,8 @@ import { RegenerationOperationsHelpComponent } from '../help-templates/regenerat
     CulvertSizeModule,
     PrintToolModule,
     BasemapWidgetModule,
-    ImportExportModule
+    ImportExportModule,
+    ElevationHelpModule
   ],
   exports: [EsrimapComponent]
 })

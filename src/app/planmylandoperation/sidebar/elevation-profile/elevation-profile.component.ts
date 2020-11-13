@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { ViewChild } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { EsrimapService } from '../../esrimap/esrimap.service.js';
 
 @Component({
   selector: 'app-elevation-profile',
@@ -83,5 +84,10 @@ export class ElevationProfileComponent {
     // throw new Error("test");
     // this.loaderService.isLoading.next(true);
     this.elevationService.createReport();
+  }
+
+  openHelp():void {
+    //this.esriMapService.openHelp.emit({header: 'Elevation Profiles', itemName: 'elevation'});
+    this.elevationService.openHelp();
   }
 }
