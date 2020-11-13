@@ -17,7 +17,7 @@ export class TextControlSelectionService {
   inputBox: any;
   constructor(private TextService: TextControlService) { }
 
-  createInputWithFrame(graphicCenter: any, textGraphic: any, textProps: any, store: any, mapView: any, graphicsLayer) {
+  createInputWithFrame(graphicCenter: any, textGraphic: any, textProps: any, store: any, mapView: any, graphicsLayer, cleanupFn) {
     const inputId = textGraphic.attributes.id;
 
     this.frame = <HTMLElement>htmlToElement(`<div id="${inputId}_container" class="mapTextInputContainer">
@@ -83,7 +83,8 @@ export class TextControlSelectionService {
 
     this.deleteListener = (e:any) => {
         let i = document.getElementById(inputId);
-        this.TextService.HideOnlyTextGraphics(textGraphic, graphicsLayer);
+
+        this.TextService.HideOnlyTextGraphics(textGraphic, graphicsLayer, store, cleanupFn);
         this.CleanupListenerForInputFrame(i);
     }
 
@@ -114,7 +115,5 @@ export class TextControlSelectionService {
 
   };
 
-  Delete(id: string) {
-    console.log(this.windowListener);
-  }
+
 }

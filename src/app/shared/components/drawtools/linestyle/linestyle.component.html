@@ -1,4 +1,6 @@
-<fieldset [hidden]="!((selectedGraphics.length > 0 && (geomType === 'polygon' || geomType === 'circle' || geomType === 'polyline')) || drawingTool === 'polygon' || drawingTool === 'circle' || drawingTool === 'polyline')">
+<div [hidden]="!((selectedGraphics.length > 0 && (geomType === 'polygon' || geomType === 'circle' || geomType === 'polyline')) || drawingTool === 'polygon' || drawingTool === 'circle' || drawingTool === 'polyline')">
+  <br>
+<fieldset >
     <legend>Line Style</legend>
     <app-infobutton [tooltip]="'Specifies how the outline of the geometry is styled.'"
         [ariaLabel]="'info button for line style'">
@@ -35,3 +37,4 @@
         </mat-slider> &nbsp;10
     </div>
 </fieldset>
+</div>

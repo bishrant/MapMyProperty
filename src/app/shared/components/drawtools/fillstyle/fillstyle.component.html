@@ -1,32 +1,34 @@
-<fieldset [hidden]="!((selectedGraphics.length > 0 && (geomType === 'polygon' || geomType === 'circle')) || drawingTool === 'polygon' || drawingTool === 'circle')">
+<div
+  [hidden]="!((selectedGraphics.length > 0 && (geomType === 'polygon' || geomType === 'circle')) || drawingTool === 'polygon' || drawingTool === 'circle')">
+  <br />
+  <fieldset>
     <legend>Fill Style</legend>
     <app-infobutton [tooltip]="'Specifies how the inside(fill) of the geometry is styled.'"
-        [ariaLabel]="'info button for fill style'">
+      [ariaLabel]="'info button for fill style'">
     </app-infobutton>
     <div style="display: flex;">
-        <div style="flex-grow: 1;">
-            Pattern :<br>
-             <mat-select [(ngModel)]="fillProps.style" class="matSelect" (selectionChange)="changeGraphicsStyle()">
-                <mat-select-trigger>
-                    <svg-icon *ngIf="fillProps.style !== 'none'"
-                        [src]="'assets/icons/symbols-sfs-'+fillProps.style+'.svg'" [svgStyle]="fillSvgStyle">
-                    </svg-icon>
-                    <span *ngIf="fillProps.style === 'none'">None</span>
-                </mat-select-trigger>
-                <mat-option *ngFor="let style of fillStyles" [value]="style">
-                    <span *ngIf="style === 'none'">None</span>
-                    <svg-icon *ngIf="style !== 'none'" [src]="'assets/icons/symbols-sfs-'+style+'.svg'"
-                        [svgStyle]="fillSvgStyle">
-                    </svg-icon>
-
-                </mat-option>
-            </mat-select> 
-        </div>
-        <div>
-            <app-color-picker [color]="fillProps.color" [opacity]="fillProps.color.a * 100"
-                (colorSelected)="changeFillColor($event)">
-            </app-color-picker>
-        </div>
+      <div style="flex-grow: 1;">
+        Pattern :<br>
+        <mat-select [(ngModel)]="fillProps.style" class="matSelect" (selectionChange)="changeGraphicsStyle()">
+          <mat-select-trigger>
+            <svg-icon *ngIf="fillProps.style !== 'none'" [src]="'assets/icons/symbols-sfs-'+fillProps.style+'.svg'"
+              [svgStyle]="fillSvgStyle">
+            </svg-icon>
+            <span *ngIf="fillProps.style === 'none'">None</span>
+          </mat-select-trigger>
+          <mat-option *ngFor="let style of fillStyles" [value]="style">
+            <span *ngIf="style === 'none'">None</span>
+            <svg-icon *ngIf="style !== 'none'" [src]="'assets/icons/symbols-sfs-'+style+'.svg'"
+              [svgStyle]="fillSvgStyle">
+            </svg-icon>
+          </mat-option>
+        </mat-select>
+      </div>
+      <div>
+        <app-color-picker [color]="fillProps.color" [opacity]="fillProps.color.a * 100"
+          (colorSelected)="changeFillColor($event)">
+        </app-color-picker>
+      </div>
     </div>
-
-</fieldset>
+  </fieldset>
+</div>

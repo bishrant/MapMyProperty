@@ -2,7 +2,7 @@
 const ArcGISPlugin = require("@arcgis/webpack-plugin");
 const a = require("postcss-import");
 const b = require("tailwindcss")('./tailwind.config.js');
-const c = require("autoprefixer");
+// const c = require("autoprefixer");
 
 module.exports = {
   module: {
@@ -14,8 +14,9 @@ module.exports = {
           postcssOptions: {
             ident: "postcss",
             syntax: "postcss-scss",
-            plugins: [a, b, c],
-          }
+            plugins: [a, b],
+          },
+          sourceMap: false
         },
       },
     ],
