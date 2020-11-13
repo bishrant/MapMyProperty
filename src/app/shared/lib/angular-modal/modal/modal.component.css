@@ -44,7 +44,7 @@
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
-  cursor: move;
+  /* cursor: move; */
 }
 
 .ui-modal-body {

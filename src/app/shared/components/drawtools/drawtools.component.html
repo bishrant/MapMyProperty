@@ -1,70 +1,90 @@
-    <div>
-        <br>
-        <div class="centerAlign">
-            <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value)">
-                <mat-button-toggle value="circle" aria-label="Circle" class="toggleBtn">
-                    <mat-icon>radio_button_unchecked</mat-icon>
-                </mat-button-toggle>
-                <mat-button-toggle value="polyline" aria-label="Line" class="toggleBtn">
-                    <mat-icon>show_chart</mat-icon>
-                </mat-button-toggle>
-                <mat-button-toggle value="polygon" aria-label="Polygon" class="toggleBtn">
-                    <i class="customicon-untitled"></i>
-                </mat-button-toggle>
-                <mat-button-toggle value="point" aria-label="Point" class="toggleBtn">
-                    <svg-icon [src]="'assets/icons/pointSymbol.svg'" [svgStyle]="{'width.px': 20, fill: 'black'}">
-                    </svg-icon>
-                </mat-button-toggle>
-                <mat-button-toggle value="text" aria-label="Text" class="toggleBtn">
-                    Tt
-                </mat-button-toggle>
-            </mat-button-toggle-group>
+<div>
+  <br>
+  <div class="centerAlign">
+    Select a drawing tool:<br>
+    <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value)">
+      <mat-button-toggle value="polygon" aria-label="Polygon" class="toggleBtn">
+        <i class="customicon-untitled" style="line-height: 0;"></i>
+      </mat-button-toggle>
+      <mat-button-toggle value="circle" aria-label="Circle" class="toggleBtn">
+        <mat-icon style="height: 100%; width: 100%;">radio_button_unchecked</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle value="polyline" aria-label="Line" class="toggleBtn">
+        <mat-icon>show_chart</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle value="point" aria-label="Point" class="toggleBtn">
+        <svg-icon [src]="'assets/icons/pointSymbol.svg'" [svgStyle]="{'width.px': 20, fill: 'black'}">
+        </svg-icon>
+      </mat-button-toggle>
+      <mat-button-toggle value="text" aria-label="Text" class="toggleBtn">
+        Tt
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <button class="mmp-primary primary-button clearDrawTools" *ngIf="drawingTool !== ''"
+      (click)="clearDrawTools()">Clear</button>
+  </div>
+  <br>
+  <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleLabels" checked
+    aria-label="show/hide area labels">
+  <label for="toggleLables">&nbsp;&nbsp; Area/Distance labels</label><br>
+
+  <div *ngIf="selectedLabelsGraphics.length>0">
+    <br>
+    Color of the selected label:
+    <app-color-picker [color]="selectedLabelsGraphics[0].graphic.attributes.symbol.color"
+      [opacity]="selectedLabelsGraphics[0].graphic.attributes.symbol.color.a"
+      (colorSelected)="changeLabelsColor($event)">
+    </app-color-picker>
+  </div>
+
+  <app-pointcontrol #pointcontrol [selectedGraphics]="selectedGraphics"
+    [hidden]="!((selectedGraphics.length > 0 && selectedGraphics[0].geometry.type=== 'point') || drawingTool === 'point')">
+  </app-pointcontrol>
+
+  <div [hidden]="!(['polygon', 'circle', 'polyline'].indexOf(drawingTool) > -1)">
+    <br>
+    <fieldset>
+      <legend>Drawing Mode</legend>
+      <app-infobutton
+        [tooltip]="'Specifies how vertices are added while the graphic can be created. Applies only while creating polygon, polyline and circle geometries'"
+        [ariaLabel]="'info button for drawing mode'">
+      </app-infobutton>
+
+      <div class="centerAlign">
+        <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [(ngModel)]="drawingMode"
+          (change)="changeDrawingMode()">
+
+          <mat-button-toggle value="click" class="drawModeBtn">Click</mat-button-toggle>
+          <mat-button-toggle value="freehand" class="drawModeBtn">FreeHand</mat-button-toggle>
+          <mat-button-toggle value="hybrid" class="drawModeBtn" [hidden]="drawingTool === 'circle'">Hybrid
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <div class="centerAlign">
+        <div
+          [hidden]="!((drawingTool === 'circle') && (drawingMode === 'click')) && !(selectedGraphicsGeometry === 'circle')">
+          <mat-form-field appearance="outline" class="radiusInput">
+            <input matInput placeholder="Radius" type="number" [(ngModel)]="radius" #radiusInput
+              (keyup.enter)="radiusChangedEnter()" (blur)="radiusBlurred()" aria-label="radius">
+          </mat-form-field>
+          &nbsp; Miles
         </div>
-        <br>
-
-        <app-pointcontrol #pointcontrol [selectedGraphics]="selectedGraphics"
-            [hidden]="!((selectedGraphics.length > 0 && selectedGraphics[0].geometry.type=== 'point') || drawingTool === 'point')">
-        </app-pointcontrol>
-        <br>
-        <fieldset [hidden]="!(['polygon', 'circle', 'polyline'].indexOf(drawingTool) > -1)">
-            <legend>Drawing Mode</legend>
-            <app-infobutton
-                [tooltip]="'Specifies how vertices are added while the graphic can be created. Applies only while creating polygon, polyline and circle geometries'"
-                [ariaLabel]="'info button for drawing mode'">
-            </app-infobutton>
-
-            <div class="centerAlign">
-                <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [(ngModel)]="drawingMode"
-                    (change)="changeDrawingMode()">
-
-                    <mat-button-toggle value="click" class="drawModeBtn">Click</mat-button-toggle>
-                    <mat-button-toggle value="freehand" class="drawModeBtn">FreeHand</mat-button-toggle>
-                    <mat-button-toggle value="hybrid" class="drawModeBtn" [hidden]="drawingTool === 'circle'">Hybrid
-                    </mat-button-toggle>
-                </mat-button-toggle-group>
-            </div>
-            <div class="centerAlign">
-                <div
-                    [hidden]="!((drawingTool === 'circle') && (drawingMode === 'click')) && !(selectedGraphicsGeometry === 'circle')">
-                    <mat-form-field appearance="outline" class="radiusInput">
-                        <input matInput placeholder="Radius" type="number" [(ngModel)]="radius" #radiusInput
-                            (keyup.enter)="radiusChangedEnter()" (blur)="radiusBlurred()" aria-label="radius">
-                    </mat-form-field>
-                    &nbsp; Miles
-                </div>
-            </div>
-        </fieldset>
-
-        <app-linestyle #linestyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
-            (changedGraphicsStyle)="onGraphicsStyleChange()">
-        </app-linestyle>
-
-        <app-fillstyle #fillstyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
-            (changedGraphicsStyle)="onGraphicsStyleChange()">
-        </app-fillstyle>
-
-        <app-textcontrols #textcontrols [selectedTextGraphics]="selectedTextGraphics"
-            [hidden]="!(selectedTextGraphics.length>0 || drawingTool === 'text')"></app-textcontrols>
+      </div>
+    </fieldset>
+  </div>
 
 
-    </div>
+  <app-linestyle #linestyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
+    (changedGraphicsStyle)="onGraphicsStyleChange()">
+  </app-linestyle>
+
+  <app-fillstyle #fillstyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
+    (changedGraphicsStyle)="onGraphicsStyleChange()">
+  </app-fillstyle>
+  <br>
+  <app-textcontrols #textcontrols [selectedTextGraphics]="selectedTextGraphics"
+    [hidden]="!(selectedTextGraphics.length>0 || drawingTool === 'text')"></app-textcontrols>
+
+
+</div>

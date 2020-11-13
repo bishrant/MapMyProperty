@@ -104,6 +104,13 @@ body {
   min-width: calc(100% - 50px) !important;
 }
 
+.mat-select-trigger {
+  border: 1px solid black !important;
+}
+.matSelect {
+  width: 170px !important;
+}
+
 $alignment: center;
 $border-radius: 5px;
 $textboxFrameColor: white;

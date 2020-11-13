@@ -6,6 +6,7 @@
 
 .customicon-untitled:before {
   content: '\0042';
+  font-weight: 600;
 }
 .radiusInput {
   width: 80px;
@@ -13,10 +14,11 @@
 }
 .toggleBtn {
   width: 40px;
+  display: flex;
 }
 
 .drawModeBtn {
-  width: 65px;
+  width: 74px;
 }
 
 .infoBtn {
@@ -27,4 +29,8 @@
     right: 2px;
     position: absolute;
     top: -2px;
+}
+
+.clearDrawTools {
+  margin-top: 1em;
 }

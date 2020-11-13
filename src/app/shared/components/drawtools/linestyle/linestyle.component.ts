@@ -36,7 +36,7 @@ export class LinestyleComponent {
 
   lineProps: LinePropsRGBA = {
     style: 'solid',
-    color: { r: 100, g: 20, b: 5, a: 1 },
+    color: { r: 255, g: 255, b: 0, a: 1 },
     width: 2
   };
 

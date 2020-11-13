@@ -8,6 +8,10 @@ import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls'
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import { createMapView } from 'src/app/shared/utils/CreateMapView';
+import GraphicsLayer from 'esri/layers/GraphicsLayer';
+import { TextControlService } from 'src/app/shared/services/TextControl-service';
+import { createAreaLabels } from 'src/app/shared/components/drawtools/GeometryEngineUtils';
+import { Point } from 'esri/geometry';
 
 
 @Component({
@@ -24,14 +28,21 @@ export class EsrimapComponent implements OnInit {
   private graphicsSubcription$: any;
   mapView!: __esri.MapView; // = createMapView(this.mapViewEl, this.searchBarDiv);
   clickToAddText = false;
+
   sketchVM: any = new SketchViewModel();
+
   selectedGraphics!: any[] | undefined;
   selectedTextGraphics: any[] = [];
   mapCoords: any;
+
+  geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
+  geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: "geomlabels" });
+
+
   readonly graphics$ = this.store.select((state) => state.app.graphics);
-  polygonGraphicsLayer = CreatePolygonGraphicsLayer();
+  polygonGraphicsLayer: GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
-  constructor(private store: Store<AppState>) { }
+  constructor(private store: Store<AppState>, private TextService: TextControlService) { }
   @HostListener('keydown.control.z') undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
@@ -72,8 +83,11 @@ export class EsrimapComponent implements OnInit {
   private initializeMap = async () => {
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
-      this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer]);
+      this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer]);
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
+
+      // this.geomLabelsSketchVM = SetupSketchViewModel(this.geomLabelsGraphicsLayer, this.mapView);
+
       const p = {
         type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
         style: 'circle',
@@ -105,6 +119,9 @@ export class EsrimapComponent implements OnInit {
 
   private listenToGraphicsStore = () => {
     return this.graphics$.subscribe((g: any) => {
+
+      console.log(g);
+
       if (g.length > 0) {
         const graphicsArray = g.map((_g: any) => {
           const gr = JSON.parse(_g);
@@ -119,6 +136,9 @@ export class EsrimapComponent implements OnInit {
         this.polygonGraphicsLayer.removeAll();
         this.textGraphicsLayer.removeAll();
       }
+
+      this.syncLabelsToGeometry();
+
     });
   };
 
@@ -129,5 +149,69 @@ export class EsrimapComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.graphicsSubcription$.unsubscribe();
+  }
+
+
+  syncLabelsToGeometry = () => {
+    const labels = [];
+    this.polygonGraphicsLayer.graphics.forEach((parent: Graphic) => {
+      let anchorPt: Point;
+      const parentType = parent.geometry.type;
+      if (['polygon', 'polyline'].includes(parent.geometry.type)) {
+        if (parent.geometry.type === 'polygon') {
+          anchorPt = (parent.geometry as any).centroid
+        } else {
+          const firstPt = (parent.geometry as any).paths[0][0];
+          anchorPt = new Point({
+            x: firstPt[0],
+            y: firstPt[1],
+            spatialReference: this.mapView.spatialReference
+          });
+        }
+        // need to check if the user has deleted the graphic themselves
+        // check if the graphics with that parent id already exists
+        const specificLabel = [];
+        this.geomLabelsGraphicsLayer.graphics.forEach((graphic: Graphic) => {
+          if (graphic.attributes.parentId === parent.attributes.id) {
+            specificLabel.push(graphic);
+          }
+        });
+        if (specificLabel.length >= 1) {
+          // graphic exists
+          const _g = specificLabel[0]
+          // check if it was previously deleted
+          if (typeof _g.geometry === 'undefined') {
+            labels.push(specificLabel[0]);
+          } else {
+            let a = this.TextService.creatGeomLabelGraphic(anchorPt, specificLabel[0].attributes.symbol, parent);
+            labels.push(a);
+          }
+
+        } else {
+          const _symbol = {
+            type: "text",
+            color: (parent.geometry.type === 'polyline') ? parent.attributes.symbol.color: parent.attributes.symbol.outline.color,
+            text: '0',
+            xoffset: 3,
+            yoffset: 3,
+            font: {
+              decoration: "none",
+              family: "Arial",
+              size: "18px",
+              style: "normal",
+              weight: "normal",
+            }
+          }
+          let a = this.TextService.creatGeomLabelGraphic(anchorPt, _symbol, parent);
+          labels.push(a);
+        }
+
+
+      }
+
+    });
+    console.log(labels);
+    this.geomLabelsGraphicsLayer.removeAll();
+    this.geomLabelsGraphicsLayer.addMany(labels);
   }
 }

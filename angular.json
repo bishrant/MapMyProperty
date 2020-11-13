@@ -94,9 +94,12 @@
           }
         },
         "serve": {
+          "optimization": false,
+          "buildOptimizer": false,
+          "sourceMap": false,
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "mapmyproperty:build"
+            "browserTarget": "mapmyproperty:build",
           },
           "configurations": {
             "production": {
