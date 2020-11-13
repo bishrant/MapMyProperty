@@ -1,6 +1,7 @@
 <div>
   <br>
   <div class="centerAlign">
+    Select a drawing tool:<br>
     <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value)">
       <mat-button-toggle value="polygon" aria-label="Polygon" class="toggleBtn">
         <i class="customicon-untitled" style="line-height: 0;"></i>
@@ -31,52 +32,57 @@
   <div *ngIf="selectedLabelsGraphics.length>0">
     <br>
     Color of the selected label:
-  <app-color-picker [color]="selectedLabelsGraphics[0].graphic.attributes.symbol.color" [opacity]="selectedLabelsGraphics[0].graphic.attributes.symbol.color.a"
-    (colorSelected)="changeLabelsColor($event)">
-  </app-color-picker>
-</div>
+    <app-color-picker [color]="selectedLabelsGraphics[0].graphic.attributes.symbol.color"
+      [opacity]="selectedLabelsGraphics[0].graphic.attributes.symbol.color.a"
+      (colorSelected)="changeLabelsColor($event)">
+    </app-color-picker>
+  </div>
 
   <app-pointcontrol #pointcontrol [selectedGraphics]="selectedGraphics"
     [hidden]="!((selectedGraphics.length > 0 && selectedGraphics[0].geometry.type=== 'point') || drawingTool === 'point')">
   </app-pointcontrol>
-  <br>
-  <fieldset [hidden]="!(['polygon', 'circle', 'polyline'].indexOf(drawingTool) > -1)">
-    <legend>Drawing Mode</legend>
-    <app-infobutton
-      [tooltip]="'Specifies how vertices are added while the graphic can be created. Applies only while creating polygon, polyline and circle geometries'"
-      [ariaLabel]="'info button for drawing mode'">
-    </app-infobutton>
 
-    <div class="centerAlign">
-      <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [(ngModel)]="drawingMode"
-        (change)="changeDrawingMode()">
+  <div [hidden]="!(['polygon', 'circle', 'polyline'].indexOf(drawingTool) > -1)">
+    <br>
+    <fieldset>
+      <legend>Drawing Mode</legend>
+      <app-infobutton
+        [tooltip]="'Specifies how vertices are added while the graphic can be created. Applies only while creating polygon, polyline and circle geometries'"
+        [ariaLabel]="'info button for drawing mode'">
+      </app-infobutton>
 
-        <mat-button-toggle value="click" class="drawModeBtn">Click</mat-button-toggle>
-        <mat-button-toggle value="freehand" class="drawModeBtn">FreeHand</mat-button-toggle>
-        <mat-button-toggle value="hybrid" class="drawModeBtn" [hidden]="drawingTool === 'circle'">Hybrid
-        </mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
-    <div class="centerAlign">
-      <div
-        [hidden]="!((drawingTool === 'circle') && (drawingMode === 'click')) && !(selectedGraphicsGeometry === 'circle')">
-        <mat-form-field appearance="outline" class="radiusInput">
-          <input matInput placeholder="Radius" type="number" [(ngModel)]="radius" #radiusInput
-            (keyup.enter)="radiusChangedEnter()" (blur)="radiusBlurred()" aria-label="radius">
-        </mat-form-field>
-        &nbsp; Miles
+      <div class="centerAlign">
+        <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [(ngModel)]="drawingMode"
+          (change)="changeDrawingMode()">
+
+          <mat-button-toggle value="click" class="drawModeBtn">Click</mat-button-toggle>
+          <mat-button-toggle value="freehand" class="drawModeBtn">FreeHand</mat-button-toggle>
+          <mat-button-toggle value="hybrid" class="drawModeBtn" [hidden]="drawingTool === 'circle'">Hybrid
+          </mat-button-toggle>
+        </mat-button-toggle-group>
       </div>
-    </div>
-  </fieldset>
-<br>
+      <div class="centerAlign">
+        <div
+          [hidden]="!((drawingTool === 'circle') && (drawingMode === 'click')) && !(selectedGraphicsGeometry === 'circle')">
+          <mat-form-field appearance="outline" class="radiusInput">
+            <input matInput placeholder="Radius" type="number" [(ngModel)]="radius" #radiusInput
+              (keyup.enter)="radiusChangedEnter()" (blur)="radiusBlurred()" aria-label="radius">
+          </mat-form-field>
+          &nbsp; Miles
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+
   <app-linestyle #linestyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
     (changedGraphicsStyle)="onGraphicsStyleChange()">
   </app-linestyle>
-<br>
+
   <app-fillstyle #fillstyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
     (changedGraphicsStyle)="onGraphicsStyleChange()">
   </app-fillstyle>
-<br>
+  <br>
   <app-textcontrols #textcontrols [selectedTextGraphics]="selectedTextGraphics"
     [hidden]="!(selectedTextGraphics.length>0 || drawingTool === 'text')"></app-textcontrols>
 

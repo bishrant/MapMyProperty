@@ -3,7 +3,7 @@ import { Point } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
 import { createAreaLabels, createDistanceLabels } from '../components/drawtools/GeometryEngineUtils';
 import { CreateTextSymbolFromHTML, getTextParamsFromHTML, SetInputStyleAttributes } from '../components/drawtools/TextUtils';
-import { addGraphics, updateGraphics } from '../store/graphics.actions';
+import { addGraphics, removeGraphics, updateGraphics } from '../store/graphics.actions';
 import { id } from '../store/todo';
 
 @Injectable({
@@ -36,9 +36,13 @@ export class TextControlService {
     return gr;
   }
 
-  HideOnlyTextGraphics(textGraphic: Graphic, graphicsLayer: __esri.GraphicsLayer) {
+  HideOnlyTextGraphics(textGraphic: Graphic, graphicsLayer: __esri.GraphicsLayer, store: any, cleanupFn) {
+    if (graphicsLayer.id === 'userTextGraphicsLayer') {
+      store.dispatch(removeGraphics({ids: [textGraphic.attributes.id]}));
+    }
     textGraphic.geometry = undefined;
     graphicsLayer.add(textGraphic);
+    cleanupFn();
   }
 
   AddTextToMap(id: any, mapX: any, mapY: any, textSymbol: any, store: any, isUpdate = false, readonly = false, graphicsLayer) {

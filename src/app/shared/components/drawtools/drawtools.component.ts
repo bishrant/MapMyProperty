@@ -93,6 +93,11 @@ export class DrawtoolsComponent implements OnInit {
     this.geomLabelsGraphicsLayer.visible = !this.geomLabelsGraphicsLayer.visible;
   }
 
+  cleanupSelection = () => {
+    this.selectedLabelsGraphics = [];
+    this.selectedTextGraphics = [];
+  }
+
   private CreateDraggableTextbox = (textGraphic: any, graphicsLayer: __esri.GraphicsLayer) => {
     const graphicCenter = this.mapView.toScreen(textGraphic.geometry);
     this.selectedInputBox = this.TextSelectionService.createInputWithFrame(
@@ -101,7 +106,8 @@ export class DrawtoolsComponent implements OnInit {
       textGraphic.attributes.symbol,
       this.store,
       this.mapView,
-      graphicsLayer
+      graphicsLayer,
+      this.cleanupSelection
     );
 
     graphicsLayer.remove(textGraphic);
