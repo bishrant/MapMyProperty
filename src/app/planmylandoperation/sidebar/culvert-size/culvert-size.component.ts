@@ -11,6 +11,7 @@ import Graphic from 'esri/Graphic';
 import { Point, Polygon, SpatialReference } from 'esri/geometry';
 import { SimpleFillSymbol, SimpleMarkerSymbol } from 'esri/symbols';
 import { getSoilTextureClass,getCulvertSize } from './CulvertDetailsUtils';
+import { EsrimapService } from '../../esrimap/esrimap.service';
 const projection = require('arcgis-js-api/geometry/projection');
 
 @Component({
@@ -49,7 +50,7 @@ export class CulvertSizeComponent implements AfterViewInit {
   watershedGeometry: Polygon;
   pourPointReportWGS: Point;
 
-  constructor(private culvertService: CulvertSizeService, private loaderService: LoaderService) { }
+  constructor(private culvertService: CulvertSizeService, private loaderService: LoaderService, private esriMapService:EsrimapService) { }
 
   ngAfterViewInit() {
     console.log(projection);
@@ -152,5 +153,9 @@ export class CulvertSizeComponent implements AfterViewInit {
       zzCulvertDiam: c.CulvertSize,
     };
     this.culvertService.createReport(this.watershedGeometry,  culvertData);
+  }
+
+  openHelp():void {
+    this.esriMapService.openHelp.emit({header: 'Culvert Size', itemName: 'culvert'});
   }
 }

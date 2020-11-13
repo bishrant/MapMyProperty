@@ -27,6 +27,7 @@ import { SoilsHelpComponent } from '../help-templates/soils-help/soils-help.comp
 import { SensAreasHelpComponent } from '../help-templates/sens-areas-help/sens-areas-help.component';
 import { HarvestOperationsHelpComponent } from '../help-templates/harvest-operations-help/harvest-operations-help.component';
 import { RegenerationOperationsHelpComponent } from '../help-templates/regeneration-operations-help/regeneration-operations-help.component';
+import { CulvertHelpComponent } from '../help-templates/culvert-help/culvert-help.component';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -40,7 +41,8 @@ import { RegenerationOperationsHelpComponent } from '../help-templates/regenerat
     SoilsHelpComponent,
     SensAreasHelpComponent,
     HarvestOperationsHelpComponent,
-    RegenerationOperationsHelpComponent
+    RegenerationOperationsHelpComponent,
+    CulvertHelpComponent
   ],
   imports: [
     CommonModule,
