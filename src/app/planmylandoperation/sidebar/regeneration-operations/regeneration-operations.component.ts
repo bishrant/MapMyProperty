@@ -87,6 +87,7 @@ export class RegenerationOperationsComponent implements OnInit {
               } else {
                 const boundaryId:string = inputBoundary.attributes.id;
                 this.harvestOperationsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId, this.sliderValue);
+                this.operationLegendService.setOperationLegendSymbols(this.selectedRadio, this.pmloSoilsGL, this.sliderValue);
                 this.soilsService.addSoilLabelsToMap(this.pmloSoilLabelsGL, result[1], boundaryId, 100, false);
                 this.soilsService.shareMultiSoils.emit((result[0] as any).value.features);
                 this.loaderService.isLoading.next(false);
