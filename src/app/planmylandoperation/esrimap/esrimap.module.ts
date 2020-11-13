@@ -25,6 +25,7 @@ import { BasemapWidgetModule } from 'src/app/shared/components/basemap-widget/ba
 import { ImportExportModule } from 'src/app/shared/components/import-export/ImportExport.module';
 import { SoilsHelpComponent } from '../help-templates/soils-help/soils-help.component';
 import { SensAreasHelpComponent } from '../help-templates/sens-areas-help/sens-areas-help.component';
+import { HarvestOperationsHelpComponent } from '../help-templates/harvest-operations-help/harvest-operations-help.component';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -36,7 +37,8 @@ import { SensAreasHelpComponent } from '../help-templates/sens-areas-help/sens-a
     OperationLegendComponent,
     RegenerationOperationsComponent,
     SoilsHelpComponent,
-    SensAreasHelpComponent
+    SensAreasHelpComponent,
+    HarvestOperationsHelpComponent
   ],
   imports: [
     CommonModule,

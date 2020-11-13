@@ -1,5 +1,5 @@
 <div class="py3">
-    <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle"></fa-icon>
+    <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle" (click)="openHelp()"></fa-icon>
     <br>
     <ng-container *ngIf="hasBoundary">
         <div class="pt-3">Transparency</div>

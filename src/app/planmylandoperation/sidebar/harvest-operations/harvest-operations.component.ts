@@ -38,7 +38,8 @@ export class HarvestOperationsComponent implements OnInit {
     private harvestOperationsService: HarvestOperationsService,
     private decimalPipe: DecimalPipe,
     private operationLegendService: OperationLegendService,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private esriMapService:EsrimapService
   ) {}
 
   ngOnInit(): void {
@@ -146,5 +147,9 @@ export class HarvestOperationsComponent implements OnInit {
         this.loaderService.isLoading.next(false);
         window.open(reportUrl, '_blank', 'noopener');
       });
+  }
+
+  openHelp():void {
+    this.esriMapService.openHelp.emit({header: 'Harvest Operations', itemName: 'harvOperations'});
   }
 }
