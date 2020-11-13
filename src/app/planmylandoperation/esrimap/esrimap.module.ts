@@ -26,6 +26,7 @@ import { ImportExportModule } from 'src/app/shared/components/import-export/Impo
 import { SoilsHelpComponent } from '../help-templates/soils-help/soils-help.component';
 import { SensAreasHelpComponent } from '../help-templates/sens-areas-help/sens-areas-help.component';
 import { HarvestOperationsHelpComponent } from '../help-templates/harvest-operations-help/harvest-operations-help.component';
+import { RegenerationOperationsHelpComponent } from '../help-templates/regeneration-operations-help/regeneration-operations-help.component';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -38,7 +39,8 @@ import { HarvestOperationsHelpComponent } from '../help-templates/harvest-operat
     RegenerationOperationsComponent,
     SoilsHelpComponent,
     SensAreasHelpComponent,
-    HarvestOperationsHelpComponent
+    HarvestOperationsHelpComponent,
+    RegenerationOperationsHelpComponent
   ],
   imports: [
     CommonModule,

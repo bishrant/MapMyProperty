@@ -39,7 +39,8 @@ export class RegenerationOperationsComponent implements OnInit {
     private harvestOperationsService:HarvestOperationsService,
     private esrimapService:EsrimapService,
     private decimalPipe:DecimalPipe,
-    private notificationsService:NotificationsService
+    private notificationsService:NotificationsService,
+    private esriMapService:EsrimapService
   ) { }
 
   ngOnInit(): void {
@@ -131,5 +132,9 @@ export class RegenerationOperationsComponent implements OnInit {
       this.loaderService.isLoading.next(false);
       window.open(reportUrl, '_blank', 'noopener');
     });
+  }
+
+  openHelp():void {
+    this.esriMapService.openHelp.emit({header: 'Regeneration Operations', itemName: 'regOperations'});
   }
 }
