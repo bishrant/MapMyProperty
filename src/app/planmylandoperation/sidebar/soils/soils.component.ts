@@ -311,7 +311,7 @@ export class SoilsComponent implements OnInit {
   }
 
   openHelp():void {
-    this.esriMapService.openHelp.emit('');
+    this.esriMapService.openHelp.emit({header: 'Soils', itemName: 'soils'});
   }
 
   private checkIfOrange(val:number):void {

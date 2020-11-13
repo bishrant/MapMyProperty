@@ -229,6 +229,21 @@ $sliderBase: 6px;
   max-width: 37.5rem;
 }
 
+.helpModal .ui-modal {
+  width: 31.25rem;
+}
+
+.helpModal .ui-modal-body {
+  max-height: 25rem;
+  overflow-y: auto;
+  margin: .625rem 1rem;
+  padding: 0;
+}
+
+.helpModal .ui-modal-footer {
+  display: none;
+}
+
 .pmloModal .ui-modal-header {
   @apply bg-pmlo_primary !important;
 }

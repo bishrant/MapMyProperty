@@ -5,6 +5,7 @@ import { PmloComponent } from './pmlo/pmlo.component';
 import { NgModule } from '@angular/core';
 import { EsriMapModule } from './esrimap/esrimap.module';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { SensareasHelpComponent } from './help-templates/sensareas-help/sensareas-help.component';
 
 const routes: Routes = [
   {
@@ -14,7 +15,8 @@ const routes: Routes = [
 ];
 @NgModule({
   declarations: [
-    PmloComponent],
+    PmloComponent,
+    SensareasHelpComponent],
   imports: [
     CommonModule,
     EsriMapModule,

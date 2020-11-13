@@ -17,7 +17,7 @@ import { NotificationsService } from '../pmloUtils/notifications.service';
 import { ModalComponent } from 'src/app/shared/lib/angular-modal/modal/modal.component';
 import { PMLONotification } from '../models/pmloNotification.model';
 import { AccordionPanelService } from 'src/app/shared/components/accordion-panel/accordion-panel.service';
-import { PMLOHelpItem } from '../models/pmloHelpItem.model';
+import { PMLOHelpObj } from '../models/pmoHelpObj.model';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -29,15 +29,10 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
   @ViewChild('soilsTableModal') soilsTableModal: ModalComponent;
-  @ViewChild('drawAccPanel') drawAccPanel:AccordionPanelComponent;
   @ViewChild('sensAreasAccPanel') sensAreasAccPanel:AccordionPanelComponent;
   @ViewChild('soilsAccPanel') soilsAccPanel:AccordionPanelComponent;
   @ViewChild('harvestAccPanel') harvestAccPanel:AccordionPanelComponent;
   @ViewChild('regenerationAccPanel') regenerationAccPanel:AccordionPanelComponent;
-  @ViewChild('elevationAccPanel') elevationAccPanel:AccordionPanelComponent;
-  @ViewChild('culvertAccPanel') culvertAccPanel:AccordionPanelComponent;
-  @ViewChild('importExportAccPanel') importExportAccPanel:AccordionPanelComponent;
-  @ViewChild('exportMapAccPanel') exportMapAccPanel:AccordionPanelComponent;
   @ViewChild('notificationsModal') notificationsModal: ModalComponent;
   @ViewChild('helpModal') helpModal:ModalComponent;
 
@@ -212,45 +207,9 @@ export class EsrimapComponent implements OnInit {
       this.regenerationAccPanel.opened = open;
     });
 
-    this.esrimapService.openHelp.subscribe((helpItemName:string) => {
-      switch (helpItemName) {
-        case 'draw':
-          this.helpHeader = this.drawAccPanel.title;
-          break;
-
-        case 'sensAreas':
-          this.helpHeader = this.sensAreasAccPanel.title;
-          break;
-
-        case 'soils':
-          this.helpHeader = this.soilsAccPanel.title;
-          break;
-
-        case 'harvOperations':
-          this.helpHeader = this.harvestAccPanel.title;
-          break;
-
-        case 'regOperations':
-          this.helpHeader = this.regenerationAccPanel.title;
-          break;
-
-        case 'elevation':
-          this.helpHeader = this.elevationAccPanel.title;
-          break;
-
-        case 'culvert':
-          this.helpHeader = this.culvertAccPanel.title;
-          break;
-
-        case 'importExport':
-          this.helpHeader = this.importExportAccPanel.title;
-          break;
-
-        case 'exportMap':
-          this.helpHeader = this.exportMapAccPanel.title;
-          break;
-      }
-      this.helpItem = helpItemName;
+    this.esrimapService.openHelp.subscribe((helpObj:PMLOHelpObj) => {
+      this.helpHeader = helpObj.header;
+      this.helpItem = helpObj.itemName;
       this.helpModal.show();
     });
   }
