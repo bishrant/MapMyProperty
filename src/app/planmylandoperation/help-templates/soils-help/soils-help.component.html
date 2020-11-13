@@ -1,0 +1,111 @@
+<p>This toolbox contains several tools for displaying soils and their attributes either across the entire map or just
+    within the project area boundary.</p>
+
+<p class="mt-2">To display the soils across the whole map, check on the <b>Visible</b> checkbox.&nbsp;&nbsp;The soils are only displayed at a
+    high zoom level when the soils layer is visible.&nbsp;&nbsp;To investigate various attributes associated with an individual
+    soil, check the <b>Identify</b> checkbox.&nbsp;&nbsp;With the Identify checkbox checked, click on an individual soil on the map to
+    display a window listing a set of selected attributes for that soil.</p>
+
+<p class="mt-2">You can clip the soils to the boundary of your project area by clicking on the <b>Clip</b> button.&nbsp;&nbsp;Before
+    using this tool, ensure a single project area boundary is displayed on the map and that this area is less than 100,000
+    acres.&nbsp;&nbsp;To make the clipped soils layer transparent, you can move the
+    <b>Layer Transparency</b> slider handle to the right.&nbsp;&nbsp;A transparency value of 75 and greater will cause the active layer
+    to display with no fill and with outlines and labels as orange, similar to NRCS’s Web Soil Survey.&nbsp;&nbsp;A value of 100
+    will result in the layer not showing at all.&nbsp;&nbsp;This transparency slider is synchronized with the one in harvest operations and regeneration operations so, the transparency will be applied to all these three toolboxes layers.</p>
+
+<p class="mt-2">When the soils layer is clipped to the property boundary, a table is displayed showing the percentage of
+    each type of soil in the property boundary.&nbsp;&nbsp;To identify the type of soil, click on a table row and the
+    soil type will be highlighted on the map.&nbsp;&nbsp;To unselect the highlighted area on the map, click again on the
+    selected table row.&nbsp;&nbsp;To hide or show the table back click on the <b>Hide/Show Table</b> button.&nbsp;&nbsp;
+    To remove the clipped layer, click the <b>Clear Clipped Layer</b> button.</p>
+
+<p class="mt-2">Click <b>Create a Report</b> to produce a PDF report that summarizes project area including a map of the
+    project area boundary, and a map showing the soils within the project area and a one-page summary for each soil
+    listing selected attributes.&nbsp;&nbsp;Optionally, a <b>Report Title</b> can be added.</p>
+
+<p class="mt-2">Soil polygons are made available as a Web Map Service from the Soil Data Access Web Service provided by
+    National Resource Conservation Service (NRCS).&nbsp;&nbsp;Soil attribute information is queried from the NRCS Soil
+    Data Access Web Service.&nbsp;&nbsp;Both of these services use data from the Soil Survey Geographic (SSURGO)
+    database.&nbsp;&nbsp;For a description of SSURGO, please refer to the <a class="underline text-blue-700"
+        href="https://www.nrcs.usda.gov/wps/portal/nrcs/detail/soils/survey/?cid=nrcs142p2_053627" target="_blank"
+        rel="noopener noreferrer">NRCS Description of SSURGO Database</a>.&nbsp;&nbsp;For additional information on soil
+    surveys, see <a class="underline text-blue-700" href="https://www.nrcs.usda.gov/wps/portal/nrcs/detail/soils/planners/?cid=nrcs142p2_054262"
+        target="_blank" rel="noopener noreferrer">NRCS Soil Survey Manual</a>.</p>
+
+<p class="mt-2"><b>Citation:</b></p>
+<p class="mt-2">Soil Survey Staff, Natural Resources Conservation Service, United States Department of
+    Agriculture.&nbsp;&nbsp;Soil Survey Geographic (SSURGO) Database.&nbsp;&nbsp;Available online at <a
+        class="underline text-blue-700" href="https://sdmdataaccess.sc.egov.usda.gov/" target="_blank"
+        rel="noopener noreferrer">https://sdmdataaccess.sc.egov.usda.gov/</a>.</p>
+
+<p class="mt-2">The soils layer shows map units, which are collections of areas defined and named the same in terms of their soil
+    components.&nbsp;&nbsp;For simplicity, the term soil here refers to a map unit.&nbsp;&nbsp;The following attributes have been
+    extracted from SSURGO and included here:</p>
+
+<p class="mt-2"><b>Mapunit Symbol</b>:&nbsp;&nbsp;Label used on map to identify each soil.&nbsp;&nbsp;Used as header in the indentify window.</p>
+
+<p class="mt-2"><b>Map Unit Name</b>:&nbsp;&nbsp;Name of soil.</p>
+
+<p class="mt-2"><b>Map Unit Dominant Component</b>:&nbsp;&nbsp;The component that makes up the majority of the soil map unit.</p>
+
+<p class="mt-2"><b>Percent of Map Unit</b>:&nbsp;&nbsp;he percentage of the map unit that the dominant component makes up.</p>
+
+<p class="mt-2"><b>Taxonomic Classification</b>:&nbsp;&nbsp;The soil classification used by the National Cooperative Soil Survey having six categories including Order, Suborder, Great Group,Subgroup, Family, and Series.</p>
+
+<p class="mt-2"><b>A Horizon</b>:&nbsp;&nbsp;Texture of surface horizon.</p>
+
+<p class="mt-2"><b>B Horizon</b>:&nbsp;&nbsp;Texture of subsurface horizon.</p>
+
+<p class="mt-2"><b>Slope Gradient</b>:&nbsp;&nbsp;Percent slope.</p>
+
+<p class="mt-2"><b>Erosion Class</b>:&nbsp;&nbsp;Erosion class of soil.</p>
+
+<p class="mt-2"><b>Drainage Class</b>:&nbsp;&nbsp;The natural drainage condition of the soil refers to the frequency and duration of wet periods including Excessively Drained, Somewhat ExcessivelyDrained, Well Drained, Moderately Well Drained, Somewhat Poorly Drained, Poorly Drained, Very Poorly Drained.</p>
+
+<p class="mt-2"><b>Depth to Water Table (inches)</b>:&nbsp;&nbsp;Depth to the water table in inches.</p>
+
+<p class="mt-2"><b>Hydric Rating</b>:&nbsp;&nbsp;Percentage of map unit considered hydric.</p>
+
+<p class="mt-2"><b>Flooding Frequency</b>:&nbsp;&nbsp;The annual probability of a flood event expressed as a class including None, Very Rare, Rare, Occasional, Frequent, and Very Frequent.</p>
+
+<p class="mt-2"><b>Presence of Ponding</b>:&nbsp;&nbsp;The percent chance in ponding in any one year.</p>
+
+<p class="mt-2"><b>Site Index Max Value</b>:&nbsp;&nbsp;Weighted average of the highest site index (height of trees at 50 years of age) value for any tree species within a component for each soil (map unit).</p>
+
+<p class="mt-2"><b>Site Index Max Value Species</b>:&nbsp;&nbsp;Tree species of the calculated weighted average of the highest site index.</p>
+
+<p class="mt-2"><b>Ecological Class ID</b>:&nbsp;&nbsp;Ecological Classification ID is the identifier of a particular ecological community.&nbsp;&nbsp;It also serves as a hyperlink to NRSC information about that Ecological Class.</p>
+
+<p class="mt-2"><b>Ecological Class</b>:&nbsp;&nbsp;Ecological Classification Name is the descriptive name of a particular ecological community.</p>
+
+<p class="mt-2"><b>Construction Limitations for Haul Roads and Log Landings</b>:&nbsp;&nbsp;For limitations affecting the construction of haul roads and log landings, the ratings are basedon slope, flooding, permafrost, plasticity index, the hazard of soil slippage, content of sand, the Unified classification of the soil, rock fragments on or belowthe surface, depth to a restrictive layer that is indurated, depth to a water table, and ponding.&nbsp;&nbsp;Limitations can be slight, moderate, or severe.</p>
+
+<p class="mt-2"><b>Harvest Equipment Operability</b>:&nbsp;&nbsp;Suitability for use of forestland harvesting equipment.&nbsp;&nbsp;The ratings are based on slope, rock fragments on the surface,plasticity index, content of sand, the Unified classification of the soil, depth to a water table, and ponding.&nbsp;&nbsp;Standard rubber-tire skidders and bulldozers areassumed to be used for ground-based harvesting and transport.&nbsp;&nbsp;Suitability includes Well Suited, Moderately Suited, and Poorly Suited.</p>
+
+<p class="mt-2"><b>Erosion Hazard: Off-Road/Off-Trail</b>:&nbsp;&nbsp;Hazard of soil loss from off-road and off-trail areas after disturbance activities that expose the soil surface.&nbsp;&nbsp;Theratings are based on slope and soil erosion factor K.&nbsp;&nbsp;The soil loss is caused by sheet or rill erosion in off-road or off-trail areas where 50 to 75 percent ofthe surface has been exposed by logging, grazing, mining, or other kinds of disturbance.&nbsp;&nbsp;Hazard classes include Slight, Moderate, Severe, and Very severe.</p>
+
+<p class="mt-2"><b>Erosion Hazard - Road/Trail</b>:&nbsp;&nbsp;The ratings in this interpretation indicate the hazard of soil loss from unsurfaced roads and trails.&nbsp;&nbsp;The ratings are based onsoil erosion factor K, slope, and content of rock fragments.&nbsp;&nbsp;Hazard is described as Slight, Moderate, or Severe.</p>
+
+<p class="mt-2"><b>Soil Rutting Hazard</b>:&nbsp;&nbsp;Hazard of surface rut formation through the operation of forestland equipment.&nbsp;&nbsp;Soil displacement and puddling (soil deformation and compaction) may occur simultaneously with rutting.&nbsp;&nbsp;Hazard is described as Slight, Moderate, or Severe.</p>
+
+<p class="mt-2"><b>Suitability for Roads and Log Landings</b>:&nbsp;&nbsp;Suitability for using the natural surface of the soil for roads and as log landings in forested areas.&nbsp;&nbsp;The ratings are based on slope, rock fragments on the surface, plasticity index, content of sand, the Unified classification of the soil, depth to a water table, ponding, flooding, and the hazard of soil slippage.&nbsp;&nbsp;Suitability classes include Well Suited, Moderately Suited, and Poorly Suited.</p>
+
+<p class="mt-2"><b>Suitability for Roads on Natural Surface</b>:&nbsp;&nbsp;Suitability for using the natural surface of the soil for roads.&nbsp;&nbsp;The ratings are based on slope, rock fragments on the surface, plasticity index, content of sand, the Unified classification of the soil, depth to a water table, ponding, flooding, and the hazard of soil slippage.&nbsp;&nbsp;Suitability classes include Well Suited, Moderately Suited, and Poorly Suited.</p>
+
+<p class="mt-2"><b>Potential for Seedling Mortality</b>:&nbsp;&nbsp;The ratings in this interpretation indicate the likelihood of death of naturally or artificially propagated tree seedlings, as influenced by soil characteristics, physiographic features, and climatic conditions.&nbsp;&nbsp;Considered in the ratings are flooding, ponding, depth to a water table, content of lime, reaction, available water capacity, soil moisture regime, soil temperature regime, aspect, and slope.&nbsp;&nbsp;Seedling mortality classes include Low, Moderate, and High.</p>
+
+<p class="mt-2"><b>Mechanical Site Preparation (Surface)</b>:&nbsp;&nbsp;Suitability for use of surface-altering soil tillage equipment during site preparation in forested areas.&nbsp;&nbsp;The ratings are based on slope, depth to a restrictive layer, plasticity index, rock fragments on or below the surface, depth to a water table, and ponding.&nbsp;&nbsp;The part of the soil from the surface to a depth of about 1 foot is considered in the ratings.&nbsp;&nbsp;Suitability includes Well Suited, Moderately Suited, Poorly Suited, and Unsuited.</p>
+
+<p class="mt-2"><b>Mechanical Site Preparation (Deep)</b>:&nbsp;&nbsp;Suitability for the use of deep soil tillage equipment during site preparation in forested areas.&nbsp;&nbsp;The ratings are based on slope, depth to a restrictive layer, rock fragments on or below the surface, depth to a water table, and ponding.&nbsp;&nbsp;The part of the soil from the surface to a depth of about 3 feet is considered in the ratings.&nbsp;&nbsp;Suitability includes Well Suited, Moderately Suited, Poorly Suited, and Unsuited.</p>
+
+<p class="mt-2"><b>Suitability for Machine Planting</b>:&nbsp;&nbsp;Expected difficulty of planting trees or shrubs using a mechanical planter.&nbsp;&nbsp;The ratings are based on slope, depth to a restrictive layer, content of sand, plasticity index, rock fragments on or below the surface, depth to a water table, and ponding&nbsp;&nbsp;It is assumed that necessary site preparation is completed before seedlings are planted.&nbsp;&nbsp;Suitability includes Well Suited, Moderately Suited, Poorly Suited, and Unsuited.</p>
+
+<p class="mt-2"><b>Suitability for Hand Planting</b>:&nbsp;&nbsp;Expected difficulty of hand planting of forestland plants.&nbsp;&nbsp;The ratings are based on slope, depth to a restrictive layer, content of sand, plasticity index, rock fragments on or below the surface, depth to a water table, and ponding.&nbsp;&nbsp;It is assumed that necessary site preparation is completed before seedlings are planted.&nbsp;&nbsp;Suitability includes Well Suited, Moderately Suited, Poorly Suited, and Unsuited.</p>
+
+<p class="mt-2"><b>Potential for Damage by Fire</b>:&nbsp;&nbsp;Potential for damage to nutrient, physical, and biotic soil characteristics by fire.&nbsp;&nbsp;The ratings involve an evaluation of the potential impact of prescribed fires or wildfires that are intense enough to remove the duff layer and consume organic matter in the surface layer.&nbsp;&nbsp;Damage by fire classes include Low, Moderate, and High.</p>
+
+<p class="mt-2"><b>Survey Area Version</b>:&nbsp;&nbsp;Survey area version number and availability date.</p>
+
+<p class="mt-2"><b>Tabular Version</b>:&nbsp;&nbsp;Tabular data version number and availability date.</p>
+
+<p class="mt-2"><b>Spatial Version</b>:&nbsp;&nbsp;Spatial data version number and availability date.</p>

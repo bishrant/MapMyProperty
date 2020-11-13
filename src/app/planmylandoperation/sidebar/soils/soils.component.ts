@@ -87,7 +87,7 @@ export class SoilsComponent implements OnInit {
         this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
       }
     });
-    this.mapViewService.glHasPolygons.subscribe((val:boolean) => {
+    this.mapViewService.soilsGLHasPolygons.subscribe((val:boolean) => {
       this.polygonGraphicsInBoundary = val;
       if (!val)
       {
@@ -148,7 +148,7 @@ export class SoilsComponent implements OnInit {
       this.sliderValue = res.sliderVal;
     });
 
-    this.esriMapService.toggleSoilsAccordion.subscribe((opened) => {
+    this.esriMapService.soilsAccordionOpen.subscribe((opened) => {
       if (opened)
       {
         if (this.pmloSoilsGL.graphics.length > 0)
@@ -226,7 +226,7 @@ export class SoilsComponent implements OnInit {
           this.loaderService.isLoading.next(false);
         })
       });
-    } else if (this.soilsIdentifyClickEvent !== null) {
+    } else if (!isChecked && this.soilsIdentifyClickEvent !== null) {
       this.soilsIdentifyClickEvent.remove();
       this.soilsIdentifyClickEvent = null;
     }
@@ -308,6 +308,10 @@ export class SoilsComponent implements OnInit {
       const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
       throw gpError;
     });
+  }
+
+  openHelp():void {
+    this.esriMapService.openHelp.emit({header: 'Soils', itemName: 'soils'});
   }
 
   private checkIfOrange(val:number):void {

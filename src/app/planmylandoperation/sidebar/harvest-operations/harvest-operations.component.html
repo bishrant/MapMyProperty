@@ -1,9 +1,6 @@
 <div class="py3">
-    <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle"></fa-icon>
+    <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle" (click)="openHelp()"></fa-icon>
     <br>
-    <ng-container *ngIf="!hasBoundary">
-        <p>A drawn boundary is needed to be able to calculate harvest operations.</p>
-    </ng-container>
     <ng-container *ngIf="hasBoundary">
         <div class="pt-3">Transparency</div>
         <div class="flex justify-between items-baseline pb-1">
@@ -18,51 +15,58 @@
             <div class="mt-2">
                 <fieldset>
                     <div>
-                        <label class="inline-flex">
-                            <input type="radio" class="form-radio text-pmlo_secondary mt-1" name="pmlo-op"
-                                value="drclassdcd" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'drclassdcd'">
+                        <label class="inline-flex cursor-pointer">
+                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-op"
+                                value="drclassdcd" (change)="radioChanged($event.target.value)"
+                                [checked]="selectedRadio === 'drclassdcd'">
                             <span class="ml-2">Drainage Class</span>
                         </label>
                     </div>
                     <div class="mt-1">
-                        <label class="inline-flex">
-                            <input type="radio" class="form-radio text-pmlo_secondary mt-1" name="pmlo-op"
-                                value="RoadSuitNS" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'RoadSuitNS'">
+                        <label class="inline-flex cursor-pointer">
+                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-op"
+                                value="RoadSuitNS" (change)="radioChanged($event.target.value)"
+                                [checked]="selectedRadio === 'RoadSuitNS'">
                             <span class="ml-2">Suitability for Roads and Log Landings</span>
                         </label>
                     </div>
                     <div class="mt-1">
-                        <label class="inline-flex">
-                            <input type="radio" class="form-radio text-pmlo_secondary mt-1" name="pmlo-op"
-                                value="CLRoadLndg" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'CLRoadLndg'">
+                        <label class="inline-flex cursor-pointer">
+                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-op"
+                                value="CLRoadLndg" (change)="radioChanged($event.target.value)"
+                                [checked]="selectedRadio === 'CLRoadLndg'">
                             <span class="ml-2">Constuction Limitations for Haul Roads and Log Landings</span>
                         </label>
                     </div>
                     <div class="mt-1">
-                        <label class="inline-flex">
-                            <input type="radio" class="form-radio text-pmlo_secondary mt-1" name="pmlo-op"
-                                value="EroHzdORT" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'EroHzdORT'">
+                        <label class="inline-flex cursor-pointer">
+                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-op"
+                                value="EroHzdORT" (change)="radioChanged($event.target.value)"
+                                [checked]="selectedRadio === 'EroHzdORT'">
                             <span class="ml-2">Erosion Hazard: Off-Road/Off-Trail</span>
                         </label>
                     </div>
                     <div class="mt-1">
-                        <label class="inline-flex">
-                            <input type="radio" class="form-radio text-pmlo_secondary mt-1" name="pmlo-op"
-                                value="EroHzdRT" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'EroHzdRT'">
+                        <label class="inline-flex cursor-pointer">
+                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-op"
+                                value="EroHzdRT" (change)="radioChanged($event.target.value)"
+                                [checked]="selectedRadio === 'EroHzdRT'">
                             <span class="ml-2">Erosion Hazard: Road/Trail</span>
                         </label>
                     </div>
                     <div class="mt-1">
-                        <label class="inline-flex">
-                            <input type="radio" class="form-radio text-pmlo_secondary mt-1" name="pmlo-op"
-                                value="HEquipOp" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'HEquipOp'">
+                        <label class="inline-flex cursor-pointer">
+                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-op"
+                                value="HEquipOp" (change)="radioChanged($event.target.value)"
+                                [checked]="selectedRadio === 'HEquipOp'">
                             <span class="ml-2">Harvest Equipment Operability</span>
                         </label>
                     </div>
                     <div class="mt-1">
-                        <label class="inline-flex">
-                            <input type="radio" class="form-radio text-pmlo_secondary mt-1" name="pmlo-op"
-                                value="SoilRutHzd" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'SoilRutHzd'">
+                        <label class="inline-flex cursor-pointer">
+                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-op"
+                                value="SoilRutHzd" (change)="radioChanged($event.target.value)"
+                                [checked]="selectedRadio === 'SoilRutHzd'">
                             <span class="ml-2">Soil Rutting Hazard</span>
                         </label>
                     </div>
@@ -79,17 +83,18 @@
 
         <div class="flex mt-3">
             <div class="md-input-main mx-3">
-              <div class="md-input-box">
-                <input id="hoReportTitle" name="soReportTitle" type="text" class="pmlo-md-input md-input" placeholder=" "
-                  [(ngModel)]="hoReportTitle" maxlength="40" />
-                <label for="hoReportTitle" class="md-label text-pmlo_primary">Report Title</label>
-                <div class="pmlo-md-input-underline md-input-underline"></div>
-              </div>
+                <div class="md-input-box">
+                    <input id="hoReportTitle" name="soReportTitle" type="text" class="pmlo-md-input md-input"
+                        placeholder=" " [(ngModel)]="hoReportTitle" maxlength="40" />
+                    <label for="hoReportTitle" class="md-label text-pmlo_primary">Report Title</label>
+                    <div class="pmlo-md-input-underline md-input-underline"></div>
+                </div>
             </div>
-          </div>
+        </div>
 
-          <div class="flex justify-center mt-3">
-            <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="buildOperationsReport()">Create A Report</button>
-          </div>
+        <div class="flex justify-center mt-3">
+            <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="buildOperationsReport()">Create A
+                Report</button>
+        </div>
     </ng-container>
 </div>

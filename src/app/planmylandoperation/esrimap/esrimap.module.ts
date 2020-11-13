@@ -23,7 +23,10 @@ import { RegenerationOperationsComponent } from '../sidebar/regeneration-operati
 import { PrintToolModule } from 'src/app/shared/components/print-tool/print-tool.module';
 import { BasemapWidgetModule } from 'src/app/shared/components/basemap-widget/basemap-widget.module';
 import { ImportExportModule } from 'src/app/shared/components/import-export/ImportExport.module';
-
+import { SoilsHelpComponent } from '../help-templates/soils-help/soils-help.component';
+import { SensAreasHelpComponent } from '../help-templates/sens-areas-help/sens-areas-help.component';
+import { HarvestOperationsHelpComponent } from '../help-templates/harvest-operations-help/harvest-operations-help.component';
+import { RegenerationOperationsHelpComponent } from '../help-templates/regeneration-operations-help/regeneration-operations-help.component';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -33,7 +36,11 @@ import { ImportExportModule } from 'src/app/shared/components/import-export/Impo
     SoilsTableComponent,
     HarvestOperationsComponent,
     OperationLegendComponent,
-    RegenerationOperationsComponent
+    RegenerationOperationsComponent,
+    SoilsHelpComponent,
+    SensAreasHelpComponent,
+    HarvestOperationsHelpComponent,
+    RegenerationOperationsHelpComponent
   ],
   imports: [
     CommonModule,

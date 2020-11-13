@@ -16,6 +16,8 @@ import { EsrimapService } from './esrimap.service';
 import { NotificationsService } from '../pmloUtils/notifications.service';
 import { ModalComponent } from 'src/app/shared/lib/angular-modal/modal/modal.component';
 import { PMLONotification } from '../models/pmloNotification.model';
+import { AccordionPanelService } from 'src/app/shared/components/accordion-panel/accordion-panel.service';
+import { PMLOHelpObj } from '../models/pmoHelpObj.model';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -32,6 +34,7 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('harvestAccPanel') harvestAccPanel:AccordionPanelComponent;
   @ViewChild('regenerationAccPanel') regenerationAccPanel:AccordionPanelComponent;
   @ViewChild('notificationsModal') notificationsModal: ModalComponent;
+  @ViewChild('helpModal') helpModal:ModalComponent;
 
   private graphicsSubcription$: any;
   mapView!: __esri.MapView // = createMapView(this.mapViewEl, this.searchBarDiv);
@@ -44,6 +47,8 @@ export class EsrimapComponent implements OnInit {
   textGraphicsLayer = CreateTextGraphicsLayer();
   notificationHeader = '';
   notificationBody = '';
+  helpHeader = '';
+  helpItem = '';
 
   constructor (
     private store: Store<AppState>,
@@ -51,7 +56,8 @@ export class EsrimapComponent implements OnInit {
     private soilsService:SoilsService,
     private appConfig:AppConfiguration,
     private esrimapService:EsrimapService,
-    private notificationsService:NotificationsService
+    private notificationsService:NotificationsService, 
+    private accordionPanelService:AccordionPanelService
     ) {}
   @HostListener('keydown.control.z') undoFromKeyboard () {
     this.graphicsStoreEl.undo();
@@ -98,14 +104,18 @@ export class EsrimapComponent implements OnInit {
         boundaryLayerView.watch('updating', (val) => {
           if (val)
           {
-            let glHasPolygons: boolean = true;
+            let soilsGLHasPolygons: boolean = true;
             const pmloSoilsGL:__esri.GraphicsLayer = this.mapView.map.findLayerById('pmloSoilsGL') as __esri.GraphicsLayer;
 
             if (GetPolygonGraphics(boundaryLayerView.layer as __esri.GraphicsLayer).length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined))
             {
-              glHasPolygons = false;
+              soilsGLHasPolygons = false;
+              this.mapViewService.clearSensAreasGraphics.emit();
+              this.harvestAccPanel.opened = false;
+              this.regenerationAccPanel.opened = false;
+              this.sensAreasAccPanel.opened = false;
             }
-            this.mapViewService.glHasPolygons.emit(glHasPolygons);
+            this.mapViewService.soilsGLHasPolygons.emit(soilsGLHasPolygons);
           }
         });
       });
@@ -147,26 +157,6 @@ export class EsrimapComponent implements OnInit {
     });
   };
 
-  toggleSensAreasAccordion()
-  {
-    this.esrimapService.toggleSensAreasAccordion.emit(!this.sensAreasAccPanel.opened);
-  }
-
-  toggleSoilsAccordion()
-  {
-    this.esrimapService.toggleSoilsAccordion.emit(!this.soilsAccPanel.opened);
-  }
-
-  toggleHarvOpAccordion()
-  {
-    this.esrimapService.toggleHarvOpAccordion.emit(!this.harvestAccPanel.opened);
-  }
-
-  toggleRegOpAccordion()
-  {
-    this.esrimapService.toggleRegOpAccordion.emit(!this.regenerationAccPanel.opened);
-  }
-
   ngOnInit () {
     this.initializeMap();
     this.graphicsSubcription$ = this.listenToGraphicsStore();
@@ -182,6 +172,45 @@ export class EsrimapComponent implements OnInit {
       this.notificationHeader = notification.header;
       this.notificationBody = notification.body;
       this.notificationsModal.show();
+    });
+
+    this.accordionPanelService.setActivePanel.subscribe((panel:AccordionPanelComponent) => {
+      switch (panel)
+      {
+        case this.sensAreasAccPanel:
+          this.esrimapService.sensAreasAccordionOpen.emit(panel.opened);
+          break;
+
+        case this.harvestAccPanel:
+          this.esrimapService.harvOpAccordionOpen.emit(panel.opened);
+          break;
+
+        case this.regenerationAccPanel:
+          this.esrimapService.regOpAccordionOpen.emit(panel.opened);
+          break;
+
+        case this.soilsAccPanel:
+          this.esrimapService.soilsAccordionOpen.emit(panel.opened);
+          break;
+      }
+    });
+
+    this.esrimapService.sensAreasAccordionOpen.subscribe((open:boolean) => {
+      this.sensAreasAccPanel.opened = open;
+    });
+
+    this.esrimapService.harvOpAccordionOpen.subscribe((open:boolean) => {
+      this.harvestAccPanel.opened = open;
+    });
+
+    this.esrimapService.regOpAccordionOpen.subscribe((open:boolean) => {
+      this.regenerationAccPanel.opened = open;
+    });
+
+    this.esrimapService.openHelp.subscribe((helpObj:PMLOHelpObj) => {
+      this.helpHeader = helpObj.header;
+      this.helpItem = helpObj.itemName;
+      this.helpModal.show();
     });
   }
 

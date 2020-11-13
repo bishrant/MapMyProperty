@@ -22,7 +22,6 @@ export class OperationLegendComponent implements OnInit {
     this.operationLegendService.GetOperationLegend.subscribe((items:PMLOOperationLegItem[]) => {
       this.legendItems = items;
     });
-
     this.operationLegendService.setOperationLegend(this.initialValue, this.isFromHarvest);
   }
 }

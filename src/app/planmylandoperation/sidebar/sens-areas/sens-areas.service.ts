@@ -20,8 +20,6 @@ import { AppConfiguration } from 'src/config';
   providedIn: 'root'
 })
 export class SensAreasService {
-  @Output() updateState: EventEmitter<string> = new EventEmitter();
-
   constructor(
     private appConfig:AppConfiguration
   ) {}
@@ -88,7 +86,7 @@ export class SensAreasService {
     });
   }
 
-  addSensAreasToMap(gl: __esri.GraphicsLayer, areas: any[], sliderValue: number): void {
+  addSensAreasToMap(gl: __esri.GraphicsLayer, areas: any[], boundaryId:string, sliderValue: number): void {
     const graphicTransparency:number = (100 - sliderValue) / 100;
     areas.forEach((area, index) => {
       let symbol: any;
@@ -124,7 +122,7 @@ export class SensAreasService {
           break;
       }
 
-      this.addGraphicsToGL(gl, area.value, isSlope, symbol, origin, index, false);
+      this.addGraphicsToGL(gl, area.value, isSlope, symbol, origin, index, false, boundaryId);
     });
   }
 
@@ -171,7 +169,7 @@ export class SensAreasService {
     });
   }
 
-  addBuffersOrSlopeToMap(gl: __esri.GraphicsLayer, fs: FeatureSet, origin: string, sliderValue: number): void {
+  addBuffersOrSlopeToMap(gl: __esri.GraphicsLayer, fs: FeatureSet, origin: string, sliderValue: number, boundaryId:string): void {
     const graphicTransparency:number = (100 - sliderValue) / 100;
     let fillProps: FillProps = GetSMZProps(graphicTransparency);
     let lineProps: LineProps = GetDefaultLineProps();
@@ -192,7 +190,7 @@ export class SensAreasService {
 
     const symbol: any = CreatePolygonSymbol(lineProps, fillProps);
 
-    this.addGraphicsToGL(gl, fs, isSlope, symbol, origin, groupOrder, true);
+    this.addGraphicsToGL(gl, fs, isSlope, symbol, origin, groupOrder, true, boundaryId);
   }
 
   updateGraphicsOpacity(gl: __esri.GraphicsLayer, sliderValue: number): void {
@@ -277,7 +275,8 @@ export class SensAreasService {
     symbol: any,
     origin: string,
     groupOrder: number,
-    isFromBufferOrSlope: boolean
+    isFromBufferOrSlope: boolean,
+    boundaryId: string
   ): void {
     if (isFromBufferOrSlope) {
       if (origin === 'smz' || origin === 'wetlandsBuffer' || origin === 'slopes') {
@@ -289,8 +288,9 @@ export class SensAreasService {
       const graphicsCollection: __esri.Graphic[] = [];
         fs.features.forEach((element) => {
           element.symbol = symbol;
-          element.attributes.origin = origin;
-          element.attributes.groupOrder = groupOrder;
+          element.setAttribute('origin', origin);
+          element.setAttribute('groupOrder', groupOrder);
+          element.setAttribute('boundaryId', boundaryId);
           if (isSlope) {
             if (element.attributes.gridcode === 1) {
               graphicsCollection.push(element);
