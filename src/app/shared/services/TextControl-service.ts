@@ -20,17 +20,18 @@ export class TextControlService {
 
   creatGeomLabelGraphic = (anchorPoint: Point, textSymbol: any, parent: Graphic) => {
     // add text labels for polygon and polylines
+    const _textSymbol = JSON.parse(JSON.stringify(textSymbol));
     if (parent.geometry.type === 'polygon') {
-      textSymbol.text = createAreaLabels(parent);
+      _textSymbol.text = createAreaLabels(parent);
     } else if (parent.geometry.type === 'polyline') {
-      textSymbol.text = createDistanceLabels(parent);
+      _textSymbol.text = createDistanceLabels(parent);
     }
     const gr = new Graphic({
       geometry: anchorPoint,
-      symbol: textSymbol,
+      symbol: _textSymbol,
       attributes: {
         id: id(),
-        symbol: textSymbol,
+        symbol: _textSymbol,
         parentId: parent.attributes.id,
         readonly: true,
         geometryType: 'text'
@@ -48,7 +49,7 @@ export class TextControlService {
     cleanupFn();
   }
 
-  AddTextToMap(id: any, mapX: any, mapY: any, textSymbol: any, store: any, isUpdate = false, readonly = false, graphicsLayer) {
+  AddTextToMap(originalGraphic:any, id: any, mapX: any, mapY: any, textSymbol: any, store: any, isUpdate = false, readonly = false, graphicsLayer) {
     const point: any = {
       type: 'point',
       x: mapX,
@@ -61,7 +62,7 @@ export class TextControlService {
       attributes: {
         id: id,
         symbol: textSymbol,
-        parentid: 0,
+        parentId: originalGraphic ? originalGraphic.attributes.parentId : 0,
         readonly: readonly,
         geometryType: 'text'
       }
@@ -152,7 +153,7 @@ export class TextControlService {
     const ExecuteAddTextToMap = (target: any) => {
       if (target.value !== '') {
         const params = getTextParamsFromHTML(target, textProps);
-        this.AddTextToMap(target.id, params.mapX, params.mapY, params.textSymbol, store, false, false, null);
+        this.AddTextToMap(null, target.id, params.mapX, params.mapY, params.textSymbol, store, false, false, null);
       }
       CleanupListenerForInput(target);
     };

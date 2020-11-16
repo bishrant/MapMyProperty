@@ -22,6 +22,7 @@ import { TextControlSelectionService } from '../../services/TextControlSelection
 import { Subscription } from 'rxjs';
 import Graphic from 'esri/Graphic';
 import Point from 'esri/geometry/Point';
+import { CreateTextSymbolForLabels } from './DrawToolUtils';
 
 @Component({
   selector: 'app-drawtools',
@@ -444,6 +445,12 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   syncLabelsToGeometry = () => {
     const labels = [];
+
+    if (this.polygonGraphicsLayer.graphics.length < 1) {
+      this.geomLabelsGraphicsLayer.removeAll();
+      return;
+    }
+
     this.polygonGraphicsLayer.graphics.forEach((parent: Graphic) => {
       let anchorPt: Point;
       if (!['polygon', 'polyline'].includes(parent.geometry.type)) return;
@@ -461,55 +468,33 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       // need to check if the user has deleted the graphic themselves
       // check if the graphics with that parent id already exists
-      const specificLabel = this.geomLabelsGraphicsLayer.graphics.filter(gg => gg.attributes.parentId === parent.attributes.id);
+      const specificLabels = this.geomLabelsGraphicsLayer.graphics.filter(gg => gg.attributes.parentId === parent.attributes.id);
 
-      if (specificLabel.length >= 1) {
-        // graphic exists
-        const _g = specificLabel[0]
+      if (specificLabels.length < 1) {
+        const _symbol = CreateTextSymbolForLabels(parent);
+        const a = this.textService.creatGeomLabelGraphic(anchorPt, _symbol, parent);
+        labels.push(a);
+      } else {
         // check if it was previously deleted
-        if (typeof _g.geometry === 'undefined') {
-          labels.push(specificLabel[0]);
-        } else {
-          let a = this.textService.creatGeomLabelGraphic(anchorPt, specificLabel[0].attributes.symbol, parent);
-          console.log((a.symbol as any).text, (specificLabel[0].symbol as any).text,
-            _g.geometry.latitude, (a.geometry as any).latitude);
-          if ((a.symbol as any).text === (specificLabel[0].symbol as any).text) {
+        const _specific = specificLabels.getItemAt(0);
+        if (typeof _specific.geometry === 'undefined') {
+          labels.push(_specific);
+        }
+        else {
+          let a = this.textService.creatGeomLabelGraphic(anchorPt, _specific.attributes.symbol, parent);
+          console.log((a.symbol as any).text, (_specific.symbol as any).text);
+          if ((a.symbol as any).text === (_specific.symbol as any).text) {
             console.log("***")
-            labels.push(_g);
+            labels.push(_specific);
           } else {
             labels.push(a);
-
-          }
-
-        }
-
-        // check if the area is same, if same do nothing
-
-
-      } else {
-        const _symbol = {
-          type: "text",
-          color: (parent.geometry.type === 'polyline') ? parent.attributes.symbol.color : parent.attributes.symbol.outline.color,
-          text: '0',
-          xoffset: 3,
-          yoffset: 3,
-          font: {
-            decoration: "none",
-            family: "Arial",
-            size: "18px",
-            style: "normal",
-            weight: "normal",
           }
         }
-        let a = this.textService.creatGeomLabelGraphic(anchorPt, _symbol, parent);
-        labels.push(a);
       }
 
-
-
-
     });
-    console.log(labels);
+
+
     this.geomLabelsGraphicsLayer.removeAll();
     this.geomLabelsGraphicsLayer.addMany(labels);
   }
