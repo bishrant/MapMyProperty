@@ -1,11 +1,8 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer, FindGraphicById, GetPolygonGraphics  } from 'src/app/shared/utils/CreateGraphicsLayer';
-import Graphic from 'esri/Graphic';
-import { AppState } from 'src/app/shared/store/graphics.state';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
 import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
-import { Store } from '@ngrx/store';
 import { createMapView } from 'src/app/shared/utils/CreateMapView';
 import { CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
@@ -18,6 +15,7 @@ import { ModalComponent } from 'src/app/shared/lib/angular-modal/modal/modal.com
 import { PMLONotification } from '../models/pmloNotification.model';
 import { AccordionPanelService } from 'src/app/shared/components/accordion-panel/accordion-panel.service';
 import { PMLOHelpObj } from '../models/pmoHelpObj.model';
+import GraphicsLayer from 'esri/layers/GraphicsLayer';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -36,27 +34,28 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('notificationsModal') notificationsModal: ModalComponent;
   @ViewChild('helpModal') helpModal:ModalComponent;
 
-  private graphicsSubcription$: any;
-  mapView!: __esri.MapView // = createMapView(this.mapViewEl, this.searchBarDiv);
+  mapView!: __esri.MapView;
   clickToAddText = false;
   sketchVM: any = new SketchViewModel();
   selectedGraphics!: any[] | undefined;
   mapCoords: any;
-  readonly graphics$ = this.store.select((state) => state.app.graphics);
+
+  geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
+  geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: "geomlabels" });
   polygonGraphicsLayer:__esri.GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
+
   notificationHeader = '';
   notificationBody = '';
   helpHeader = '';
   helpItem = '';
 
   constructor (
-    private store: Store<AppState>,
     private mapViewService: MapviewService,
     private soilsService:SoilsService,
     private appConfig:AppConfiguration,
     private esrimapService:EsrimapService,
-    private notificationsService:NotificationsService, 
+    private notificationsService:NotificationsService,
     private accordionPanelService:AccordionPanelService
     ) {}
   @HostListener('keydown.control.z') undoFromKeyboard () {
@@ -99,7 +98,7 @@ export class EsrimapComponent implements OnInit {
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       const soilsLayer:__esri.WMSLayer = CreateSoilsLayer('soilsDynamicLayer', this.appConfig.ssurgoWMSURL);
-      this.mapView.map.addMany([soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer]);
+      this.mapView.map.addMany([soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer]);
       this.mapView.whenLayerView(this.polygonGraphicsLayer).then((boundaryLayerView) => {
         boundaryLayerView.watch('updating', (val) => {
           if (val)
@@ -138,28 +137,8 @@ export class EsrimapComponent implements OnInit {
     }
   };
 
-  private listenToGraphicsStore = () => {
-    return this.graphics$.subscribe((g: any) => {
-      if (g.length > 0) {
-        const graphicsArray = g.map((_g: any) => {
-          const gr = JSON.parse(_g);
-          return new Graphic(gr);
-        });
-        const allExcepttext = graphicsArray.filter((graphic: any) => graphic.attributes.geometryType != 'text');
-
-        const textGraphicsArray = graphicsArray.filter((graphic: any) => graphic.attributes.geometryType === 'text');
-        this.polygonGraphicsLayer.graphics = allExcepttext;
-        this.textGraphicsLayer.graphics = textGraphicsArray;
-      } else {
-        this.polygonGraphicsLayer.removeAll();
-        this.textGraphicsLayer.removeAll();
-      }
-    });
-  };
-
   ngOnInit () {
     this.initializeMap();
-    this.graphicsSubcription$ = this.listenToGraphicsStore();
     this.soilsService.showTableModal.subscribe((show:boolean) => {
       if (show)
       {
@@ -212,9 +191,5 @@ export class EsrimapComponent implements OnInit {
       this.helpItem = helpObj.itemName;
       this.helpModal.show();
     });
-  }
-
-  ngOnDestroy (): void {
-    this.graphicsSubcription$.unsubscribe();
   }
 }
