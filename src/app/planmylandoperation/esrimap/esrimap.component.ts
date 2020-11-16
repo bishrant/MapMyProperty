@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer, FindGraphicById, GetPolygonGraphics  } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
 import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
@@ -16,13 +16,17 @@ import { PMLONotification } from '../models/pmloNotification.model';
 import { AccordionPanelService } from 'src/app/shared/components/accordion-panel/accordion-panel.service';
 import { PMLOHelpObj } from '../models/pmoHelpObj.model';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
+import { getSavedState } from 'src/app/shared/store/storage.metareducer';
+import { AppState } from 'src/app/shared/store/graphics.state';
+import { Store } from '@ngrx/store';
+import { addGraphics } from 'src/app/shared/store/graphics.actions';
 
 @Component({
   selector: 'pmlo-esrimap',
   templateUrl: './esrimap.component.html',
   styleUrls: ['./esrimap.component.scss']
 })
-export class EsrimapComponent implements OnInit {
+export class EsrimapComponent implements OnInit, AfterViewInit {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
@@ -51,6 +55,7 @@ export class EsrimapComponent implements OnInit {
   helpItem = '';
 
   constructor (
+    private store: Store<AppState>,
     private mapViewService: MapviewService,
     private soilsService:SoilsService,
     private appConfig:AppConfiguration,
@@ -58,6 +63,18 @@ export class EsrimapComponent implements OnInit {
     private notificationsService:NotificationsService,
     private accordionPanelService:AccordionPanelService
     ) {}
+  ngAfterViewInit(): void {
+    const savedData = getSavedState();
+    if (savedData) {
+      if (savedData.app) {
+        if (savedData.app.graphics.length > 0) {
+          if (confirm("do you want to restore?")) {
+            this.store.dispatch(addGraphics({graphics: savedData.app.graphics}))
+          }
+        }
+      }
+    }
+  }
   @HostListener('keydown.control.z') undoFromKeyboard () {
     this.graphicsStoreEl.undo();
   }
