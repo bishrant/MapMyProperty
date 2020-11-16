@@ -124,6 +124,7 @@ export class RegenerationOperationsComponent implements OnInit {
 
   clearSoilGLayers():void {
     this.soilsService.clearSoilGLayers(this.pmloSoilsGL, this.pmloSoilLabelsGL);
+    this.esrimapService.regOpAccordionOpen.emit(false);
   }
 
   buildOperationsReport():void {
