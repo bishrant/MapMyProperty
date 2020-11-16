@@ -1,16 +1,17 @@
-@import '../../styles/sidebar.scss';
+@import "../../styles/sidebar.scss";
 
 .mat-option {
   padding: 0 !important;
 }
 
 .customicon-untitled:before {
-  content: '\0042';
+  content: "\0042";
   font-weight: 600;
 }
 .radiusInput {
-  width: 80px;
-  height: 40px;
+  width: 65px;
+  border: 1px solid black;
+  padding-left: 5px;
 }
 .toggleBtn {
   width: 40px;
@@ -22,15 +23,30 @@
 }
 
 .infoBtn {
-    width: 20px;
-    height: 20px;
-    margin: 0;
-    padding: 0;
-    right: 2px;
-    position: absolute;
-    top: -2px;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  right: 2px;
+  position: absolute;
+  top: -2px;
 }
 
 .clearDrawTools {
   margin-top: 1em;
+}
+
+.radiusDiv {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.radiusDiv .mat-form-field-wrapper {
+  margin-bottom: -1.25em !important;
+}
+
+legend {
+  font-weight: 600;
 }

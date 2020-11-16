@@ -2,7 +2,7 @@
   <br>
   <div class="centerAlign">
     Select a drawing tool:<br>
-    <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value)">
+    <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value, true)">
       <mat-button-toggle value="polygon" aria-label="Polygon" class="toggleBtn">
         <i class="customicon-untitled" style="line-height: 0;"></i>
       </mat-button-toggle>
@@ -61,17 +61,20 @@
           </mat-button-toggle>
         </mat-button-toggle-group>
       </div>
-      <div class="centerAlign">
-        <div
-          [hidden]="!((drawingTool === 'circle') && (drawingMode === 'click')) && !(selectedGraphicsGeometry === 'circle')">
-          <mat-form-field appearance="outline" class="radiusInput">
-            <input matInput placeholder="Radius" type="number" [(ngModel)]="radius" #radiusInput
-              (keyup.enter)="radiusChangedEnter()" (blur)="radiusBlurred()" aria-label="radius">
-          </mat-form-field>
-          &nbsp; Miles
-        </div>
-      </div>
+
     </fieldset>
+
+  </div>
+  <div>
+    <div class="centerAlign ">
+      <div class="radiusDiv"
+        [hidden]="!((drawingTool === 'circle') && (drawingMode === 'click')) && !(selectedGraphicsGeometry === 'circle' && selectedGraphics.length > 0)">
+        Radius: &nbsp;&nbsp;
+        <input type="number" [(ngModel)]="radius" #radiusInput class="radiusInput" (keyup.enter)="radiusChangedEnter()"
+          (blur)="radiusBlurred()" aria-label="radius">
+        &nbsp; Miles
+      </div>
+    </div>
   </div>
 
 

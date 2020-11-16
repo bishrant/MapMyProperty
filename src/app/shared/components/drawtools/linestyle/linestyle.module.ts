@@ -1,5 +1,4 @@
 import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { InfobuttonModule } from '../../infobutton/infobutton.module';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,7 +20,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MatSliderModule,
     FormsModule,
     MatFormFieldModule,
-    MatInputModule,
     FontAwesomeModule,
     ColorPickerModule,
     AngularSvgIconModule,

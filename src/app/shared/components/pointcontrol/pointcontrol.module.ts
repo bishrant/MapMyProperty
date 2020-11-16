@@ -1,4 +1,3 @@
-import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { InfobuttonModule } from './../infobutton/infobutton.module';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +13,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [PointcontrolComponent],
-  imports: [CommonModule, InfobuttonModule, MatSliderModule, FormsModule, MatFormFieldModule, MatInputModule,
+  imports: [CommonModule, InfobuttonModule, MatSliderModule, FormsModule, MatFormFieldModule,
     FontAwesomeModule,
     ColorPickerModule, AngularSvgIconModule, MatButtonModule, MatButtonToggleModule],
   exports: [PointcontrolComponent]

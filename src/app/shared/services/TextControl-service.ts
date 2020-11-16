@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Point } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
+import { BehaviorSubject } from 'rxjs';
 import { createAreaLabels, createDistanceLabels } from '../components/drawtools/GeometryEngineUtils';
-import { CreateTextSymbolFromHTML, getTextParamsFromHTML, SetInputStyleAttributes } from '../components/drawtools/TextUtils';
+import { getTextParamsFromHTML, SetInputStyleAttributes } from '../components/drawtools/TextUtils';
 import { addGraphics, removeGraphics, updateGraphics } from '../store/graphics.actions';
 import { id } from '../store/todo';
 
@@ -13,6 +14,8 @@ export class TextControlService {
   private WIDTH = 200;
   private PADDING = 10;
   windowListener: any;
+  private _textGraphicState = new BehaviorSubject<any>(false);
+  textGraphicState$ = this._textGraphicState.asObservable();
   constructor() { }
 
   creatGeomLabelGraphic = (anchorPoint: Point, textSymbol: any, parent: Graphic) => {
@@ -67,6 +70,7 @@ export class TextControlService {
     if (graphicsLayer) {
       if (graphicsLayer.id !== 'userTextGraphicsLayer') {
         graphicsLayer.graphics.add(gr);
+        this._textGraphicState.next(null);
         return;
       }
     }
@@ -78,7 +82,7 @@ export class TextControlService {
     } else {
       store.dispatch(addGraphics({ graphics: [JSON.stringify(_g)] }));
     }
-
+    this._textGraphicState.next(null);
   };
 
   createInput(mapEvt: any, inputId = '0', store: any, textProps: any) {

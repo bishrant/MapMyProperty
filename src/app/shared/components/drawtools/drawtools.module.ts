@@ -14,7 +14,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ToggleButtonModule } from '../togglebutton/togglebutton';
 import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
@@ -31,7 +30,6 @@ import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
     MatFormFieldModule,
     MatButtonModule,
     MatIconModule,
-    MatInputModule,
     MatButtonToggleModule,
     ToggleButtonModule,
     TextcontrolsModule,
