@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Point } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
+import { BehaviorSubject } from 'rxjs';
 import { createAreaLabels, createDistanceLabels } from '../components/drawtools/GeometryEngineUtils';
-import { CreateTextSymbolFromHTML, getTextParamsFromHTML, SetInputStyleAttributes } from '../components/drawtools/TextUtils';
+import { getTextParamsFromHTML, SetInputStyleAttributes } from '../components/drawtools/TextUtils';
 import { addGraphics, removeGraphics, updateGraphics } from '../store/graphics.actions';
 import { id } from '../store/todo';
 
@@ -13,21 +14,24 @@ export class TextControlService {
   private WIDTH = 200;
   private PADDING = 10;
   windowListener: any;
+  private _textGraphicState = new BehaviorSubject<any>(false);
+  textGraphicState$ = this._textGraphicState.asObservable();
   constructor() { }
 
   creatGeomLabelGraphic = (anchorPoint: Point, textSymbol: any, parent: Graphic) => {
     // add text labels for polygon and polylines
+    const _textSymbol = JSON.parse(JSON.stringify(textSymbol));
     if (parent.geometry.type === 'polygon') {
-      textSymbol.text = createAreaLabels(parent);
+      _textSymbol.text = createAreaLabels(parent);
     } else if (parent.geometry.type === 'polyline') {
-      textSymbol.text = createDistanceLabels(parent);
+      _textSymbol.text = createDistanceLabels(parent);
     }
     const gr = new Graphic({
       geometry: anchorPoint,
-      symbol: textSymbol,
+      symbol: _textSymbol,
       attributes: {
         id: id(),
-        symbol: textSymbol,
+        symbol: _textSymbol,
         parentId: parent.attributes.id,
         readonly: true,
         geometryType: 'text'
@@ -45,7 +49,7 @@ export class TextControlService {
     cleanupFn();
   }
 
-  AddTextToMap(id: any, mapX: any, mapY: any, textSymbol: any, store: any, isUpdate = false, readonly = false, graphicsLayer) {
+  AddTextToMap(originalGraphic:any, id: any, mapX: any, mapY: any, textSymbol: any, store: any, isUpdate = false, readonly = false, graphicsLayer) {
     const point: any = {
       type: 'point',
       x: mapX,
@@ -58,7 +62,7 @@ export class TextControlService {
       attributes: {
         id: id,
         symbol: textSymbol,
-        parentid: 0,
+        parentId: originalGraphic ? originalGraphic.attributes.parentId : 0,
         readonly: readonly,
         geometryType: 'text'
       }
@@ -67,6 +71,7 @@ export class TextControlService {
     if (graphicsLayer) {
       if (graphicsLayer.id !== 'userTextGraphicsLayer') {
         graphicsLayer.graphics.add(gr);
+        this._textGraphicState.next(null);
         return;
       }
     }
@@ -78,7 +83,7 @@ export class TextControlService {
     } else {
       store.dispatch(addGraphics({ graphics: [JSON.stringify(_g)] }));
     }
-
+    this._textGraphicState.next(null);
   };
 
   createInput(mapEvt: any, inputId = '0', store: any, textProps: any) {
@@ -148,7 +153,7 @@ export class TextControlService {
     const ExecuteAddTextToMap = (target: any) => {
       if (target.value !== '') {
         const params = getTextParamsFromHTML(target, textProps);
-        this.AddTextToMap(target.id, params.mapX, params.mapY, params.textSymbol, store, false, false, null);
+        this.AddTextToMap(null, target.id, params.mapX, params.mapY, params.textSymbol, store, false, false, null);
       }
       CleanupListenerForInput(target);
     };

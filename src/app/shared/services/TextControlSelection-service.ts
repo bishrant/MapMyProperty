@@ -57,7 +57,7 @@ export class TextControlSelectionService {
       target.setAttribute('mapX', _mapPoint.x);
       target.setAttribute('mapY', _mapPoint.y);
       const params = getTextParamsFromHTML(target, textProps);
-      this.TextService.AddTextToMap(target.id, params.mapX, params.mapY, params.textSymbol, store, true, false, graphicsLayer);
+      this.TextService.AddTextToMap(textGraphic, target.id, params.mapX, params.mapY, params.textSymbol, store, true, false, graphicsLayer);
       this.inputBox = target;
       this.CleanupListenerForInputFrame(target);
     };
@@ -83,7 +83,6 @@ export class TextControlSelectionService {
 
     this.deleteListener = (e:any) => {
         let i = document.getElementById(inputId);
-
         this.TextService.HideOnlyTextGraphics(textGraphic, graphicsLayer, store, cleanupFn);
         this.CleanupListenerForInputFrame(i);
     }

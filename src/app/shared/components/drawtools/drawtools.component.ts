@@ -1,5 +1,5 @@
 import { updateGraphics, addGraphics } from '../../store/graphics.actions';
-import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter, OnDestroy, AfterViewInit } from '@angular/core';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
@@ -19,21 +19,24 @@ import { dragElement } from './drag';
 import { AreGraphicsEqual } from '../../utils/GeometryEngine';
 import { TextControlService } from '../../services/TextControl-service';
 import { TextControlSelectionService } from '../../services/TextControlSelection-service';
-import { createAreaLabels } from './GeometryEngineUtils';
+import { Subscription } from 'rxjs';
 import Graphic from 'esri/Graphic';
+import Point from 'esri/geometry/Point';
+import { CreateTextSymbolForLabels } from './DrawToolUtils';
 
 @Component({
   selector: 'app-drawtools',
   templateUrl: './drawtools.component.html',
   styleUrls: ['./drawtools.component.scss']
 })
-export class DrawtoolsComponent implements OnInit {
+export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() sketchVM: any;
   @Input() geomLabelsSketchVM: __esri.SketchViewModel;
   @Input() geomLabelsGraphicsLayer: __esri.GraphicsLayer;
 
   @Input() mapView: any;
   @Input() textGraphicsLayer: any;
+  @Input() polygonGraphicsLayer: __esri.GraphicsLayer;
   @Output() selectedTextGraphicsChanged: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('radiusInput') radiusElmRef: ElementRef;
@@ -48,19 +51,43 @@ export class DrawtoolsComponent implements OnInit {
   selectedLabelsGraphics: any = [];
 
   selectedInputBox: any;
+  textSubscription: Subscription;
   radius: number;
   drawingMode: string = 'click';
   drawingTool: string = '';
   clickToAddTextboxHandler: any;
+  private graphicsSubcription$: any;
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
 
-  constructor(private store: Store<AppState>, private TextService: TextControlService,
+  readonly graphics$ = this.store.select((state) => state.app.graphics);
+
+  constructor(private store: Store<AppState>, private textService: TextControlService,
     private TextSelectionService: TextControlSelectionService
   ) { }
 
-  changeLabelsColor = (e:any) => {
-    console.log(e);
-    console.log(this.selectedLabelsGraphics);
+
+  private listenToGraphicsStore = () => {
+    return this.graphics$.subscribe((g: any) => {
+      if (g.length > 0) {
+        const graphicsArray = g.map((_g: any) => {
+          const gr = JSON.parse(_g);
+          return new Graphic(gr);
+        });
+        const allExcepttext = graphicsArray.filter((graphic: any) => graphic.attributes.geometryType !== 'text');
+
+        const textGraphicsArray = graphicsArray.filter((graphic: any) => graphic.attributes.geometryType === 'text');
+        this.polygonGraphicsLayer.graphics = allExcepttext;
+        this.textGraphicsLayer.graphics = textGraphicsArray;
+      } else {
+        this.polygonGraphicsLayer.removeAll();
+        this.textGraphicsLayer.removeAll();
+      }
+
+      this.syncLabelsToGeometry();
+    });
+  };
+
+  changeLabelsColor = (e: any) => {
     const txt = this.selectedLabelsGraphics[0].graphic;
     const _color = e;
     _color.a = _color.a * 100;
@@ -76,12 +103,11 @@ export class DrawtoolsComponent implements OnInit {
 
   private ClickToAddTextbox = () => {
     if (this.clickToAddTextboxHandler) {
-      this.clickToAddTextboxHandler.remove();
       this.clickToAddTextboxHandler = undefined;
     }
     this.clickToAddTextboxHandler = this.mapView.on('click', (mapEvt: any) => {
       const textboxes = document.getElementById('textboxes') as any;
-      const input = this.TextService.createInput(mapEvt, id(), this.store, this.textcontrolsElmRef.textProps);
+      const input = this.textService.createInput(mapEvt, id(), this.store, this.textcontrolsElmRef.textProps);
       textboxes.appendChild(input);
       input.focus();
       this.clickToAddTextboxHandler.remove();
@@ -289,6 +315,9 @@ export class DrawtoolsComponent implements OnInit {
       this.store.dispatch(updateGraphics({ graphics: JSON.stringify([circleJSON]) }));
       this.sketchVM.cancel();
       this.radiusElmRef.nativeElement.blur();
+      this.selectedGraphicsGeometry = '';
+      this.selectedGraphics = [];
+
     }
   };
 
@@ -322,7 +351,10 @@ export class DrawtoolsComponent implements OnInit {
 
   clearDrawTools = () => {
     this.sketchVM.cancel();
-    if ( this.clickToAddTextboxHandler)  this.clickToAddTextboxHandler.remove();
+    if (this.clickToAddTextboxHandler) {
+      console.log(this.clickToAddTextboxHandler);
+      this.clickToAddTextboxHandler = undefined;
+    }
     this.ResetDrawControls();
   }
 
@@ -342,15 +374,29 @@ export class DrawtoolsComponent implements OnInit {
       this.initSketchVMUpdate();
       this.detectTextGraphics();
     }
+    this.textSubscription = this.textService.textGraphicState$.subscribe(t => {
+      console.log(t);
+      if (t === null) {
+        this.selectedTextGraphics = [];
+        this.selectedLabelsGraphics = [];
+        this.clearDrawTools();
+      }
+    });
+
+
   }
 
-  startDrawingGraphics = (toolName: string) => {
+  ngAfterViewInit(): void {
+    this.graphicsSubcription$ = this.listenToGraphicsStore();
+  }
+
+  startDrawingGraphics = (toolName: string, initial: boolean) => {
     this.sketchVM.cancel();
     this.sketchVM.createCircleFromPoint = false;
     this.sketchVM.pointSymbol = this.pointControlElmRef.markerProps;
     // this.sketchVM.activePointSymbol = this.textcontrolsElmRef.textStyle;
-    if (toolName === 'circle' && this.drawingMode === 'hybrid') {
-      this.drawingMode = 'click';
+    if (toolName === 'circle' && initial) {
+      this.drawingMode = 'freehand';
     }
     if (['circle', 'polygon', 'polyline'].indexOf(toolName) > -1) {
       this.sketchVM.polylineSymbol = CreatePolylineSymbol(this.lineStyleElmRef.lineProps);
@@ -381,13 +427,75 @@ export class DrawtoolsComponent implements OnInit {
       this.updateCircleRadius();
     }
     if (this.radius > 0 && this.drawingTool === 'circle') {
-      this.startDrawingGraphics('circle');
+      this.startDrawingGraphics('circle', false);
     }
   };
 
   changeDrawingMode = () => {
+    console.log(this.drawingMode);
     if (this.drawingTool !== '') {
-      this.startDrawingGraphics(this.drawingTool);
+      this.startDrawingGraphics(this.drawingTool, false);
     }
   };
+
+  ngOnDestroy() {
+    this.textSubscription.unsubscribe();
+    this.graphicsSubcription$.unsubscribe();
+  }
+
+  syncLabelsToGeometry = () => {
+    const labels = [];
+
+    if (this.polygonGraphicsLayer.graphics.length < 1) {
+      this.geomLabelsGraphicsLayer.removeAll();
+      return;
+    }
+
+    this.polygonGraphicsLayer.graphics.forEach((parent: Graphic) => {
+      let anchorPt: Point;
+      if (!['polygon', 'polyline'].includes(parent.geometry.type)) return;
+
+
+      if (parent.geometry.type === 'polygon') {
+        anchorPt = (parent.geometry as any).centroid
+      } else {
+        const firstPt = (parent.geometry as any).paths[0][0];
+        anchorPt = new Point({
+          x: firstPt[0],
+          y: firstPt[1],
+          spatialReference: this.mapView.spatialReference
+        });
+      }
+      // need to check if the user has deleted the graphic themselves
+      // check if the graphics with that parent id already exists
+      const specificLabels = this.geomLabelsGraphicsLayer.graphics.filter(gg => gg.attributes.parentId === parent.attributes.id);
+
+      if (specificLabels.length < 1) {
+        const _symbol = CreateTextSymbolForLabels(parent);
+        const a = this.textService.creatGeomLabelGraphic(anchorPt, _symbol, parent);
+        labels.push(a);
+      } else {
+        // check if it was previously deleted
+        const _specific = specificLabels.getItemAt(0);
+        if (typeof _specific.geometry === 'undefined') {
+          labels.push(_specific);
+        }
+        else {
+          let a = this.textService.creatGeomLabelGraphic(anchorPt, _specific.attributes.symbol, parent);
+          console.log((a.symbol as any).text, (_specific.symbol as any).text);
+          if ((a.symbol as any).text === (_specific.symbol as any).text) {
+            console.log("***")
+            labels.push(_specific);
+          } else {
+            labels.push(a);
+          }
+        }
+      }
+
+    });
+
+
+    this.geomLabelsGraphicsLayer.removeAll();
+    this.geomLabelsGraphicsLayer.addMany(labels);
+  }
 }
