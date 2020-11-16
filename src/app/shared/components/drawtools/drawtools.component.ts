@@ -149,7 +149,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
         if (response.results.length < 1) {
           if (this.selectedGraphics.length > 0) {
             this.selectedTextGraphics = [];
-            this.selectedTextGraphicsChanged.emit(this.selectedTextGraphics);
           }
           return;
         }
@@ -161,11 +160,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.selectedLabelsGraphics.length > 0) {
           this.CreateDraggableTextbox(this.selectedLabelsGraphics[0].graphic, this.geomLabelsGraphicsLayer);
         }
-
-        // @todo might not even need this
-        this.selectedTextGraphicsChanged.emit(this.selectedTextGraphics);
-
-        // end todo
 
         if (this.selectedTextGraphics.length > 0) {
           const textGraphic = this.selectedTextGraphics[0].graphic;

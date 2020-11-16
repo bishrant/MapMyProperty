@@ -22,7 +22,7 @@ export class EsrimapComponent implements OnInit {
   clickToAddText = false;
   sketchVM: any = new SketchViewModel();
   selectedGraphics!: any[] | undefined;
-  selectedTextGraphics: any[] = [];
+
   mapCoords: any;
   geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
   geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: "geomlabels" });
@@ -36,11 +36,6 @@ export class EsrimapComponent implements OnInit {
 
   @HostListener('keydown.control.y') redoFromKeyboard() {
     this.graphicsStoreEl.redo();
-  }
-
-  textGraphicsChanged = ($event: any) => {
-    this.selectedTextGraphics = $event;
-    console.log('text graphics selection changed ', $event)
   }
 
   @HostListener('keydown.meta.shift.z') redoFromKeyboardMac() {
