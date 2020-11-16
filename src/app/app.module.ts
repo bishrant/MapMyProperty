@@ -18,6 +18,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { GlobalErrorHandler } from './shared/services/error/GlobalErrorHandler';
 import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { LoaderModule } from './shared/components/loader/loader.module';
+import { metaReducers } from './shared/store/storage.metareducer';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,7 +29,7 @@ import { LoaderModule } from './shared/components/loader/loader.module';
     BrowserAnimationsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    StoreModule.forRoot({ app: GraphicsReducer }),
+    StoreModule.forRoot({app: GraphicsReducer}, {metaReducers} ),
     AngularSvgIconModule.forRoot(),
     environment.production ? [] : StoreDevtoolsModule.instrument(),
     FontAwesomeModule,
