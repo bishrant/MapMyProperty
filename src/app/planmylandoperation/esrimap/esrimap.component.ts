@@ -14,8 +14,9 @@ import { NotificationsService } from '../pmloUtils/notifications.service';
 import { ModalComponent } from 'src/app/shared/lib/angular-modal/modal/modal.component';
 import { PMLONotification } from '../models/pmloNotification.model';
 import { AccordionPanelService } from 'src/app/shared/components/accordion-panel/accordion-panel.service';
-import { PMLOHelpObj } from '../models/pmoHelpObj.model';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
+import { HelpService } from 'src/app/shared/services/help/help.service';
+import { HelpObj } from 'src/app/shared/services/help/HelpObj.model';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -56,7 +57,8 @@ export class EsrimapComponent implements OnInit {
     private appConfig:AppConfiguration,
     private esrimapService:EsrimapService,
     private notificationsService:NotificationsService,
-    private accordionPanelService:AccordionPanelService
+    private accordionPanelService:AccordionPanelService,
+    private helpService:HelpService
     ) {}
   @HostListener('keydown.control.z') undoFromKeyboard () {
     this.graphicsStoreEl.undo();
@@ -186,7 +188,7 @@ export class EsrimapComponent implements OnInit {
       this.regenerationAccPanel.opened = open;
     });
 
-    this.esrimapService.openHelp.subscribe((helpObj:PMLOHelpObj) => {
+    this.helpService.openHelp.subscribe((helpObj:HelpObj) => {
       this.helpHeader = helpObj.header;
       this.helpItem = helpObj.itemName;
       this.helpModal.show();

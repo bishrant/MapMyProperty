@@ -8,17 +8,23 @@ import { AppConfiguration } from 'src/config';
   selector: 'app-print-tool',
   templateUrl: './print-tool.component.html',
   styleUrls: ['./print-tool.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class PrintToolComponent implements OnInit {
   @ViewChild('printMapModal') printMapModal: any;
-  @ViewChild("mapViewNode", { static: true }) private mapViewEl: ElementRef;
+  @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
   @Input() map: any;
   printForm: FormGroup;
   MAX: number = 200;
   MAXLINES: number = 5;
   showCurrentDate = true;
-  constructor(private formBuilder: FormBuilder, private config: AppConfiguration, private loaderService: LoaderService) { }
+  faQuestionCircle = faQuestionCircle;
+  constructor(
+    private formBuilder: FormBuilder,
+    private config: AppConfiguration,
+    private loaderService: LoaderService,
+    private helpService: HelpService
+  ) {}
   matcher = new MyErrorStateMatcher();
   popupMapView: any;
   printTask = new PrintTask({ url: this.config.printGPServiceURL });
@@ -34,14 +40,14 @@ export class PrintToolComponent implements OnInit {
     try {
       const mapProperties: any = {
         basemap: this.map.map.basemap.id,
-        layers: this.map.map.layers
+        layers: this.map.map.layers,
       };
 
       let ESRIMap = await import('arcgis-js-api/Map');
       const map = new ESRIMap.default(mapProperties);
       const mapViewProperties: any = {
         container: this.mapViewEl.nativeElement,
-        map: map
+        map: map,
       };
 
       const ESRIMapView = await import('arcgis-js-api/views/MapView');
@@ -49,7 +55,7 @@ export class PrintToolComponent implements OnInit {
       this.popupMapView.extent = this.map.extent;
       return this.popupMapView;
     } catch (error) {
-      console.log("Esri: ", error);
+      console.log('Esri: ', error);
     }
   }
 
@@ -62,13 +68,14 @@ export class PrintToolComponent implements OnInit {
         title: this.printForm.get('title')?.value,
         Layout_Template: 'MMP',
         Format: 'PDF',
-        showCurrentDate: this.showCurrentDate
-      }
+        showCurrentDate: this.showCurrentDate,
+      },
     });
 
     console.log((this.printTask as any)._getPrintDefinition(this.popupMapView, printParameters));
 
-    this.printTask.execute(printParameters)
+    this.printTask
+      .execute(printParameters)
       .then((success: any) => {
         console.log(success.url);
         window.open(success.url, '_blank');
@@ -80,18 +87,25 @@ export class PrintToolComponent implements OnInit {
         let gpError = TraceGPError(this.config.printGPServiceURL, error);
         throw gpError;
       });
-
   }
-
 
   ngOnInit(): void {
     this.printForm = this.formBuilder.group({
       title: [''],
-      comments: ['', { validators: [ValidateCommentsLength(this.MAX), ValidateLineBreaks(this.MAXLINES)], updateOn: 'change' }],
-    })
+      comments: [
+        '',
+        { validators: [ValidateCommentsLength(this.MAX), ValidateLineBreaks(this.MAXLINES)], updateOn: 'change' },
+      ],
+    });
   }
 
-  get comments() { return this.printForm.get('comments') }
+  get comments() {
+    return this.printForm.get('comments');
+  }
+
+  openHelp(): void {
+    this.helpService.openHelp.emit({ header: 'Export Map to PDF', itemName: 'exportMap' });
+  }
 }
 
 export function ValidateCommentsLength(MAX: number): ValidatorFn {
@@ -117,6 +131,8 @@ import { ViewChild } from '@angular/core';
 import { ElementRef } from '@angular/core';
 import { TraceGPError } from '../../services/error/GPServiceError';
 import { LoaderService } from '../../services/Loader.service';
+import { HelpService } from '../../services/help/help.service';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

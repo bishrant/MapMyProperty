@@ -23,11 +23,13 @@ import { Subscription } from 'rxjs';
 import Graphic from 'esri/Graphic';
 import Point from 'esri/geometry/Point';
 import { CreateTextSymbolForLabels } from './DrawToolUtils';
+import { HelpService } from '../../services/help/help.service';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-drawtools',
   templateUrl: './drawtools.component.html',
-  styleUrls: ['./drawtools.component.scss']
+  styleUrls: ['./drawtools.component.scss'],
 })
 export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() sketchVM: any;
@@ -46,6 +48,8 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('linestyle') lineStyleElmRef: any;
   id = (): string => Math.random().toString(36).substr(2, 9);
 
+  faQuestionCircle = faQuestionCircle;
+
   selectedGraphics: any[] = [];
   selectedTextGraphics: any = [];
   selectedLabelsGraphics: any = [];
@@ -61,10 +65,12 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   readonly graphics$ = this.store.select((state) => state.app.graphics);
 
-  constructor(private store: Store<AppState>, private textService: TextControlService,
-    private TextSelectionService: TextControlSelectionService
-  ) { }
-
+  constructor(
+    private store: Store<AppState>,
+    private textService: TextControlService,
+    private TextSelectionService: TextControlSelectionService,
+    private helpService: HelpService
+  ) {}
 
   private listenToGraphicsStore = () => {
     return this.graphics$.subscribe((g: any) => {
@@ -99,7 +105,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     const _input = document.getElementById(txt.attributes.id);
     this.selectedInputBox.CleanupListenerForInputFrame(_input);
     this.selectedLabelsGraphics = [];
-  }
+  };
 
   private ClickToAddTextbox = () => {
     if (this.clickToAddTextboxHandler) {
@@ -122,7 +128,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   cleanupSelection = () => {
     this.selectedLabelsGraphics = [];
     this.selectedTextGraphics = [];
-  }
+  };
 
   private CreateDraggableTextbox = (textGraphic: any, graphicsLayer: __esri.GraphicsLayer) => {
     const graphicCenter = this.mapView.toScreen(textGraphic.geometry);
@@ -155,7 +161,9 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.selectedTextGraphics = response.results.filter((res: any) => res.graphic.layer === this.textGraphicsLayer);
 
-        this.selectedLabelsGraphics = response.results.filter((res: any) => res.graphic.layer === this.geomLabelsGraphicsLayer);
+        this.selectedLabelsGraphics = response.results.filter(
+          (res: any) => res.graphic.layer === this.geomLabelsGraphicsLayer
+        );
 
         if (this.selectedLabelsGraphics.length > 0) {
           this.CreateDraggableTextbox(this.selectedLabelsGraphics[0].graphic, this.geomLabelsGraphicsLayer);
@@ -180,7 +188,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onGraphicsStyleChange = () => {
     this.changeGraphicsStyle();
-  }
+  };
 
   changeGraphicsStyle = () => {
     if (!this.selectedGraphics) return;
@@ -189,12 +197,20 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
       const _geomType = this.selectedGraphics[0].attributes.geometryType;
       let geomJSON;
       if (_geomType === 'circle') {
-        geomJSON = CreateCircleFromGraphic(this.selectedGraphics[0], this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
+        geomJSON = CreateCircleFromGraphic(
+          this.selectedGraphics[0],
+          this.lineStyleElmRef.lineProps,
+          this.fillStyleElmRef.fillProps
+        );
       }
       if (['polygon', 'polyline'].indexOf(_geomType) > -1) {
       }
       if (_geomType === 'polygon') {
-        geomJSON = CreatePolygonFromGraphic(this.selectedGraphics[0], this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
+        geomJSON = CreatePolygonFromGraphic(
+          this.selectedGraphics[0],
+          this.lineStyleElmRef.lineProps,
+          this.fillStyleElmRef.fillProps
+        );
       } else if (_geomType === 'polyline') {
         geomJSON = CreatePolylineFromGraphic(this.selectedGraphics[0], this.lineStyleElmRef.lineProps);
       }
@@ -217,10 +233,14 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
             id: this.id(),
             symbol: createdGraphic.symbol,
             geometryType: evt.tool,
-            radius: 0
+            radius: 0,
           };
           if (evt.tool === 'polygon') {
-            createdGraphic = CreatePolygonFromGraphic(createdGraphic, this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
+            createdGraphic = CreatePolygonFromGraphic(
+              createdGraphic,
+              this.lineStyleElmRef.lineProps,
+              this.fillStyleElmRef.fillProps
+            );
           } else {
             createdGraphic = CreatePolylineFromGraphic(createdGraphic, this.lineStyleElmRef.lineProps);
           }
@@ -229,9 +249,13 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
           createdGraphic = CreatePointFromGraphic(evt.graphic, this.pointControlElmRef.markerProps);
         }
         if (this.sketchVM.createCircleFromPoint) {
-          createdGraphic = CreatecircleFromPoint(evt, this.radius, this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
+          createdGraphic = CreatecircleFromPoint(
+            evt,
+            this.radius,
+            this.lineStyleElmRef.lineProps,
+            this.fillStyleElmRef.fillProps
+          );
         }
-
 
         this.store.dispatch(addGraphics({ graphics: [JSON.stringify(createdGraphic)] }));
       }
@@ -258,8 +282,8 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
           size: _temp.attributes.symbol.size, // pixels
           outline: {
             color: [255, 0, 255],
-            width: 3
-          }
+            width: 3,
+          },
         };
         this.selectedGraphics = gg.graphics;
         dragElement('mydiv', 'parent');
@@ -268,10 +292,14 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.mapView.graphics.removeAll();
         let _updatedGraphics = gg.graphics;
         if (_updatedGraphics[0].attributes.geometryType === 'circle') {
-          _updatedGraphics = [CreateCircleFromGraphic(gg.graphics[0], this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps)];
+          _updatedGraphics = [
+            CreateCircleFromGraphic(gg.graphics[0], this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps),
+          ];
         }
         if (_updatedGraphics[0].attributes.geometryType === 'polygon') {
-          _updatedGraphics = [CreatePolygonFromGraphic(gg.graphics[0], this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps)];
+          _updatedGraphics = [
+            CreatePolygonFromGraphic(gg.graphics[0], this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps),
+          ];
         }
         if (_updatedGraphics[0].attributes.geometryType === 'polyline') {
           _updatedGraphics = [CreatePolylineFromGraphic(gg.graphics[0], this.lineStyleElmRef.lineProps)];
@@ -302,7 +330,11 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   updateCircleRadius = () => {
     if (this.selectedGraphics.length > 0) {
       let circleJSON = this.selectedGraphics[0].toJSON();
-      circleJSON = CreatePolygonGraphicWithSymbology(circleJSON, this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
+      circleJSON = CreatePolygonGraphicWithSymbology(
+        circleJSON,
+        this.lineStyleElmRef.lineProps,
+        this.fillStyleElmRef.fillProps
+      );
       circleJSON.toJSON = undefined;
       circleJSON.geometry = CreateCircleFromPoint(this.selectedGraphics[0].geometry.centroid, this.radius).asJSON();
       circleJSON.attributes.radius = circleJSON.geometry.radius;
@@ -311,7 +343,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.radiusElmRef.nativeElement.blur();
       this.selectedGraphicsGeometry = '';
       this.selectedGraphics = [];
-
     }
   };
 
@@ -350,7 +381,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.clickToAddTextboxHandler = undefined;
     }
     this.ResetDrawControls();
-  }
+  };
 
   ngOnInit(): void {
     if (this.sketchVM) {
@@ -368,7 +399,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.initSketchVMUpdate();
       this.detectTextGraphics();
     }
-    this.textSubscription = this.textService.textGraphicState$.subscribe(t => {
+    this.textSubscription = this.textService.textGraphicState$.subscribe((t) => {
       console.log(t);
       if (t === null) {
         this.selectedTextGraphics = [];
@@ -376,8 +407,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.clearDrawTools();
       }
     });
-
-
   }
 
   ngAfterViewInit(): void {
@@ -449,20 +478,21 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
       let anchorPt: Point;
       if (!['polygon', 'polyline'].includes(parent.geometry.type)) return;
 
-
       if (parent.geometry.type === 'polygon') {
-        anchorPt = (parent.geometry as any).centroid
+        anchorPt = (parent.geometry as any).centroid;
       } else {
         const firstPt = (parent.geometry as any).paths[0][0];
         anchorPt = new Point({
           x: firstPt[0],
           y: firstPt[1],
-          spatialReference: this.mapView.spatialReference
+          spatialReference: this.mapView.spatialReference,
         });
       }
       // need to check if the user has deleted the graphic themselves
       // check if the graphics with that parent id already exists
-      const specificLabels = this.geomLabelsGraphicsLayer.graphics.filter(gg => gg.attributes.parentId === parent.attributes.id);
+      const specificLabels = this.geomLabelsGraphicsLayer.graphics.filter(
+        (gg) => gg.attributes.parentId === parent.attributes.id
+      );
 
       if (specificLabels.length < 1) {
         const _symbol = CreateTextSymbolForLabels(parent);
@@ -473,23 +503,24 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
         const _specific = specificLabels.getItemAt(0);
         if (typeof _specific.geometry === 'undefined') {
           labels.push(_specific);
-        }
-        else {
+        } else {
           let a = this.textService.creatGeomLabelGraphic(anchorPt, _specific.attributes.symbol, parent);
           console.log((a.symbol as any).text, (_specific.symbol as any).text);
           if ((a.symbol as any).text === (_specific.symbol as any).text) {
-            console.log("***")
+            console.log('***');
             labels.push(_specific);
           } else {
             labels.push(a);
           }
         }
       }
-
     });
-
 
     this.geomLabelsGraphicsLayer.removeAll();
     this.geomLabelsGraphicsLayer.addMany(labels);
+  };
+
+  openHelp(): void {
+    this.helpService.openHelp.emit({ header: 'Draw', itemName: 'draw' });
   }
 }

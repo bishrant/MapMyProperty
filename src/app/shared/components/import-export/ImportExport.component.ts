@@ -7,6 +7,8 @@ import { kmlToGeoJson, createKMLForExport } from '../../utils/KMLUtils';
 import { createGPXForExport, gpxToGeoJson } from '../../utils/GPXUtils';
 import { convertSHPToGraphics, downloadSHP } from '../../utils/SHPUtils';
 import { downloadFile } from '../../utils/DownloadFile';
+import { HelpService } from '../../services/help/help.service';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-import-export',
@@ -20,7 +22,8 @@ export class ImportExportComponent implements OnInit {
   graphicsSub$: any;
   exportEnabled: boolean = false;
   fileUploadError = '';
-  constructor (private store: Store<AppState>) { }
+  faQuestionCircle = faQuestionCircle;
+  constructor (private store: Store<AppState>, private helpService: HelpService) { }
 
   ngOnInit () {
     this.graphicsSub$ = this.store
@@ -88,6 +91,10 @@ export class ImportExportComponent implements OnInit {
           break;
       }
     });
+  }
+
+  openHelp(): void {
+    this.helpService.openHelp.emit({ header: 'Import | Export', itemName: 'importExport' });
   }
 
   ngOnDestroy () {
