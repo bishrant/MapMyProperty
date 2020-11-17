@@ -29,7 +29,7 @@ export class ElevationProfileComponent {
   drawingObservable$: Subscription;
   closePopup$: Subscription;
 
-  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService, private helpService:HelpService) {
+  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService, private helpSevice:HelpService) {
     this.isReversed = elevationService.isReversed;
   }
 
@@ -92,6 +92,6 @@ export class ElevationProfileComponent {
   }
 
   openHelp(): void {
-    this.helpService.openHelp.emit({ header: 'Elevation Profile', itemName: 'elevation' });
+    this.elevationService.openHelp();
   }
 }

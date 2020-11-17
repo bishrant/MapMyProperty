@@ -7,6 +7,7 @@ import Graphic from 'esri/Graphic';
 import { ReplaySubject } from 'rxjs';
 import { AppConfiguration } from 'src/config';
 import { LoaderService } from '../Loader.service';
+import { HelpService } from '../help/help.service';
 
 @Injectable()
 export class ElevationProfileService {
@@ -24,7 +25,8 @@ export class ElevationProfileService {
 
   constructor(
     private config: AppConfiguration,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private helpService: HelpService
   ) {}
 
   public initialize(props: ElevationProfileProperties) {
@@ -252,5 +254,9 @@ export class ElevationProfileService {
       .finally(() => {
         this.loaderService.isLoading.next(false);
       });
+  }
+
+  public openHelp(): void {
+    this.helpService.openHelp.emit({ header: 'Elevation Profiles', itemName: 'elevation' });
   }
 }
