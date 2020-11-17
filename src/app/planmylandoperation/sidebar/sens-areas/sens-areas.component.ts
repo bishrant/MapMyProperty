@@ -35,6 +35,7 @@ export class SensAreasComponent implements OnInit {
   smzBufferValue: number = 50;
   wetlandsBufferValue:number = 0;
   slopeValue:number = 8;
+  slopeLabelValue:number = 8;
 
   reportTitle = '';
 
@@ -68,7 +69,9 @@ export class SensAreasComponent implements OnInit {
     this.esrimapService.sensAreasAccordionOpen.subscribe((opened:boolean) => {
       if (opened)
       {
-        const maxAcres: number = 10000;
+        const maxAcres: number = 100000;
+        this.slopeValue = 8;
+        this.slopeLabelValue = this.slopeValue;
 
         if (this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').length === 0) {
           this.esrimapService.sensAreasAccordionOpen.emit(false);
@@ -88,27 +91,19 @@ export class SensAreasComponent implements OnInit {
           const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
     
           this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((isInTexas:boolean) => {
-            if (isInTexas)
-            {
-              this.sensAreasService.getSensAreas(inputBoundary).then((result) => {
-                if (result.length === 0)
-                {
-                  this.loaderService.isLoading.next(false);
-                  this.esrimapService.sensAreasAccordionOpen.emit(false);
-                  this.pmloNote.body = 'There was an error calculating "Sensitive Areas". Please try again and, if the problem persists, contact the administrator.';
-                  this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-                } else {
-                  const boundaryId: string = inputBoundary.attributes.id;
-                  this.sensAreasService.addSensAreasToMap(this.sensAreaGL, result, boundaryId, this.sliderValue);
-                  this.loaderService.isLoading.next(false);
-                }
-              });
-            } else {
-              this.loaderService.isLoading.next(false);
-              this.esrimapService.sensAreasAccordionOpen.emit(false);
-              this.pmloNote.body = 'Please make sure that your project area is totally within Texas.';
-              this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-            }
+            this.sensAreasService.getSensAreas(inputBoundary, isInTexas).then((result) => {
+              if (result.length === 0)
+              {
+                this.loaderService.isLoading.next(false);
+                this.esrimapService.sensAreasAccordionOpen.emit(false);
+                this.pmloNote.body = 'There was an error calculating "Sensitive Areas". Please try again and, if the problem persists, contact the administrator.';
+                this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+              } else {
+                const boundaryId: string = inputBoundary.attributes.id;
+                this.sensAreasService.addSensAreasToMap(this.sensAreaGL, result, boundaryId, this.sliderValue);
+                this.loaderService.isLoading.next(false);
+              }
+            });
           });
         }
       }
@@ -153,17 +148,20 @@ export class SensAreasComponent implements OnInit {
   setSlope(origin: string):void {
     this.loaderService.isLoading.next(true);
     const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
-    this.sensAreasService.setSlope(inputBoundary, this.slopeValue).then(result => {
-      if (result === null)
-      {
-        this.loaderService.isLoading.next(false);
-        this.pmloNote.body = 'There was an error setting the severe slope. Please try again and, if the problem persists, contact the administrator.';
-        this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-      } else {
-        const boundaryId: string = inputBoundary.attributes.id;
-        this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue, boundaryId);
-        this.loaderService.isLoading.next(false);
-      }
+    this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((isInTexas:boolean) => {
+      this.sensAreasService.setSlope(inputBoundary, this.slopeValue, isInTexas).then(result => {
+        if (result === null)
+        {
+          this.loaderService.isLoading.next(false);
+          this.pmloNote.body = 'There was an error setting the severe slope. Please try again and, if the problem persists, contact the administrator.';
+          this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+        } else {
+          this.slopeLabelValue = this.slopeValue;
+          const boundaryId: string = inputBoundary.attributes.id;
+          this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue, boundaryId);
+          this.loaderService.isLoading.next(false);
+        }
+      });
     });
   }
 

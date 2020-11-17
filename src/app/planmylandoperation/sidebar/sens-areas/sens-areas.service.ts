@@ -52,12 +52,13 @@ export class SensAreasService {
     });
   }
 
-  getSensAreas(graph: __esri.Graphic): Promise<any[]> {
+  getSensAreas(graph: __esri.Graphic, isInTexas:boolean): Promise<any[]> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
       const params = {
-        inputPolygon: featureSet
+        inputPolygon: featureSet,
+        isOnlyTexas: isInTexas
       };
 
       const gp: __esri.Geoprocessor = new Geoprocessor({
@@ -230,13 +231,14 @@ export class SensAreasService {
     });
   }
 
-  async setSlope(graph: __esri.Graphic, inputSlope: number): Promise<any>  {
+  async setSlope(graph: __esri.Graphic, inputSlope: number, isInTexas:boolean): Promise<any>  {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
       const params = {
          inputPolygon: featureSet,
-         minSlopeValue: inputSlope.toString()
+         minSlopeValue: inputSlope.toString(),
+         isOnlyTexas: isInTexas
        };
 
       const gp: Geoprocessor = new Geoprocessor({
@@ -292,7 +294,11 @@ export class SensAreasService {
           element.setAttribute('groupOrder', groupOrder);
           element.setAttribute('boundaryId', boundaryId);
           if (isSlope) {
-            if (element.attributes.gridcode === 1) {
+            if (element.attributes.gridcode !== undefined) {
+              if (element.attributes.gridcode === 1) {
+                graphicsCollection.push(element);
+              }
+            } else {
               graphicsCollection.push(element);
             }
           } else {
