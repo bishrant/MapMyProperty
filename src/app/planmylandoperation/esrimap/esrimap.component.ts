@@ -85,7 +85,6 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
     const graphics$ = this.store.select((state) => state.app.graphics);
     if (this.graphicsStoreSub) {this.graphicsStoreSub.unsubscribe()}
     this.graphicsStoreSub = graphics$.subscribe((g: any) => {
-      console.log('current graphics ', g);
       setSavedState(g);
     });
   }
