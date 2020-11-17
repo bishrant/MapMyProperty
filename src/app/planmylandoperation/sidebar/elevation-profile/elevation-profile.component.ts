@@ -4,19 +4,19 @@ import { Subscription } from 'rxjs';
 import { ViewChild } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { EsrimapService } from '../../esrimap/esrimap.service.js';
+import { HelpService } from 'src/app/shared/services/help/help.service.js';
 
 @Component({
   selector: 'app-elevation-profile',
   templateUrl: './elevation-profile.component.html',
-  styleUrls: ['./elevation-profile.component.scss']
+  styleUrls: ['./elevation-profile.component.scss'],
 })
 export class ElevationProfileComponent {
   @ViewChild('elevationProfileModal') elevationProfileModal: any;
   @Input() mapView: any;
   @Input() slopeThreshold: number = 8;
 
-  headerBgColor = '#353535'
+  headerBgColor = '#353535';
   drawTool: String;
   isMSL = false;
   isElevationProfileToolActive = false;
@@ -29,34 +29,39 @@ export class ElevationProfileComponent {
   drawingObservable$: Subscription;
   closePopup$: Subscription;
 
-  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService) {
+  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService, private helpSevice:HelpService) {
     this.isReversed = elevationService.isReversed;
   }
 
   onResizeEnd($event) {
-    console.log("REISE ", $event, $event.height);
+    console.log('REISE ', $event, $event.height);
     this.elevationService.resizeChart($event.width - 30, $event.height - 90);
   }
   startDrawingGraphics(value: any) {
-
     import('../../../shared/services/elevation-profile/lib/plotly.js').then((_plotly: any) => {
       this.Plotly = _plotly;
     });
 
     this.elvUtils = undefined;
-    this.elvUtils = this.elevationService.initialize({ mapView: this.mapView, slopeThreshold: this.slopeThreshold, unit: 'feet', divId: 'gd', isMSL: this.isMSL });
+    this.elvUtils = this.elevationService.initialize({
+      mapView: this.mapView,
+      slopeThreshold: this.slopeThreshold,
+      unit: 'feet',
+      divId: 'gd',
+      isMSL: this.isMSL,
+    });
     this.elvUtils.start(value);
 
     this.drawingObservable$ = this.elevationService.drawingComplete.subscribe((graphics: any) => {
       this.loaderService.isLoading.next(true);
-      console.time('graph')
+      console.time('graph');
       this.chartDataObservable$ = this.elevationService.chartData$.subscribe(async (d: any) => {
         this.elevationService.Plotly = this.Plotly;
         this.elevationProfileModal.show();
         this.loaderService.isLoading.next(false);
-        console.timeEnd('graph')
+        console.timeEnd('graph');
       });
-    })
+    });
   }
 
   modelClosed() {
@@ -86,8 +91,7 @@ export class ElevationProfileComponent {
     this.elevationService.createReport();
   }
 
-  openHelp():void {
-    //this.esriMapService.openHelp.emit({header: 'Elevation Profiles', itemName: 'elevation'});
+  openHelp(): void {
     this.elevationService.openHelp();
   }
 }

@@ -26,7 +26,10 @@ import { SensAreasHelpComponent } from '../help-templates/sens-areas-help/sens-a
 import { HarvestOperationsHelpComponent } from '../help-templates/harvest-operations-help/harvest-operations-help.component';
 import { RegenerationOperationsHelpComponent } from '../help-templates/regeneration-operations-help/regeneration-operations-help.component';
 import { CulvertHelpComponent } from '../help-templates/culvert-help/culvert-help.component';
-import { ElevationHelpModule } from 'src/app/shared/components/elevation-help/elevation-help.module';
+import { ElevationHelpModule } from 'src/app/shared/components/help-components/elevation-help/elevation-help.module';
+import { DrawHelpModule } from 'src/app/shared/components/help-components/draw-help/draw-help.module';
+import { ImportExportHelpModule } from 'src/app/shared/components/help-components/import-export-help/import-export-help.module';
+import { ExportMapHelpModule } from 'src/app/shared/components/help-components/export-map-help/export-map-help.module';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -58,7 +61,10 @@ import { ElevationHelpModule } from 'src/app/shared/components/elevation-help/el
     PrintToolModule,
     BasemapWidgetModule,
     ImportExportModule,
-    ElevationHelpModule
+    ElevationHelpModule,
+    DrawHelpModule,
+    ImportExportHelpModule,
+    ExportMapHelpModule
   ],
   exports: [EsrimapComponent]
 })

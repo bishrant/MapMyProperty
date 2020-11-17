@@ -9,6 +9,7 @@ import { LoaderModule } from '../loader/loader.module';
 import { HttpClientModule } from '@angular/common/http';
 import { ModalModule } from '../../lib/angular-modal/modal/modal-module';
 import { AccordionPanelModule } from '../accordion-panel/accordion.panel.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [PrintToolComponent],
@@ -22,7 +23,8 @@ import { AccordionPanelModule } from '../accordion-panel/accordion.panel.module'
     ReactiveFormsModule,
     HttpClientModule,
     ModalModule,
-    AccordionPanelModule
+    AccordionPanelModule,
+    FontAwesomeModule
   ],
   exports: [PrintToolComponent],
 })

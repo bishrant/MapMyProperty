@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { CreateGL } from '../../pmloUtils/layers';
 import { GreaterThanMaxArea, GetFeaturesLength, GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import { DecimalPipe } from '@angular/common';
@@ -12,7 +12,7 @@ import { EsrimapService } from '../../esrimap/esrimap.service';
 import { PMLONotification } from '../../models/pmloNotification.model';
 import { NotificationsService } from '../../pmloUtils/notifications.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
-import { FindGraphicById, GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
+import { HelpService } from 'src/app/shared/services/help/help.service';
 
 @Component({
   selector: 'pmlo-sens-areas',
@@ -55,7 +55,7 @@ export class SensAreasComponent implements OnInit {
     private esrimapService:EsrimapService,
     private notificationsService:NotificationsService,
     private mapViewService:MapviewService,
-    private esriMapService:EsrimapService
+    private helpService:HelpService
     ) {}
 
   ngOnInit (): void {
@@ -205,6 +205,6 @@ export class SensAreasComponent implements OnInit {
   }
 
   openHelp():void {
-    this.esriMapService.openHelp.emit({header: 'Sensitive Areas', itemName: 'sensAreas'});
+    this.helpService.openHelp.emit({header: 'Sensitive Areas', itemName: 'sensAreas'});
   }
 }

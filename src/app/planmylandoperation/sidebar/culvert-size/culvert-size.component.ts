@@ -11,18 +11,18 @@ import Graphic from 'esri/Graphic';
 import { Point, Polygon, SpatialReference } from 'esri/geometry';
 import { SimpleFillSymbol, SimpleMarkerSymbol } from 'esri/symbols';
 import { getSoilTextureClass,getCulvertSize } from './CulvertDetailsUtils';
-import { EsrimapService } from '../../esrimap/esrimap.service';
+import { HelpService } from 'src/app/shared/services/help/help.service';
 const projection = require('arcgis-js-api/geometry/projection');
 
 @Component({
   selector: 'app-culvert-size',
   templateUrl: './culvert-size.component.html',
-  styleUrls: ['./culvert-size.component.scss']
+  styleUrls: ['./culvert-size.component.scss'],
 })
 export class CulvertSizeComponent implements AfterViewInit {
   @ViewChild('culvertModal') culvertModal: any;
   @Input() mapView: __esri.MapView;
-  culvertReportTitle = "";
+  culvertReportTitle = '';
 
   culvertData: any = {
     Avg_Slope: 5,
@@ -34,12 +34,12 @@ export class CulvertSizeComponent implements AfterViewInit {
     Shape_Length: 194,
     Silt_WA: 37,
     Soil_Texture: 'Clay Loam',
-    CulvertSize: '12 inches'
+    CulvertSize: '12 inches',
   };
 
-  graphicsLayer: GraphicsLayer = new GraphicsLayer({ id: "culvertGraphics" });
+  graphicsLayer: GraphicsLayer = new GraphicsLayer({ id: 'culvertGraphics' });
 
-  headerBgColor = '#353535'
+  headerBgColor = '#353535';
   drawTool: String;
   isCulvertToolActive = false;
   faQuestionCircle = faQuestionCircle;
@@ -50,11 +50,14 @@ export class CulvertSizeComponent implements AfterViewInit {
   watershedGeometry: Polygon;
   pourPointReportWGS: Point;
 
-  constructor(private culvertService: CulvertSizeService, private loaderService: LoaderService, private esriMapService:EsrimapService) { }
+  constructor(
+    private culvertService: CulvertSizeService,
+    private loaderService: LoaderService,
+    private helpService:HelpService
+  ) {}
 
   ngAfterViewInit() {
     console.log(projection);
-
   }
 
   drawPourPoint() {
@@ -68,44 +71,52 @@ export class CulvertSizeComponent implements AfterViewInit {
         const gp: [Geoprocessor, any] = this.culvertService.GetCulvertData(graphics);
         const jobInfo: JobInfo = await gp[0].submitJob(gp[1]);
         await gp[0].waitForJobCompletion(jobInfo.jobId);
-        const finalPourPoint = await gp[0].getResultData(jobInfo.jobId, 'Final_Pour_Point')
-        const outFeatureWatershed = await gp[0].getResultData(jobInfo.jobId, 'Watershed_Feature')
+        const finalPourPoint = await gp[0].getResultData(jobInfo.jobId, 'Final_Pour_Point');
+        const outFeatureWatershed = await gp[0].getResultData(jobInfo.jobId, 'Watershed_Feature');
         const pourPt0: any = finalPourPoint.value.toJSON();
         const wsJSON = outFeatureWatershed.value.toJSON();
 
         const pourPt = new Point({
           x: pourPt0.features[0].geometry.x,
           y: pourPt0.features[0].geometry.y,
-          spatialReference: { wkid: pourPt0.spatialReference.wkid }
+          spatialReference: { wkid: pourPt0.spatialReference.wkid },
         });
 
         const waterShedPolygon = new Polygon({
           rings: wsJSON.features[0].geometry.rings,
-          spatialReference: { wkid: wsJSON.spatialReference.wkid }
+          spatialReference: { wkid: wsJSON.spatialReference.wkid },
         });
 
         this.culvertData = wsJSON.features[0].attributes;
 
-        this.culvertData.SoilTexture = getSoilTextureClass(this.culvertData.Clay_WA, this.culvertData.Sand_WA, this.culvertData.Silt_WA);
-        this.culvertData.CulvertSize = getCulvertSize(this.culvertData.SoilTexture, this.culvertData.Avg_Slope, this.culvertData.POLY_AREA);
+        this.culvertData.SoilTexture = getSoilTextureClass(
+          this.culvertData.Clay_WA,
+          this.culvertData.Sand_WA,
+          this.culvertData.Silt_WA
+        );
+        this.culvertData.CulvertSize = getCulvertSize(
+          this.culvertData.SoilTexture,
+          this.culvertData.Avg_Slope,
+          this.culvertData.POLY_AREA
+        );
         await projection.load();
 
-        this.pourPointReportWGS = projection.project(pourPt, new SpatialReference({wkid: 4326}));
+        this.pourPointReportWGS = projection.project(pourPt, new SpatialReference({ wkid: 4326 }));
 
         this.watershedGeometry = projection.project(waterShedPolygon, new SpatialReference({ wkid: 102100 }));
         const watershedGraphics = new Graphic({
           geometry: this.watershedGeometry,
           symbol: new SimpleFillSymbol({
-            color: [218, 47, 47, 0.25]
+            color: [218, 47, 47, 0.25],
           }),
-          attributes: wsJSON.features[0].attributes
-        })
+          attributes: wsJSON.features[0].attributes,
+        });
 
         const pourPtWGS = projection.project(pourPt, new SpatialReference({ wkid: 102100 }));
         const pourPtGraphics = new Graphic({
           geometry: pourPtWGS,
-          symbol: new SimpleMarkerSymbol({ style: "cross", outline: { width: 1.5 } })
-        })
+          symbol: new SimpleMarkerSymbol({ style: 'cross', outline: { width: 1.5 } }),
+        });
 
         this.graphicsLayer.addMany([pourPtGraphics, watershedGraphics]);
 
@@ -113,11 +124,11 @@ export class CulvertSizeComponent implements AfterViewInit {
 
         this.culvertModal.show();
       } catch (err) {
-        console.error(err)
+        console.error(err);
       } finally {
         this.loaderService.isLoading.next(false);
       }
-    })
+    });
   }
 
   modelClosed() {
@@ -136,14 +147,13 @@ export class CulvertSizeComponent implements AfterViewInit {
     this.drawingObservable$.unsubscribe();
   }
 
-
   createReport() {
     const c = this.culvertData;
     const culvertData = {
-      watershedImageURL: "",
+      watershedImageURL: '',
       zzProjName: this.culvertReportTitle,
-      zzLatitude: Math.round(this.pourPointReportWGS.latitude * 1000000)/1000000,
-      zzLongitude: Math.round(this.pourPointReportWGS.longitude * 1000000)/1000000,
+      zzLatitude: Math.round(this.pourPointReportWGS.latitude * 1000000) / 1000000,
+      zzLongitude: Math.round(this.pourPointReportWGS.longitude * 1000000) / 1000000,
       zzAcresDrained: c.POLY_AREA.toFixed(2),
       zzSlope: c.Avg_Slope.toFixed(2),
       zzTexture: c.SoilTexture,
@@ -152,10 +162,10 @@ export class CulvertSizeComponent implements AfterViewInit {
       zzClay: c.Clay_WA.toFixed(2),
       zzCulvertDiam: c.CulvertSize,
     };
-    this.culvertService.createReport(this.watershedGeometry,  culvertData);
+    this.culvertService.createReport(this.watershedGeometry, culvertData);
   }
 
-  openHelp():void {
-    this.esriMapService.openHelp.emit({header: 'Culvert Size', itemName: 'culvert'});
+  openHelp(): void {
+    this.helpService.openHelp.emit({ header: 'Culvert Size', itemName: 'culvert' });
   }
 }
