@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { ViewChild } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { EsrimapService } from '../../esrimap/esrimap.service.js';
 import { HelpService } from 'src/app/shared/services/help/help.service.js';
 
 @Component({
@@ -93,6 +92,6 @@ export class ElevationProfileComponent {
   }
 
   openHelp(): void {
-    this.helpService.openHelp.emit({ header: 'Elevation Profiles', itemName: 'elevation' });
+    this.helpService.openHelp.emit({ header: 'Elevation Profile', itemName: 'elevation' });
   }
 }

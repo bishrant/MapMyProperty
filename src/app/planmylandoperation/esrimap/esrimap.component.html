@@ -83,7 +83,9 @@
 <app-modal class="pmloModal helpModal" #helpModal [maximizable]="false" [backdrop]="false" [inViewport]="true">
   <ng-container class="app-modal-header">{{helpHeader}}</ng-container>
   <ng-container class="app-modal-body" [ngSwitch]="helpItem">
-    <ng-container *ngSwitchCase="'draw'"></ng-container>
+    <ng-container *ngSwitchCase="'draw'">
+      <app-draw-help></app-draw-help>
+    </ng-container>
 
     <ng-container *ngSwitchCase="'sensAreas'">
       <pmlo-sens-areas-help></pmlo-sens-areas-help>
@@ -109,8 +111,12 @@
       <pmlo-culvert-help></pmlo-culvert-help>
     </ng-container>
 
-    <ng-container *ngSwitchCase="'importExport'"></ng-container>
+    <ng-container *ngSwitchCase="'importExport'">
+      <app-import-export-help></app-import-export-help>
+    </ng-container>
 
-    <ng-container *ngSwitchCase="'exportMap'"></ng-container>
+    <ng-container *ngSwitchCase="'exportMap'">
+      <app-export-map-help></app-export-map-help>
+    </ng-container>
   </ng-container>
 </app-modal>
