@@ -21,3 +21,23 @@ $accent: rgb(53,53,53);
 .sidebarBlanket {
   background-color: $translucent;
 }
+
+.sessionBtn{
+  border: 1px solid black;
+  width: 9em;
+}
+
+.sessionBtns{
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+.restoreBtn{
+  background: #8f8364;
+  color: white;
+}
+
+.sessionCancelBtn {
+  background: #dad6cd;
+  color: black;
+}
