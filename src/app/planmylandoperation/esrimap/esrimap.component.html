@@ -4,8 +4,8 @@
       <app-accordion>
         <app-accordion-panel #drawAccPanel title="Draw">
           <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
-          [geomLabelsSketchVM]= "geomLabelsSketchVM" [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer"
-          [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer" [polygonGraphicsLayer]="polygonGraphicsLayer">
+            [geomLabelsSketchVM]="geomLabelsSketchVM" [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer"
+            [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer" [polygonGraphicsLayer]="polygonGraphicsLayer">
           </app-drawtools>
         </app-accordion-panel>
 
@@ -60,13 +60,14 @@
       <div id="textboxes"></div>
       <app-basemap-widget [mapView]="mapView"></app-basemap-widget>
     </div>
-    <app-graphic-store #graphicsStore [sketchVM]="sketchVM"
-      [textGraphicsLayer]="textGraphicsLayer" class="graphicsControls">
+    <app-graphic-store #graphicsStore [sketchVM]="sketchVM" [textGraphicsLayer]="textGraphicsLayer"
+      class="graphicsControls">
     </app-graphic-store>
   </div>
 </div>
 
-<app-modal class="pmloModal pmloSoilsTable" #soilsTableModal [maximizable]="false" [backdrop]="false" [inViewport]="true">
+<app-modal class="pmloModal pmloSoilsTable" #soilsTableModal [maximizable]="false" [backdrop]="false"
+  [inViewport]="true">
   <ng-container class="app-modal-header">Soils Within Project Area</ng-container>
   <ng-container class="app-modal-body">
     <pmlo-soils-table></pmlo-soils-table>
@@ -113,4 +114,17 @@
 
     <ng-container *ngSwitchCase="'exportMap'"></ng-container>
   </ng-container>
+</app-modal>
+
+<app-modal class="pmloModal sessionModal" #sessionModal [maximizable]="false" [inViewport]="true" (closeModal)="restoreSession(null)">
+  <ng-container class="app-modal-header">Restore previous session?</ng-container>
+  <ng-container class="app-modal-body">
+    This application was closed while you had some drawings. <br> Would you like to restore those drawings?
+    <br><br>
+    <div class="sessionBtns">
+      <button (click)="restoreSession(true)" class="pmlo-btn sessionBtn restoreBtn py-2 px-4">Restore</button>
+      <button (click)="restoreSession(false)" class="pmlo-btn sessionBtn sessionCancelBtn py-2 px-4">Start Fresh</button>
+    </div>
+  </ng-container>
+
 </app-modal>

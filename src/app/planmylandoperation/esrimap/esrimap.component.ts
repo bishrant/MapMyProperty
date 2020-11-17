@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer, FindGraphicById, GetPolygonGraphics  } from 'src/app/shared/utils/CreateGraphicsLayer';
+import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer, FindGraphicById, GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
 import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
@@ -16,10 +16,11 @@ import { PMLONotification } from '../models/pmloNotification.model';
 import { AccordionPanelService } from 'src/app/shared/components/accordion-panel/accordion-panel.service';
 import { PMLOHelpObj } from '../models/pmoHelpObj.model';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
-import { getSavedState } from 'src/app/shared/store/storage.metareducer';
+import { clearLocalStorage, getSavedState, setSavedState } from 'src/app/shared/store/storage.metareducer';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
 import { addGraphics } from 'src/app/shared/store/graphics.actions';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -31,12 +32,13 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
   @ViewChild('soilsTableModal') soilsTableModal: ModalComponent;
-  @ViewChild('sensAreasAccPanel') sensAreasAccPanel:AccordionPanelComponent;
-  @ViewChild('soilsAccPanel') soilsAccPanel:AccordionPanelComponent;
-  @ViewChild('harvestAccPanel') harvestAccPanel:AccordionPanelComponent;
-  @ViewChild('regenerationAccPanel') regenerationAccPanel:AccordionPanelComponent;
+  @ViewChild('sensAreasAccPanel') sensAreasAccPanel: AccordionPanelComponent;
+  @ViewChild('soilsAccPanel') soilsAccPanel: AccordionPanelComponent;
+  @ViewChild('harvestAccPanel') harvestAccPanel: AccordionPanelComponent;
+  @ViewChild('regenerationAccPanel') regenerationAccPanel: AccordionPanelComponent;
   @ViewChild('notificationsModal') notificationsModal: ModalComponent;
-  @ViewChild('helpModal') helpModal:ModalComponent;
+  @ViewChild('helpModal') helpModal: ModalComponent;
+  @ViewChild('sessionModal') sessionModal: ModalComponent;
 
   mapView!: __esri.MapView;
   clickToAddText = false;
@@ -46,48 +48,77 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
 
   geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
   geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: "geomlabels" });
-  polygonGraphicsLayer:__esri.GraphicsLayer = CreatePolygonGraphicsLayer();
+  polygonGraphicsLayer: __esri.GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
 
   notificationHeader = '';
   notificationBody = '';
   helpHeader = '';
   helpItem = '';
+  savedData: any;
 
-  constructor (
+  constructor(
     private store: Store<AppState>,
     private mapViewService: MapviewService,
-    private soilsService:SoilsService,
-    private appConfig:AppConfiguration,
-    private esrimapService:EsrimapService,
-    private notificationsService:NotificationsService,
-    private accordionPanelService:AccordionPanelService
-    ) {}
-  ngAfterViewInit(): void {
-    const savedData = getSavedState();
-    if (savedData) {
-      if (savedData.app) {
-        if (savedData.app.graphics.length > 0) {
-          if (confirm("do you want to restore?")) {
-            this.store.dispatch(addGraphics({graphics: savedData.app.graphics}))
-          }
+    private soilsService: SoilsService,
+    private appConfig: AppConfiguration,
+    private esrimapService: EsrimapService,
+    private notificationsService: NotificationsService,
+    private accordionPanelService: AccordionPanelService
+  ) { }
+
+  checkIfSavedGraphicsExists() {
+    this.savedData = getSavedState();
+    if (this.savedData) {
+        if (this.savedData.length > 0) {
+          this.sessionModal.show();
         }
-      }
+        this.listenToGraphicsStore();
+    } else {
+      this.listenToGraphicsStore();
     }
   }
-  @HostListener('keydown.control.z') undoFromKeyboard () {
+
+  graphicsStoreSub: Subscription;
+
+  listenToGraphicsStore() {
+    const graphics$ = this.store.select((state) => state.app.graphics);
+    if (this.graphicsStoreSub) {this.graphicsStoreSub.unsubscribe()}
+    this.graphicsStoreSub = graphics$.subscribe((g: any) => {
+      console.log('current graphics ', g);
+      setSavedState(g);
+    });
+  }
+
+  ngAfterViewInit(): void { }
+
+  restoreSession(e: any) {
+    if (e !== null) this.sessionModal.hide();
+    if (e) {
+      this.store.dispatch(addGraphics({ graphics: this.savedData }));
+      setTimeout(() => {
+        this.mapView.goTo(this.polygonGraphicsLayer.graphics);
+      }, 500);
+
+    } else {
+      clearLocalStorage();
+    }
+    this.listenToGraphicsStore();
+  }
+
+  @HostListener('keydown.control.z') undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
 
-  @HostListener('keydown.control.y') redoFromKeyboard () {
+  @HostListener('keydown.control.y') redoFromKeyboard() {
     this.graphicsStoreEl.redo();
   }
 
-  @HostListener('keydown.meta.shift.z') redoFromKeyboardMac () {
+  @HostListener('keydown.meta.shift.z') redoFromKeyboardMac() {
     this.graphicsStoreEl.redo();
   }
 
-  @HostListener('keydown.meta.z') undoFromKeyboardMac () {
+  @HostListener('keydown.meta.z') undoFromKeyboardMac() {
     this.graphicsStoreEl.undo();
   }
 
@@ -108,23 +139,27 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
       this.mapView.on('pointer-move', (evt: any) => {
         this.showCoordinates(this.mapView.toMap({ x: evt.x, y: evt.y }));
       });
+
+      this.mapView.when((stats: any) => {
+        setTimeout(() => {
+          this.checkIfSavedGraphicsExists();
+        }, 2000);
+      })
     }
   };
 
   private initializeMap = async () => {
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
-      const soilsLayer:__esri.WMSLayer = CreateSoilsLayer('soilsDynamicLayer', this.appConfig.ssurgoWMSURL);
+      const soilsLayer: __esri.WMSLayer = CreateSoilsLayer('soilsDynamicLayer', this.appConfig.ssurgoWMSURL);
       this.mapView.map.addMany([soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer]);
       this.mapView.whenLayerView(this.polygonGraphicsLayer).then((boundaryLayerView) => {
         boundaryLayerView.watch('updating', (val) => {
-          if (val)
-          {
+          if (val) {
             let soilsGLHasPolygons: boolean = true;
-            const pmloSoilsGL:__esri.GraphicsLayer = this.mapView.map.findLayerById('pmloSoilsGL') as __esri.GraphicsLayer;
+            const pmloSoilsGL: __esri.GraphicsLayer = this.mapView.map.findLayerById('pmloSoilsGL') as __esri.GraphicsLayer;
 
-            if (GetPolygonGraphics(boundaryLayerView.layer as __esri.GraphicsLayer).length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined))
-            {
+            if (GetPolygonGraphics(boundaryLayerView.layer as __esri.GraphicsLayer).length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
               soilsGLHasPolygons = false;
               this.mapViewService.clearSensAreasGraphics.emit();
               this.harvestAccPanel.opened = false;
@@ -142,7 +177,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
         color: "cyan",
         size: "20px",  // pixels
         outline: {  // autocasts as new SimpleLineSymbol()
-          color: [ 0, 0, 0 ],
+          color: [0, 0, 0],
           width: 1  // points
         }
       };
@@ -154,25 +189,23 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
     }
   };
 
-  ngOnInit () {
+  ngOnInit() {
     this.initializeMap();
-    this.soilsService.showTableModal.subscribe((show:boolean) => {
-      if (show)
-      {
+    this.soilsService.showTableModal.subscribe((show: boolean) => {
+      if (show) {
         this.soilsTableModal.show();
       } else {
         this.soilsTableModal.hide();
       }
     });
-    this.notificationsService.openNotificationsModal.subscribe((notification:PMLONotification) => {
+    this.notificationsService.openNotificationsModal.subscribe((notification: PMLONotification) => {
       this.notificationHeader = notification.header;
       this.notificationBody = notification.body;
       this.notificationsModal.show();
     });
 
-    this.accordionPanelService.setActivePanel.subscribe((panel:AccordionPanelComponent) => {
-      switch (panel)
-      {
+    this.accordionPanelService.setActivePanel.subscribe((panel: AccordionPanelComponent) => {
+      switch (panel) {
         case this.sensAreasAccPanel:
           this.esrimapService.sensAreasAccordionOpen.emit(panel.opened);
           break;
@@ -191,19 +224,19 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.esrimapService.sensAreasAccordionOpen.subscribe((open:boolean) => {
+    this.esrimapService.sensAreasAccordionOpen.subscribe((open: boolean) => {
       this.sensAreasAccPanel.opened = open;
     });
 
-    this.esrimapService.harvOpAccordionOpen.subscribe((open:boolean) => {
+    this.esrimapService.harvOpAccordionOpen.subscribe((open: boolean) => {
       this.harvestAccPanel.opened = open;
     });
 
-    this.esrimapService.regOpAccordionOpen.subscribe((open:boolean) => {
+    this.esrimapService.regOpAccordionOpen.subscribe((open: boolean) => {
       this.regenerationAccPanel.opened = open;
     });
 
-    this.esrimapService.openHelp.subscribe((helpObj:PMLOHelpObj) => {
+    this.esrimapService.openHelp.subscribe((helpObj: PMLOHelpObj) => {
       this.helpHeader = helpObj.header;
       this.helpItem = helpObj.itemName;
       this.helpModal.show();
