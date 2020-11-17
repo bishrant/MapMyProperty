@@ -130,6 +130,7 @@ export class HarvestOperationsComponent implements OnInit {
 
   clearSoilGLayers(): void {
     this.soilsService.clearSoilGLayers(this.pmloSoilsGL, this.pmloSoilLabelsGL);
+    this.esrimapService.harvOpAccordionOpen.emit(false);
   }
 
   buildOperationsReport(): void {
