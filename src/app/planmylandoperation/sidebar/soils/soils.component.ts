@@ -21,6 +21,7 @@ import { ReportsService } from '../../pmloUtils/reports.service';
 import { EsrimapService } from '../../esrimap/esrimap.service';
 import { PMLONotification } from '../../models/pmloNotification.model';
 import { NotificationsService } from '../../pmloUtils/notifications.service';
+import { HelpService } from 'src/app/shared/services/help/help.service';
 
 @Component({
   selector: 'pmlo-soils',
@@ -62,7 +63,8 @@ export class SoilsComponent implements OnInit {
     private appConfig: AppConfiguration,
     private reportsService: ReportsService,
     private esriMapService: EsrimapService,
-    private notificationsService:NotificationsService
+    private notificationsService:NotificationsService,
+    private helpService:HelpService
   ) { }
 
   ngOnInit(): void {
@@ -311,7 +313,7 @@ export class SoilsComponent implements OnInit {
   }
 
   openHelp():void {
-    this.esriMapService.openHelp.emit({header: 'Soils', itemName: 'soils'});
+    this.helpService.openHelp.emit({header: 'Soils', itemName: 'soils'});
   }
 
   private checkIfOrange(val:number):void {

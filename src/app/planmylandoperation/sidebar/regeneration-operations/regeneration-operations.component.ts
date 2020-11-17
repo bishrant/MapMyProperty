@@ -1,6 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { HelpService } from 'src/app/shared/services/help/help.service';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { GreaterThanMaxArea } from 'src/app/shared/utils/GeometryEngine';
 import { EsrimapService } from '../../esrimap/esrimap.service';
@@ -40,7 +41,7 @@ export class RegenerationOperationsComponent implements OnInit {
     private esrimapService:EsrimapService,
     private decimalPipe:DecimalPipe,
     private notificationsService:NotificationsService,
-    private esriMapService:EsrimapService
+    private helpService:HelpService
   ) { }
 
   ngOnInit(): void {
@@ -137,6 +138,6 @@ export class RegenerationOperationsComponent implements OnInit {
   }
 
   openHelp():void {
-    this.esriMapService.openHelp.emit({header: 'Regeneration Operations', itemName: 'regOperations'});
+    this.helpService.openHelp.emit({header: 'Regeneration Operations', itemName: 'regOperations'});
   }
 }
