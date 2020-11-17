@@ -2,6 +2,7 @@ import { produce, PatchListener } from 'immer';
 import { addGraphics, Actions, removeGraphics, updateGraphics, removeAllGraphics } from './graphics.actions';
 import { undoRedo } from './ngrx-undo';
 import { initialGraphicState } from './graphics.state';
+import { ActionReducer } from '@ngrx/store';
 
 const getGraphicsForUpate = (next: any, action: any) => {
   const _updatedGraphics = JSON.parse(action.graphics);
@@ -64,7 +65,7 @@ const reducer = (state: any, action: any, listener?: PatchListener): any => {
 
 const undoableReducer = undoRedo({ track: true, maxBufferSize: 32 })(reducer);
 
-const GraphicsReducer = (state = initialGraphicState, action: Actions) => {
+const GraphicsReducer = (state = initialGraphicState, action: Actions): ActionReducer<any> => {
   return undoableReducer(state, action);
 };
 
