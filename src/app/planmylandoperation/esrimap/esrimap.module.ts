@@ -5,7 +5,6 @@ import { NgModule } from '@angular/core';
 import { SidebarModule } from '../sidebar/sidebar.module';
 import { DrawtoolsModule } from 'src/app/shared/components/drawtools/drawtools.module';
 import { MatSliderModule } from '@angular/material/slider';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { SensAreasComponent } from '../sidebar/sens-areas/sens-areas.component';
@@ -49,7 +48,6 @@ import { ElevationHelpModule } from 'src/app/shared/components/elevation-help/el
     SidebarModule,
     DrawtoolsModule,
     MatSliderModule,
-    MatInputModule,
     MatButtonModule,
     FormsModule,
     ElevationProfileModule,

@@ -5,7 +5,7 @@
       <app-accordion-panel title="Draw">
         <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
         [geomLabelsSketchVM]= "geomLabelsSketchVM" [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer"
-          (selectedTextGraphicsChanged)="textGraphicsChanged($event)">
+        [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer" [polygonGraphicsLayer]="polygonGraphicsLayer">
         </app-drawtools>
       </app-accordion-panel>
 
@@ -21,9 +21,6 @@
       <app-accordion-panel title="Export Map to PDF">
         <app-print-tool [map]="mapView"></app-print-tool>
       </app-accordion-panel>
-
-
-
     </app-accordion>
 
     <!-- <app-slider></app-slider> -->
