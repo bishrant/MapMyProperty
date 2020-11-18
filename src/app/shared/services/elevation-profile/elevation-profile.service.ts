@@ -257,6 +257,6 @@ export class ElevationProfileService {
   }
 
   public openHelp(): void {
-    this.helpService.openHelp.emit({ header: 'Elevation Profiles', itemName: 'elevation' });
+    this.helpService.openHelp.emit({ header: 'Elevation Profile', itemName: 'elevation' });
   }
 }
