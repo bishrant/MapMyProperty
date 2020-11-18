@@ -4,6 +4,7 @@ import Polygon from 'esri/geometry/Polygon';
 import webMercatorUtils = require('esri/geometry/support/webMercatorUtils');
 
 const CreateGraphic = (geom: any) => {
+
   return webMercatorUtils.webMercatorToGeographic(geom) as any;
 }
 const createWebMercatorLineFromGraphic = (gJson: any) => {
@@ -14,8 +15,23 @@ const createWebMercatorPointFromGraphic = (gJson: any) => {
   return CreateGraphic(new Point(gJson.geometry));
 }
 
+function fixRingOrder(polygon: Polygon) {
+  let nr = [];
+  polygon.rings.forEach(r => {
+      if (!polygon.isClockwise(r)) {
+          nr.push(r.reverse());
+      } else {
+          nr.push(r);
+      }
+  });
+  polygon.rings = nr.slice();
+  return polygon;
+}
+
 const createWebMercatorPolygonFromGraphic = (gJson: any) => {
-  return CreateGraphic(new Polygon(gJson.geometry));
+  const polygon = new Polygon(gJson.geometry);
+  const newPolygon = fixRingOrder(polygon);
+  return CreateGraphic(newPolygon);
 }
 
 export { createWebMercatorLineFromGraphic, createWebMercatorPointFromGraphic, createWebMercatorPolygonFromGraphic }

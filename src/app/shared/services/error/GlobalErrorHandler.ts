@@ -10,7 +10,6 @@ export class GlobalErrorHandler implements ErrorHandler {
     constructor(private injector: Injector) { }
 
     handleError(error: any) {
-        // console.log(`custom errr ${error}`);
         const errorService = this.injector.get(ErrorService);
         const logger = this.injector.get(LoggingService);
         const notifier = this.injector.get(NotificationService);
