@@ -377,7 +377,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   clearDrawTools = () => {
     this.sketchVM.cancel();
     if (this.clickToAddTextboxHandler) {
-      console.log(this.clickToAddTextboxHandler);
       this.clickToAddTextboxHandler = undefined;
     }
     this.ResetDrawControls();
@@ -400,7 +399,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.detectTextGraphics();
     }
     this.textSubscription = this.textService.textGraphicState$.subscribe((t) => {
-      console.log(t);
       if (t === null) {
         this.selectedTextGraphics = [];
         this.selectedLabelsGraphics = [];
@@ -438,7 +436,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
     if (toolName === 'text') {
-      console.log(this.mapView);
       this.ClickToAddTextbox();
     } else {
       this.sketchVM.create(toolName, { mode: this.drawingMode, type: toolName });
@@ -455,7 +452,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   changeDrawingMode = () => {
-    console.log(this.drawingMode);
     if (this.drawingTool !== '') {
       this.startDrawingGraphics(this.drawingTool, false);
     }
@@ -505,9 +501,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
           labels.push(_specific);
         } else {
           let a = this.textService.creatGeomLabelGraphic(anchorPt, _specific.attributes.symbol, parent);
-          console.log((a.symbol as any).text, (_specific.symbol as any).text);
           if ((a.symbol as any).text === (_specific.symbol as any).text) {
-            console.log('***');
             labels.push(_specific);
           } else {
             labels.push(a);

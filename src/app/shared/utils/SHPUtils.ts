@@ -1,8 +1,8 @@
 import * as shp from 'shpjs';
 import { convertFeatureCollectionToGraphics } from './FeatureCollectionUtils';
 import { getDefaultSymbol } from './DefaultSymbols';
-import * as shpwrite from 'shp-write';
-import * as shpwriteGeoJSON from 'shp-write/src/geojson';
+import * as shpwrite from './lib/shp-write';
+import * as shpwriteGeoJSON from './lib/shp-write/src/geojson';
 import { arcgisToGeoJSON } from './GeoJSONUtils';
 import { createWebMercatorPointFromGraphic, createWebMercatorPolygonFromGraphic, createWebMercatorLineFromGraphic } from './WebMercatorUtils';
 import { addGraphics } from '../store/graphics.actions';
@@ -72,10 +72,10 @@ const zipToSHP_AGOL = (file: File, store: any) => {
         const graphicArray: any = [];
         result.featureCollection.layers.forEach((layer: any) => {
           const g = layer.layerDefinition.geometryType;
-          console.log(g);
+
           const geometryType = g.split('esriGeometry')[1].toLowerCase();
           layer.featureSet.features.forEach((feature: any) => {
-            console.log(feature);
+
             const _g = feature.geometry;
             _g.type = geometryType;
             const _graphic = new Graphic({
@@ -117,10 +117,8 @@ const readerCompleteMultiple = (zipReader: any, file: any, store: any) => {
           const _graphics = convertFeatureCollectionToGraphics(_featureCollection);
           graphicsArray = graphicsArray.concat(_graphics);
           if (i >= nestedZips.length - 1) {
-            console.log(graphicsArray);
             store.dispatch(addGraphics({ graphics: graphicsArray }));
           }
-          console.log(graphicsArray);
         }
       } else {
         try {
@@ -210,12 +208,9 @@ const downloadSHP = async (data: any, filename: string) => {
       geometry: _geom.toJSON(),
       attributes: { id: _f.attributes.id }
     };
-    console.log(_ff);
     geoJSONStructure.features.push(_ff);
   });
-  console.log(geoJSONStructure);
-  const geoj = arcgisToGeoJSON(geoJSONStructure, null);
-  console.log(geoj);
+  const geoj = arcgisToGeoJSON(geoJSONStructure, 'id');
   // a GeoJSON bridge for features
 
   const shps = [];
@@ -230,23 +225,22 @@ const downloadSHP = async (data: any, filename: string) => {
   }
 
   if (geometryAvailable.indexOf('polygon') > -1) {
-    shps.push({ type: 'polygon', geom: await shpWriteFromJSON(shpwriteGeoJSON.polygon(geoj)) });
+    const ggg = shpwriteGeoJSON.polygon(geoj);
+    shps.push({ type: 'polygon', geom: await shpWriteFromJSON(ggg) });
   }
 
   const filesArray: any = [];
   const fileNamesArray: any = [];
   shps.forEach((f: any) => {
-    console.log(f);
     const p = f.type + '.';
     const g = f.geom;
     filesArray.push(g.shp.buffer, g.dbf.buffer, g.shx.buffer, g.prj);
     fileNamesArray.push(p + 'shp', p + 'dbf', p + 'shx', p + 'prj');
   })
-  console.log(filesArray, fileNamesArray);
+
   zipClass.addFiles(fileNamesArray, filesArray, function () {
     zipClass.getBlobURL()
       .then((blobURL: any) => {
-        console.log(blobURL);
         const dlink = document.createElement('a');
         dlink.download = filename;
         dlink.href = blobURL;

@@ -1,6 +1,6 @@
 const defaultTextSymbol = {
   type: 'text',
-  color: { r: 100, g: 20, b: 5, a: 1 },
+  color: { r: 255, g: 255, b: 0, a: 1 },
   text: 'test',
   yoffset: -6,
   font: { size: '18px', family: 'Arial', weight: 'normal', decoration: 'none', style: 'normal' },
@@ -16,20 +16,20 @@ const defaultPointSymbol: any = {
   style: 'circle',
   contentType: 'image/svg',
   name: 'circle',
-  color: { r: 100, g: 20, b: 5, a: 1 }
+  color: { r: 255, g: 255, b: 0, a: 1 }
 };
 const defaultLineSymbol: any = {
   type: 'simple-line',
-  color: { r: 100, g: 20, b: 5, a: 1 },
+  color: { r: 255, g: 255, b: 0, a: 1 },
   style: 'solid',
   width: 2
 };
 
 const defaultPolygonSymbol: any = {
   type: 'simple-fill',
-  color: { r: 0, g: 0, b: 0, a: 0.5 },
+  color: { r: 0, g: 0, b: 0, a: 0 },
   style: 'solid',
-  outline: { color: { r: 100, g: 20, b: 5, a: 1 }, width: 2, style: 'solid' }
+  outline: { color: { r: 255, g: 255, b: 0, a: 1 }, width: 2, style: 'solid' }
 };
 
 const getDefaultSymbol: any = (geometryType: string) => {

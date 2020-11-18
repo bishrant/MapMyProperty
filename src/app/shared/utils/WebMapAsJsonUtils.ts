@@ -5,7 +5,6 @@ import WMSLayer from 'esri/layers/WMSLayer';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 
 const GetWebMapAsJsonString = (mv: MapView, boundaryExtent:__esri.Extent) => {
-  console.log(mv);
   const webMapAsJson = {
     operationalLayers: GetOperationalLayers(mv.map),
     baseMap: GetBasemap(mv.map),
