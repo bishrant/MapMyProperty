@@ -15,7 +15,7 @@
  */
 
 // checks if 2 x,y points are equal
-function pointsEqual (a: any, b:any) {
+function pointsEqual(a: any, b: any) {
   for (let i = 0; i < a.length; i++) {
     if (a[i] !== b[i]) {
       return false;
@@ -25,7 +25,7 @@ function pointsEqual (a: any, b:any) {
 }
 
 // checks if the first and last points of a ring are equal and closes the ring
-function closeRing (coordinates: any) {
+function closeRing(coordinates: any) {
   if (!pointsEqual(coordinates[0], coordinates[coordinates.length - 1])) {
     coordinates.push(coordinates[0]);
   }
@@ -35,7 +35,7 @@ function closeRing (coordinates: any) {
 // determine if polygon ring coordinates are clockwise. clockwise signifies outer ring, counter-clockwise an inner ring
 // or hole. this logic was found at http://stackoverflow.com/questions/1165647/how-to-determine-if-a-list-of-polygon-
 // points-are-in-clockwise-order
-function ringIsClockwise (ringToTest: any) {
+function ringIsClockwise(ringToTest: any) {
   let total = 0;
   let i = 0;
   const rLength = ringToTest.length;
@@ -50,7 +50,7 @@ function ringIsClockwise (ringToTest: any) {
 }
 
 // ported from terraformer.js https://github.com/Esri/Terraformer/blob/master/terraformer.js#L504-L519
-function vertexIntersectsVertex (a1: any, a2: any, b1: any, b2: any) {
+function vertexIntersectsVertex(a1: any, a2: any, b1: any, b2: any) {
   const uaT = ((b2[0] - b1[0]) * (a1[1] - b1[1])) - ((b2[1] - b1[1]) * (a1[0] - b1[0]));
   const ubT = ((a2[0] - a1[0]) * (a1[1] - b1[1])) - ((a2[1] - a1[1]) * (a1[0] - b1[0]));
   const uB = ((b2[1] - b1[1]) * (a2[0] - a1[0])) - ((b2[0] - b1[0]) * (a2[1] - a1[1]));
@@ -68,7 +68,7 @@ function vertexIntersectsVertex (a1: any, a2: any, b1: any, b2: any) {
 }
 
 // ported from terraformer.js https://github.com/Esri/Terraformer/blob/master/terraformer.js#L521-L531
-function arrayIntersectsArray (a: any, b: any) {
+function arrayIntersectsArray(a: any, b: any) {
   for (let i = 0; i < a.length - 1; i++) {
     for (let j = 0; j < b.length - 1; j++) {
       if (vertexIntersectsVertex(a[i], a[i + 1], b[j], b[j + 1])) {
@@ -81,12 +81,12 @@ function arrayIntersectsArray (a: any, b: any) {
 }
 
 // ported from terraformer.js https://github.com/Esri/Terraformer/blob/master/terraformer.js#L470-L480
-function coordinatesContainPoint (coordinates: any, point: any) {
+function coordinatesContainPoint(coordinates: any, point: any) {
   let contains = false;
   for (let i = -1, l = coordinates.length, j = l - 1; ++i < l; j = i) {
     if (((coordinates[i][1] <= point[1] && point[1] < coordinates[j][1]) ||
-           (coordinates[j][1] <= point[1] && point[1] < coordinates[i][1])) &&
-          (point[0] < (((coordinates[j][0] - coordinates[i][0]) * (point[1] - coordinates[i][1])) / (coordinates[j][1] - coordinates[i][1])) + coordinates[i][0])) {
+      (coordinates[j][1] <= point[1] && point[1] < coordinates[i][1])) &&
+      (point[0] < (((coordinates[j][0] - coordinates[i][0]) * (point[1] - coordinates[i][1])) / (coordinates[j][1] - coordinates[i][1])) + coordinates[i][0])) {
       contains = !contains;
     }
   }
@@ -94,7 +94,7 @@ function coordinatesContainPoint (coordinates: any, point: any) {
 }
 
 // ported from terraformer-arcgis-parser.js https://github.com/Esri/terraformer-arcgis-parser/blob/master/terraformer-arcgis-parser.js#L106-L113
-function coordinatesContainCoordinates (outer: any, inner: any) {
+function coordinatesContainCoordinates(outer: any, inner: any) {
   const intersects = arrayIntersectsArray(outer, inner);
   const contains = coordinatesContainPoint(outer, inner[0]);
   if (!intersects && contains) {
@@ -106,27 +106,40 @@ function coordinatesContainCoordinates (outer: any, inner: any) {
 // do any polygons in this array contain any other polygons in this array?
 // used for checking for holes in arcgis rings
 // ported from terraformer-arcgis-parser.js https://github.com/Esri/terraformer-arcgis-parser/blob/master/terraformer-arcgis-parser.js#L117-L172
-function convertRingsToGeoJSON (rings: any) {
+function convertRingsToGeoJSON(rings: any) {
   const outerRings = [];
   const holes = [];
   let x; // iterator
   let outerRing; // current outer ring being evaluated
   let hole; // current hole being evaluated
 
-  // for each ring
-  for (let r = 0; r < rings.length; r++) {
-    const ring = closeRing(rings[r].slice(0));
-    if (ring.length < 4) {
-      continue;
-    }
-    // is this ring an outer ring? is it clockwise?
-    if (ringIsClockwise(ring)) {
-      const polygon = [ring.slice().reverse()]; // wind outer rings counterclockwise for RFC 7946 compliance
-      outerRings.push(polygon); // push to outer rings
+
+  if (rings.length === 1) {
+    const ring = closeRing(rings[0].slice(0));
+    if (!ringIsClockwise(ring)) {
+      const polygon = [ring.slice().reverse()];
+      outerRings.push(polygon);
     } else {
-      holes.push(ring.slice().reverse()); // wind inner rings clockwise for RFC 7946 compliance
+      outerRings.push([ring.slice()])
+    }
+  } else {
+    // for each ring
+    for (let r = 0; r < rings.length; r++) {
+      const ring = closeRing(rings[r].slice(0));
+      if (ring.length < 4) {
+        continue;
+      }
+      // is this ring an outer ring? is it clockwise?
+      if (ringIsClockwise(ring)) {
+        const polygon = [ring.slice().reverse()]; // wind outer rings counterclockwise for RFC 7946 compliance
+        outerRings.push(polygon); // push to outer rings
+      } else {
+        holes.push(ring.slice().reverse()); // wind inner rings clockwise for RFC 7946 compliance
+      }
     }
   }
+
+
 
   const uncontainedHoles = [];
 
@@ -193,7 +206,7 @@ function convertRingsToGeoJSON (rings: any) {
 // This function ensures that rings are oriented in the right directions
 // outer rings are clockwise, holes are counterclockwise
 // used for converting GeoJSON Polygons to ArcGIS Polygons
-function orientRings (poly: any) {
+function orientRings(poly: any) {
   const output = [];
   const polygon = poly.slice(0);
   const outerRing = closeRing(polygon.shift().slice(0));
@@ -220,7 +233,7 @@ function orientRings (poly: any) {
 
 // This function flattens holes in multipolygons to one array of polygons
 // used for converting GeoJSON Polygons to ArcGIS Polygons
-function flattenMultiPolygonRings (rings: string | any[]) {
+function flattenMultiPolygonRings(rings: string | any[]) {
   const output = [];
   for (let i = 0; i < rings.length; i++) {
     const polygon = orientRings(rings[i]);
@@ -234,7 +247,7 @@ function flattenMultiPolygonRings (rings: string | any[]) {
 
 // shallow object clone for feature properties and attributes
 // from http://jsperf.com/cloning-an-object/2
-function shallowClone (obj: any) {
+function shallowClone(obj: any) {
   const target: any = {};
   for (const i in obj) {
     if (obj.hasOwnProperty(i)) {
@@ -244,14 +257,14 @@ function shallowClone (obj: any) {
   return target;
 }
 
-function getId (attributes: any, idAttribute: any) {
+function getId(attributes: any, idAttribute: any) {
   const keys = idAttribute ? [idAttribute, 'OBJECTID', 'FID'] : ['OBJECTID', 'FID'];
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
     if (
       key in attributes &&
-        (typeof attributes[key] === 'string' ||
-          typeof attributes[key] === 'number')
+      (typeof attributes[key] === 'string' ||
+        typeof attributes[key] === 'number')
     ) {
       return attributes[key];
     }
@@ -261,7 +274,7 @@ function getId (attributes: any, idAttribute: any) {
 
 
 
-export function arcgisToGeoJSON (arcgis: any, idAttribute: any) {
+export function arcgisToGeoJSON(arcgis: any, idAttribute: any) {
   let geojson: any = {};
 
   if (arcgis.features) {
@@ -301,9 +314,9 @@ export function arcgisToGeoJSON (arcgis: any, idAttribute: any) {
 
   if (
     typeof arcgis.xmin === 'number' &&
-      typeof arcgis.ymin === 'number' &&
-      typeof arcgis.xmax === 'number' &&
-      typeof arcgis.ymax === 'number'
+    typeof arcgis.ymin === 'number' &&
+    typeof arcgis.xmax === 'number' &&
+    typeof arcgis.ymax === 'number'
   ) {
     geojson.type = 'Polygon';
     geojson.coordinates = [[
@@ -335,8 +348,8 @@ export function arcgisToGeoJSON (arcgis: any, idAttribute: any) {
 
   if (
     arcgis.spatialReference &&
-      arcgis.spatialReference.wkid &&
-      arcgis.spatialReference.wkid !== 4326
+    arcgis.spatialReference.wkid &&
+    arcgis.spatialReference.wkid !== 4326
   ) {
     console.warn('Object converted in non-standard crs - ' + JSON.stringify(arcgis.spatialReference));
   }
@@ -344,7 +357,7 @@ export function arcgisToGeoJSON (arcgis: any, idAttribute: any) {
   return geojson;
 }
 
-export function geojsonToArcGIS (geojson: any, idAttribute: any) {
+export function geojsonToArcGIS(geojson: any, idAttribute: any) {
   idAttribute = idAttribute || 'OBJECTID';
   const spatialReference = { wkid: 4326 };
   let result: any = {};
