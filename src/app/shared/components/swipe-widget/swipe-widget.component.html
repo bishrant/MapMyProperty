@@ -3,27 +3,30 @@
 </button>
 
 <div [hidden]="!state.open" class="swipeWidgetBody basemap-open">
-  <div class="basemapTitle">Swipe Layers</div>
-  <div style="flex: 1;">
+  <div class="widget-title">Swipe Layers</div>
+  <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle" (click)="openHelp()"></fa-icon>
+
+  <div class="swipeBodyContainer">
     {{swipeMode === 'horizontal' ? 'Left Layer' : 'Top Layer'}} <br>
-    <select [(ngModel)]="firstLayer" aria-label="first layer" (ngModelChange)="changeFirstLayer($event)">
-      <option *ngFor="let x of texasBasemaps" [value]="x">
+    <select [(ngModel)]="firstLayer" aria-label="first layer" (ngModelChange)="changeSwipeLayers('leading')">
+      <option *ngFor="let x of texasBasemaps" [value]="x" [disabled]="x === secondLayer">
         {{x}}
       </option>
     </select>
 
     <br>
     {{swipeMode === 'horizontal' ? 'Right Layer' : 'Bottom Layer'}}<br>
-    <select [(ngModel)]="secondLayer" aria-label="second layer" (ngModelChange)="changeSecondLayer($event)">
-      <option *ngFor="let x of texasBasemaps" [value]="x">
+    <select [(ngModel)]="secondLayer" aria-label="second layer" (ngModelChange)="changeSwipeLayers('trailing')">
+      <option *ngFor="let x of texasBasemaps" [value]="x" [disabled]="x === firstLayer">
         {{x}}
       </option>
     </select>
 
   <br>
+  Swipe Direction:<br>
     <div class="swipeMode">
-      <button (click)="setSwipeMode('horizontal')" >Left right</button>
-      <button (click)="setSwipeMode('vertical')" >Top bottom</button>
+      <button (click)="setSwipeMode('horizontal')"  class="swipeDirection" [ngClass]="{swipeSelected: swipeMode === 'horizontal'}">Left-Right</button>
+      <button (click)="setSwipeMode('vertical')" class="swipeDirection" [ngClass]="{swipeSelected: swipeMode === 'vertical'}">Top-Bottom</button>
     </div>
 
   </div>
