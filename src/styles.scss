@@ -227,23 +227,23 @@ $sliderBase: 6px;
 }
 
 .pmloSoilsTable .ui-modal {
-  width: 37.5rem;
+  width: 37.5em;
   /* for resize limits use min-width, min-height, max-width, max-height in css */
 }
 
 .notificationsModal .ui-modal {
-  min-width: 22rem;
-  max-width: 37.5rem;
+  min-width: 22em;
+  max-width: 37.5em;
 }
 
 .helpModal .ui-modal {
-  width: 31.25rem;
+  width: 31.25em;
 }
 
 .helpModal .ui-modal-body {
-  max-height: 25rem;
+  max-height: 25em;
   overflow-y: auto;
-  margin: .625rem 1rem;
+  margin: .625em 1em;
   padding: 0;
 }
 
