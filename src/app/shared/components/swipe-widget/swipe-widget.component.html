@@ -1,0 +1,30 @@
+<button (click)="toggle()" class="swipeToggleBtn" [ngClass]="{selectedBtn: state.open}">
+  <img src="assets/icons/swipe.png" aria-label="swipe layers" />
+</button>
+
+<div [hidden]="!state.open" class="swipeWidgetBody basemap-open">
+  <div class="basemapTitle">Swipe Layers</div>
+  <div style="flex: 1;">
+    {{swipeMode === 'horizontal' ? 'Left Layer' : 'Top Layer'}} <br>
+    <select [(ngModel)]="firstLayer" aria-label="first layer" (ngModelChange)="changeFirstLayer($event)">
+      <option *ngFor="let x of texasBasemaps" [value]="x">
+        {{x}}
+      </option>
+    </select>
+
+    <br>
+    {{swipeMode === 'horizontal' ? 'Right Layer' : 'Bottom Layer'}}<br>
+    <select [(ngModel)]="secondLayer" aria-label="second layer" (ngModelChange)="changeSecondLayer($event)">
+      <option *ngFor="let x of texasBasemaps" [value]="x">
+        {{x}}
+      </option>
+    </select>
+
+  <br>
+    <div class="swipeMode">
+      <button (click)="setSwipeMode('horizontal')" >Left right</button>
+      <button (click)="setSwipeMode('vertical')" >Top bottom</button>
+    </div>
+
+  </div>
+</div>

@@ -1,12 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, Input } from '@angular/core';
 import Basemap from 'esri/Basemap';
-import ImageryLayer from 'esri/layers/ImageryLayer';
 import Layer from 'esri/layers/Layer';
 import MapImageLayer from 'esri/layers/MapImageLayer';
-import WMSLayer from 'esri/layers/WMSLayer';
 import { createBingBasemap } from '../../utils/CreateMapView';
 const watchUtils = require('esri/core/watchUtils');
+import { googleWMSlayer, texasBasemaps, texasBasemapsDict } from '../../layers/NAIPLayers';
 
 @Component({
   selector: 'app-basemap-widget',
@@ -21,6 +20,9 @@ export class BasemapWidgetComponent implements AfterViewInit {
   updatedDate: Date;
   loading = false;
   _tnrisURL = "https://webservices.tnris.org/arcgis/rest/services/";
+  texasBasemaps= texasBasemaps;
+  texasBasemapsDict = texasBasemapsDict;
+  googleWMSlayer = googleWMSlayer;
 
   basemaps: any = [
     { label: 'Bing Hybrid', value: 'bing', image: 'bing' },
@@ -35,42 +37,6 @@ export class BasemapWidgetComponent implements AfterViewInit {
     open: false,
     basemap: this.basemaps[0]
   };
-
-  topo1996 = new ImageryLayer({ url: this._tnrisURL + "TOP/TOP96_CIR_1m/ImageServer", id: 'topo1996' });
-  naip2004 = new ImageryLayer({ url: this._tnrisURL + "NAIP/NAIP04_CIR_1m/ImageServer", id: 'TX NAIP 2004' });
-  topo2008 = new ImageryLayer({ url: this._tnrisURL + "TOP/TOP08_NC_50cm/ImageServer", id: 'TX TOPO 2008' });
-  topo2009 = new ImageryLayer({ url: this._tnrisURL + "TOP/TOP09_NC_50cm/ImageServer", id: 'TX TOPO 2009' });
-  naip2010 = new ImageryLayer({ url: this._tnrisURL + "NAIP/NAIP10_NC_CIR_1m/ImageServer", id: 'TX NAIP 2010' });
-  naip2012 = new ImageryLayer({ url: this._tnrisURL + "NAIP/NAIP12_NC_CIR_1m/ImageServer", id: 'TX NAIP 2012' });
-  naip2014 = new ImageryLayer({ url: this._tnrisURL + "NAIP/NAIP14_NC_CIR_1m/ImageServer", id: 'TX NAIP 2014' });
-  topo2015 = new ImageryLayer({ url: this._tnrisURL + "TOP/TOP15_NC_CIR_50cm/ImageServer", id: 'TX TOPO 2015' });
-  naip2016 = new ImageryLayer({ url: this._tnrisURL + "NAIP/NAIP16_NC_CIR_1m/ImageServer", id: 'TX NAIP 2016' });
-  naip2018 = new ImageryLayer({ url: this._tnrisURL + "NAIP/NAIP18_NC_CIR_60cm/ImageServer", id: 'TX NAIP 2018' });
-
-
-  googleWMSlayer = new WMSLayer({
-    url: "https://txgi.tnris.org/login/path/normal-citizen-medical-trick/wms?",
-    id: 'TX Google 6-inch',
-    customParameters: { version: "1.1.1", visibleLayers: ["texas"] }
-  });
-
-  texasBasemaps = ["TX Google 6-inch","TX NAIP 2018", "TX NAIP 2016", "TX TOPO 2015", "TX NAIP 2014",
-    "TX NAIP 2012", "TX NAIP 2010",
-    "TXe TOPO 2009", "TXw TOPO 2008", "TX NAIP 2004", "TX TOPO 1996"];
-
-  texasBasemapsDict = {
-    "TX Google 6-inch": this.googleWMSlayer,
-    "TX NAIP 2018": this.naip2018,
-    "TX NAIP 2016": this.naip2016,
-    "TX TOPO 2015": this.topo2015,
-    "TX NAIP 2014": this.naip2014,
-    "TX NAIP 2012": this.naip2012,
-    "TX NAIP 2010": this.naip2010,
-    "TXe TOPO 2009": this.topo2009,
-    "TXw TOPO 2008": this.topo2008,
-    "TX NAIP 2004": this.naip2004,
-    "TX TOPO 1996": this.topo1996,
-  }
 
   selectedTexasBasemap = this.texasBasemaps[0];
 
