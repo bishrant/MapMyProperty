@@ -4,7 +4,6 @@
 
 <div [hidden]="!state.open" class="swipeWidgetBody basemap-open">
   <div class="widget-title">Swipe Layers</div>
-  <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle" (click)="openHelp()"></fa-icon>
 
   <div class="swipeBodyContainer">
     {{swipeMode === 'horizontal' ? 'Left Layer' : 'Top Layer'}} <br>
