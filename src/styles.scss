@@ -254,3 +254,7 @@ $sliderBase: 6px;
 .pmloModal .ui-modal-header {
   @apply bg-pmlo_primary !important;
 }
+
+.esri-swipe__container {
+  outline-width: 0 !important;
+}

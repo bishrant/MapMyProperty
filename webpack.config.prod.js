@@ -25,13 +25,6 @@ module.exports = {
       features: {
         '3d': true
       },
-      userDefinedExcludes: [
-        "arcgis-js-api/layers/BingMapsLayer",
-        "arcgis-js-api/layers/CSVLayer",
-        "arcgis-js-api/layers/GeoRSSLayer",
-        "arcgis-js-api/layers/OpenStreetMapLayer",
-      "arcgis-js-api/layers/StreamLayer",
-      ],
       locales: ['en']
     })
   ],

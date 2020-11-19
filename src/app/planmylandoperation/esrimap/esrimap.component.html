@@ -59,6 +59,7 @@
     <div #mapViewNode class="mapViewNode " id="parent">
       <div id="textboxes"></div>
       <app-basemap-widget [mapView]="mapView"></app-basemap-widget>
+      <app-swipe-widget [mapView]="mapView"></app-swipe-widget>
     </div>
     <app-graphic-store #graphicsStore [sketchVM]="sketchVM" [textGraphicsLayer]="textGraphicsLayer"
       class="graphicsControls">

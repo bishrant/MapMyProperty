@@ -1,0 +1,89 @@
+$right: 1em;
+
+.basemapContainer {
+  position: absolute;
+  right: $right;
+  top: 1em;
+  background: gray;
+}
+
+.basemapContainer.basemap-open {
+  background: gray;
+  width: 24em;
+  height: 24em;
+  overflow: auto;
+}
+
+.swipeToggleBtn {
+  position: absolute;
+  top: 8em;
+  right: $right;
+  height: var(--map-button-height);
+  width: var(--map-button-width);
+}
+.swipeToggleBtn.selectedBtn{
+  box-sizing: border-box;
+    border: 2px solid cyan;
+}
+
+.swipeWidgetBody {
+  position: absolute;
+  top: 12em;
+  right: $right;
+  height: 19em;
+  width: 15em;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px #0000009c;
+}
+
+option:disabled {
+  color: #7d7d7d;
+  background: #4c434340;
+}
+.swipeBodyContainer {
+  flex: 1;
+  margin-top: 1.5em;
+}
+
+title {
+  display: block;
+}
+.widget-title {
+  height: 2.5em;
+  display: flex;
+  background: black;
+  width: 100%;
+  color: white;
+  align-items: center;
+  text-align: left;
+  padding-left: 15px;
+}
+.swipeDirection {
+  background: lightgray;
+  border: 1px solid black;
+  margin: 5px;
+  padding: 0.3em;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.swipeSelected{
+  box-shadow: 0 0 8px #1d8faf;
+    border: 1px solid #1d8faf;
+}
+select {
+  display: block;
+  margin: auto;
+  width: 10em;
+  height: 2em;
+  border: 1px solid black;
+  box-shadow: 0 0 1px;
+}
+

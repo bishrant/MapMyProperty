@@ -30,6 +30,7 @@ import { ElevationHelpModule } from 'src/app/shared/components/help-components/e
 import { DrawHelpModule } from 'src/app/shared/components/help-components/draw-help/draw-help.module';
 import { ImportExportHelpModule } from 'src/app/shared/components/help-components/import-export-help/import-export-help.module';
 import { ExportMapHelpModule } from 'src/app/shared/components/help-components/export-map-help/export-map-help.module';
+import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-widget.module';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -60,6 +61,7 @@ import { ExportMapHelpModule } from 'src/app/shared/components/help-components/e
     CulvertSizeModule,
     PrintToolModule,
     BasemapWidgetModule,
+    SwipeWidgetModule,
     ImportExportModule,
     ElevationHelpModule,
     DrawHelpModule,
