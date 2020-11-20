@@ -31,6 +31,7 @@ import { DrawHelpModule } from 'src/app/shared/components/help-components/draw-h
 import { ImportExportHelpModule } from 'src/app/shared/components/help-components/import-export-help/import-export-help.module';
 import { ExportMapHelpModule } from 'src/app/shared/components/help-components/export-map-help/export-map-help.module';
 import { OverlayLayersWidgetModule } from 'src/app/shared/components/overlay-layers-widget/overlay-layers-widget.module';
+import { LayersHelpModule } from 'src/app/shared/components/help-components/layers-help/layers-help.module';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -66,7 +67,8 @@ import { OverlayLayersWidgetModule } from 'src/app/shared/components/overlay-lay
     DrawHelpModule,
     ImportExportHelpModule,
     ExportMapHelpModule,
-    OverlayLayersWidgetModule
+    OverlayLayersWidgetModule,
+    LayersHelpModule
   ],
   exports: [EsrimapComponent]
 })
