@@ -1,11 +1,12 @@
 import { ElementRef } from '@angular/core';
 import Map from 'arcgis-js-api/Map';
 import MapView from 'arcgis-js-api/views/MapView';
-import Search from 'arcgis-js-api/widgets/Search';
+import Search from 'esri/widgets/Search';
 import SpatialReference from 'arcgis-js-api/geometry/SpatialReference';
 import Home from 'arcgis-js-api/widgets/Home';
 import Basemap from 'esri/Basemap';
 import BingMapsLayer from 'esri/layers/BingMapsLayer';
+import Expand from 'esri/widgets/Expand';
 
 const createBingBasemap = () => {
   return new Basemap({
@@ -41,9 +42,29 @@ const createMapView = (mapViewEl: ElementRef, searchBarDiv: ElementRef): __esri.
   view.popup.autoOpenEnabled = false;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const search = new Search({ view: view, container: searchBarDiv.nativeElement });
+
+  const searchInsideMap = new Search({
+    view: view,
+    container: document.createElement('div'),
+    popupEnabled: false,
+    id: 'sss'
+  });
+
+
+  const searchExpand = new Expand({
+    id: 'searchExpand',
+    view: view,
+    content: searchInsideMap,
+    expandTooltip: 'Search',
+  })
   const homeWidget = new Home({ view });
   view.ui.move('zoom', 'bottom-right');
   view.ui.add(homeWidget, 'bottom-right');
+  view.ui.add(searchExpand, 'bottom-right');
+
+  searchInsideMap.on('select-result', () => {
+    searchExpand.collapse();
+  })
   return view;
 };
 

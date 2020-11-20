@@ -1,4 +1,4 @@
-<nav class="flex items-center justify-between flex-wrap p-6" [ngStyle]="{'background-color': headerColor}">
+<nav class="flex items-center justify-between flex-wrap" [ngStyle]="{'background-color': headerColor}">
   <div class="flex items-center flex-shrink-0 text-black hover:text-gray-700 mr-6">
     <img src="assets/TFS_Star_Maroon.png" alt="tfs logo" class="logo flex lg:hidden xl:hidden fill-current" />
     <img src="assets/TFS_Maroon.png" alt="tfs logo full" class="logo hidden lg:inline-flex xl:inline-flex  fill-current" />
@@ -7,11 +7,11 @@
   <div class="block lg:hidden">
     <button aria-label="menu" type="button" (click)="toggleHidden()"
     class="menuButton">
-      <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title>
+      <svg class="fill-current h-6 w-6" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title>
         <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path></svg>
     </button>
   </div>
-  <div class="w-full hidden flex-grow lg:flex lg:items-center lg:w-auto" [class.hidden]="isHidden" [class.block]="!isHidden">
+  <div class="w-full hidden flex-grow lg:flex lg:items-center lg:w-auto menuContainer" [class.hidden]="isHidden" [class.block]="!isHidden" >
     <div class="text-sm lg:flex-grow"></div>
     <div>
       <span class="block mt-4 lg:inline-block lg:mt-0 hover:text-white mr-4">
@@ -21,14 +21,13 @@
         href="javascript:window.open('https://www.facebook.com/sharer/sharer.php?u='+ window.location.href, '_blank')"><img
           src="assets/facebook.png" class="socialMediaIcon inline" alt="share with facebook"/></a>
         </span>
-      <a rel="noopener noreferrer" href="https://texasforestinfo.tamu.edu/Contact" target="_blank"
-      class="headerItem">
-        TexasForestInfo.com
+      <a rel="noopener noreferrer"  class="headerItem">
+        Home
       </a>
       <a href="#" class="headerItem">
         About
       </a>
-      <a href="#" class="headerItem">
+      <a href="#" class="headerItem" href="https://texasforestinfo.tamu.edu/Contact" target="_blank">
         Contact
       </a>
       <a href="#" class="headerItem">
