@@ -22,6 +22,7 @@ import { addGraphics } from 'src/app/shared/store/graphics.actions';
 import { Subscription } from 'rxjs';
 import { HelpService } from 'src/app/shared/services/help/help.service';
 import { HelpObj } from 'src/app/shared/services/help/HelpObj.model';
+import { InitializeArcGISWorkers } from 'src/app/shared/utils/ArcGISWorkersUtil';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -151,6 +152,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
 
   private initializeMap = async () => {
     try {
+      InitializeArcGISWorkers();
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       const soilsLayer: __esri.WMSLayer = CreateSoilsLayer('soilsDynamicLayer', this.appConfig.ssurgoWMSURL);
       this.mapView.map.addMany([soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer]);

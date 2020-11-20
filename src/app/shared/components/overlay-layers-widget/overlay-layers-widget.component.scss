@@ -1,0 +1,41 @@
+$right: 1em;
+
+.layersToggleBtn {
+    position: absolute;
+    top: calc(1.5em + var(--map-button-height));
+    right: $right;
+    height: var(--map-button-height);
+    width: var(--map-button-width);
+  }
+
+.layersToggleBtn.selectedBtn{
+    box-sizing: border-box;
+      border: 2px solid cyan;
+  }
+
+.layersBody {
+position: absolute;
+top: calc(4em + 3em);
+right: $right;
+max-height: 27em;
+width: 25em;
+background: white;
+display: flex;
+flex-direction: column;
+box-shadow: 0 0 10px #0000009c;
+}
+
+.layersTitle {
+    height: 2.5em;
+    display: flex;
+    background: black;
+    width: 100%;
+    color: white;
+    align-items: center;
+    text-align: left;
+    padding-left: 0.9375em;
+  }
+
+.legendTable {
+  margin-left: 1.5625em;
+}
