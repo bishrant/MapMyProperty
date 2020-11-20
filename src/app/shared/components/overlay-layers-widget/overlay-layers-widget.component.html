@@ -3,9 +3,9 @@
 </button>
 
 <div class="layersBody layers-open" [hidden]="!isOpen">
-    <div class="layersTitle mb-2">Layers</div>
-    <div class="overflow-y-auto">
-      <div class="row mx-2" *ngFor="let layer of layersList">
+    <div class="layersTitle">Layers<fa-icon class="float-right cursor-pointer" [icon]="faQuestionCircle" (click)="openHelp()"></fa-icon></div>
+    <div class="layersContent overflow-y-auto">
+      <div class="row" *ngFor="let layer of layersList">
         <label class="inline-flex cursor-pointer">
           <input #checkboxes [id]="layer.id" type="checkbox" class="m-auto form-checkbox h-5 w-5 cursor-pointer" [ngClass]="'text-' + colorPrefix + '_secondary'" (change)="updateVisibility($event.target.id)">
           <span class="checkbox-label">{{ layer.label }}</span>
@@ -13,66 +13,17 @@
 
         <table *ngIf="layer.id === wetAreasId && wetAreasLayer.visible" class="legendTable">
           <tbody>
-            <tr>
+            <tr *ngFor="let wetAreaLegendItem of wetAreasLegendList">
               <td><img
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADtJREFUOI1jYaAyYKGlgf+pYB4jqgtr2sk3qqWSgYGBxl4eNXDUwFEDRw3EYSC0CCITMKIbyEiJaTAAALLxBFAOiQ7YAAAAAElFTkSuQmCC"
-                  alt="Estuarine and Marine Deepwater">
+                  [src]="'data:image/png;base64,' + wetAreaLegendItem.imageData"
+                  [alt]="wetAreaLegendItem.label">
               </td>
-              <td>Estuarine and Marine Deepwater</td>
-            </tr>
-            <tr>
-              <td><img
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAD1JREFUOI1jYaAyYKGlgf+pYB4jigvTDi0l26RZdtEMDAw09vKogaMGjho4aiB2A2FFEJmAEd1ARkpMgwEAGpMFhlXqTNcAAAAASUVORK5CYII="
-                  alt="Estuarine and Marine Wetland">
-              </td>
-              <td>Estuarine and Marine Wetland</td>
-            </tr>
-            <tr>
-              <td><img
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAD1JREFUOI1jYaAyYKGlgf+pYB4jigvrD0uSbVKj7XMGBgYae3nUwFEDRw0cNRC7gbAiiEzAiG4gIyWmwQAAQR4F+Eun1JcAAAAASUVORK5CYII="
-                  alt="Freshwater Emergent Wetland">
-              </td>
-              <td>Freshwater Emergent Wetland</td>
-            </tr>
-            <tr>
-              <td><img
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADtJREFUOI1jYaAyYKGlgf+pYB4jqgvbzck3qvIkAwMDjb08auCogaMGjhqIw0BoEUQmYEQ3kJES02AAAMpZBJUuAp8BAAAAAElFTkSuQmCC"
-                  alt="Freshwater Forested/Shrub Wetland">
-              </td>
-              <td>Freshwater Forested/Shrub Wetland</td>
-            </tr>
-            <tr>
-              <td><img
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAD1JREFUOI1jYaAyYKGlgf+pYB4jigvTuw+QbdLMUgcGBgYae3nUwFEDRw0cNRC7gbAiiEzAiG4gIyWmwQAAI/UFoYeWjFEAAAAASUVORK5CYII="
-                  alt="Freshwater Pond">
-              </td>
-              <td>Freshwater Pond</td>
-            </tr>
-            <tr>
-              <td><img
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAD1JREFUOI1jYaAyYKGlgf+pYB4jiguFGGrINukdQwsDAwONvTxq4KiBowaOGojdQFgRRCZgRDeQkRLTYAAA3QwExQxG/ZkAAAAASUVORK5CYII="
-                  alt="Lake">
-              </td>
-              <td>Lake</td>
-            </tr>
-            <tr>
-              <td><img
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAD1JREFUOI1jYaAyYKGlgf+pYB4jigs3tweTbZJv5VoGBgYae3nUwFEDRw0cNRC7gbAiiEzAiG4gIyWmwQAAL/QFxmpjnCEAAAAASUVORK5CYII="
-                  alt="Other">
-              </td>
-              <td>Other</td>
-            </tr>
-            <tr>
-              <td><img
-                  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADtJREFUOI1jYaAyYKGlgf+pYB4jqgv795NvVKEjAwMDjb08auCogaMGjhqIw0BoEUQmYEQ3kJES02AAAJlhBAVA00zcAAAAAElFTkSuQmCC"
-                  alt="Riverine">
-              </td>
-              <td>Riverine</td>
+              <td>{{wetAreaLegendItem.label}}</td>
             </tr>
           </tbody>
         </table>
 
-        <table *ngIf="layer.id === floodZonesId && floodZonesLayer.visible" cellpadding="0" cellspacing="0" width="95%" class="legendTable">
+        <table *ngIf="layer.id === floodZonesId && floodZonesLayer.visible" class="legendTable">
           <tbody>
             <tr>
               <td width="35">
@@ -86,13 +37,7 @@
                   </svg></div>
               </td>
               <td>
-                <table width="95%">
-                  <tbody>
-                    <tr>
-                      <td>1% Annual Chance Flood Hazard</td>
-                    </tr>
-                  </tbody>
-                </table>
+                1% Annual Chance Flood Hazard
               </td>
             </tr>
             <tr>
@@ -107,13 +52,7 @@
                   </svg></div>
               </td>
               <td>
-                <table width="95%">
-                  <tbody>
-                    <tr>
-                      <td>0.2% Annual Chance Flood Hazard</td>
-                    </tr>
-                  </tbody>
-                </table>
+                0.2% Annual Chance Flood Hazard
               </td>
             </tr>
             <tr>
@@ -128,13 +67,7 @@
                   </svg></div>
               </td>
               <td>
-                <table width="95%">
-                  <tbody>
-                    <tr>
-                      <td>Regulatory Floodway</td>
-                    </tr>
-                  </tbody>
-                </table>
+                Regulatory Floodway
               </td>
             </tr>
             <tr>
@@ -149,13 +82,7 @@
                   </svg></div>
               </td>
               <td>
-                <table width="95%">
-                  <tbody>
-                    <tr>
-                      <td>Special Floodway</td>
-                    </tr>
-                  </tbody>
-                </table>
+                Special Floodway
               </td>
             </tr>
             <tr>
@@ -170,13 +97,7 @@
                   </svg></div>
               </td>
               <td>
-                <table width="95%">
-                  <tbody>
-                    <tr>
-                      <td>Future Conditions 1% Annual Chance Flood Hazard</td>
-                    </tr>
-                  </tbody>
-                </table>
+                Future Conditions 1% Annual Chance Flood Hazard
               </td>
             </tr>
             <tr>
@@ -191,13 +112,7 @@
                   </svg></div>
               </td>
               <td>
-                <table width="95%">
-                  <tbody>
-                    <tr>
-                      <td>Area with Reduced Risk Due to Levee</td>
-                    </tr>
-                  </tbody>
-                </table>
+                Area with Reduced Risk Due to Levee
               </td>
             </tr>
           </tbody>
