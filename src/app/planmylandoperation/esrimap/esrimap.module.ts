@@ -32,6 +32,7 @@ import { ImportExportHelpModule } from 'src/app/shared/components/help-component
 import { ExportMapHelpModule } from 'src/app/shared/components/help-components/export-map-help/export-map-help.module';
 import { OverlayLayersWidgetModule } from 'src/app/shared/components/overlay-layers-widget/overlay-layers-widget.module';
 import { LayersHelpModule } from 'src/app/shared/components/help-components/layers-help/layers-help.module';
+import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-widget.module';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -62,6 +63,7 @@ import { LayersHelpModule } from 'src/app/shared/components/help-components/laye
     CulvertSizeModule,
     PrintToolModule,
     BasemapWidgetModule,
+    SwipeWidgetModule,
     ImportExportModule,
     ElevationHelpModule,
     DrawHelpModule,

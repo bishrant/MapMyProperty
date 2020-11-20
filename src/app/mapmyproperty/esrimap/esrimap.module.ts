@@ -9,12 +9,13 @@ import { AccordionPanelModule } from 'src/app/shared/components/accordion-panel/
 import { SliderModule } from 'src/app/shared/components/slider/slider.module';
 import { MMPThemesModule } from '../sidebar/themes/themes.module';
 import { BasemapWidgetModule } from 'src/app/shared/components/basemap-widget/basemap-widget.module';
+import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-widget.module';
 
 @NgModule({
   declarations: [EsrimapComponent],
   imports: [CommonModule, GraphicsStoreModule,  DrawtoolsModule,
     SliderModule, MMPThemesModule,
-    ImportExportModule, PrintToolModule, AccordionPanelModule, BasemapWidgetModule],
+    ImportExportModule, PrintToolModule, AccordionPanelModule, BasemapWidgetModule, SwipeWidgetModule],
   exports: [EsrimapComponent]
 })
 export class EsriMapModule {}

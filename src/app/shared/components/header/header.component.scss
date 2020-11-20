@@ -15,7 +15,7 @@
 }
 
 .menuButton {
-  @apply flex items-center px-3 py-2 border rounded text-black border-black;
+  @apply flex items-center;
 }
 
 .menuButton:hover {
@@ -40,4 +40,27 @@
 
 .socialMediaIcon:hover {
   filter: opacity(0.5) drop-shadow(2px 4px 6px black);
+}
+
+@media only screen and (max-width: 1024px) {
+  .menuContainer {
+    position: absolute;
+    top: 50px;
+    z-index: 10000;
+    left: 0;
+    padding-bottom: 10px;
+    background-color: #b0ba89;
+  }
+  .menuContainer .headerItem {
+    text-align: right;
+    font-weight: 600;
+  }
+  .menuContainer span {
+    text-align: right;
+    margin-right: 0;
+}
+}
+
+nav{
+  padding: 5px 15px 5px 10px;
 }

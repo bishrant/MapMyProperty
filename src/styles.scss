@@ -33,6 +33,25 @@ body {
   }
 }
 
+@screen sm {
+  .esri-component.esri-expand.esri-widget.esri-expand--auto {
+    @apply block;
+  }
+}
+
+@screen md {
+  .esri-component.esri-expand.esri-widget.esri-expand--auto {
+    @apply hidden;
+  }
+}
+// @media screen and (max-width: 640px) {
+//   .esri-component.esri-expand.esri-widget.esri-expand--auto {
+//     display: block;
+//   }
+// }
+
+
+
 .centerAlign {
   text-align: center;
 }
@@ -253,4 +272,8 @@ $sliderBase: 6px;
 
 .pmloModal .ui-modal-header {
   @apply bg-pmlo_primary !important;
+}
+
+.esri-swipe__container {
+  outline-width: 0 !important;
 }
