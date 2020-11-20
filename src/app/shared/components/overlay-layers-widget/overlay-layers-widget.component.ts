@@ -2,7 +2,9 @@ import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@
 import MapImageLayer from 'esri/layers/MapImageLayer';
 import FeatureLayer from 'esri/layers/FeatureLayer';
 import VectorLayer from 'esri/layers/VectorTileLayer';
-
+import { faQuestionCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { HttpClient } from '@angular/common/http';
+import { HelpService } from '../../services/help/help.service';
 @Component({
   selector: 'app-overlay-layers-widget',
   templateUrl: './overlay-layers-widget.component.html',
@@ -13,12 +15,13 @@ export class OverlayLayersWidgetComponent implements OnInit {
   @Input() colorPrefix: string;
   @ViewChildren('checkboxes') checkboxes: QueryList<ElementRef>;
   isOpen: boolean = false;
+  faQuestionCircle:IconDefinition = faQuestionCircle;
 
-  private contoursId = 'contours';
+  wetAreasId = 'wetAreas';
   floodZonesId = 'floodZones';
+  private contoursId = 'contours';
   private hydroId = 'hydro';
   private watershedId = 'watershed';
-  wetAreasId = 'wetAreas';
   private parcelsId = 'parcels';
 
   layersList: any[] = [
@@ -29,6 +32,10 @@ export class OverlayLayersWidgetComponent implements OnInit {
     {id: this.wetAreasId, label: 'Wet Areas'},
     {id: this.parcelsId, label: 'Parcels'}
   ];
+
+  wetAreasLegendList: any[] = [];
+
+  private wetAreasUrl = 'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands/MapServer';
 
   contoursLayer: MapImageLayer = this.createLayer(
     'mapImage',
@@ -58,7 +65,7 @@ export class OverlayLayersWidgetComponent implements OnInit {
     'mapImage',
     this.wetAreasId,
     null,
-    'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands/MapServer'
+    this.wetAreasUrl
   );
   parcelsLayer: VectorLayer = this.createLayer(
     'vector',
@@ -67,7 +74,10 @@ export class OverlayLayersWidgetComponent implements OnInit {
     'https://tiles.arcgis.com/tiles/jIL9msH9OI208GCb/arcgis/rest/services/VectorTiles_parcels/VectorTileServer'
   );
 
-  constructor() {}
+  constructor(
+    private http:HttpClient,
+    private helpService:HelpService
+  ) {}
 
   ngOnInit(): void {
     this.mapView.map.addMany([
@@ -78,6 +88,10 @@ export class OverlayLayersWidgetComponent implements OnInit {
       this.wetAreasLayer,
       this.parcelsLayer,
     ]);
+
+    this.http.get(this.wetAreasUrl + '/Legend?f=pjson').subscribe((pjson:any) => {
+      this.wetAreasLegendList = pjson.layers[0].legend;
+    });
   }
 
   toggle(): void {
@@ -110,6 +124,10 @@ export class OverlayLayersWidgetComponent implements OnInit {
         this.parcelsLayer.visible = !this.parcelsLayer.visible;
         break;
     }
+  }
+
+  openHelp():void {
+    this.helpService.openHelp.emit({header: 'Layers', itemName: 'layers'});
   }
 
   private createLayer(layerType:string, id:string, minScale:number, url:string): any
