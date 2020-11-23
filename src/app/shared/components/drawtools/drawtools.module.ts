@@ -17,7 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ToggleButtonModule } from '../togglebutton/togglebutton';
 import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { HelpbuttonModule } from '../help-button/help-button.module';
 
 @NgModule({
   declarations: [DrawtoolsComponent, RGBtoHEX],
@@ -39,7 +39,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     FillstyleModule,
     LinestyleModule,
     ColorPickerModule,
-    FontAwesomeModule
+    HelpbuttonModule
   ],
   exports: [DrawtoolsComponent]
 })

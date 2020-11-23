@@ -1,7 +1,5 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { HelpService } from 'src/app/shared/services/help/help.service';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { GreaterThanMaxArea } from 'src/app/shared/utils/GeometryEngine';
 import { EsrimapService } from '../../esrimap/esrimap.service';
@@ -20,7 +18,6 @@ export class RegenerationOperationsComponent implements OnInit {
 
   @Input() mapView: __esri.MapView;
 
-  faQuestionCircle = faQuestionCircle;
   hasBoundary:boolean = false;
   sliderValue: number = 0;
   selectedRadio: string = 'SeedMortal';
@@ -41,7 +38,6 @@ export class RegenerationOperationsComponent implements OnInit {
     private esrimapService:EsrimapService,
     private decimalPipe:DecimalPipe,
     private notificationsService:NotificationsService,
-    private helpService:HelpService
   ) { }
 
   ngOnInit(): void {
@@ -135,9 +131,5 @@ export class RegenerationOperationsComponent implements OnInit {
       this.loaderService.isLoading.next(false);
       window.open(reportUrl, '_blank', 'noopener');
     });
-  }
-
-  openHelp():void {
-    this.helpService.openHelp.emit({header: 'Regeneration Operations', itemName: 'regOperations'});
   }
 }

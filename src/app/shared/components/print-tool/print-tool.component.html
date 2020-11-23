@@ -1,6 +1,5 @@
 <div>
-  <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle" (click)="openHelp()"></fa-icon>
-  <br>
+  <app-help-button [header]="'Export Map to PDF'" [itemName]="'exportMap'"></app-help-button> <br>
   <form [formGroup]="printForm">
     <strong>Title</strong><br>
     <mat-form-field appearance="outline" class="fullWidthInput">
@@ -41,10 +40,10 @@
   </form>
 </div>
 
-<app-modal #printMapModal [maximizable]="false" [backdrop]="true" [headerBackgroundColor]="'black'">
+<app-modal #printMapModal [maximizable]="false" [backdrop]="true" [headerBackgroundColor]="'black'" (closeModal)="previewClosed()">
   <ng-container class="app-modal-header">Map Preview</ng-container>
   <ng-container class="app-modal-body">
-    <div #mapViewNode class="mapViewNode"> </div>
+    <div #modalMapViewNode class="mapViewNode"> </div>
   </ng-container>
   <ng-container class="app-modal-footer">
     <div class="footer">

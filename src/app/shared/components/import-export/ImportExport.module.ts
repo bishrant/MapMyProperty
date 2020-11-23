@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ImportExportComponent } from './ImportExport.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { FormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { HelpbuttonModule } from '../help-button/help-button.module';
 
 @NgModule({
   providers: [ZipService],
@@ -15,7 +15,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MatButtonModule,
     MatRadioModule,
     FormsModule,
-    FontAwesomeModule
+    HelpbuttonModule
   ],
   exports: [ImportExportComponent]
 })

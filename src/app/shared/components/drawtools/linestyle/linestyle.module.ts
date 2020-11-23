@@ -10,7 +10,6 @@ import { FormsModule } from '@angular/forms';
 import { ColorPickerModule } from '../../color-picker/color-picker.module';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [LinestyleComponent],
@@ -20,7 +19,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MatSliderModule,
     FormsModule,
     MatFormFieldModule,
-    FontAwesomeModule,
     ColorPickerModule,
     AngularSvgIconModule,
     MatButtonModule,

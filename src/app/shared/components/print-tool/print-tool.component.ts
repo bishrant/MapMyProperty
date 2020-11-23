@@ -1,8 +1,21 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormBuilder, AbstractControl, FormGroupDirective, NgForm, ValidatorFn } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, AbstractControl, FormGroupDirective, NgForm, ValidatorFn } from '@angular/forms';
 import PrintTask from 'esri/tasks/PrintTask';
 import PrintParameters from 'esri/tasks/support/PrintParameters';
 import { AppConfiguration } from 'src/config';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { ViewChild } from '@angular/core';
+import { ElementRef } from '@angular/core';
+import { TraceGPError } from '../../services/error/GPServiceError';
+import { LoaderService } from '../../services/Loader.service';
+import GraphicsLayer from 'esri/layers/GraphicsLayer';
+import Graphic from 'esri/Graphic';
+import FeatureLayer from 'esri/layers/FeatureLayer';
+import MapImageLayer from 'esri/layers/MapImageLayer';
+import VectorLayer from 'esri/layers/VectorTileLayer';
+import ImageryLayer from 'esri/layers/ImageryLayer';
+import WMSLayer from 'esri/layers/WMSLayer';
+import BingMapsLayer from 'esri/layers/BingMapsLayer';
 
 @Component({
   selector: 'app-print-tool',
@@ -12,21 +25,19 @@ import { AppConfiguration } from 'src/config';
 })
 export class PrintToolComponent implements OnInit {
   @ViewChild('printMapModal') printMapModal: any;
-  @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
-  @Input() map: any;
+  @ViewChild('modalMapViewNode', { static: true }) private mapViewEl: ElementRef;
+  @Input() mapView: __esri.MapView;
   printForm: FormGroup;
   MAX: number = 200;
   MAXLINES: number = 5;
   showCurrentDate = true;
-  faQuestionCircle = faQuestionCircle;
   constructor(
     private formBuilder: FormBuilder,
     private config: AppConfiguration,
     private loaderService: LoaderService,
-    private helpService: HelpService
-  ) {}
+  ) { }
   matcher = new MyErrorStateMatcher();
-  popupMapView: any;
+  popupMapView: __esri.MapView;
   printTask = new PrintTask({ url: this.config.printGPServiceURL });
   showPrintMapPreview(): void {
     this.printMapModal.closeOnEscape = false;
@@ -36,11 +47,88 @@ export class PrintToolComponent implements OnInit {
     }, 10);
   }
 
+
+  private createLayer(layer: __esri.Layer): any
+  {
+    const _id = layer.id;
+    const _minScale = (layer as any).minScale;
+    let lyr:any;
+    switch(layer.type)
+    {
+      case 'map-image':
+        lyr = new MapImageLayer();
+        break;
+
+      case 'feature':
+        lyr = new FeatureLayer();
+        break;
+
+      case 'vector-tile':
+        lyr = new VectorLayer();
+        break;
+      case 'imagery':
+        lyr = new ImageryLayer();
+        break;
+      case 'wms':
+        lyr = new WMSLayer({
+          customParameters: (layer as any).customParameters
+        });
+        break;
+      case 'bing-maps':
+        lyr = new BingMapsLayer({
+          style: (layer as any).style,
+          key: (layer as any).key
+        });
+        break;
+
+    }
+
+    lyr.id = _id +'popup';
+    if (layer.type !== 'bing-maps') {
+      lyr.url = (layer as any).url;
+    }
+
+    lyr.visible = layer.visible;
+    if (_minScale !== null)
+    {
+      lyr.minScale = _minScale;
+    }
+
+    return lyr;
+  }
+
+  copyLayers() {
+    const lrArray: any = [];
+    this.mapView.map.layers.forEach((lrs: __esri.Layer) => {
+      if (lrs.type === 'graphics') {
+          const grs = (lrs as any).graphics;
+          if (grs.length > 0) {
+            const grLr = new GraphicsLayer({ id: lrs.id + 'popup' });
+            grs.forEach((graphic: __esri.Graphic) => {
+              grLr.add(Graphic.fromJSON(graphic.toJSON()));
+            });
+            lrArray.push(grLr);
+          }
+        }
+        else if (['map-image', 'feature', 'vector-tile', 'imagery', 'wms', 'bing-maps'].includes(lrs.type)) {
+          const l = this.createLayer(lrs);
+          console.log(l);
+          lrArray.push(l);
+        }
+       else {
+          lrArray.push(lrs);
+      }
+
+    });
+    return lrArray;
+  }
   async initializeMap() {
+
     try {
+      const lrArray = this.copyLayers();
       const mapProperties: any = {
-        basemap: this.map.map.basemap.id,
-        layers: this.map.map.layers,
+        basemap: this.mapView.map.basemap,
+        layers: lrArray,
       };
 
       let ESRIMap = await import('arcgis-js-api/Map');
@@ -48,11 +136,17 @@ export class PrintToolComponent implements OnInit {
       const mapViewProperties: any = {
         container: this.mapViewEl.nativeElement,
         map: map,
+        snapToZoom: false,
+        constraints: {
+          rotationEnabled: false
+        },
+        center: this.mapView.center,
+        zoom: this.mapView.zoom,
+        spatialReference: this.mapView.spatialReference
       };
 
       const ESRIMapView = await import('arcgis-js-api/views/MapView');
       this.popupMapView = new ESRIMapView.default(mapViewProperties);
-      this.popupMapView.extent = this.map.extent;
       return this.popupMapView;
     } catch (error) {
       console.log('Esri: ', error);
@@ -72,8 +166,6 @@ export class PrintToolComponent implements OnInit {
       },
     });
 
-    console.log((this.printTask as any)._getPrintDefinition(this.popupMapView, printParameters));
-
     this.printTask
       .execute(printParameters)
       .then((success: any) => {
@@ -89,6 +181,12 @@ export class PrintToolComponent implements OnInit {
       });
   }
 
+  previewClosed() {
+    this.popupMapView.map.layers.forEach(lrs => {
+      this.popupMapView.map.remove(lrs);
+    });
+  }
+
   ngOnInit(): void {
     this.printForm = this.formBuilder.group({
       title: [''],
@@ -101,10 +199,6 @@ export class PrintToolComponent implements OnInit {
 
   get comments() {
     return this.printForm.get('comments');
-  }
-
-  openHelp(): void {
-    this.helpService.openHelp.emit({ header: 'Export Map to PDF', itemName: 'exportMap' });
   }
 }
 
@@ -125,14 +219,6 @@ export function ValidateLineBreaks(MAXLINES: number): ValidatorFn {
     return null;
   }
 }
-
-import { ErrorStateMatcher } from '@angular/material/core';
-import { ViewChild } from '@angular/core';
-import { ElementRef } from '@angular/core';
-import { TraceGPError } from '../../services/error/GPServiceError';
-import { LoaderService } from '../../services/Loader.service';
-import { HelpService } from '../../services/help/help.service';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

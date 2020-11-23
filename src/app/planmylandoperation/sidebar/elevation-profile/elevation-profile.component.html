@@ -1,5 +1,5 @@
 <div class="py-3">
-  <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle" (click)="openHelp()"></fa-icon>
+  <app-help-button [header]="'Elevation Profile'" [itemName]= "'elevation'"></app-help-button>
   <br>
   <div class="centerAlign">
     <div>
@@ -31,8 +31,6 @@
         Clear
       </button>
     </div>
-
-
   </div>
 </div>
 
@@ -40,7 +38,7 @@
   (closeModal)="modelClosed()" (resizeEnd)="onResizeEnd($event)" [headerBackgroundColor]="headerBgColor">
   <ng-container class="app-modal-header bg-pmlo_secondary">Elevation Profile</ng-container>
   <ng-container class="app-modal-body">
-    <div #mapViewNode style="height: 340px; width: 100%;position: relative;">
+    <div style="height: 340px; width: 100%;position: relative;">
       <div id="gd">
       </div>
     </div>

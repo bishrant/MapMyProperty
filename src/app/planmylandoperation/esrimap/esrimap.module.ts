@@ -11,7 +11,6 @@ import { SensAreasComponent } from '../sidebar/sens-areas/sens-areas.component';
 import { SoilsComponent } from '../sidebar/soils/soils.component';
 import { ElevationProfileModule } from '../sidebar/elevation-profile/elevation-profile.module';
 import { AccordionPanelModule } from 'src/app/shared/components/accordion-panel/accordion.panel.module';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModalModule } from 'src/app/shared/lib/angular-modal/modal/modal-module';
 import { SoilsTableComponent } from '../sidebar/soils/soils-table/soils-table.component';
 import { HarvestOperationsComponent } from '../sidebar/harvest-operations/harvest-operations.component';
@@ -33,6 +32,7 @@ import { ExportMapHelpModule } from 'src/app/shared/components/help-components/e
 import { OverlayLayersWidgetModule } from 'src/app/shared/components/overlay-layers-widget/overlay-layers-widget.module';
 import { LayersHelpModule } from 'src/app/shared/components/help-components/layers-help/layers-help.module';
 import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-widget.module';
+import { HelpbuttonModule } from 'src/app/shared/components/help-button/help-button.module';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -58,7 +58,6 @@ import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-
     FormsModule,
     ElevationProfileModule,
     AccordionPanelModule,
-    FontAwesomeModule,
     ModalModule,
     CulvertSizeModule,
     PrintToolModule,
@@ -70,7 +69,8 @@ import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-
     ImportExportHelpModule,
     ExportMapHelpModule,
     OverlayLayersWidgetModule,
-    LayersHelpModule
+    LayersHelpModule,
+    HelpbuttonModule
   ],
   exports: [EsrimapComponent]
 })
