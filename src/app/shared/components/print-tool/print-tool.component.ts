@@ -36,22 +36,78 @@ export class PrintToolComponent implements OnInit {
     }, 10);
   }
 
+
+  private createLayer(layer: __esri.Layer): any
+  {
+    const _id = layer.id;
+    const _minScale = (layer as any).minScale;
+    let lyr:any;
+    switch(layer.type)
+    {
+      case 'map-image':
+        lyr = new MapImageLayer();
+        break;
+
+      case 'feature':
+        lyr = new FeatureLayer();
+        break;
+
+      case 'vector-tile':
+        lyr = new VectorLayer();
+        break;
+      case 'imagery':
+        lyr = new ImageryLayer();
+        break;
+      case 'wms':
+        lyr = new WMSLayer({
+          customParameters: (layer as any).customParameters
+        });
+        break;
+      case 'bing-maps':
+        lyr = new BingMapsLayer({
+          style: (layer as any).style,
+          key: (layer as any).key
+        });
+        break;
+
+    }
+
+    lyr.id = _id +'popup';
+    if (layer.type !== 'bing-maps') {
+      lyr.url = (layer as any).url;
+    }
+
+    lyr.visible = layer.visible;
+    if (_minScale !== null)
+    {
+      lyr.minScale = _minScale;
+    }
+
+    return lyr;
+  }
+
   copyLayers() {
     const lrArray: any = [];
     this.mapView.map.layers.forEach((lrs: __esri.Layer) => {
       if (lrs.type === 'graphics') {
-        const grs = (lrs as any).graphics;
-        if (grs.length > 0) {
-          const grLr = new GraphicsLayer({ id: lrs.id + 'popup' });
-          grs.forEach((graphic: __esri.Graphic) => {
-            grLr.add(Graphic.fromJSON(graphic.toJSON()));
-          });
-          lrArray.push(grLr);
+          const grs = (lrs as any).graphics;
+          if (grs.length > 0) {
+            const grLr = new GraphicsLayer({ id: lrs.id + 'popup' });
+            grs.forEach((graphic: __esri.Graphic) => {
+              grLr.add(Graphic.fromJSON(graphic.toJSON()));
+            });
+            lrArray.push(grLr);
+          }
         }
-      } else {
-
-        lrArray.push(lrs);
+        else if (['map-image', 'feature', 'vector-tile', 'imagery', 'wms', 'bing-maps'].includes(lrs.type)) {
+          const l = this.createLayer(lrs);
+          console.log(l);
+          lrArray.push(l);
+        }
+       else {
+          lrArray.push(lrs);
       }
+
     });
     return lrArray;
   }
@@ -166,6 +222,12 @@ import { HelpService } from '../../services/help/help.service';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import Graphic from 'esri/Graphic';
+import FeatureLayer from 'esri/layers/FeatureLayer';
+import MapImageLayer from 'esri/layers/MapImageLayer';
+import VectorLayer from 'esri/layers/VectorTileLayer';
+import ImageryLayer from 'esri/layers/ImageryLayer';
+import WMSLayer from 'esri/layers/WMSLayer';
+import BingMapsLayer from 'esri/layers/BingMapsLayer';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
