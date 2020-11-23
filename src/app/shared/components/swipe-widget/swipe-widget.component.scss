@@ -16,7 +16,7 @@ $right: 1em;
 
 .swipeToggleBtn {
   position: absolute;
-  top: 8em;
+  top: calc(4.5em + var(--map-button-height));
   right: $right;
   height: var(--map-button-height);
   width: var(--map-button-width);
@@ -28,7 +28,7 @@ $right: 1em;
 
 .swipeWidgetBody {
   position: absolute;
-  top: 12em;
+  top: calc(4.5em + var(--map-button-height) + 3em);
   right: $right;
   height: 19em;
   width: 15em;

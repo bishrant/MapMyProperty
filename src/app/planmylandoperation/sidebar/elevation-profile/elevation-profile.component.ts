@@ -3,8 +3,6 @@ import { ElevationProfileService } from 'src/app/shared/services/elevation-profi
 import { Subscription } from 'rxjs';
 import { ViewChild } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { HelpService } from 'src/app/shared/services/help/help.service.js';
 
 @Component({
   selector: 'app-elevation-profile',
@@ -20,7 +18,6 @@ export class ElevationProfileComponent {
   drawTool: String;
   isMSL = false;
   isElevationProfileToolActive = false;
-  faQuestionCircle = faQuestionCircle;
   elvUtils: any;
   Plotly: any;
   isReversed: boolean = false;
@@ -29,19 +26,14 @@ export class ElevationProfileComponent {
   drawingObservable$: Subscription;
   closePopup$: Subscription;
 
-  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService, private helpSevice:HelpService) {
+  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService) {
     this.isReversed = elevationService.isReversed;
   }
 
   onResizeEnd($event) {
-    console.log('REISE ', $event, $event.height);
     this.elevationService.resizeChart($event.width - 30, $event.height - 90);
   }
   startDrawingGraphics(value: any) {
-    import('../../../shared/services/elevation-profile/lib/plotly.js').then((_plotly: any) => {
-      this.Plotly = _plotly;
-    });
-
     this.elvUtils = undefined;
     this.elvUtils = this.elevationService.initialize({
       mapView: this.mapView,
@@ -49,19 +41,9 @@ export class ElevationProfileComponent {
       unit: 'feet',
       divId: 'gd',
       isMSL: this.isMSL,
+      popup: this.elevationProfileModal
     });
     this.elvUtils.start(value);
-
-    this.drawingObservable$ = this.elevationService.drawingComplete.subscribe((graphics: any) => {
-      this.loaderService.isLoading.next(true);
-      console.time('graph');
-      this.chartDataObservable$ = this.elevationService.chartData$.subscribe(async (d: any) => {
-        this.elevationService.Plotly = this.Plotly;
-        this.elevationProfileModal.show();
-        this.loaderService.isLoading.next(false);
-        console.timeEnd('graph');
-      });
-    });
   }
 
   modelClosed() {
@@ -70,7 +52,6 @@ export class ElevationProfileComponent {
   }
 
   clearElevationProfile() {
-    console.log('clear profile');
     this.elevationProfileModal.hide();
   }
 
@@ -85,13 +66,6 @@ export class ElevationProfileComponent {
   }
 
   createReport() {
-    // x=2;
-    // throw new Error("test");
-    // this.loaderService.isLoading.next(true);
     this.elevationService.createReport();
-  }
-
-  openHelp(): void {
-    this.elevationService.openHelp();
   }
 }

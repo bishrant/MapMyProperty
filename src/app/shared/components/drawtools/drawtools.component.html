@@ -1,7 +1,7 @@
 <div>
   <br>
   <div class="centerAlign">
-    <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle" (click)="openHelp()"></fa-icon>
+    <app-help-button [header]="'Draw'" [itemName]= "'draw'"></app-help-button>
     <br>
     Select a drawing tool:<br>
     <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value, true)">

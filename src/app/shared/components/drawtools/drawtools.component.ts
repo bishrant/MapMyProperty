@@ -23,8 +23,6 @@ import { Subscription } from 'rxjs';
 import Graphic from 'esri/Graphic';
 import Point from 'esri/geometry/Point';
 import { CreateTextSymbolForLabels } from './DrawToolUtils';
-import { HelpService } from '../../services/help/help.service';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-drawtools',
@@ -48,8 +46,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('linestyle') lineStyleElmRef: any;
   id = (): string => Math.random().toString(36).substr(2, 9);
 
-  faQuestionCircle = faQuestionCircle;
-
   selectedGraphics: any[] = [];
   selectedTextGraphics: any = [];
   selectedLabelsGraphics: any = [];
@@ -69,7 +65,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     private store: Store<AppState>,
     private textService: TextControlService,
     private TextSelectionService: TextControlSelectionService,
-    private helpService: HelpService
   ) {}
 
   private listenToGraphicsStore = () => {
@@ -514,7 +509,4 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.geomLabelsGraphicsLayer.addMany(labels);
   };
 
-  openHelp(): void {
-    this.helpService.openHelp.emit({ header: 'Draw', itemName: 'draw' });
-  }
 }

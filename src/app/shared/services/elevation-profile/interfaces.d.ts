@@ -10,6 +10,7 @@ export interface ElevationProfileViewModelProperties {
   unit: ElevationUnits;
   divId: string;
   isMSL: boolean;
+  popup: any;
 }
 
 export type ElevationUnits = 'meters' | 'feet' | 'kilometers' | 'miles' | 'nautical-miles' | 'yards';
