@@ -72,7 +72,7 @@ export class PointcontrolComponent {
     style: 'circle',
     contentType: 'image/svg',
     name: 'circle',
-    color: { r: 100, g: 20, b: 5, a: 1 }
+    color: { r: 255, g: 255, b: 0, a: 1 }
   };
 
   fillSvgStyle = {
