@@ -8,6 +8,7 @@ export class MapviewService {
   @Output() soilsDisabled: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() soilsGLHasPolygons: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() clearSensAreasGraphics: EventEmitter<void> = new EventEmitter<void>();
+  @Output() scaleChanged: EventEmitter<number> = new EventEmitter<number>();
 
   constructor() { }
 
@@ -18,5 +19,6 @@ export class MapviewService {
       isSoilsDisabled = false;
     }
     this.soilsDisabled.emit(isSoilsDisabled);
+    this.scaleChanged.emit(scale);
   }
 }

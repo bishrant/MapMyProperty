@@ -6,8 +6,8 @@
     <div class="layersTitle">Layers<fa-icon class="float-right cursor-pointer" [icon]="faQuestionCircle" (click)="openHelp()"></fa-icon></div>
     <div class="layersContent overflow-y-auto">
       <div class="row" *ngFor="let layer of layersList">
-        <label class="inline-flex cursor-pointer">
-          <input #checkboxes [id]="layer.id" type="checkbox" class="m-auto form-checkbox h-5 w-5 cursor-pointer" [ngClass]="'text-' + colorPrefix + '_secondary'" (change)="updateVisibility($event.target.id)">
+        <label class="inline-flex cursor-pointer" [ngClass]="{'cursor-not-allowed': !layer.enabled}" [ngStyle]="{'opacity': layer.enabled ? 1 : 0.4}">
+          <input #checkboxes [id]="layer.id" type="checkbox" class="m-auto form-checkbox h-5 w-5 cursor-pointer" [ngClass]="['text-' + colorPrefix + '_secondary']" [ngStyle]="" (change)="updateVisibility($event.target.id)" [disabled] = "!layer.enabled">
           <span class="checkbox-label">{{ layer.label }}</span>
         </label>
 
