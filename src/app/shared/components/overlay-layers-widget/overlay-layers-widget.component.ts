@@ -3,6 +3,7 @@ import MapImageLayer from 'esri/layers/MapImageLayer';
 import FeatureLayer from 'esri/layers/FeatureLayer';
 import VectorLayer from 'esri/layers/VectorTileLayer';
 import { HttpClient } from '@angular/common/http';
+import { MapviewService } from '../../services/mapview.service';
 @Component({
   selector: 'app-overlay-layers-widget',
   templateUrl: './overlay-layers-widget.component.html',
@@ -21,13 +22,18 @@ export class OverlayLayersWidgetComponent implements OnInit {
   private watershedId = 'watershed';
   private parcelsId = 'parcels';
 
+  contoursEnabled = false;
+  wetAreasEnabled = false;
+  floodZonesEnabled = false;
+  parcelsEnabled = false;
+
   layersList: any[] = [
-    {id: this.contoursId, label:'Contours'},
-    {id: this.floodZonesId, label: 'Flood Zones'},
-    {id: this.hydroId, label: 'Hydrology'},
-    {id: this.watershedId, label: 'Watersheds'},
-    {id: this.wetAreasId, label: 'Wet Areas'},
-    {id: this.parcelsId, label: 'Parcels'}
+    {id: this.contoursId, label:'Contours', enabled: false},
+    {id: this.floodZonesId, label: 'Flood Zones', enabled: false},
+    {id: this.hydroId, label: 'Hydrology', enabled: true},
+    {id: this.watershedId, label: 'Watersheds', enabled: true},
+    {id: this.wetAreasId, label: 'Wet Areas', enabled: false},
+    {id: this.parcelsId, label: 'Parcels', enabled: false}
   ];
 
   wetAreasLegendList: any[] = [];
@@ -73,6 +79,7 @@ export class OverlayLayersWidgetComponent implements OnInit {
 
   constructor(
     private http:HttpClient,
+    private mapviewService:MapviewService
   ) {}
 
   ngOnInit(): void {
@@ -87,6 +94,31 @@ export class OverlayLayersWidgetComponent implements OnInit {
 
     this.http.get(this.wetAreasUrl + '/Legend?f=pjson').subscribe((pjson:any) => {
       this.wetAreasLegendList = pjson.layers[0].legend;
+    });
+
+    this.mapviewService.scaleChanged.subscribe((scale:number) => {
+      if (scale <= 3000000)
+      {
+        this.layersList.find(l => l.id === this.contoursId).enabled = true;
+      } else {
+        this.layersList.find(l => l.id === this.contoursId).enabled = false;
+      }
+
+      if (scale <= 250000)
+      {
+        this.layersList.find(l => l.id === this.wetAreasId).enabled = true;
+      } else {
+        this.layersList.find(l => l.id === this.wetAreasId).enabled = false;
+      }
+
+      if (scale <= 72000)
+      {
+        this.layersList.find(l => l.id === this.floodZonesId).enabled = true;
+        this.layersList.find(l => l.id === this.parcelsId).enabled = true;
+      } else {
+        this.layersList.find(l => l.id === this.floodZonesId).enabled = false;
+        this.layersList.find(l => l.id === this.parcelsId).enabled = false;
+      }
     });
   }
 
