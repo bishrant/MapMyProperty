@@ -1,7 +1,5 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { HelpService } from 'src/app/shared/services/help/help.service';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { GreaterThanMaxArea } from 'src/app/shared/utils/GeometryEngine';
 import { EsrimapService } from '../../esrimap/esrimap.service';
@@ -19,7 +17,6 @@ import { HarvestOperationsService } from './harvest-operations.service';
 export class HarvestOperationsComponent implements OnInit {
   @Input() mapView: __esri.MapView;
 
-  faQuestionCircle = faQuestionCircle;
   hasBoundary:boolean = false;
   sliderValue: number = 0;
   selectedRadio: string = 'drclassdcd';
@@ -40,7 +37,6 @@ export class HarvestOperationsComponent implements OnInit {
     private decimalPipe: DecimalPipe,
     private operationLegendService: OperationLegendService,
     private notificationsService: NotificationsService,
-    private helpService:HelpService
   ) {}
 
   ngOnInit(): void {
@@ -149,9 +145,5 @@ export class HarvestOperationsComponent implements OnInit {
         this.loaderService.isLoading.next(false);
         window.open(reportUrl, '_blank', 'noopener');
       });
-  }
-
-  openHelp():void {
-    this.helpService.openHelp.emit({header: 'Harvest Operations', itemName: 'harvOperations'});
   }
 }

@@ -1,6 +1,5 @@
 <div>
-  <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle" (click)="openHelp()"></fa-icon>
-  <br>
+  <app-help-button [header]="'Export Map to PDF'" [itemName]="'exportMap'"></app-help-button> <br>
   <form [formGroup]="printForm">
     <strong>Title</strong><br>
     <mat-form-field appearance="outline" class="fullWidthInput">

@@ -1,8 +1,21 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormBuilder, AbstractControl, FormGroupDirective, NgForm, ValidatorFn } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, AbstractControl, FormGroupDirective, NgForm, ValidatorFn } from '@angular/forms';
 import PrintTask from 'esri/tasks/PrintTask';
 import PrintParameters from 'esri/tasks/support/PrintParameters';
 import { AppConfiguration } from 'src/config';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { ViewChild } from '@angular/core';
+import { ElementRef } from '@angular/core';
+import { TraceGPError } from '../../services/error/GPServiceError';
+import { LoaderService } from '../../services/Loader.service';
+import GraphicsLayer from 'esri/layers/GraphicsLayer';
+import Graphic from 'esri/Graphic';
+import FeatureLayer from 'esri/layers/FeatureLayer';
+import MapImageLayer from 'esri/layers/MapImageLayer';
+import VectorLayer from 'esri/layers/VectorTileLayer';
+import ImageryLayer from 'esri/layers/ImageryLayer';
+import WMSLayer from 'esri/layers/WMSLayer';
+import BingMapsLayer from 'esri/layers/BingMapsLayer';
 
 @Component({
   selector: 'app-print-tool',
@@ -18,12 +31,10 @@ export class PrintToolComponent implements OnInit {
   MAX: number = 200;
   MAXLINES: number = 5;
   showCurrentDate = true;
-  faQuestionCircle = faQuestionCircle;
   constructor(
     private formBuilder: FormBuilder,
     private config: AppConfiguration,
     private loaderService: LoaderService,
-    private helpService: HelpService
   ) { }
   matcher = new MyErrorStateMatcher();
   popupMapView: __esri.MapView;
@@ -189,10 +200,6 @@ export class PrintToolComponent implements OnInit {
   get comments() {
     return this.printForm.get('comments');
   }
-
-  openHelp(): void {
-    this.helpService.openHelp.emit({ header: 'Export Map to PDF', itemName: 'exportMap' });
-  }
 }
 
 export function ValidateCommentsLength(MAX: number): ValidatorFn {
@@ -212,22 +219,6 @@ export function ValidateLineBreaks(MAXLINES: number): ValidatorFn {
     return null;
   }
 }
-
-import { ErrorStateMatcher } from '@angular/material/core';
-import { ViewChild } from '@angular/core';
-import { ElementRef } from '@angular/core';
-import { TraceGPError } from '../../services/error/GPServiceError';
-import { LoaderService } from '../../services/Loader.service';
-import { HelpService } from '../../services/help/help.service';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import GraphicsLayer from 'esri/layers/GraphicsLayer';
-import Graphic from 'esri/Graphic';
-import FeatureLayer from 'esri/layers/FeatureLayer';
-import MapImageLayer from 'esri/layers/MapImageLayer';
-import VectorLayer from 'esri/layers/VectorTileLayer';
-import ImageryLayer from 'esri/layers/ImageryLayer';
-import WMSLayer from 'esri/layers/WMSLayer';
-import BingMapsLayer from 'esri/layers/BingMapsLayer';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

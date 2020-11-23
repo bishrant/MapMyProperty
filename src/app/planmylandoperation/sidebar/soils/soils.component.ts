@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { SoilsService } from './soils.service';
 import { PMLOSoil } from '../../models/pmloSoil.model';
 import { GetPMLOSoilPopupContent } from '../../pmloUtils/popupContent';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { CreateGL } from '../../pmloUtils/layers';
 import { GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
@@ -21,7 +20,6 @@ import { ReportsService } from '../../pmloUtils/reports.service';
 import { EsrimapService } from '../../esrimap/esrimap.service';
 import { PMLONotification } from '../../models/pmloNotification.model';
 import { NotificationsService } from '../../pmloUtils/notifications.service';
-import { HelpService } from 'src/app/shared/services/help/help.service';
 
 @Component({
   selector: 'pmlo-soils',
@@ -32,7 +30,6 @@ export class SoilsComponent implements OnInit {
 
   @Input() mapView: any;
 
-  faQuestionCircle = faQuestionCircle;
   isIdentifyChecked:boolean = false;
   isIdentifyDisabled:boolean = true;
   isVisibleDisabled:boolean = true;
@@ -64,7 +61,6 @@ export class SoilsComponent implements OnInit {
     private reportsService: ReportsService,
     private esriMapService: EsrimapService,
     private notificationsService:NotificationsService,
-    private helpService:HelpService
   ) { }
 
   ngOnInit(): void {
@@ -310,10 +306,6 @@ export class SoilsComponent implements OnInit {
       const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
       throw gpError;
     });
-  }
-
-  openHelp():void {
-    this.helpService.openHelp.emit({header: 'Soils', itemName: 'soils'});
   }
 
   private checkIfOrange(val:number):void {

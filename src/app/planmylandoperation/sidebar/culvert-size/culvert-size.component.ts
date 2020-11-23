@@ -2,7 +2,6 @@ import { AfterViewInit, Component, Input } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ViewChild } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { CulvertSizeService } from 'src/app/shared/services/culvert-size.service';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
 import JobInfo from 'esri/tasks/support/JobInfo';
@@ -11,7 +10,6 @@ import Graphic from 'esri/Graphic';
 import { Point, Polygon, SpatialReference } from 'esri/geometry';
 import { SimpleFillSymbol, SimpleMarkerSymbol } from 'esri/symbols';
 import { getSoilTextureClass,getCulvertSize } from './CulvertDetailsUtils';
-import { HelpService } from 'src/app/shared/services/help/help.service';
 const projection = require('arcgis-js-api/geometry/projection');
 
 @Component({
@@ -42,7 +40,6 @@ export class CulvertSizeComponent implements AfterViewInit {
   headerBgColor = '#353535';
   drawTool: String;
   isCulvertToolActive = false;
-  faQuestionCircle = faQuestionCircle;
   culvertUtils: any;
 
   drawingObservable$: Subscription;
@@ -53,7 +50,6 @@ export class CulvertSizeComponent implements AfterViewInit {
   constructor(
     private culvertService: CulvertSizeService,
     private loaderService: LoaderService,
-    private helpService:HelpService
   ) {}
 
   ngAfterViewInit() {
@@ -163,9 +159,5 @@ export class CulvertSizeComponent implements AfterViewInit {
       zzCulvertDiam: c.CulvertSize,
     };
     this.culvertService.createReport(this.watershedGeometry, culvertData);
-  }
-
-  openHelp(): void {
-    this.helpService.openHelp.emit({ header: 'Culvert Size', itemName: 'culvert' });
   }
 }

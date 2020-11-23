@@ -6,13 +6,11 @@ import { SensAreasService } from './sens-areas.service';
 import { PrintTaskService } from 'src/app/shared/services/PrintTask.service';
 import { ReportsService } from '../../pmloUtils/reports.service';
 import { SquareMetersToAcres, FormatRoundNumber } from 'src/app/shared/utils/ConversionTools';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { EsrimapService } from '../../esrimap/esrimap.service';
 import { PMLONotification } from '../../models/pmloNotification.model';
 import { NotificationsService } from '../../pmloUtils/notifications.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
-import { HelpService } from 'src/app/shared/services/help/help.service';
 
 @Component({
   selector: 'pmlo-sens-areas',
@@ -20,9 +18,6 @@ import { HelpService } from 'src/app/shared/services/help/help.service';
   styleUrls: ['./sens-areas.component.scss']
 })
 export class SensAreasComponent implements OnInit {
-
-  faQuestionCircle = faQuestionCircle;
-
   streamCollapsed: boolean = true;
   slopeCollapsed: boolean = true;
   wetCollapsed: boolean = true;
@@ -55,7 +50,6 @@ export class SensAreasComponent implements OnInit {
     private esrimapService:EsrimapService,
     private notificationsService:NotificationsService,
     private mapViewService:MapviewService,
-    private helpService:HelpService
     ) {}
 
   ngOnInit (): void {
@@ -87,9 +81,9 @@ export class SensAreasComponent implements OnInit {
           this.notificationsService.openNotificationsModal.emit(this.pmloNote);
         } else if (this.sensAreaGL.graphics.length === 0) {
           this.loaderService.isLoading.next(true);
-    
+
           const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
-    
+
           this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((isInTexas:boolean) => {
             this.sensAreasService.getSensAreas(inputBoundary, isInTexas).then((result) => {
               if (result.length === 0)
@@ -202,9 +196,5 @@ export class SensAreasComponent implements OnInit {
         );
       }
     });
-  }
-
-  openHelp():void {
-    this.helpService.openHelp.emit({header: 'Sensitive Areas', itemName: 'sensAreas'});
   }
 }
