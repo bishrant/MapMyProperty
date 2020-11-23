@@ -41,10 +41,10 @@
   </form>
 </div>
 
-<app-modal #printMapModal [maximizable]="false" [backdrop]="true" [headerBackgroundColor]="'black'">
+<app-modal #printMapModal [maximizable]="false" [backdrop]="true" [headerBackgroundColor]="'black'" (closeModal)="previewClosed()">
   <ng-container class="app-modal-header">Map Preview</ng-container>
   <ng-container class="app-modal-body">
-    <div #mapViewNode class="mapViewNode"> </div>
+    <div #modalMapViewNode class="mapViewNode"> </div>
   </ng-container>
   <ng-container class="app-modal-footer">
     <div class="footer">
