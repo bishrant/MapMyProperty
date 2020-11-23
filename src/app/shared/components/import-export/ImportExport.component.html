@@ -1,6 +1,5 @@
 <div>
-  <fa-icon class="float-right cursor-pointer text-pmlo_secondary" [icon]="faQuestionCircle" (click)="openHelp()"></fa-icon>
-  <br>
+  <app-help-button [header]="'Import | Export'" [itemName]="'importExport'"></app-help-button> <br>
   <mat-radio-group aria-label="Select an import/export option" [(ngModel)]="format">
     <div class="importExportFormat">
       <mat-radio-button value="mmp">MMP</mat-radio-button>
@@ -12,20 +11,6 @@
       <mat-radio-button value="gpx">GPX</mat-radio-button>
     </div>
   </mat-radio-group>
-  <!-- [disabled]="(sketchVM.state === 'ready') && (disableUndo$ | async)" -->
-
-  <!-- <div class="importExportFormat">
-            <button mat-raised-button color="accent" (click)="chooseFile()">
-                <mat-icon>publish</mat-icon>
-                Import
-            </button>
-            <input type="file" #fileInput id="fileUpload" name="fileUpload" multiple="multiple" accept="*"
-                style="display:none;" />
-            <button mat-raised-button color="accent" (click)="export()" [disabled]="!exportEnabled">
-                <mat-icon>get_app</mat-icon>
-                Export
-            </button>
-        </div> -->
 
   <div class="importExportFormat">
     <button class="btn-icon" (click)="chooseFile()" type="button">
