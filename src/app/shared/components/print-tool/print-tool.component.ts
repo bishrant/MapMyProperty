@@ -12,8 +12,8 @@ import { AppConfiguration } from 'src/config';
 })
 export class PrintToolComponent implements OnInit {
   @ViewChild('printMapModal') printMapModal: any;
-  @ViewChild('mapViewNode', { static: true }) private mapViewEl: ElementRef;
-  @Input() map: any;
+  @ViewChild('modalMapViewNode', { static: true }) private mapViewEl: ElementRef;
+  @Input() mapView: __esri.MapView;
   printForm: FormGroup;
   MAX: number = 200;
   MAXLINES: number = 5;
@@ -24,9 +24,9 @@ export class PrintToolComponent implements OnInit {
     private config: AppConfiguration,
     private loaderService: LoaderService,
     private helpService: HelpService
-  ) {}
+  ) { }
   matcher = new MyErrorStateMatcher();
-  popupMapView: any;
+  popupMapView: __esri.MapView;
   printTask = new PrintTask({ url: this.config.printGPServiceURL });
   showPrintMapPreview(): void {
     this.printMapModal.closeOnEscape = false;
@@ -36,11 +36,32 @@ export class PrintToolComponent implements OnInit {
     }, 10);
   }
 
+  copyLayers() {
+    const lrArray: any = [];
+    this.mapView.map.layers.forEach((lrs: __esri.Layer) => {
+      if (lrs.type === 'graphics') {
+        const grs = (lrs as any).graphics;
+        if (grs.length > 0) {
+          const grLr = new GraphicsLayer({ id: lrs.id + 'popup' });
+          grs.forEach((graphic: __esri.Graphic) => {
+            grLr.add(Graphic.fromJSON(graphic.toJSON()));
+          });
+          lrArray.push(grLr);
+        }
+      } else {
+
+        lrArray.push(lrs);
+      }
+    });
+    return lrArray;
+  }
   async initializeMap() {
+
     try {
+      const lrArray = this.copyLayers();
       const mapProperties: any = {
-        basemap: this.map.map.basemap.id,
-        layers: this.map.map.layers,
+        basemap: this.mapView.map.basemap,
+        layers: lrArray,
       };
 
       let ESRIMap = await import('arcgis-js-api/Map');
@@ -48,11 +69,17 @@ export class PrintToolComponent implements OnInit {
       const mapViewProperties: any = {
         container: this.mapViewEl.nativeElement,
         map: map,
+        snapToZoom: false,
+        constraints: {
+          rotationEnabled: false
+        },
+        center: this.mapView.center,
+        zoom: this.mapView.zoom,
+        spatialReference: this.mapView.spatialReference
       };
 
       const ESRIMapView = await import('arcgis-js-api/views/MapView');
       this.popupMapView = new ESRIMapView.default(mapViewProperties);
-      this.popupMapView.extent = this.map.extent;
       return this.popupMapView;
     } catch (error) {
       console.log('Esri: ', error);
@@ -72,8 +99,6 @@ export class PrintToolComponent implements OnInit {
       },
     });
 
-    console.log((this.printTask as any)._getPrintDefinition(this.popupMapView, printParameters));
-
     this.printTask
       .execute(printParameters)
       .then((success: any) => {
@@ -87,6 +112,12 @@ export class PrintToolComponent implements OnInit {
         let gpError = TraceGPError(this.config.printGPServiceURL, error);
         throw gpError;
       });
+  }
+
+  previewClosed() {
+    this.popupMapView.map.layers.forEach(lrs => {
+      this.popupMapView.map.remove(lrs);
+    });
   }
 
   ngOnInit(): void {
@@ -133,6 +164,8 @@ import { TraceGPError } from '../../services/error/GPServiceError';
 import { LoaderService } from '../../services/Loader.service';
 import { HelpService } from '../../services/help/help.service';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import GraphicsLayer from 'esri/layers/GraphicsLayer';
+import Graphic from 'esri/Graphic';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
