@@ -11,7 +11,6 @@ import { SensAreasComponent } from '../sidebar/sens-areas/sens-areas.component';
 import { SoilsComponent } from '../sidebar/soils/soils.component';
 import { ElevationProfileModule } from '../sidebar/elevation-profile/elevation-profile.module';
 import { AccordionPanelModule } from 'src/app/shared/components/accordion-panel/accordion.panel.module';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModalModule } from 'src/app/shared/lib/angular-modal/modal/modal-module';
 import { SoilsTableComponent } from '../sidebar/soils/soils-table/soils-table.component';
 import { HarvestOperationsComponent } from '../sidebar/harvest-operations/harvest-operations.component';
@@ -59,7 +58,6 @@ import { HelpbuttonModule } from 'src/app/shared/components/help-button/help-but
     FormsModule,
     ElevationProfileModule,
     AccordionPanelModule,
-    FontAwesomeModule,
     ModalModule,
     CulvertSizeModule,
     PrintToolModule,

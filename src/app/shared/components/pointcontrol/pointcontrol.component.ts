@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { RGBObjectToHexA } from '../../utils/Colors';
-import { faTree, faFlag, faParking, faExclamationTriangle, faTint, faThumbtack, faToriiGate, faHome } from '@fortawesome/free-solid-svg-icons';
 import { getPointSvg } from './pointSymbols';
 
 @Component({
@@ -10,6 +9,7 @@ import { getPointSvg } from './pointSymbols';
 })
 export class PointcontrolComponent {
   _selectedGraphics: any;
+
   @Input('selectedGraphics')
   get selectedGraphics ():any {
     return this._selectedGraphics
@@ -48,17 +48,6 @@ export class PointcontrolComponent {
     { name: 'home', type: 'picture-marker', asp: 1.125 }
   ];
 
-  pictureMarkers: any = {
-    flag: faFlag,
-    tree: faTree,
-    'exclamation-triangle': faExclamationTriangle,
-    parking: faParking,
-    tint: faTint,
-    thumbtack: faThumbtack,
-    'torii-gate': faToriiGate,
-    home: faHome
-  };
-
   iconName: any;
   markerSize: number = 12;
   pointSymbol: any = this.markerStyles[0];
@@ -80,6 +69,11 @@ export class PointcontrolComponent {
     fill: RGBObjectToHexA(this.markerProps.color)
   };
 
+  fillSvgStyle2 = {
+    'width.px': 20,
+    fill: RGBObjectToHexA(this.markerProps.color)
+  };
+
   changeMarkerSize = () => {
     const size = this.markerSize + 'px';
     this.markerProps.size = size;
@@ -96,16 +90,17 @@ export class PointcontrolComponent {
   };
 
   changePointShapeEvt = (evt: any) => {
-    this.pointSymbol = evt.value;
-    this.markerProps.type = evt.value.type;
-    if (evt.value.type === 'picture-marker') {
+    // console.log(evt);
+    this.pointSymbol = evt;
+    this.markerProps.type = evt.type;
+    if (evt.type === 'picture-marker') {
       this.markerProps.height = this.markerSize / this.pointSymbol.asp + 'px';
-      this.markerProps.name = evt.value.name;
+      this.markerProps.name = evt.name;
       this.updateMarkerShape();
     } else {
       this.markerProps.url = '';
-      this.markerProps.style = evt.value.name;
-      this.markerProps.name = evt.value.name;
+      this.markerProps.style = evt.name;
+      this.markerProps.name = evt.name;
     }
   };
 

@@ -4,7 +4,6 @@ import { FormatRoundNumber } from 'src/app/shared/utils/ConversionTools';
 import { ConvertSquareMetersToAcres, GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import { SoilsService } from '../soils.service';
 import { TableHeader } from './table-header';
-import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'pmlo-soils-table',
@@ -16,10 +15,6 @@ export class SoilsTableComponent implements OnInit {
   soils:__esri.Graphic[];
   headElements: TableHeader[] = [];
   totalAcres:string;
-
-  faSort = faSort;
-  faSortUp = faSortUp;
-  faSortDown = faSortDown;
 
   selectedSoil:__esri.Graphic;
 
@@ -80,7 +75,7 @@ export class SoilsTableComponent implements OnInit {
     } else {
       this.selectedSoil = soil;
       this.soilsService.selectPolygonFromTable.emit(soil);
-    }    
+    }
   }
 
   private sortByAttribute(attr:string, sortedAsc:boolean):void {
@@ -90,7 +85,7 @@ export class SoilsTableComponent implements OnInit {
     } else {
       this.soils.sort((a, b) => (b.attributes[attr] > a.attributes[attr]) ? 1 : -1);
     }
-    
+
   }
 
   private resetHeadElements(): void {

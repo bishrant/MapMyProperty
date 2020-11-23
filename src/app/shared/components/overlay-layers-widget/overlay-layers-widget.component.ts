@@ -2,9 +2,7 @@ import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@
 import MapImageLayer from 'esri/layers/MapImageLayer';
 import FeatureLayer from 'esri/layers/FeatureLayer';
 import VectorLayer from 'esri/layers/VectorTileLayer';
-import { faQuestionCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { HttpClient } from '@angular/common/http';
-import { HelpService } from '../../services/help/help.service';
 @Component({
   selector: 'app-overlay-layers-widget',
   templateUrl: './overlay-layers-widget.component.html',
@@ -15,7 +13,6 @@ export class OverlayLayersWidgetComponent implements OnInit {
   @Input() colorPrefix: string;
   @ViewChildren('checkboxes') checkboxes: QueryList<ElementRef>;
   isOpen: boolean = false;
-  faQuestionCircle:IconDefinition = faQuestionCircle;
 
   wetAreasId = 'wetAreas';
   floodZonesId = 'floodZones';
@@ -76,7 +73,6 @@ export class OverlayLayersWidgetComponent implements OnInit {
 
   constructor(
     private http:HttpClient,
-    private helpService:HelpService
   ) {}
 
   ngOnInit(): void {
@@ -126,10 +122,6 @@ export class OverlayLayersWidgetComponent implements OnInit {
     }
   }
 
-  openHelp():void {
-    this.helpService.openHelp.emit({header: 'Layers', itemName: 'layers'});
-  }
-
   private createLayer(layerType:string, id:string, minScale:number, url:string): any
   {
     let lyr:any;
@@ -138,13 +130,13 @@ export class OverlayLayersWidgetComponent implements OnInit {
       case 'mapImage':
         lyr = new MapImageLayer();
         break;
-      
+
       case 'feature':
         lyr = new FeatureLayer();
         break;
 
       case 'vector':
-        lyr = new VectorLayer();  
+        lyr = new VectorLayer();
         break;
     }
 

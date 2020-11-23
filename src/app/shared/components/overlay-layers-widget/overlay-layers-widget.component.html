@@ -3,7 +3,10 @@
 </button>
 
 <div class="layersBody layers-open" [hidden]="!isOpen">
-    <div class="layersTitle">Layers<fa-icon class="float-right cursor-pointer" [icon]="faQuestionCircle" (click)="openHelp()"></fa-icon></div>
+    <div class="layersTitle">Layers
+      <app-help-button [header]="'Layers'" [itemName]="'layers'"></app-help-button>
+
+    </div>
     <div class="layersContent overflow-y-auto">
       <div class="row" *ngFor="let layer of layersList">
         <label class="inline-flex cursor-pointer">

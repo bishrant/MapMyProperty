@@ -1,35 +1,41 @@
 <div>
-<br>
-<fieldset>
-  <legend>Point Style</legend>
-  <app-infobutton [tooltip]="'Specifies how the point marker is styled.'"
-    [ariaLabel]="'info button for point marker style'">
-  </app-infobutton>
-  <div class="marginTop10px">
-    Shape <br>
-    <mat-button-toggle-group name="markerProps.style" aria-label="Point Shape" [(ngModel)]="pointSymbol"
-      class="ptStyletoggleGroup" (change)="changePointShapeEvt($event)">
-      <mat-button-toggle *ngFor="let symbol of markerStyles" [value]="symbol" class="drawModeBtn"
-        [ngClass]="{faToggleBtn: symbol.type === 'picture-marker'}">
+  <br>
+  <fieldset>
+    <legend>Point Style</legend>
+    <app-infobutton [tooltip]="'Specifies how the point marker is styled.'"
+      [ariaLabel]="'info button for point marker style'">
+    </app-infobutton>
+    <div class="marginTop10px">
+      Shape <br>
+      <div id="shapes">
+        <label *ngFor="let symbol of markerStyles" class="labelCls"><input type="radio" name="shapes"
+          [value]="symbol"
+          [(ngModel)]="pointSymbol" (ngModelChange)="changePointShapeEvt($event)"
 
-        <svg-icon *ngIf="symbol.type === 'simple-marker'" [src]="'assets/icons/symbols-sms-'+symbol.name+'.svg'"
-          class="toggleBtn" [svgStyle]="fillSvgStyle">
-        </svg-icon>
-        <fa-icon *ngIf="symbol.type === 'picture-marker'" [icon]="pictureMarkers[symbol.name]" class="faToggleIcon"
-          [styles]="{'color': fillSvgStyle.fill}"></fa-icon>
-      </mat-button-toggle>
-    </mat-button-toggle-group>
-  </div>
-  <div class="flex colorDiv verticalCenter">Color:
-    <app-color-picker [color]="markerProps.color" [opacity]="markerProps.color.a * 100"
-      (colorSelected)="changePointColor($event)">
-    </app-color-picker>
-  </div>
-  <div class="marginTop10px">
-    Size: {{markerSize}}px<br>
-    0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5"
-      (change)="changeMarkerSize()" [(ngModel)]="markerSize" min="5" max="50">
-    </mat-slider> &nbsp;50
-  </div>
-</fieldset>
+            aria-label="tes" />
+          <span>
+            <svg-icon *ngIf="symbol.type === 'simple-marker'" [src]="'assets/icons/symbols-sms-'+symbol.name+'.svg'"
+              class="toggleBtn" [svgStyle]="fillSvgStyle">
+            </svg-icon>
+            <svg-icon [src]="'assets/pointsymbols/'+symbol.name+'.svg'" *ngIf="symbol.type === 'picture-marker'"
+              class="toggleBtn" [svgStyle]="fillSvgStyle2">
+            </svg-icon>
+          </span>
+        </label>
+      </div>
+
+    </div>
+    <br>
+    <div class="flex colorDiv verticalCenter">Color:
+      <app-color-picker [color]="markerProps.color" [opacity]="markerProps.color.a * 100"
+        (colorSelected)="changePointColor($event)">
+      </app-color-picker>
+    </div>
+    <div class="marginTop10px">
+      Size: {{markerSize}}px<br>
+      0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5"
+        (change)="changeMarkerSize()" [(ngModel)]="markerSize" min="5" max="50">
+      </mat-slider> &nbsp;50
+    </div>
+  </fieldset>
 </div>

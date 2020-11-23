@@ -1,33 +1,49 @@
 <table class="table-auto">
-    <thead>
-        <tr>
-            <th class="px-4 py-1 cursor-pointer" *ngFor="let head of headElements; let hi = index"
-                (click)="updateSortImages(head)">{{head.label}}<span>
-                    <fa-icon *ngIf="!head.isSortActive" class="float-right greyColor" [icon]="faSort"></fa-icon>
-                    <fa-icon *ngIf="head.isSortActive && head.sortedAsc" class="float-right text-pmlo_secondary"
-                        [icon]="faSortUp"></fa-icon>
-                    <fa-icon *ngIf="head.isSortActive && !head.sortedAsc" class="float-right text-pmlo_secondary"
-                        [icon]="faSortDown"></fa-icon>
-                </span></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let soil of soils" (click)="selectSoil(soil)" class="cursor-pointer" [ngClass]="{'selectedSoil': selectedSoil === soil}">
-            <td class="px-4 py-1 text-center">
-                <div [ngStyle]="{'background-color': getBackgroundColor(soil.attributes)}">{{soil.attributes.musym}}
-                </div>
-            </td>
-            <td class="px-4 py-1">{{soil.attributes.muname}}</td>
-            <td class="px-4 py-1 text-right">{{getsoilAcres(soil.attributes.Shape_Area)}}</td>
-            <td class="px-4 py-1 text-right">{{getsoilPercentage(soil.attributes.Shape_Area)}}%</td>
-        </tr>
-    </tbody>
-    <tfoot>
-        <tr class="font-bold">
-            <td class="px-4 py-1" colspan="2">Total</td>
-            <td class="px-4 py-1 text-right">{{totalAcres}}</td>
-            <td class="px-4 py-1 text-right">100.0%</td>
-        </tr>
-    </tfoot>
+  <thead>
+    <tr>
+      <th class="px-4 py-1 cursor-pointer" *ngFor="let head of headElements; let hi = index"
+        (click)="updateSortImages(head)">{{head.label}}<span>
+          <svg role="img" *ngIf="!head.isSortActive" aria-hidden="true" focusable="false"
+            class="sortIcon float-right greyColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+            <path fill="currentColor"
+              d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z">
+            </path>
+          </svg>
+          <svg role="img" *ngIf="head.isSortActive && head.sortedAsc" aria-hidden="true" focusable="false"
+            class="sortIcon float-right text-pmlo_secondary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+            <path fill="currentColor"
+              d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z">
+            </path>
+          </svg>
+          <svg role="img" *ngIf="head.isSortActive && !head.sortedAsc" aria-hidden="true" focusable="false"
+            class="sortIcon float-right text-pmlo_secondary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+            <path fill="currentColor"
+              d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z">
+            </path>
+          </svg>
+        </span>
+
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let soil of soils" (click)="selectSoil(soil)" class="cursor-pointer"
+      [ngClass]="{'selectedSoil': selectedSoil === soil}">
+      <td class="px-4 py-1 text-center">
+        <div [ngStyle]="{'background-color': getBackgroundColor(soil.attributes)}">{{soil.attributes.musym}}
+        </div>
+      </td>
+      <td class="px-4 py-1">{{soil.attributes.muname}}</td>
+      <td class="px-4 py-1 text-right">{{getsoilAcres(soil.attributes.Shape_Area)}}</td>
+      <td class="px-4 py-1 text-right">{{getsoilPercentage(soil.attributes.Shape_Area)}}%</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr class="font-bold">
+      <td class="px-4 py-1" colspan="2">Total</td>
+      <td class="px-4 py-1 text-right">{{totalAcres}}</td>
+      <td class="px-4 py-1 text-right">100.0%</td>
+    </tr>
+  </tfoot>
 </table>
 <p class="footerNote">Note: Small deviations possibly found in the table values are due to rounding in calculations.</p>
