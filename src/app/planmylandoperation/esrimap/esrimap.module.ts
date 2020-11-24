@@ -33,6 +33,7 @@ import { OverlayLayersWidgetModule } from 'src/app/shared/components/overlay-lay
 import { LayersHelpModule } from 'src/app/shared/components/help-components/layers-help/layers-help.module';
 import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-widget.module';
 import { HelpbuttonModule } from 'src/app/shared/components/help-button/help-button.module';
+import { ScaleTextModule } from 'src/app/shared/components/scale-text/scale-text.module';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -70,7 +71,8 @@ import { HelpbuttonModule } from 'src/app/shared/components/help-button/help-but
     ExportMapHelpModule,
     OverlayLayersWidgetModule,
     LayersHelpModule,
-    HelpbuttonModule
+    HelpbuttonModule,
+    ScaleTextModule
   ],
   exports: [EsrimapComponent]
 })
