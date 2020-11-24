@@ -486,7 +486,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
           labels.push(_specific);
         } else {
           let a = this.textService.creatGeomLabelGraphic(anchorPt, _specific.attributes.symbol, parent);
-          if ((a.symbol as any).text === (_specific.symbol as any).text) {
+          if ((a.geometry as any).latitude === (_specific.geometry as any).latitude && (a.geometry as any).longitude === (_specific.geometry as any).longitude)  {
             labels.push(_specific);
           } else {
             labels.push(a);
