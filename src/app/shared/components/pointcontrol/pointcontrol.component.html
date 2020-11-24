@@ -11,13 +11,12 @@
         <label *ngFor="let symbol of markerStyles" class="labelCls"><input type="radio" name="shapes"
           [value]="symbol"
           [(ngModel)]="pointSymbol" (ngModelChange)="changePointShapeEvt($event)"
-
             aria-label="tes" />
           <span>
             <svg-icon *ngIf="symbol.type === 'simple-marker'" [src]="'assets/icons/symbols-sms-'+symbol.name+'.svg'"
               class="toggleBtn" [svgStyle]="fillSvgStyle">
             </svg-icon>
-            <svg-icon [src]="'assets/pointsymbols/'+symbol.name+'.svg'" *ngIf="symbol.type === 'picture-marker'"
+            <svg-icon *ngIf="symbol.type === 'picture-marker'" [src]="'assets/pointsymbols/'+symbol.name+'.svg'"
               class="toggleBtn" [svgStyle]="fillSvgStyle2">
             </svg-icon>
           </span>

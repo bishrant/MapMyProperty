@@ -39,7 +39,6 @@ const getSVGHTML = (id, name: string, color: string) => {
     default:
       break;
   }
-  console.log(bs)
   return bs;
 }
 const getSVG = (name: string, _color: any) => {

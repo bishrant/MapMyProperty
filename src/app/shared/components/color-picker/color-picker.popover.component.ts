@@ -1,7 +1,7 @@
 import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import { ColorsPopoverService } from '../../services/ColorsPopover.service';
 import { ColorSwatch } from '../../utils/GraphicStyles';
-
+import {ColorPallete} from './ColorPallete'
 @Component({
   selector: 'app-color-popover',
   templateUrl: './color-picker.popover.component.html',
@@ -12,6 +12,7 @@ export class ColorPickerPopoverComponent {
   @Input() opacity: number;
   @ViewChild('customColorInput') customColorInput: ElementRef;
   defaultColors = ColorSwatch;
+  colorPallete = ColorPallete;
 
   public changeColor (color: string): void {
     this.color = color;
@@ -20,7 +21,7 @@ export class ColorPickerPopoverComponent {
 
   public changeColorCustom (color: string): void {
     this.color = color;
-    this.colorsPopoverService.close(false);
+    this.closePopupWithColor(false);
   }
 
   public changeOpacity ($event: any) {
