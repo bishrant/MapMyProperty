@@ -41,13 +41,14 @@ const createMapView = (mapViewEl: ElementRef, searchBarDiv: ElementRef): __esri.
   const view = new MapView(mapViewProperties);
   view.popup.autoOpenEnabled = false;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const search = new Search({ view: view, container: searchBarDiv.nativeElement });
+  const search = new Search({ view: view, container: searchBarDiv.nativeElement, popupEnabled: false, resultGraphicEnabled: false });
 
   const searchInsideMap = new Search({
     view: view,
     container: document.createElement('div'),
     popupEnabled: false,
-    id: 'sss'
+    id: 'sss',
+    resultGraphicEnabled: false
   });
 
 
