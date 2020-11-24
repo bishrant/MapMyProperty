@@ -19,7 +19,7 @@ export class ColorPickerPopoverComponent {
 
   public changeColorCustom (color: string): void {
     this.color = color;
-    this.closePopupWithColor(false);
+    this.closePopupWithColor(true);
   }
 
   public changeOpacity (v: any) {
