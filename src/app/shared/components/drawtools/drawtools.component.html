@@ -81,11 +81,11 @@
 
 
   <app-linestyle #linestyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
-    (changedGraphicsStyle)="onGraphicsStyleChange()">
+    (changedGraphicsStyle)="changeGraphicsStyle()">
   </app-linestyle>
 
   <app-fillstyle #fillstyle [selectedGraphics]="selectedGraphics" [drawingTool]="drawingTool"
-    (changedGraphicsStyle)="onGraphicsStyleChange()">
+    (changedGraphicsStyle)="changeGraphicsStyle()">
   </app-fillstyle>
   <br>
   <app-textcontrols #textcontrols [selectedTextGraphics]="selectedTextGraphics"

@@ -21,8 +21,7 @@ import { TextControlService } from '../../services/TextControl-service';
 import { TextControlSelectionService } from '../../services/TextControlSelection-service';
 import { Subscription } from 'rxjs';
 import Graphic from 'esri/Graphic';
-import Point from 'esri/geometry/Point';
-import { CreateTextSymbolForLabels } from './DrawToolUtils';
+import { syncLabelsToGeometry } from './LabelsUtils';
 
 @Component({
   selector: 'app-drawtools',
@@ -61,11 +60,8 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   readonly graphics$ = this.store.select((state) => state.app.graphics);
 
-  constructor(
-    private store: Store<AppState>,
-    private textService: TextControlService,
-    private TextSelectionService: TextControlSelectionService,
-  ) {}
+  constructor(private store: Store<AppState>, private textService: TextControlService,
+    private TextSelectionService: TextControlSelectionService) { }
 
   private listenToGraphicsStore = () => {
     return this.graphics$.subscribe((g: any) => {
@@ -84,7 +80,8 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.textGraphicsLayer.removeAll();
       }
 
-      this.syncLabelsToGeometry();
+      syncLabelsToGeometry(this.polygonGraphicsLayer,
+        this.geomLabelsGraphicsLayer, this.mapView, this.textService);
     });
   };
 
@@ -179,10 +176,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
     });
-  };
-
-  onGraphicsStyleChange = () => {
-    this.changeGraphicsStyle();
   };
 
   changeGraphicsStyle = () => {
@@ -404,8 +397,12 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     if (toolName === 'circle' && initial) {
       this.drawingMode = 'freehand';
     }
+
     if (['circle', 'polygon', 'polyline'].indexOf(toolName) > -1) {
       this.sketchVM.polylineSymbol = CreatePolylineSymbol(this.lineStyleElmRef.lineProps);
+      if (!this.drawingMode) {
+        this.drawingMode = 'click';
+      }
     }
     if (['circle', 'polygon'].indexOf(toolName) > -1) {
       const polygonSymbol = CreatePolygonSymbol(this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
@@ -446,57 +443,5 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.textSubscription.unsubscribe();
     this.graphicsSubcription$.unsubscribe();
   }
-
-  syncLabelsToGeometry = () => {
-    const labels = [];
-
-    if (this.polygonGraphicsLayer.graphics.length < 1) {
-      this.geomLabelsGraphicsLayer.removeAll();
-      return;
-    }
-
-    this.polygonGraphicsLayer.graphics.forEach((parent: Graphic) => {
-      let anchorPt: Point;
-      if (!['polygon', 'polyline'].includes(parent.geometry.type)) return;
-
-      if (parent.geometry.type === 'polygon') {
-        anchorPt = (parent.geometry as any).centroid;
-      } else {
-        const firstPt = (parent.geometry as any).paths[0][0];
-        anchorPt = new Point({
-          x: firstPt[0],
-          y: firstPt[1],
-          spatialReference: this.mapView.spatialReference,
-        });
-      }
-      // need to check if the user has deleted the graphic themselves
-      // check if the graphics with that parent id already exists
-      const specificLabels = this.geomLabelsGraphicsLayer.graphics.filter(
-        (gg) => gg.attributes.parentId === parent.attributes.id
-      );
-
-      if (specificLabels.length < 1) {
-        const _symbol = CreateTextSymbolForLabels(parent);
-        const a = this.textService.creatGeomLabelGraphic(anchorPt, _symbol, parent);
-        labels.push(a);
-      } else {
-        // check if it was previously deleted
-        const _specific = specificLabels.getItemAt(0);
-        if (typeof _specific.geometry === 'undefined') {
-          labels.push(_specific);
-        } else {
-          let a = this.textService.creatGeomLabelGraphic(anchorPt, _specific.attributes.symbol, parent);
-          if ((a.geometry as any).latitude === (_specific.geometry as any).latitude && (a.geometry as any).longitude === (_specific.geometry as any).longitude)  {
-            labels.push(_specific);
-          } else {
-            labels.push(a);
-          }
-        }
-      }
-    });
-
-    this.geomLabelsGraphicsLayer.removeAll();
-    this.geomLabelsGraphicsLayer.addMany(labels);
-  };
 
 }
