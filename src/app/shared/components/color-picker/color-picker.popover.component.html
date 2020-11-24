@@ -1,11 +1,9 @@
 <div class="opened">
-  Transparency: <span>
+  Opacity: <span>
     {{opacity | number}}%
   </span>
   <div class="opacitySliderContainer">
-    <mat-slider [thumbLabel]="true" (change)="changeOpacity($event)" [value]="opacity" class="opacitySlider">
-    </mat-slider>
-    <div class="opacitySliderBackground"></div>
+    <app-slider [value]="opacity" (onChange)="changeOpacity($event)"></app-slider>
   </div>
 
   Color

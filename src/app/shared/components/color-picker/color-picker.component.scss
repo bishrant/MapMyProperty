@@ -116,22 +116,6 @@ $size: 30px;
   height: 40px;
   width: 100%;
 }
-.opacitySliderBackground {
-  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
-  position: absolute;
-  bottom: 10px;
-  height: 10px;
-  width: 180px;
-  margin-left: 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-.opacitySlider {
-  height: 100%;
-  width: 185px;
-  position: absolute;
-  z-index: 10;
-}
 
 .transparentBackDropPopup {
   opacity: 0.5;
