@@ -19,7 +19,7 @@
 
   <div class="hex-code">
     <div class="hexDiv">
-      HEX
+      HEX:
       <div class="g-input">
         <input type="text" maxlength="7" [value]="color" (keyup)="changeColorManual(paintInput.value)"
           aria-label="enter color hex code" (keydown.enter)="closePopupWithColor(true)" #paintInput />
@@ -27,9 +27,12 @@
     </div>
 
     <div class="customColorOpener">
+      <div class="customColorSwatch" [style.background]="color"></div>
       <a (click)="openColorPalettee()"><u style="cursor: pointer;">Custom</u></a>
       <input type="color" #customColorInput style="visibility: hidden" [value]="color" aria-hidden="true"
-        (change)="changeColorCustom($event.srcElement.value)">
+        (change)="changeColorCustom($event.srcElement.value)" />
+
+
     </div>
   </div>
 
