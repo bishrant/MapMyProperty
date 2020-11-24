@@ -19,8 +19,6 @@ const FillStyles = [
   'backward-diagonal',
   'cross',
   'diagonal-cross',
-  'vertical',
-  'horizontal'
 ];
 
 const CheckIfColorIsHollow = (RGBAarray: any) => {
