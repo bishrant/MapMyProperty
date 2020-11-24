@@ -31,6 +31,7 @@ export class LinestyleComponent {
     const s = this.geomType === 'polyline' ? value[0].attributes.symbol : value[0].attributes.symbol.outline;
     this.lineProps.style = s.style;
     this.lineProps.color = s.color;
+    this.lineProps.width = s.width;
     this.setLineSVGStyle();
   }
 
