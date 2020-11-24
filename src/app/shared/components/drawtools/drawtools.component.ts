@@ -270,16 +270,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       if (gg.state === 'start' || gg.state === 'active') {
         const _temp = gg.graphics[0].clone();
-        const p = {
-          type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
-          style: 'square',
-          color: 'transparent',
-          size: _temp.attributes.symbol.size, // pixels
-          outline: {
-            color: [255, 0, 255],
-            width: 3,
-          },
-        };
         this.selectedGraphics = gg.graphics;
         dragElement('mydiv', 'parent');
         this.selectedGraphicsChanged();
