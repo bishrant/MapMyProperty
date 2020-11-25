@@ -164,9 +164,9 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
           const userTextGraphicsLayer = evt.added.find(l => l.id === 'userTextGraphicsLayer');
           const geomlabels = evt.added.find(l => l.id === 'geomlabels');
 
-          if (userGraphicsLayer !== null) this.mapView.map.reorder(userGraphicsLayer, evt.added.length - 1);
-          if (userTextGraphicsLayer !== null) this.mapView.map.reorder(userTextGraphicsLayer, evt.added.length - 1);
-          if (geomlabels !== null) this.mapView.map.reorder(geomlabels, evt.added.length - 1);
+          if (userGraphicsLayer !== null) this.mapView.map.reorder(userGraphicsLayer, this.mapView.map.layers.length - 1);
+          if (userTextGraphicsLayer !== null) this.mapView.map.reorder(userTextGraphicsLayer, this.mapView.map.layers.length - 1);
+          if (geomlabels !== null) this.mapView.map.reorder(geomlabels, this.mapView.map.layers.length - 1);
         }
       });
       const soilsLayer: __esri.WMSLayer = CreateSoilsLayer('soilsDynamicLayer', this.appConfig.ssurgoWMSURL);

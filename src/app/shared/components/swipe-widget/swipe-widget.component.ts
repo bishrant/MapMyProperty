@@ -42,7 +42,7 @@ export class SwipeWidgetComponent implements AfterViewInit {
 
   getNewSwipeLayerCollection(_layer: any): Collection {
     if (!this.mapView.map.layers.includes(_layer)) {
-      this.mapView.map.layers.add(_layer);
+      this.mapView.map.layers.add(_layer, this.mapView.map.layers.length - 3);
       this.loadingService.isLoading.next(true);
       this.mapView.whenLayerView(_layer).then(l => this.loadingService.isLoading.next(false))
     };
@@ -73,7 +73,7 @@ export class SwipeWidgetComponent implements AfterViewInit {
       if (this.swipeWidget) { this.swipeWidget.destroy() }
       const _first = this.texasBasemapsDict[this.firstLayer];
       const _second = this.texasBasemapsDict[this.secondLayer];
-      this.mapView.map.addMany([_first, _second]);
+      this.mapView.map.addMany([_first, _second], this.mapView.map.layers.length - 3);
 
       this.loadingService.isLoading.next(true);
 
