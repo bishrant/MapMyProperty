@@ -154,6 +154,19 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
     try {
       InitializeArcGISWorkers();
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
+      this.mapView.map.allLayers.on('change', (evt) => {
+        // Pull user graphics layers to the end of the array
+        if (evt.added.length > 0)
+        {
+          const userGraphicsLayer = evt.added.find(l => l.id === 'userGraphicsLayer');
+          const userTextGraphicsLayer = evt.added.find(l => l.id === 'userTextGraphicsLayer');
+          const geomlabels = evt.added.find(l => l.id === 'geomlabels');
+
+          if (userGraphicsLayer !== null) this.mapView.map.reorder(userGraphicsLayer, evt.added.length - 1);
+          if (userTextGraphicsLayer !== null) this.mapView.map.reorder(userTextGraphicsLayer, evt.added.length - 1);
+          if (geomlabels !== null) this.mapView.map.reorder(geomlabels, evt.added.length - 1);
+        }
+      });
       const soilsLayer: __esri.WMSLayer = CreateSoilsLayer('soilsDynamicLayer', this.appConfig.ssurgoWMSURL);
       this.mapView.map.addMany([soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer]);
       this.mapView.whenLayerView(this.polygonGraphicsLayer).then((boundaryLayerView) => {
