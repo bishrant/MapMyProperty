@@ -1,35 +1,41 @@
 <div class="opened">
-    Transparency:  <span>
-        {{opacity | number}}%
-    </span>
-    <div class="opacitySliderContainer">
-        <mat-slider [thumbLabel]="true" (change)="changeOpacity($event)" [value]="opacity" class="opacitySlider">
-        </mat-slider>
-        <div class="opacitySliderBackground"></div>
+  Opacity: <span>
+    {{opacity | number}}%
+  </span>
+  <div class="opacitySliderContainer">
+    <app-slider [value]="opacity" (onChange)="changeOpacity($event)"></app-slider>
+  </div>
+
+  Color
+  <div class="colors">
+    <table class="colorTable">
+      <tr *ngFor="let row of colorPallete">
+        <td *ngFor="let cellColor of row" [ngStyle]="{background: cellColor}"
+        (click)="changeColor(cellColor)" [ngClass]="{selectedCell: cellColor === color}">
+      </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="hex-code">
+    <div class="hexDiv">
+      HEX:
+      <div class="g-input">
+        <input type="text" maxlength="7" [value]="color" (keyup)="changeColorManual(paintInput.value)"
+          aria-label="enter color hex code" (keydown.enter)="closePopupWithColor(true)" #paintInput />
+      </div>
     </div>
 
-    Color
-    <div class="colors">
-        <div (click)="changeColor(paint)" *ngFor="let paint of defaultColors" class="circle"
-            [ngStyle]="{'background': paint}">
-            <div *ngIf="!paint" class="noColor">
-            </div>
-        </div>
-    </div>
+    <div class="customColorOpener">
+      <div class="customColorSwatch" [style.background]="color"></div>
+      <a (click)="openColorPalettee()"><u style="cursor: pointer;">Custom</u></a>
+      <input type="color" #customColorInput style="visibility: hidden" [value]="color" aria-hidden="true"
+        (change)="changeColorCustom($event.srcElement.value)" />
 
-    <div class="hex-code">
-        <div class="hexDiv">
-            HEX
-            <div class="g-input">
-                <input type="text" maxlength="7" [value]="color" (keyup)="changeColorManual(paintInput.value)" aria-label="enter color hex code"
-                    (keydown.enter)="closePopupWithColor(true)" #paintInput />
-            </div>
-        </div>
 
-        <div class="customColorOpener">
-            <a (click)="openColorPalettee()"><u style="cursor: pointer;">Custom</u></a>
-            <input type="color" #customColorInput style="visibility: hidden" [value]="color" aria-hidden="true"
-                (change)="changeColorCustom($event.srcElement.value)">
-        </div>
     </div>
+  </div>
+
+
+
 </div>

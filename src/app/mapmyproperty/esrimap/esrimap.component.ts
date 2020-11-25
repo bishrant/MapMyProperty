@@ -38,6 +38,9 @@ export class EsrimapComponent implements OnInit {
   @HostListener('keydown.control.y') redoFromKeyboard() {
     this.graphicsStoreEl.redo();
   }
+  @HostListener('document:keydown.delete') deleteFromKeyboard(){
+    this.graphicsStoreEl.delete();
+  }
 
   @HostListener('keydown.meta.shift.z') redoFromKeyboardMac() {
     this.graphicsStoreEl.redo();

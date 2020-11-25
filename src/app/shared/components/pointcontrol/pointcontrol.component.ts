@@ -9,6 +9,7 @@ import { getPointSvg } from './pointSymbols';
 })
 export class PointcontrolComponent {
   _selectedGraphics: any;
+  _getColor = RGBObjectToHexA
 
   @Input('selectedGraphics')
   get selectedGraphics ():any {
@@ -27,6 +28,12 @@ export class PointcontrolComponent {
     this.markerProps.name = s.name;
     this.markerSize = parseInt(s.size.split('px')[0]);
     this.pointSymbol = this.markerStyles.filter((m : any) => m.name === s.name)[0];
+
+    this.markerProps.size = this.markerSize + 'px';
+    this.markerProps.width = this.markerSize + 'px';
+    this.markerProps.height = this.markerSize / this.pointSymbol.asp + 'px';
+    this.markerProps.color = s.color;
+    this.updateMarkerShape();
   }
 
   constructor () {}
@@ -70,7 +77,7 @@ export class PointcontrolComponent {
   };
 
   fillSvgStyle2 = {
-    'width.px': 20,
+    'width.px': 18,
     fill: RGBObjectToHexA(this.markerProps.color)
   };
 
@@ -86,6 +93,8 @@ export class PointcontrolComponent {
     if (this.pointSymbol.type === 'picture-marker') {
       this.markerProps.url = getPointSvg(this.pointSymbol.name, this.markerProps.color);
       this.markerProps.contentType = 'image/svg';
+    } else {
+      this.markerProps.contentType = undefined;
     }
   };
 
@@ -108,5 +117,6 @@ export class PointcontrolComponent {
     this.markerProps.color = colorInfo;
     this.updateMarkerShape();
     this.fillSvgStyle.fill = RGBObjectToHexA(this.markerProps.color);
+    this.fillSvgStyle2.fill = RGBObjectToHexA(this.markerProps.color);
   };
 }

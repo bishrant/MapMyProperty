@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-slider',
@@ -8,22 +8,20 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class SliderComponent  {
   @Input() min: number = 1;
   @Input() max: number = 1;
-  @Output() valueChanged = new EventEmitter<number>();
-
+  @Output() onChange = new EventEmitter<number>();
   _value: number;
 
+  @Input()
   get value(): number {
     return this._value;
   }
-
-  @Input() set value(val: number) {
+  set value(val: number) {
     this._value = val;
   }
 
   constructor() { }
 
-  modelChangeFn($event: any) {
-    this.valueChanged.emit($event);
+  modelChangeFn($event: any):void {
+    this.onChange.emit($event.target.value);
   }
-
 }
