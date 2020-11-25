@@ -8,13 +8,14 @@ import { createWebMercatorPointFromGraphic, createWebMercatorPolygonFromGraphic,
 import { addGraphics } from '../store/graphics.actions';
 import { id } from '../store/todo';
 import Graphic = require('esri/Graphic');
+import { GetGraphicsForExtentUsingString } from './DrawUtils';
 declare const zip: any;
 zip.workerScriptsPath = 'scripts/';
 
-const getZipEntries = (file: any, callback: any, store: any) => {
+const getZipEntries = (file: any, callback: any, store: any, mapView: __esri.MapView) => {
   const reader = new zip.BlobReader(file);
   zip.createReader(reader, function (reader: any) {
-    callback(reader, file, store);
+    callback(reader, file, store, mapView);
   });
 };
 
@@ -41,7 +42,7 @@ const getWriter = (entry: any) => {
   });
 };
 
-const zipToSHP_AGOL = (file: File, store: any) => {
+const zipToSHP_AGOL = (file: File, store: any, mapView: __esri.MapView) => {
   const formData = new FormData();
   const publishParams: any = {
     targetSR: { wkid: 102100 },
@@ -70,6 +71,7 @@ const zipToSHP_AGOL = (file: File, store: any) => {
         console.error('Error parsing shapefile.' + result.error.message);
       } else {
         const graphicArray: any = [];
+        const _graphicToZoom = [];
         result.featureCollection.layers.forEach((layer: any) => {
           const g = layer.layerDefinition.geometryType;
 
@@ -87,6 +89,7 @@ const zipToSHP_AGOL = (file: File, store: any) => {
               },
               symbol: getDefaultSymbol(geometryType)
             });
+            _graphicToZoom.push(_graphic);
             const _graphicJson: any = _graphic.toJSON();
             _graphicJson.symbol = getDefaultSymbol(geometryType);
             _graphicJson.geometry.type = geometryType;
@@ -94,11 +97,13 @@ const zipToSHP_AGOL = (file: File, store: any) => {
           });
         });
         store.dispatch(addGraphics({ graphics: graphicArray }));
+
+        setTimeout(() => {mapView.goTo(_graphicToZoom)}, 250)
       }
     });
 };
 
-const readerCompleteMultiple = (zipReader: any, file: any, store: any) => {
+const readerCompleteMultiple = (zipReader: any, file: any, store: any, mapView: __esri.MapView) => {
   try {
     zipReader.getEntries(async (entries: any) => {
       const nestedZips = entries.filter((e: any) => /^.*\.(zip)$/gi.test(e.filename));
@@ -125,15 +130,17 @@ const readerCompleteMultiple = (zipReader: any, file: any, store: any) => {
           const _arrayBuffer = await fileToArrayBuffer(file);
           const _featureCollection = shp.parseZip(_arrayBuffer);
           const _graphicArray = convertFeatureCollectionToGraphics(_featureCollection);
+          graphicsArray = _graphicArray;
           store.dispatch(addGraphics({ graphics: _graphicArray }));
         } catch (error) {
-          zipToSHP_AGOL(file, store);
+          zipToSHP_AGOL(file, store, mapView);
         }
       }
+      mapView.goTo(GetGraphicsForExtentUsingString(JSON.stringify(graphicsArray)));
     });
   } catch (error) {
     console.error(error);
-    zipToSHP_AGOL(file, store);
+    zipToSHP_AGOL(file, store, mapView);
   }
 };
 
@@ -256,8 +263,8 @@ const downloadSHP = async (data: any, filename: string) => {
   });
 };
 
-const convertSHPToGraphics = async (file: any, store: any) => {
-  getZipEntries(file, readerCompleteMultiple, store);
+const convertSHPToGraphics = async (file: any, store: any, mapView: __esri.MapView) => {
+  getZipEntries(file, readerCompleteMultiple, store, mapView);
 };
 
 export { convertSHPToGraphics, downloadSHP };
