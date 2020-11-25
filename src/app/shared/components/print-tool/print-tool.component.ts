@@ -122,6 +122,7 @@ export class PrintToolComponent implements OnInit {
     });
     return lrArray;
   }
+
   async initializeMap() {
 
     try {
