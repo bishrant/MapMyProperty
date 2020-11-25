@@ -1,3 +1,5 @@
+import { Polygon } from 'esri/geometry';
+import Graphic from 'esri/Graphic';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from './GraphicStyles';
 import { CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon, TFSPolyline } from './SketchViewModelUitls';
 const id = (): string => Math.random().toString(36).substr(2, 9);
@@ -71,12 +73,31 @@ const CreatePointFromGraphic = (graphic: any, markerProps: any) => {
   return _g;
 }
 
+const GetGraphicsForExtentUsingString = (jsonStr: string) => {
+  const jsn = JSON.parse(jsonStr);
+  const _graphics = jsn.map(j => {
+    const f = JSON.parse(j);
+    f.symbol = undefined;
+    const gg = Graphic.fromJSON(f);
+    if (f.attributes.geometryType === 'circle') {
+      gg.geometry = new Polygon({
+        rings: f.geometry.rings,
+        spatialReference: { wkid: f.geometry.spatialReference.wkid }
+      });
+    }
+    return gg;
+  });
+  return _graphics;
+}
+
 export {
+  id,
   CreateCircleFromGraphic,
   CreatePolygonFromGraphic,
   CreatePolylineFromGraphic,
   CreatecircleFromPoint,
   CreatePolygonGraphicWithSymbology,
   CreateCircleFromEvent,
-  CreatePointFromGraphic
+  CreatePointFromGraphic,
+  GetGraphicsForExtentUsingString
 };
