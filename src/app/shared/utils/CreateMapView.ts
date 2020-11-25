@@ -7,6 +7,7 @@ import Home from 'arcgis-js-api/widgets/Home';
 import Basemap from 'esri/Basemap';
 import BingMapsLayer from 'esri/layers/BingMapsLayer';
 import Expand from 'esri/widgets/Expand';
+import ScaleBar from 'esri/widgets/ScaleBar';
 
 const createBingBasemap = () => {
   return new Basemap({
@@ -58,10 +59,19 @@ const createMapView = (mapViewEl: ElementRef, searchBarDiv: ElementRef): __esri.
     content: searchInsideMap,
     expandTooltip: 'Search',
   })
+
+  const scaleBar = new ScaleBar({
+    id: 'scaleBar',
+    view: view,
+    unit: 'non-metric',
+    style: 'line'
+  });
+
   const homeWidget = new Home({ view });
   view.ui.move('zoom', 'bottom-right');
   view.ui.add(homeWidget, 'bottom-right');
   view.ui.add(searchExpand, 'bottom-right');
+  view.ui.add(scaleBar, 'bottom-left');
 
   searchInsideMap.on('select-result', () => {
     searchExpand.collapse();

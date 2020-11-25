@@ -43,8 +43,20 @@
     margin-bottom: 1.3125em;
 }
 
+.slopeBufferContainer {
+    position: relative;
+}
+
+.greaterThan {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    padding-left: 0.625em;
+}
+
 .subMenuContainer {
-    margin-left: 1em;
+    margin-left: 1.5625em;
     margin-right: 1em;
 }
 

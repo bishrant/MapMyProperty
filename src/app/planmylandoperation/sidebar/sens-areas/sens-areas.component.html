@@ -37,7 +37,7 @@
       </div>
       <div class="flex my-2" *ngIf="!streamCollapsed">
         <div class="subMenuContainer">
-          <div class="subMenuContainer flex">
+          <div class="flex">
             <div class="md-input-main">
               <div class="md-input-box">
                 <input id="smzBufferValue" class="pmlo-md-input md-input" name="smzBufferValue" type="number" min="0"
@@ -64,9 +64,9 @@
 
         <div class="saSymbol slopeBack"></div>
       </div>
-      <div class="flex my-2" *ngIf="!slopeCollapsed">
-        <div class="subMenuContainer slopeBufferContainer flex">
-          <div class="prefix-margin flex items-center"><div>&gt;</div></div>
+      <div class="flex my-2 slopeBufferContainer" *ngIf="!slopeCollapsed">
+        <div class="prefix-margin flex items-center greaterThan">&gt;</div>
+        <div class="subMenuContainer flex">
           <div class="md-input-main">
             <div class="md-input-box">
               <input id="slopeInput" class="pmlo-md-input md-input" name="slopeInput" type="number" min="0"
