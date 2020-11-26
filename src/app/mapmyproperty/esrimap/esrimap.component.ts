@@ -1,5 +1,5 @@
 
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
 import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
@@ -7,6 +7,8 @@ import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { createMapView } from 'src/app/shared/utils/CreateMapView';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import { AccordionPanelService } from 'src/app/shared/components/accordion-panel/accordion-panel.service';
+import { AccordionPanelComponent } from 'src/app/shared/components/accordion-panel/accordion-panel.component';
+import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.service';
 
 @Component({
   selector: 'app-esrimap',
@@ -19,6 +21,7 @@ export class EsrimapComponent implements OnInit {
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true })
   private graphicsStoreEl!: GraphicsStoreComponent;
+  @ViewChildren(AccordionPanelComponent) accordionPanels: QueryList<AccordionPanelComponent>;
 
   mapView!: __esri.MapView;
   clickToAddText = false;
@@ -32,7 +35,7 @@ export class EsrimapComponent implements OnInit {
   polygonGraphicsLayer: GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
 
-  constructor(private accordionPanelService: AccordionPanelService) { }
+  constructor(private esrimapService: EsrimapService) { }
   @HostListener('keydown.control.z') undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
@@ -56,6 +59,11 @@ export class EsrimapComponent implements OnInit {
     this.mapCoords = 'Lat: ' + pt.latitude.toFixed(5) + '  Long:' + pt.longitude.toFixed(5);
   };
 
+  closeOtherPanels = ((panelTitle: string) => {
+    const panelToOpen: AccordionPanelComponent[] = this.accordionPanels.filter((panel: any) => panel.title === panelTitle);
+    if (panelToOpen.length > 0) panelToOpen[0].toggleOthers();
+  });
+
   private showMapCoordinates = () => {
     if (this.mapView) {
       this.mapView.watch('stationary', () => {
@@ -68,11 +76,6 @@ export class EsrimapComponent implements OnInit {
     }
   };
 
-  showDraw() {
-    console.log(this.drawAccPanel, this.accordionPanelService);
-    this.drawAccPanel.showHide();// = true;
-    // this.accordionPanelService.setActivePanel.emit(this.drawAccPanel);
-  }
   private initializeMap = async () => {
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
@@ -104,5 +107,7 @@ export class EsrimapComponent implements OnInit {
 
   ngOnInit() {
     this.initializeMap();
+
+    this.esrimapService.closeAllPanelsExcept.subscribe((panelTitle: string) => this.closeOtherPanels(panelTitle));
   }
 }

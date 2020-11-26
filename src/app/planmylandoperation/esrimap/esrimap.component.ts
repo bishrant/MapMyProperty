@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ContentChildren, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer, FindGraphicById, GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
 import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
@@ -41,7 +41,6 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   @ViewChild('notificationsModal') notificationsModal: ModalComponent;
   @ViewChild('helpModal') helpModal: ModalComponent;
   @ViewChild('sessionModal') sessionModal: ModalComponent;
-  // @ViewChildren(ChildDirective) viewChildren!: QueryList<ChildDirective>;
   @ViewChildren(AccordionPanelComponent) accordionPanels: QueryList<AccordionPanelComponent>;
 
   mapView!: __esri.MapView;
@@ -64,7 +63,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
 
   closeOtherPanels = ((panelTitle: string) => {
     const panelToOpen: AccordionPanelComponent[] = this.accordionPanels.filter((panel: any) => panel.title === panelTitle);
-    panelToOpen[0].toggleOthers();
+    if (panelToOpen.length > 0) panelToOpen[0].toggleOthers();
   });
 
   constructor(
@@ -101,7 +100,6 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    console.log(this.accordionPanels);
     setTimeout(() => {
       this.closeOtherPanels('Draw');
     }, 100);
