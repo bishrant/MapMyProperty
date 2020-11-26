@@ -11,7 +11,7 @@
 
       </button>
     <app-accordion>
-      <app-accordion-panel title="Draw">
+      <app-accordion-panel #drawAccPanel title="Draw">
         <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
         [geomLabelsSketchVM]= "geomLabelsSketchVM" [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer"
         [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer" [polygonGraphicsLayer]="polygonGraphicsLayer">

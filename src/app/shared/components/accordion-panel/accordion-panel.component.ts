@@ -20,5 +20,9 @@ export class AccordionPanelComponent implements OnInit {
   @Input() backgroundColor: String = 'lightgray';
   @Input() textColor: String = 'black';
   @Output() toggle: EventEmitter<any> = new EventEmitter<any>();
-  ngOnInit() {}
+
+  public toggleOthers() {
+    if (!this.opened) this.toggle.emit();
+  }
+  ngOnInit() { }
 }
