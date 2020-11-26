@@ -6,6 +6,7 @@ import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls'
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { createMapView } from 'src/app/shared/utils/CreateMapView';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
+import { AccordionPanelService } from 'src/app/shared/components/accordion-panel/accordion-panel.service';
 
 @Component({
   selector: 'app-esrimap',
@@ -14,6 +15,7 @@ import GraphicsLayer from 'esri/layers/GraphicsLayer';
 })
 export class EsrimapComponent implements OnInit {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
+  @ViewChild('drawAccPanel') private drawAccPanel: any;
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true })
   private graphicsStoreEl!: GraphicsStoreComponent;
@@ -30,7 +32,7 @@ export class EsrimapComponent implements OnInit {
   polygonGraphicsLayer: GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
 
-  constructor() { }
+  constructor(private accordionPanelService: AccordionPanelService) { }
   @HostListener('keydown.control.z') undoFromKeyboard() {
     this.graphicsStoreEl.undo();
   }
@@ -66,6 +68,11 @@ export class EsrimapComponent implements OnInit {
     }
   };
 
+  showDraw() {
+    console.log(this.drawAccPanel, this.accordionPanelService);
+    this.drawAccPanel.showHide();// = true;
+    // this.accordionPanelService.setActivePanel.emit(this.drawAccPanel);
+  }
   private initializeMap = async () => {
     try {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);

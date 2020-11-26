@@ -22,6 +22,7 @@ import { TextControlSelectionService } from '../../services/TextControlSelection
 import { Subscription } from 'rxjs';
 import Graphic from 'esri/Graphic';
 import { syncLabelsToGeometry } from './LabelsUtils';
+import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.service';
 
 @Component({
   selector: 'app-drawtools',
@@ -36,7 +37,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() mapView: any;
   @Input() textGraphicsLayer: any;
   @Input() polygonGraphicsLayer: __esri.GraphicsLayer;
-  @Output() selectedTextGraphicsChanged: EventEmitter<any> = new EventEmitter<any>();
+  // @Output() selectedTextGraphicsChanged: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('radiusInput') radiusElmRef: ElementRef;
   @ViewChild('textcontrols') textcontrolsElmRef: any;
@@ -60,7 +61,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   readonly graphics$ = this.store.select((state) => state.app.graphics);
 
-  constructor(private store: Store<AppState>, private textService: TextControlService,
+  constructor(private store: Store<AppState>, private textService: TextControlService,private esriMapService: EsrimapService,
     private TextSelectionService: TextControlSelectionService) { }
 
   private listenToGraphicsStore = () => {
@@ -151,6 +152,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
           return;
         }
 
+        this.openDrawPanel();
         this.selectedTextGraphics = response.results.filter((res: any) => res.graphic.layer === this.textGraphicsLayer);
 
         this.selectedLabelsGraphics = response.results.filter(
@@ -328,8 +330,13 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.updateCircleRadius();
   };
 
+  openDrawPanel() {
+    this.esriMapService.closeAllPanelsExcept.emit('Draw');
+  }
+
   selectedGraphicsChanged = () => {
     if (this.selectedGraphics.length === 1) {
+      this.openDrawPanel()
       const _g = this.selectedGraphics[0];
       this.selectedGraphicsGeometry =
         this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';

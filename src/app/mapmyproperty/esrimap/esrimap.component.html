@@ -11,7 +11,7 @@
 
       </button>
     <app-accordion>
-      <app-accordion-panel title="Draw">
+      <app-accordion-panel #drawAccPanel title="Draw">
         <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
         [geomLabelsSketchVM]= "geomLabelsSketchVM" [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer"
         [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer" [polygonGraphicsLayer]="polygonGraphicsLayer">
@@ -31,6 +31,8 @@
         <app-print-tool [mapView]="mapView"></app-print-tool>
       </app-accordion-panel>
     </app-accordion>
+
+    <button (click)="showDraw()">Hide</button>
 
     <!-- <app-slider></app-slider> -->
   </div>
