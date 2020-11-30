@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer, FindGraphicById, GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
 import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
@@ -41,6 +41,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   @ViewChild('notificationsModal') notificationsModal: ModalComponent;
   @ViewChild('helpModal') helpModal: ModalComponent;
   @ViewChild('sessionModal') sessionModal: ModalComponent;
+  @ViewChildren(AccordionPanelComponent) accordionPanels: QueryList<AccordionPanelComponent>;
 
   mapView!: __esri.MapView;
   clickToAddText = false;
@@ -59,6 +60,12 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   helpItem = '';
   savedData: any;
 
+
+  closeOtherPanels = ((panelTitle: string) => {
+    const panelToOpen: AccordionPanelComponent[] = this.accordionPanels.filter((panel: any) => panel.title === panelTitle);
+    if (panelToOpen.length > 0) panelToOpen[0].toggleOthers();
+  });
+
   constructor(
     private store: Store<AppState>,
     private mapViewService: MapviewService,
@@ -67,16 +74,16 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
     private esrimapService: EsrimapService,
     private notificationsService: NotificationsService,
     private accordionPanelService: AccordionPanelService,
-    private helpService:HelpService
+    private helpService: HelpService
   ) { }
 
   checkIfSavedGraphicsExists() {
     this.savedData = getSavedState();
     if (this.savedData) {
-        if (this.savedData.length > 0) {
-          this.sessionModal.show();
-        }
-        this.listenToGraphicsStore();
+      if (this.savedData.length > 0) {
+        this.sessionModal.show();
+      }
+      this.listenToGraphicsStore();
     } else {
       this.listenToGraphicsStore();
     }
@@ -86,13 +93,17 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
 
   listenToGraphicsStore() {
     const graphics$ = this.store.select((state) => state.app.graphics);
-    if (this.graphicsStoreSub) {this.graphicsStoreSub.unsubscribe()}
+    if (this.graphicsStoreSub) { this.graphicsStoreSub.unsubscribe() }
     this.graphicsStoreSub = graphics$.subscribe((g: any) => {
       setSavedState(g);
     });
   }
 
-  ngAfterViewInit(): void { }
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.closeOtherPanels('Draw');
+    }, 100);
+  }
 
   restoreSession(e: any) {
     if (e !== null) this.sessionModal.hide();
@@ -115,7 +126,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   @HostListener('keydown.control.y') redoFromKeyboard() {
     this.graphicsStoreEl.redo();
   }
-  @HostListener('document:keydown.delete') deleteFromKeyboard(){
+  @HostListener('document:keydown.delete') deleteFromKeyboard() {
     this.graphicsStoreEl.delete();
   }
   @HostListener('keydown.meta.shift.z') redoFromKeyboardMac() {
@@ -158,8 +169,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       this.mapView.map.allLayers.on('change', (evt) => {
         // Pull user graphics layers to the end of the array
-        if (evt.added.length > 0)
-        {
+        if (evt.added.length > 0) {
           const userGraphicsLayer = evt.added.find(l => l.id === 'userGraphicsLayer');
           const userTextGraphicsLayer = evt.added.find(l => l.id === 'userTextGraphicsLayer');
           const geomlabels = evt.added.find(l => l.id === 'geomlabels');
@@ -254,7 +264,9 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
       this.regenerationAccPanel.opened = open;
     });
 
-    this.helpService.openHelp.subscribe((helpObj:HelpObj) => {
+    this.esrimapService.closeAllPanelsExcept.subscribe((panelTitle: string) => this.closeOtherPanels(panelTitle));
+
+    this.helpService.openHelp.subscribe((helpObj: HelpObj) => {
       this.helpHeader = helpObj.header;
       this.helpItem = helpObj.itemName;
       this.helpModal.show();
