@@ -1,1 +1,81 @@
-<p>draw-help works!</p>
+<div class="tab-label-container flex">
+    <div role="tablist" class="tab-list">
+        <div class="tab-labels">
+            <button role="tab" class="tab-label" [ngClass]="{'tab-label-active': isDrawActive }" (click)="setActiveTab(true)">
+                <div id="drawTab" class="tab-label-content">
+                    Draw
+                </div>
+            </button>
+            <button role="tab" class="tab-label" [ngClass]="{'tab-label-active': !isDrawActive }" (click)="setActiveTab(false)">
+                <div id="editTab" class="tab-label-content">
+                    Edit
+                </div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="tab-body-wrapper">
+    <div role="tabpanel" class="tab-body" aria-labelledby="drawTab" *ngIf="isDrawActive">
+        <p class="mt-2">The Draw toolbox contains tools to draw areas (polygons and circles), lines (linear features), and
+            points of interest for a boundary.&nbsp;&nbsp;In addition, text can be added to the map.</p>
+    
+        <p class="mt-2">To define areas, circles, linear features, and points, or to add text to the map, select the button
+            corresponding to the drawing tool of interest to activate it and all the drawing options to style that
+            element will be available.</p>
+    
+        <p class="mt-2">For example, to draw a boundary, select the <b>Polygon</b> <i class="customicon-untitled ml-1"
+                style="line-height: 0;"></i> button and select the options for drawing mode, line style, and fill
+            style.&nbsp;&nbsp;Once these are set, move the cursor to the map and begin adding points at each location where
+            the boundary changes direction.&nbsp;&nbsp;Move the cursor in the direction of the next point and click to add a new
+            point.&nbsp;&nbsp;Continue this until you draw the entire boundary.&nbsp;&nbsp;Double-clicking to add the last point
+            will complete the drawing.</p>
+
+        <p class="mt-2">To add circles, lines, points of interest, or text, follow the same steps as for area
+            polygons.&nbsp;&nbsp;To draw a circle, select the <b class="mt-1">Circle</b> <mat-icon>radio_button_unchecked</mat-icon> tool and specify the drawing mode.&nbsp;&nbsp;Two
+            options are offered, <b>Click</b> and <b>Freehand</b>.&nbsp;&nbsp;By selecting <b>Freehand</b> you can draw a circle
+            by hand.&nbsp;&nbsp;To use this option, move the cursor to the map, and press down the left button of the mouse at
+            the location that will be the center of the circle, and start moving the cursor away from the center to define its
+            size.&nbsp;&nbsp;When you are satisfied with the size of the circle, release the mouse button.&nbsp;&nbsp;To create
+            a circle with a specific radius distance, select the <b>Click</b> drawing mode option, enter the desired radius,
+            move the cursor to the map and click on the map to specify the center of the circle.</p>
+
+        <p class="mt-2">To draw a line, select the <b>Line</b>
+            <mat-icon>show_chart</mat-icon> tool and specify the drawing mode and style options.&nbsp;&nbsp;Linear features can
+            be drawn either as polylines (connected segments of straight lines) or as freehand lines, such as the way you draw
+            using a pencil.
+        </p>
+
+        <p class="mt-2">To add points of interest or text, select the respective tool and specify the appearance options as was
+            done for areas and lines.&nbsp;&nbsp;Click the <b>Point</b> or <b>Text</b>tool, whichever is applicable, and click
+            anywhere on the map to create the point or text.</p>
+
+        <p class="mt-2">To deactivate all the drawing tools click on the <b>Clear</b> button whenever a tool is active.</p>
+    </div>
+
+    <div role="tabpanel" class="tab-body" aria-labelledby="editTab" *ngIf="!isDrawActive">
+        <p class="mt-2">If you are not satisfied with the drawing and want to edit it, click on the drawn feature to select it
+            and enable editing mode.&nbsp;&nbsp;In the case of editing an area, notice the blue circular points on each corner
+            or vertex.&nbsp;&nbsp;Click on these and drag them to a new, desired location to move these points.&nbsp;&nbsp;To
+            delete an existing vertex, right-click on it.&nbsp;&nbsp;New vertices can be added by clicking on and dragging the
+            "ghost" vertices (grey circular points) to the desired location.&nbsp;&nbsp;The moved ghost vertex will now show as
+            a new point (blue).&nbsp;&nbsp;Ghost vertices are displayed halfway between two existing points.&nbsp;&nbsp;Similar
+            steps can be followed to edit lines.</p>
+
+        <p class="mt-2">Points of interest can be moved by first clicking on it to select it, which will be indicated by
+            changing to cyan blue color.&nbsp;&nbsp;You can now click and drag it to a new location.</p>
+
+        <p class="mt-2">Text can be moved by first clicking on it and then dragging the text to the desired position using the
+            input box handler.&nbsp;&nbsp;To delete the text click on the delete icon.</p>
+
+        <p class="mt-2">If you want to move a label showing the acreage, click on the label to select it, then click and drag it
+            to the new location.&nbsp;&nbsp;If you do not wish to display the acreage labels, uncheck the <b>Area/Distance
+                Labels</b> checkbox, and vice versa.</p>
+
+        <p class="mt-2">Clicking on the <b>Delete All</b> button (at the bottom of the map) will delete all
+            drawings.&nbsp;&nbsp;Clicking the <b>Undo</b> button (also at the bottom of the map) will delete the last feature
+            drawn.&nbsp;&nbsp;Clicking on it again will delete the next to last one drawn.&nbsp;&nbsp;This can be done to
+            sequentially delete features in reverse order that they were added.&nbsp;&nbsp;The same functionalilty holds for the
+            <b>Redo</b> button.</p>
+    </div>
+</div>
