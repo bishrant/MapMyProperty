@@ -35,6 +35,7 @@ import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-
 import { HelpbuttonModule } from 'src/app/shared/components/help-button/help-button.module';
 import { ScaleTextModule } from 'src/app/shared/components/scale-text/scale-text.module';
 import { SwipeHelpModule } from 'src/app/shared/components/help-components/swipe-help/swipe-help.module';
+import { BasemapsHelpModule } from 'src/app/shared/components/help-components/basemaps-help/basemaps-help.module';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -74,7 +75,8 @@ import { SwipeHelpModule } from 'src/app/shared/components/help-components/swipe
     LayersHelpModule,
     HelpbuttonModule,
     ScaleTextModule,
-    SwipeHelpModule
+    SwipeHelpModule,
+    BasemapsHelpModule
   ],
   exports: [EsrimapComponent]
 })
