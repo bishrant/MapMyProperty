@@ -49,7 +49,10 @@
 <div class="mapBlanket">
   <div class="headerBlanket">
     <div class="header headerRow secondary">
-      <div #searchBar></div>
+      <div class="flex items-center">
+        <div #searchBar class="mr-2"></div>
+        <app-help-button [header]="'Find Location'" [itemName]="'search'" [fillColor]="'white'"></app-help-button>
+      </div>
       <div class="coordsDisplay">
         Mouse Coordinates [ {{mapCoords}} ]
       </div>
@@ -133,6 +136,10 @@
 
     <ng-container *ngSwitchCase="'basemaps'">
       <app-basemaps-help></app-basemaps-help>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'search'">
+      <app-search-widget-help></app-search-widget-help>
     </ng-container>
   </ng-container>
 </app-modal>
