@@ -7,9 +7,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DrawHelpComponent implements OnInit {
 
+  isDrawActive:boolean = true;
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  setActiveTab(draw:boolean):void {
+    if (this.isDrawActive && !draw || !this.isDrawActive && draw)
+    {
+      this.isDrawActive = !this.isDrawActive;
+    }
   }
 
 }
