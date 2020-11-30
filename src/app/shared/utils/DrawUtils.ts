@@ -1,4 +1,4 @@
-import { Polygon } from 'esri/geometry';
+import { Polygon, Polyline } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from './GraphicStyles';
 import { CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon, TFSPolyline } from './SketchViewModelUitls';
@@ -84,6 +84,12 @@ const GetGraphicsForExtentUsingString = (jsonStr: string) => {
         rings: f.geometry.rings,
         spatialReference: { wkid: f.geometry.spatialReference.wkid }
       });
+    }
+    if (f.attributes.geometryType === 'polyline') {
+      gg.geometry = new Polyline({
+        paths: f.geometry.paths,
+        spatialReference: { wkid: f.geometry.spatialReference.wkid }
+      })
     }
     return gg;
   });

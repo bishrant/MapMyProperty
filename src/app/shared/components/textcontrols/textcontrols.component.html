@@ -6,14 +6,9 @@
 
     <div class="flex verticalCenter">
         <div> Font:</div>
-        <mat-select [(ngModel)]="textProps.font.family" class="matSelect" (selectionChange)="changeFontFamily()">
-            <mat-select-trigger>
-                <span>{{textProps.font.family}}</span>
-            </mat-select-trigger>
-            <mat-option *ngFor="let fontFamily of fontFamilyOptions" [value]="fontFamily">
-                {{fontFamily}}
-            </mat-option>
-        </mat-select>
+        <select [(ngModel)]="textProps.font.family" class="matSelect" (selectionChange)="changeFontFamily()">
+          <option *ngFor="let font of fontFamilyOptions" [ngValue]="font">{{font}}</option>
+        </select>
     </div>
     <div class="flex fontStyle">
         <button class="fontButtons" mat-raised-button [ngClass]="{buttonActive: textProps.font.weight === 'bold'}"
@@ -23,8 +18,6 @@
             (click)="toggleFontDecoration()"><u>U</u></button>
         <button class="fontButtons" mat-raised-button [ngClass]="{buttonActive: textProps.font.style === 'italic'}"
             (click)="toggleFontStyle()"><i>I</i></button>
-
-
     </div>
     <div class="flex colorDiv verticalCenter">Color:
         <app-color-picker [color]="textProps.color" [opacity]="textProps.color.a * 100"

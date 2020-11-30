@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { MatSliderModule } from '@angular/material/slider';
 import { ColorPickerModule } from '../color-picker/color-picker.module';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +20,6 @@ import { TextcontrolsComponent } from './textcontrols.component';
     MatSliderModule,
     ColorPickerModule,
     AngularSvgIconModule,
-    MatSelectModule,
     FormsModule,
     MatFormFieldModule,
     MatButtonModule,

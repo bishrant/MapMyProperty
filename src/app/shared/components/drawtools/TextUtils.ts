@@ -28,7 +28,8 @@ const CreateTextSymbolFromHTML = (targetElement: any, textProps: any) => {
     textProps.font.decoration = targetElement.getAttribute('textDecoration');
   }
   if (targetElement.getAttribute('textStyle') !== null) {
-    textProps.font.style = targetElement.getAttribute('textStyle');
+    const _style = targetElement.getAttribute('textStyle');
+    textProps.font.style = _style === 'none' ? 'normal': _style;
   }
   if (targetElement.getAttribute('fontFamily') !== null) {
     textProps.font.family = targetElement.getAttribute('fontFamily');
