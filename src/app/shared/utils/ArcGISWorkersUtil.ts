@@ -12,7 +12,7 @@ const InitializeArcGISWorkers = () => {
       { name: "dojo", location: `${DEFAULT_WORKER_URL}dojo` },
       { name: "moment", location: `${DEFAULT_WORKER_URL}moment` },
     ]
-  }; 
+  };
 };
 
 export {InitializeArcGISWorkers}
