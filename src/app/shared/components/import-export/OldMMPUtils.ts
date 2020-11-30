@@ -1,7 +1,7 @@
+import { Polyline } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
-import { SimpleLineSymbol } from 'esri/symbols';
-import { addGraphics } from '../../store/graphics.actions';
-import { CreatePolygonFromGraphic, CreatePolygonGraphicWithSymbology, id } from '../../utils/DrawUtils';
+import { CreatePointFromGraphic, CreatePolygonFromGraphic, CreatePolylineFromGraphic, id } from '../../utils/DrawUtils';
+import { getPointSvg } from '../pointcontrol/pointSymbols';
 
 
 var lineStyles = ["dash", "dash-dot", "dot", "long-dash", "long-dash-dot", "long-dash-dot-dot", "none", "short-dash", "short-dash-dot", "short-dash-dot-dot", "short-dot", "solid"];
@@ -19,8 +19,18 @@ const OldlineStyles = {
   esriSLSShortDot: "short-dot",
   esriSLSSolid: "solid"
 };
+
+const OldPointStyles = {
+  esriSMSCircle: 'circle',
+  esriSMSCross: 'cross',
+  esriSMSDiamond: 'diamond',
+  esriSMSSquare: 'square',
+  esriSMSTriangle: 'triangle',
+  esriSMSX: 'x'
+}
+
 const getLineStyle = (outline: any) => {
-  const _outline = { color: outline.color, style: outline.style, width: outline.width }
+  const _outline = { color: RGBA(outline.color), style: outline.style, width: outline.width }
   if (!(lineStyles.includes(outline.style))) {
     const _oldStyle = OldlineStyles[outline.style];
     if (typeof _oldStyle === undefined) {
@@ -32,64 +42,194 @@ const getLineStyle = (outline: any) => {
   return _outline;
 }
 
-const getFillStyle = (fill: any) => {
+const RGBA = (c: any) => {
+  return { r: c[0], g: c[1], b: c[2], a: c[3] / 255 }
+}
+
+const RGBA_Hollow = (c: any) => {
+  return { r: c[0], g: c[1], b: c[2], a: 0 }
+}
+
+const getFillStyle = (fill: any, isHollow: boolean) => {
   const c = fill.color;
-  return {color: {r: c[0], g: c[1], b: c[2], a: 1-c[3]/255}, style: 'solid'}
+  return { color: isHollow ? RGBA_Hollow(c) : RGBA(c), style: 'solid' };
 }
 
-const setAttributes = (graphic) => {
-  return { "id": id(), "geometryType": "polygon", "radius": 0 };
+const setAttributes = (_geomType: String) => {
+  return { "id": id(), "geometryType": _geomType, "radius": 0 };
+}
+const createGraphicForPolygon = (p: any, isHollow: boolean) => {
+  const pp = Graphic.fromJSON(p);
+  pp.attributes = setAttributes('polygon');
+  const tt = CreatePolygonFromGraphic(pp,
+    getLineStyle(p.symbol.outline),
+    getFillStyle(p.symbol, isHollow));
+  return tt;
 }
 
-const convertMMPJSONToGraphics = (json: any, mapView: __esri.MapView, store: any) => {
+const createGraphicForPoint = (pt: any) => {
+  const ptGr: Graphic = Graphic.fromJSON(pt);
+  ptGr.attributes = { "id": id(), "geometryType": "point" }
+  const tt = CreatePointFromGraphic(ptGr, CreatePointSymbol(pt.symbol));
+  return tt;
+}
+
+const createGraphicForLine = (l: any) => {
+  const ll: Graphic = Graphic.fromJSON(l);
+  ll.attributes = setAttributes('polyline');
+  const lines = new Polyline({
+    paths: (l.geometry as any).paths,
+    spatialReference: { wkid: l.geometry.spatialReference.wkid }
+  });
+
+  ll.geometry = lines;
+
+  const tt = CreatePolylineFromGraphic(ll, getLineStyle(l.symbol));
+  return tt;
+}
+
+const convertMMPJSONToGraphics = (j: any) => {
   let gArray = [];
-  let j = { "boundary": [{ "symbol": { "color": [255, 255, 0, 255], "outline": { "color": [255, 255, 0, 255], "width": 3, "type": "esriSLS", "style": "esriSLSSolid", "marker": null }, "type": "esriSFS", "style": "esriSFSNull" }, "geometry": { "rings": [[[-11149383.210050084, 3901277.595113831], [-11078449.647801459, 3803438.198908832], [-11110247.451568084, 3755741.493258895], [-11220316.772298709, 3744734.5611858326], [-11149383.210050084, 3901277.595113831]]], "spatialReference": { "wkid": 102100 } }, "geometryType": "polygon", "attributes": { "area": "2,020,484.6", "id": "drawArea", "uniqueId": "draw_160632019482226" } }], "lines": [{ "symbol": { "color": [255, 255, 0, 255], "width": 3, "type": "esriSLS", "style": "esriSLSSolid", "marker": null }, "geometry": { "paths": [[[-11028306.957246397, 3895162.6328510186], [-11034421.91950921, 3678692.968747458]]], "spatialReference": { "wkid": 102100 } }, "geometryType": "polyline", "attributes": { "distance": "113.45", "id": "drawLine", "uniqueId": "draw_160632019953058" } }], "circle": [], "pointsOfInterest": [], "labels": [], "ranchFeatures": [], "ranchLabels": [], "formParams": { "ranchName": "", "ranchCounty": "", "ownerInput": "", "ownerPhone": "", "managerInput": "", "managerPhone": "", "email": "", "wmp": [], "ltp": [], "kshp": [], "pnr": [] } };
   if (j.boundary.length > 0) {
-
     j.boundary.forEach((p: any) => {
-      const pp = Graphic.fromJSON(p);
-      pp.attributes = setAttributes(pp);
-
-      let tt = CreatePolygonFromGraphic(pp,
-        getLineStyle(p.symbol.outline),
-        getFillStyle(p.symbol));
-      console.log(tt);
-      gArray.push(JSON.stringify(tt));
+      gArray.push(JSON.stringify(createGraphicForPolygon(p, true)));
     });
-
   }
+
   if (j.lines.length > 0) {
-
+    j.lines.forEach((l: any) => {
+      gArray.push(JSON.stringify(createGraphicForLine(l)));
+    })
   }
+
   if (j.circle.length > 0) {
-    // create circle
-
+    j.circle.forEach((p: any) => {
+      gArray.push(JSON.stringify(createGraphicForPolygon(p, true)));
+    });
   }
+
+  if (j.labels.length > 0) {
+    j.labels.forEach((pt: any) => {
+      createTextGraphicJSON(pt);
+      gArray.push(JSON.stringify(createTextGraphicJSON(pt)));
+    })
+  }
+
   if (j.pointsOfInterest.length > 0) {
-
+    j.pointsOfInterest.forEach((pt: any) => {
+      gArray.push(JSON.stringify(createGraphicForPoint(pt)));
+    })
   }
 
-  setTimeout(() => {
-    store.dispatch(addGraphics({ graphics: gArray }));
-  }, 100);
+  //ranch
+  if (j.ranchLabels.length > 0) {
+    j.ranchLabels.forEach((pt: any) => {
+      gArray.push(JSON.stringify(createTextGraphicJSON(pt)));
+    })
+  }
 
-  console.log(gArray);
+  if (j.ranchFeatures.length > 0) {
+    j.ranchFeatures.forEach((rf: any) => {
+      let gr;
+      switch (rf.geometryType) {
+        case 'point':
+          gr = createGraphicForPoint(rf);
+          break;
+        case 'polyline':
+          gr = createGraphicForLine(rf);
+          break;
+        case 'polygon':
+          gr = createGraphicForPolygon(rf, false);
+          break;
+        default:
+          break;
+      }
+      gArray.push(JSON.stringify(gr));
+    })
+  }
   return gArray;
+}
 
+
+const CreatePointSymbol = (symbol) => {
+  if (symbol.type === 'esriPMS') {
+    const _name = symbol.url.split("images/")[1];
+    const name = _name === 'watersource.png' ? 'tint' : 'exclamation-triangle';
+    const asp = name === 'tint' ? 0.687 : 1.125;
+    const _color = name === 'tint' ? { r: 41, g: 171, b: 226, a: 1 } : { r: 248, g: 206, b: 41, a: 1 };
+    const url = getPointSvg(name, _color);
+    const size = Math.round(parseInt(symbol.width) * 1.3);
+    return {
+      type: 'picture-marker',
+      size: size + 'px',
+      url: url,
+      width: size + 'px',
+      height: Math.round(size/asp) + 'px',
+      style: 'circle',
+      contentType: 'image/svg',
+      name: name,
+      color: _color
+    }
+  } else {
+    const size = symbol.size;
+    const style = OldPointStyles[symbol.style];
+    const color = (typeof symbol.color === 'undefined') ? RGBA(symbol.outline.color) : RGBA(symbol.color);
+    return {
+      type: 'simple-marker',
+      size: size + 'px',
+      url: '',
+      width: size + 'px',
+      height: size + 'px',
+      style: style,
+      contentType: 'image/svg',
+      name: style,
+      color: color
+    }
+  }
+
+};
+
+const createTextGraphicJSON = (labelJSON: any) => {
+  const symbol: any = CreateTextSymbolForLabels(labelJSON.symbol);
+  const t =
+  {
+    geometry: {
+      x: labelJSON.geometry.x,
+      y: labelJSON.geometry.y,
+      spatialReference: labelJSON.geometry.spatialReference,
+      type: 'point'
+    },
+    symbol: symbol,
+    attributes: {
+      geometryType: 'text',
+      id: id(),
+      parentId: 0,
+      readonly: false,
+      symbol: symbol
+    }
+
+  };
+  return t;
+}
+
+const CreateTextSymbolForLabels = (symbol: any) => {
+  return {
+    type: "text",
+    color: RGBA(symbol.color),
+    xoffset: 3,
+    yoffset: 3,
+    font: {
+      size: (parseInt(symbol.font.size) === NaN) ? '12px' : Math.round(parseInt(symbol.font.size) * 1.33) + 'px',
+      family: 'Arial', //symbol.font.family,
+      weight: symbol.font.weight,
+      style: symbol.font.style,
+      decoration: symbol.font.decoration,
+
+    },
+    text: symbol.text,
+    lineWidth: '500px',
+
+  }
 }
 
 export { convertMMPJSONToGraphics };
-
-
-const CreatePolygonSymbol = (outline: any, fill: any) => {
-  return {
-    type: 'simple-fill',
-    color: fill.color,
-    style: fill.style,
-    outline: {
-      color: outline.color ? outline.color : 'transparent',
-      width: outline.width,
-      style: outline.style
-    }
-  };
-}

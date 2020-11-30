@@ -27,7 +27,7 @@ export class TextcontrolsComponent implements OnInit {
     return this._selectedTextGraphics;
   }
 
-  fontFamilyOptions: any[] = ['Arial', 'Montserrat'];
+  fontFamilyOptions: any[] = ['Arial', 'Montserrat', 'Noto Sans', 'Noto Serif',  'Ubuntu'];
   fontSize: number = 18;
   public textProps: any = {
     color: { r: 255, g: 255, b: 0, a: 1 },

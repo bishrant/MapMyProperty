@@ -23,7 +23,7 @@ const syncLabelsToGeometry = (polygonGraphicsLayer: GraphicsLayer, geomLabelsGra
       anchorPt = new Point({
         x: firstPt[0],
         y: firstPt[1],
-        spatialReference: mapView.spatialReference,
+        spatialReference: parent.geometry.spatialReference,
       });
     }
     // need to check if the user has deleted the graphic themselves
