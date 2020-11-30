@@ -6,9 +6,10 @@
 </button>
 
 <div [hidden]="!state.open" class="basemapBody basemap-open">
-  <div class="basemapTitle">Basemaps</div>
+  <div class="basemapTitle">Basemaps
+    <app-help-button [header]="'Basemaps'" [itemName]="'basemaps'" [fillColor]="'white'"></app-help-button>
+  </div>
   <div style="flex: 1;">
-    <div  class="basemapHelp"><app-help-button [header]="'Basemaps'" [itemName]= "'basemaps'"></app-help-button></div>
     <div class="basemapgrid">
       <div class="basemapcard" *ngFor="let basemap of basemaps" (click)="setBasemap(basemap)"
         [ngClass]="{selected: basemap===state.basemap}">

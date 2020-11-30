@@ -6,10 +6,6 @@ $right:15px;
   top: 1em;
   background: gray;
 }
-.basemapHelp {
-  margin-right: 1em;
-  margin-top: 5px;
-}
 
 .basemapContainer.basemap-open {
   background: gray;
@@ -168,7 +164,8 @@ select {
   color: white;
   align-items: center;
   text-align: left;
-  padding-left: 15px;
+  padding: 0 0.9375em;
+  justify-content: space-between;
 }
 
 .imageryDate {

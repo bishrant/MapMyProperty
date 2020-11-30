@@ -3,7 +3,9 @@
 </button>
 
 <div [hidden]="!state.open" class="swipeWidgetBody basemap-open">
-  <div class="widget-title">Swipe Layers</div>
+  <div class="widget-title">Swipe Layers
+    <app-help-button [header]="'Swipe Layers'" [itemName]="'swipe'" [fillColor]="'white'"></app-help-button>
+  </div>
 
   <div class="swipeBodyContainer">
     {{swipeMode === 'horizontal' ? 'Left Layer' : 'Top Layer'}} <br>
