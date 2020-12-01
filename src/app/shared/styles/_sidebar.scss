@@ -1,41 +1,53 @@
 fieldset {
-    position: relative;
-    padding-top: 12px;
+  position: relative;
+  padding-top: 12px;
 }
 
 .widthSlider {
-    width: 80%;
-    height: 20px;
+  width: 80%;
+  height: 20px;
+}
+
+.widthSlider > .slidecontainer {
+  width: 200px;
+}
+
+.widthSliderContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  line-height: 15px;
 }
 
 .buttonActive {
-    background-color: lightgray;
-    border: 2px solid cyan;
-    color: black;
+  background-color: lightgray;
+  border: 2px solid cyan;
+  color: black;
 }
 .fontButtons {
-    min-width: unset !important;
-    width: 50px;
-    margin: 2px;
-    outline: none;
+  min-width: unset !important;
+  width: 50px;
+  margin: 2px;
+  outline: none;
 }
 .fontStyle {
-    justify-content: center;
-    margin-top: 10px;
+  justify-content: center;
+  margin-top: 10px;
 }
 
 .verticalCenter {
-    align-items: center;
+  align-items: center;
 }
 .matSelect {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 .colorDiv {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 .marginTop10px {
-    margin-top: 10px;
+  margin-top: 10px;
 }
-legend{
+legend {
   font-weight: 600;
 }

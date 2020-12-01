@@ -30,11 +30,15 @@
         (colorSelected)="changePointColor($event)">
       </app-color-picker>
     </div>
+
     <div class="marginTop10px">
       Size: {{markerSize}}px<br>
-      0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5"
-        (change)="changeMarkerSize()" [(ngModel)]="markerSize" min="5" max="50">
-      </mat-slider> &nbsp;50
+      <div class="widthSliderContainer">
+        5 &nbsp;<app-slider class="widthSlider" [value]="markerSize" [min]="5" [max]="50"
+          (onChange)="changeMarkerSize($event)"></app-slider>
+        &nbsp;50
+      </div>
     </div>
+
   </fieldset>
 </div>
