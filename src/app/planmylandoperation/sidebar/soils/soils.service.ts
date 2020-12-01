@@ -19,14 +19,13 @@ export class SoilsService {
   @Output() shareMultiSoils:EventEmitter<Graphic[]> = new EventEmitter();
   @Output() selectPolygonFromTable:EventEmitter<Graphic> = new EventEmitter();
   @Output() updateSliderValue:EventEmitter<any> = new EventEmitter();
-  
-  constructor(
+
+  constructor (
     private http: HttpClient,
     private appConfig:AppConfiguration
   ) { }
 
-  identifySoil(mapPoint: __esri.Point, origin: string): Promise<any>
-  {
+  identifySoil (mapPoint: __esri.Point, origin: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const queryFile:string = 'assets/soilQueries/' + origin + 'SoilQuery.txt';
 
@@ -37,9 +36,9 @@ export class SoilsService {
           this.http.post(this.appConfig.ssurgoTabularURL, {
             query: queryString,
             format: 'json'
-        }).subscribe(response => {
-          resolve(response);
-        });
+          }).subscribe(response => {
+            resolve(response);
+          });
         } catch (e) {
           reject(e);
         }
@@ -47,7 +46,7 @@ export class SoilsService {
     });
   }
 
-  getSoils(graph: Graphic): Promise<any[]> {
+  getSoils (graph: Graphic): Promise<any[]> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
@@ -72,22 +71,21 @@ export class SoilsService {
               });
             }
           },
-        (error) => {
-          resolve([]);
-        });
+          (error) => {
+            resolve([]);
+          });
       });
     });
   }
 
-  addSoilsToMap(gl: __esri.GraphicsLayer, soilMulti: any, boundaryId:string, sliderValue:number, isOrange:boolean): void {
+  addSoilsToMap (gl: __esri.GraphicsLayer, soilMulti: any, boundaryId:string, sliderValue:number, isOrange:boolean): void {
     const graphicTransparency:number = (100 - sliderValue) / 100;
     const graphicsCollection: Graphic[] = [];
     let lineProps: LineProps = GetDefaultSoilsLineProps(graphicTransparency);
     this.shareMultiSoils.emit(soilMulti.value.features);
     soilMulti.value.features.forEach((feature: any) => {
       let fillProps: FillProps;
-      if (!isOrange)
-      {
+      if (!isOrange) {
         fillProps = GetSoilFillProps(feature, graphicTransparency);
       } else {
         lineProps = GetOrageLineProps();
@@ -101,19 +99,17 @@ export class SoilsService {
     gl.addMany(graphicsCollection);
   }
 
-  addSoilLabelsToMap(gl: __esri.GraphicsLayer, soilSingle: any, boundaryId:string, sliderValue:number, isOrange:boolean): void {
+  addSoilLabelsToMap (gl: __esri.GraphicsLayer, soilSingle: any, boundaryId:string, sliderValue:number, isOrange:boolean): void {
     const graphicTransparency:number = (100 - sliderValue) / 100;
     const geometryService: GeometryService = new GeometryService({
       url: this.appConfig.geometryServiceURL
     });
-    if (soilSingle.value.features.length > 0)
-    {
+    if (soilSingle.value.features.length > 0) {
       const geometries:Polygon[] = soilSingle.value.features.map((feature:Graphic) => {
         return feature.geometry;
       });
       let alpha:number = graphicTransparency;
-      if (isOrange)
-      {
+      if (isOrange) {
         alpha = 1;
       }
       geometryService.labelPoints(geometries).then((labelPoints:any) => {
@@ -130,16 +126,14 @@ export class SoilsService {
 
         // add the labels to the map
         gl.addMany(labelGraphics);
-       });
+      });
     }
   }
 
-  updateGraphicsOpacity(soilsgl: __esri.GraphicsLayer, labelsgl: __esri.GraphicsLayer, sliderValue: number, isOrange:boolean, isFromSoils:boolean): void {
+  updateGraphicsOpacity (soilsgl: __esri.GraphicsLayer, labelsgl: __esri.GraphicsLayer, sliderValue: number, isOrange:boolean, isFromSoils:boolean): void {
     const graphicTransparency:number = (100 - sliderValue) / 100;
-    if (isFromSoils)
-    {
-      if (isOrange === false)
-      {
+    if (isFromSoils) {
+      if (isOrange === false) {
         this.setSymbolColor(soilsgl, false, graphicTransparency);
         this.setSymbolColor(labelsgl, false, graphicTransparency);
       } else {
@@ -152,15 +146,13 @@ export class SoilsService {
     }
   }
 
-  setSymbolColor(gl: __esri.GraphicsLayer, isOrange:boolean, alpha: number): void {
+  setSymbolColor (gl: __esri.GraphicsLayer, isOrange:boolean, alpha: number): void {
     gl.graphics.forEach((g: __esri.Graphic) => {
       let symbol: any;
-      switch (g.geometry.type)
-      {
+      switch (g.geometry.type) {
         case 'polygon':
           let lineProps: LineProps;
-          if (isOrange === false)
-          {
+          if (isOrange === false) {
             lineProps = GetDefaultSoilsLineProps(alpha);
           } else {
             lineProps = GetOrageLineProps();
@@ -170,8 +162,7 @@ export class SoilsService {
           break;
 
         case 'point':
-          if (isOrange === true)
-          {
+          if (isOrange === true) {
             alpha = 1;
           }
           symbol = GetSoilTextSymbol((g.symbol as TextSymbol).text, isOrange, alpha)
@@ -182,7 +173,7 @@ export class SoilsService {
     });
   }
 
-  clearSoilGLayers(soilsgl: __esri.GraphicsLayer, labelsgl: __esri.GraphicsLayer): void {
+  clearSoilGLayers (soilsgl: __esri.GraphicsLayer, labelsgl: __esri.GraphicsLayer): void {
     labelsgl.removeAll();
     soilsgl.removeAll();
     this.showTableModal.emit(false);

@@ -9,4 +9,4 @@ const ColorPallete = [
   ['#000000', '#8b0000', '#800000', '#a52a2a', '#556b2f', '#006400', '#191970', '#000080', '#4b0082', '#800080']
 ];
 
-export {ColorPallete};
+export { ColorPallete };

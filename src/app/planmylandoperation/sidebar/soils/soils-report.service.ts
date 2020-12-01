@@ -12,12 +12,12 @@ import { ReportsService } from '../../pmloUtils/reports.service';
   providedIn: 'root'
 })
 export class SoilsReportService {
-  constructor(
+  constructor (
     private printTaskService: PrintTaskService,
     private appConfig: AppConfiguration
   ) {}
 
-  async printMaps(
+  async printMaps (
     mapView: __esri.MapView,
     pmloSoilsGL: __esri.GraphicsLayer,
     pmloSoilLabelsGL: __esri.GraphicsLayer,
@@ -37,14 +37,14 @@ export class SoilsReportService {
               soilsImage: soilsMapUrl
             });
           })
-          .catch(() => {
-            reject('Error printing');
-          });
+            .catch(() => {
+              reject('Error printing');
+            });
         });
       });
   }
 
-  async getCountyFromCentroid(aoiCentroid: Point): Promise<any> {
+  async getCountyFromCentroid (aoiCentroid: Point): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       const countyQT = new QueryTask({
         url: this.appConfig.usCountyLayerURL
@@ -62,17 +62,17 @@ export class SoilsReportService {
           countyFips: results.features[0].attributes.COUNTY_FIPSCODE
         });
       })
-      .catch(() => {
-        resolve({
-          countyName: "",
-          countyFips: ""
-        });
+        .catch(() => {
+          resolve({
+            countyName: '',
+            countyFips: ''
+          });
         // reject('Error getting county from Centroid');
-      });
+        });
     });
   }
 
-  async getWatershedFromCentroid(aoiCentroid: Point): Promise<string> {
+  async getWatershedFromCentroid (aoiCentroid: Point): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       const watershedQT = new QueryTask({
         url: this.appConfig.usWatershedLayerURL
@@ -93,14 +93,14 @@ export class SoilsReportService {
           resolve(hucNumber + ' ' + hucName);
         }
       })
-      .catch(() => {
-        resolve('');
+        .catch(() => {
+          resolve('');
         // reject('Error querying watershed');
-      });
+        });
     });
   }
 
-  async getSoilsReportHydroParams(boundary: __esri.Graphic): Promise<any> {
+  async getSoilsReportHydroParams (boundary: __esri.Graphic): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [boundary];
@@ -119,15 +119,15 @@ export class SoilsReportService {
           wetlandsAcres: response.results[3].value
         });
       })
-      .catch(() => {
-        resolve({
-          perennialFeet: null,
-          intermittentFeet: null,
-          ephemeralFeet: null,
-          wetlandsAcres: null
-        });
+        .catch(() => {
+          resolve({
+            perennialFeet: null,
+            intermittentFeet: null,
+            ephemeralFeet: null,
+            wetlandsAcres: null
+          });
         // reject('Error getting soils report hydro parameters');
-      });
+        });
     });
   }
 }

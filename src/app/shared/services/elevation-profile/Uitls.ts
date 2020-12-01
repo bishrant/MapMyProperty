@@ -8,7 +8,7 @@ const elevationUnitMap = {
   kilometers: 'meters',
   miles: 'feet',
   'nautical-miles': 'feet',
-  yards: 'feet',
+  yards: 'feet'
 };
 const lengthAbbrMap = {
   meters: 'm.',
@@ -16,10 +16,10 @@ const lengthAbbrMap = {
   kilometers: 'km.',
   miles: 'mi.',
   'nautical-miles': 'n.m.',
-  yards: 'yd.',
+  yards: 'yd.'
 };
 
-const Decimal = (num: number): number=> {
+const Decimal = (num: number): number => {
   return Math.round((num + Number.EPSILON) * 100) / 100;
 }
 
@@ -51,30 +51,30 @@ const sum = (input: any) => {
 };
 
 const CalculateLength = (ptArrayOld: any, unit: ElevationUnits = 'miles') => {
-  var pts = JSON.parse(JSON.stringify(ptArrayOld));
+  const pts = JSON.parse(JSON.stringify(ptArrayOld));
   for (let i = 0; i < pts.length; i++) {
-    var myArray = pts.slice().splice(0, i + 1);
-    var line = new Polyline({
+    const myArray = pts.slice().splice(0, i + 1);
+    const line = new Polyline({
       hasZ: true,
       paths: [myArray],
-      spatialReference: { wkid: 102100 },
+      spatialReference: { wkid: 102100 }
     });
-    var l = planarLength(line, unit);
+    const l = planarLength(line, unit);
     pts[i].push(parseFloat(l.toPrecision(2)));
   }
   return pts;
 };
 
 const CalculateSegmentLength = (ptArrayOld: any, unit: ElevationUnits = 'miles') => {
-  var pts = JSON.parse(JSON.stringify(ptArrayOld));
+  const pts = JSON.parse(JSON.stringify(ptArrayOld));
   for (let i = 0; i < pts.length; i++) {
-    var myArray = pts.slice().splice(i, 2);
-    var line = new Polyline({
+    const myArray = pts.slice().splice(i, 2);
+    const line = new Polyline({
       hasZ: true,
       paths: [myArray],
-      spatialReference: { wkid: 102100 },
+      spatialReference: { wkid: 102100 }
     });
-    var l = planarLength(line, unit);
+    const l = planarLength(line, unit);
     pts[i].push(parseFloat(l.toPrecision(2)));
   }
   return pts;
@@ -95,9 +95,9 @@ const CalculateSlope = (ptArrayOld: any) => {
 };
 
 const GetSegmentsWithHigherSlope = (ptArray: any, threshold: number) => {
-  let pts = [];
-  let dt = ptArray.slice();
-  for (var i = 0; i < dt.length; i++) {
+  const pts = [];
+  const dt = ptArray.slice();
+  for (let i = 0; i < dt.length; i++) {
     if (i > dt.length) {
       break;
     }
@@ -131,5 +131,5 @@ export {
   dt,
   CalculateLength,
   CalculateSegmentLength,
-  GetSegmentsWithHigherSlope,
+  GetSegmentsWithHigherSlope
 };

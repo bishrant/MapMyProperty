@@ -59,7 +59,7 @@ export class SoilsComponent implements OnInit {
     private appConfig: AppConfiguration,
     private reportsService: ReportsService,
     private esriMapService: EsrimapService,
-    private notificationsService:NotificationsService,
+    private notificationsService:NotificationsService
   ) { }
 
   ngOnInit (): void {
@@ -189,7 +189,7 @@ export class SoilsComponent implements OnInit {
           const resulstTable = result.Table[0];
           const pmloSoil: PMLOSoil = new PMLOSoil();
           let index: number = 0;
-          for (let key of Object.keys(pmloSoil)) {
+          for (const key of Object.keys(pmloSoil)) {
             if (resulstTable[index] !== null) {
               pmloSoil[key] = resulstTable[index];
             }
@@ -221,7 +221,7 @@ export class SoilsComponent implements OnInit {
   }
 
   updateSliderValue (value: number):void {
-    this.soilsService.updateSliderValue.emit({sliderVal: value, isFromSoils: true, selectedRadioVal: null});
+    this.soilsService.updateSliderValue.emit({ sliderVal: value, isFromSoils: true, selectedRadioVal: null });
   }
 
   toggleTable ():void {
@@ -268,7 +268,7 @@ export class SoilsComponent implements OnInit {
 
       console.log(reportParams);
 
-      this.reportsService.getSoilsReport({content: JSON.stringify(reportParams)}).subscribe(
+      this.reportsService.getSoilsReport({ content: JSON.stringify(reportParams) }).subscribe(
         (response:any) => {
           this.loaderService.isLoading.next(false);
           window.open(response.fileName, '_blank', 'noopener');

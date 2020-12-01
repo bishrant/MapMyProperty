@@ -1,6 +1,8 @@
 import { Point } from 'esri/geometry'
-import { createWebMercatorPolygonFromGraphic, createWebMercatorLineFromGraphic,
-  createWebMercatorPointFromGraphic } from './WebMercatorUtils'
+import {
+  createWebMercatorPolygonFromGraphic, createWebMercatorLineFromGraphic,
+  createWebMercatorPointFromGraphic
+} from './WebMercatorUtils'
 import { gpx } from './lib/gpx';
 import { convertFeatureCollectionToGraphics } from './FeatureCollectionUtils';
 

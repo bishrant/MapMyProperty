@@ -1,16 +1,13 @@
 <div>
   <app-help-button [header]="'Import | Export'" [itemName]="'importExport'"></app-help-button> <br>
-  <mat-radio-group aria-label="Select an import/export option" [(ngModel)]="format">
-    <div class="importExportFormat">
-      <mat-radio-button value="mmp">MMP</mat-radio-button>
-      <mat-radio-button value="shp">SHP</mat-radio-button>
-    </div>
-    <div class="importExportFormat">
-
-      <mat-radio-button value="kml">KML</mat-radio-button>
-      <mat-radio-button value="gpx">GPX</mat-radio-button>
-    </div>
-  </mat-radio-group>
+  <div class="importExportFormat">
+    <span><input type="radio" name="format" [value]="'mmp'" [(ngModel)]="format" aria-label="MMP" /> &nbsp; MMP</span>
+    <span><input type="radio" name="format" [value]="'shp'" [(ngModel)]="format" aria-label="SHP" /> &nbsp; SHP </span>
+  </div>
+  <div class="importExportFormat">
+    <span><input type="radio" name="format" [value]="'kml'" [(ngModel)]="format" aria-label="KML" /> &nbsp; KML</span>
+    <span><input type="radio" name="format" [value]="'gpx'" [(ngModel)]="format" aria-label="GPX" /> &nbsp; GPX</span>
+  </div>
 
   <div class="importExportFormat">
     <button class="btn-icon" (click)="chooseFile()" type="button">
