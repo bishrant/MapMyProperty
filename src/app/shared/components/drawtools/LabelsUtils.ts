@@ -2,7 +2,7 @@ import Point from 'esri/geometry/Point';
 import Graphic from 'esri/Graphic';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import MapView from 'esri/views/MapView';
-import { CreateTextSymbolForLabels } from "./DrawToolUtils";
+import { CreateTextSymbolForLabels } from './DrawToolUtils';
 
 const syncLabelsToGeometry = (polygonGraphicsLayer: GraphicsLayer, geomLabelsGraphicsLayer: GraphicsLayer, mapView: MapView, textService: any) => {
   const labels = [];
@@ -23,7 +23,7 @@ const syncLabelsToGeometry = (polygonGraphicsLayer: GraphicsLayer, geomLabelsGra
       anchorPt = new Point({
         x: firstPt[0],
         y: firstPt[1],
-        spatialReference: parent.geometry.spatialReference,
+        spatialReference: parent.geometry.spatialReference
       });
     }
     // need to check if the user has deleted the graphic themselves
@@ -42,8 +42,8 @@ const syncLabelsToGeometry = (polygonGraphicsLayer: GraphicsLayer, geomLabelsGra
       if (typeof _specific.geometry === 'undefined') {
         labels.push(_specific);
       } else {
-        let a = textService.creatGeomLabelGraphic(anchorPt, _specific.attributes.symbol, parent);
-        if ((a.geometry as any).latitude === (_specific.geometry as any).latitude && (a.geometry as any).longitude === (_specific.geometry as any).longitude)  {
+        const a = textService.creatGeomLabelGraphic(anchorPt, _specific.attributes.symbol, parent);
+        if ((a.geometry as any).latitude === (_specific.geometry as any).latitude && (a.geometry as any).longitude === (_specific.geometry as any).longitude) {
           labels.push(_specific);
         } else {
           labels.push(a);
@@ -56,4 +56,4 @@ const syncLabelsToGeometry = (polygonGraphicsLayer: GraphicsLayer, geomLabelsGra
   geomLabelsGraphicsLayer.addMany(labels);
 };
 
-export {syncLabelsToGeometry};
+export { syncLabelsToGeometry };

@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ViewChild } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { CulvertSizeService } from 'src/app/shared/services/culvert-size.service';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
@@ -9,7 +8,7 @@ import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import Graphic from 'esri/Graphic';
 import { Point, Polygon, SpatialReference } from 'esri/geometry';
 import { SimpleFillSymbol, SimpleMarkerSymbol } from 'esri/symbols';
-import { getSoilTextureClass,getCulvertSize } from './CulvertDetailsUtils';
+import { getSoilTextureClass, getCulvertSize } from './CulvertDetailsUtils';
 const projection = require('arcgis-js-api/geometry/projection');
 
 @Component({
@@ -47,16 +46,16 @@ export class CulvertSizeComponent implements AfterViewInit {
   watershedGeometry: Polygon;
   pourPointReportWGS: Point;
 
-  constructor(
+  constructor (
     private culvertService: CulvertSizeService,
     private loaderService: LoaderService
   ) {}
 
-  ngAfterViewInit() {
+  ngAfterViewInit () {
     console.log(projection);
   }
 
-  drawPourPoint() {
+  drawPourPoint () {
     this.culvertUtils = this.culvertService.initialize({ mapView: this.mapView, graphicsLayer: this.graphicsLayer });
     this.culvertUtils.start();
 
@@ -127,23 +126,23 @@ export class CulvertSizeComponent implements AfterViewInit {
     });
   }
 
-  modelClosed() {
+  modelClosed () {
     this.culvertService.close();
     this.drawTool = undefined;
   }
 
-  clearCulvertTool() {
+  clearCulvertTool () {
     this.isCulvertToolActive = false;
     this.drawingObservable$.unsubscribe();
     this.culvertModal.hide();
     this.culvertService.close();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy () {
     this.drawingObservable$.unsubscribe();
   }
 
-  createReport() {
+  createReport () {
     const c = this.culvertData;
     const culvertData = {
       watershedImageURL: '',

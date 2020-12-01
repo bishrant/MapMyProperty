@@ -4,12 +4,14 @@ import { getDefaultSymbol } from './DefaultSymbols';
 import * as shpwrite from './lib/shp-write';
 import * as shpwriteGeoJSON from './lib/shp-write/src/geojson';
 import { arcgisToGeoJSON } from './GeoJSONUtils';
-import { createWebMercatorPointFromGraphic, createWebMercatorPolygonFromGraphic,
-  createWebMercatorLineFromGraphic } from './WebMercatorUtils';
+import {
+  createWebMercatorPointFromGraphic, createWebMercatorPolygonFromGraphic,
+  createWebMercatorLineFromGraphic
+} from './WebMercatorUtils';
 import { addGraphics } from '../store/graphics.actions';
 import { id } from '../store/todo';
-import Graphic = require('esri/Graphic');
 import { GetGraphicsForExtentUsingString } from './DrawUtils';
+import Graphic = require('esri/Graphic');
 declare const zip: any;
 zip.workerScriptsPath = 'scripts/';
 
@@ -78,7 +80,6 @@ const zipToShpAGOL = (file: File, store: any, mapView: __esri.MapView) => {
 
           const geometryType = g.split('esriGeometry')[1].toLowerCase();
           layer.featureSet.features.forEach((feature: any) => {
-
             const _g = feature.geometry;
             _g.type = geometryType;
             const _graphic = new Graphic({
@@ -99,7 +100,7 @@ const zipToShpAGOL = (file: File, store: any, mapView: __esri.MapView) => {
         });
         store.dispatch(addGraphics({ graphics: graphicArray }));
 
-        setTimeout(() => {mapView.goTo(_graphicToZoom)}, 250)
+        setTimeout(() => { mapView.goTo(_graphicToZoom) }, 250)
       }
     });
 };

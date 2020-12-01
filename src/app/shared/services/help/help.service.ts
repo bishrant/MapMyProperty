@@ -5,8 +5,7 @@ import { HelpObj } from './HelpObj.model';
   providedIn: 'root'
 })
 export class HelpService {
-
   @Output() openHelp:EventEmitter<HelpObj> = new EventEmitter<HelpObj>();
 
-  constructor() { }
+  constructor () { }
 }
