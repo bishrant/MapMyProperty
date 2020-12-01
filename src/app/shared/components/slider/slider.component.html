@@ -1,4 +1,4 @@
 <div class="slidecontainer">
-  <input aria-label="range" type="range" min="min" max="max" class="slider"
+  <input aria-label="range" type="range" [attr.min]="min" [attr.max]="max" class="slider"
   [(ngModel)]="_value" (input)="modelChangeFn($event)"/>
 </div>

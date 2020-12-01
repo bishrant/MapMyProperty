@@ -60,5 +60,10 @@ export class LinestyleComponent {
     this.changedGraphicsStyle.emit();
   };
 
+  changeLineWidth = (width: any) => {
+    this.lineProps.width = width;
+    this.changeGraphicsStyle();
+  }
+
   constructor () {}
 }

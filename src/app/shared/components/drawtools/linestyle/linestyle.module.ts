@@ -1,5 +1,4 @@
 import { MatSelectModule } from '@angular/material/select';
-import { MatSliderModule } from '@angular/material/slider';
 import { InfobuttonModule } from '../../infobutton/infobutton.module';
 import { MatButtonModule } from '@angular/material/button';
 import { LinestyleComponent } from './linestyle.component';
@@ -10,13 +9,14 @@ import { FormsModule } from '@angular/forms';
 import { ColorPickerModule } from '../../color-picker/color-picker.module';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { SliderModule } from '../../slider/slider.module';
 
 @NgModule({
   declarations: [LinestyleComponent],
   imports: [
     CommonModule,
     InfobuttonModule,
-    MatSliderModule,
+    SliderModule,
     FormsModule,
     MatFormFieldModule,
     ColorPickerModule,

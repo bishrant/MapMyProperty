@@ -1,40 +1,44 @@
-<div [hidden]="!((selectedGraphics.length > 0 && (geomType === 'polygon' || geomType === 'circle' || geomType === 'polyline')) || drawingTool === 'polygon' || drawingTool === 'circle' || drawingTool === 'polyline')">
+<div
+  [hidden]="!((selectedGraphics.length > 0 && (geomType === 'polygon' || geomType === 'circle' || geomType === 'polyline')) || drawingTool === 'polygon' || drawingTool === 'circle' || drawingTool === 'polyline')">
   <br>
-<fieldset >
+  <fieldset>
     <legend>Line Style</legend>
     <app-infobutton [tooltip]="'Specifies how the outline of the geometry is styled.'"
-        [ariaLabel]="'info button for line style'">
+      [ariaLabel]="'info button for line style'">
     </app-infobutton>
     <div style="display: flex;">
-        <div style="flex-grow: 1;">
-            Line type:<br>
+      <div style="flex-grow: 1;">
+        Line type:<br>
 
-            <mat-select [(ngModel)]="lineProps.style" class="matSelect" (selectionChange)="changeGraphicsStyle()">
-                <mat-select-trigger>
-                    <svg-icon *ngIf="lineProps.style !== 'none'"
-                        [src]="'assets/icons/symbols-sls-'+lineProps.style+'.svg'" [svgStyle]="lineSvgStyle">
-                    </svg-icon>
-                    <span *ngIf="lineProps.style === 'none'">None</span>
-                </mat-select-trigger>
-                <mat-option *ngFor="let style of lineStyles" [value]="style">
-                    <svg-icon *ngIf="style !== 'none'" [src]="'assets/icons/symbols-sls-'+style+'.svg'"
-                        [svgStyle]="lineSvgStyle">
-                    </svg-icon>
-                    <span *ngIf="style === 'none'">None</span>
-                </mat-option>
-            </mat-select>
-        </div>
-        <div>
-            <app-color-picker [color]="lineProps.color" [opacity]="lineProps.color.a * 100"
-                (colorSelected)="changeLineColor($event)">
-            </app-color-picker>
-        </div>
+        <mat-select [(ngModel)]="lineProps.style" class="matSelect" (selectionChange)="changeGraphicsStyle()">
+          <mat-select-trigger>
+            <svg-icon *ngIf="lineProps.style !== 'none'" [src]="'assets/icons/symbols-sls-'+lineProps.style+'.svg'"
+              [svgStyle]="lineSvgStyle">
+            </svg-icon>
+            <span *ngIf="lineProps.style === 'none'">None</span>
+          </mat-select-trigger>
+          <mat-option *ngFor="let style of lineStyles" [value]="style">
+            <svg-icon *ngIf="style !== 'none'" [src]="'assets/icons/symbols-sls-'+style+'.svg'"
+              [svgStyle]="lineSvgStyle">
+            </svg-icon>
+            <span *ngIf="style === 'none'">None</span>
+          </mat-option>
+        </mat-select>
+      </div>
+      <div>
+        <app-color-picker [color]="lineProps.color" [opacity]="lineProps.color.a * 100"
+          (colorSelected)="changeLineColor($event)">
+        </app-color-picker>
+      </div>
     </div>
-    <div>
-        Width: {{lineProps.width}}px<br>
-        0 &nbsp;<mat-slider class="widthSlider" [thumbLabel]="true" step="1" (change)="changeGraphicsStyle()"
-            [(ngModel)]="lineProps.width" min="1" max="10">
-        </mat-slider> &nbsp;10
+    <div class="marginTop10px">
+      Width: {{lineProps.width}}px<br>
+      <div class="widthSliderContainer">
+        1 &nbsp;<app-slider class="widthSlider" [value]="lineProps.width" [min]="1" [max]="10"
+          (onChange)="changeLineWidth($event)"></app-slider>
+        &nbsp;10
+      </div>
     </div>
-</fieldset>
+
+  </fieldset>
 </div>
