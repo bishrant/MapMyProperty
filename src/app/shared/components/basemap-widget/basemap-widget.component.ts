@@ -4,8 +4,8 @@ import Basemap from 'esri/Basemap';
 import Layer from 'esri/layers/Layer';
 import MapImageLayer from 'esri/layers/MapImageLayer';
 import { createBingBasemap } from '../../utils/CreateMapView';
-const watchUtils = require('esri/core/watchUtils');
 import { googleWMSlayer, texasBasemaps, texasBasemapsDict } from '../../layers/NAIPLayers';
+const watchUtils = require('esri/core/watchUtils');
 
 @Component({
   selector: 'app-basemap-widget',
@@ -19,7 +19,7 @@ export class BasemapWidgetComponent implements AfterViewInit {
   texasImageryVisible = false;
   updatedDate: Date;
   loading = false;
-  _tnrisURL = "https://webservices.tnris.org/arcgis/rest/services/";
+  _tnrisURL = 'https://webservices.tnris.org/arcgis/rest/services/';
   texasBasemaps= texasBasemaps;
   texasBasemapsDict = texasBasemapsDict;
   googleWMSlayer = googleWMSlayer;
@@ -30,7 +30,7 @@ export class BasemapWidgetComponent implements AfterViewInit {
     { label: 'Streets', value: 'streets', image: 'streets' },
     { label: 'Topographic', value: 'topo', image: 'topo' },
     { label: 'USA Topo', value: 'usa-topo', image: 'usa-topo' },
-    { label: 'USGS', value: 'usgs', image: 'usgs' },
+    { label: 'USGS', value: 'usgs', image: 'usgs' }
   ];
 
   state: any = {
@@ -40,17 +40,16 @@ export class BasemapWidgetComponent implements AfterViewInit {
 
   selectedTexasBasemap = this.texasBasemaps[0];
 
-  toggle() {
+  toggle () {
     this.state.open = !this.state.open;
   }
 
-  toggleTexasImagery() {
+  toggleTexasImagery () {
     this.texasImageryVisible = !this.texasImageryVisible;
     this.changeTexasBasemap(!this.texasImageryVisible);
-
   }
 
-  changeTexasBasemap(removeAll: boolean) {
+  changeTexasBasemap (removeAll: boolean) {
     this.mapView.map.basemap.baseLayers.forEach(b => {
       if (this.texasBasemaps.includes(b.id)) {
         this.mapView.map.basemap.baseLayers.remove(b);
@@ -64,8 +63,7 @@ export class BasemapWidgetComponent implements AfterViewInit {
     }
   }
 
-
-  createBasemap(baseLayer, id) {
+  createBasemap (baseLayer, id) {
     return new Basemap({
       baseLayers: [baseLayer],
       id: id
@@ -77,15 +75,14 @@ export class BasemapWidgetComponent implements AfterViewInit {
   google = this.createBasemap(this.googleWMSlayer, 'texas');
   bing = createBingBasemap();
 
-
   _basemapObj = {
-    'bing': this.bing,
+    bing: this.bing,
     'usa-topo': this.usa_topo,
-    'usgs': this.usgs,
-    'texas': this.google
+    usgs: this.usgs,
+    texas: this.google
   }
 
-  setBasemap(basemap: any) {
+  setBasemap (basemap: any) {
     if (this.state.basemap !== basemap) {
       this.state.basemap = basemap;
       this.texasImageryVisible = false;
@@ -104,7 +101,7 @@ export class BasemapWidgetComponent implements AfterViewInit {
     }
   }
 
-  updateImageryDate() {
+  updateImageryDate () {
     if (this.state.basemap.value === 'satellite') {
       const params: any = {
         returnGeometry: false,
@@ -114,13 +111,13 @@ export class BasemapWidgetComponent implements AfterViewInit {
         f: 'json',
         geometryType: 'esriGeometryPoint',
         inSR: 4326,
-        geometry: JSON.stringify({ "x": this.mapView.center.longitude, "y": this.mapView.center.latitude })
+        geometry: JSON.stringify({ x: this.mapView.center.longitude, y: this.mapView.center.latitude })
       }
       this.http.get('https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/0/query', { params: params })
         .subscribe((d: any) => {
           if (d.features.length > 0) {
             const f = d.features[0];
-            this.updatedDate = f.attributes['SRC_DATE2'];
+            this.updatedDate = f.attributes.SRC_DATE2;
           } else {
             this.updatedDate = null;
           }
@@ -130,11 +127,10 @@ export class BasemapWidgetComponent implements AfterViewInit {
     }
   }
 
-
   layerViewEvent: any;
   mapViewListener: any;
 
-  ngAfterViewInit() {
+  ngAfterViewInit () {
     this.mapViewListener = watchUtils.whenTrue(this.mapView, 'stationary', () => {
       if (this.mapView.center) {
         if (this.mapView.scale < 4000000) {
@@ -149,13 +145,12 @@ export class BasemapWidgetComponent implements AfterViewInit {
         this.loading = false;
       }
     })
-
   }
 
-  ngOnDestroy() {
+  ngOnDestroy () {
     this.mapViewListener.remove();
     this.layerViewEvent.remove();
   }
 
-  constructor(private http: HttpClient) { }
+  constructor (private http: HttpClient) { }
 }

@@ -5,15 +5,15 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'mapmyproperty';
 
-  ngOnInit() {
-    window.addEventListener("unhandledrejection", function (event) {
+  ngOnInit ():void {
+    window.addEventListener('unhandledrejection', (event) => {
       throw event.reason;
     });
-    window.addEventListener("error", function(err) {
-      console.log("ERROR RHERE", err);
+    window.addEventListener('error', (err) => {
+      console.log('ERROR RHERE', err);
     })
   }
 }

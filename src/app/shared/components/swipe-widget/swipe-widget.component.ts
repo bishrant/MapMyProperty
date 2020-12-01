@@ -17,21 +17,22 @@ export class SwipeWidgetComponent implements AfterViewInit {
   texasBasemapsDict = texasBasemapsDict;
   googleWMSlayer = googleWMSlayer;
   state: any = {
-    open: false,
+    open: false
   };
+
   swipeWidget: Swipe;
   firstLayer = this.texasBasemaps[0];
   secondLayer = this.texasBasemaps[this.texasBasemaps.length - 1];
   swipeMode = 'horizontal';
 
-  setSwipeMode(e) {
+  setSwipeMode (e) {
     this.swipeMode = e;
     this.swipeWidget.direction = e;
   }
 
-  ngAfterViewInit() { (<any>window).mapView = this.mapView; }
+  ngAfterViewInit () { (<any>window).mapView = this.mapView; }
 
-  changeSwipeLayers(order: string) {
+  changeSwipeLayers (order: string) {
     const newLayer = (order === 'leading') ? this.texasBasemapsDict[this.firstLayer] : this.texasBasemapsDict[this.secondLayer];
     const existing = (order === 'leading') ? this.swipeWidget.leadingLayers.getItemAt(0) : this.swipeWidget.trailingLayers.getItemAt(0);
     if (existing.id !== newLayer.id) {
@@ -40,7 +41,7 @@ export class SwipeWidgetComponent implements AfterViewInit {
     }
   }
 
-  getNewSwipeLayerCollection(_layer: any): Collection {
+  getNewSwipeLayerCollection (_layer: any): Collection {
     if (!this.mapView.map.layers.includes(_layer)) {
       this.mapView.map.layers.add(_layer, this.mapView.map.layers.length - 3);
       this.loadingService.isLoading.next(true);
@@ -51,23 +52,21 @@ export class SwipeWidgetComponent implements AfterViewInit {
     return col;
   }
 
-  moveSwipeCursor() {
+  moveSwipeCursor () {
     this.swipeWidget.position = Math.min(this.swipeWidget.position +
       (-1 * (Math.random() > 0.5 ? 1 : -1)), 60);
   }
 
-  addLayersIfNotExists(layer1, order) {
+  addLayersIfNotExists (layer1, order) {
     if (order === 'leading') {
       this.swipeWidget.leadingLayers = this.getNewSwipeLayerCollection(layer1);
-
-    }
-    else {
+    } else {
       this.swipeWidget.trailingLayers = this.getNewSwipeLayerCollection(layer1);
     }
     this.moveSwipeCursor();
   }
 
-  toggle() {
+  toggle () {
     this.state.open = !this.state.open;
     if (this.state.open) {
       if (this.swipeWidget) { this.swipeWidget.destroy() }
@@ -91,12 +90,12 @@ export class SwipeWidgetComponent implements AfterViewInit {
     }
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy () { }
 
-  public close() {
+  public close () {
     this.state.open = false;
     if (this.swipeWidget) { this.swipeWidget.destroy() }
   }
 
-  constructor(private loadingService: LoaderService) { }
+  constructor (private loadingService: LoaderService) { }
 }

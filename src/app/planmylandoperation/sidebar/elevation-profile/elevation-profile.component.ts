@@ -1,13 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { ElevationProfileService } from 'src/app/shared/services/elevation-profile/elevation-profile.service';
 import { Subscription } from 'rxjs';
-import { ViewChild } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 
 @Component({
   selector: 'app-elevation-profile',
   templateUrl: './elevation-profile.component.html',
-  styleUrls: ['./elevation-profile.component.scss'],
+  styleUrls: ['./elevation-profile.component.scss']
 })
 export class ElevationProfileComponent {
   @ViewChild('elevationProfileModal') elevationProfileModal: any;
@@ -26,14 +25,15 @@ export class ElevationProfileComponent {
   drawingObservable$: Subscription;
   closePopup$: Subscription;
 
-  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService) {
+  constructor (private elevationService: ElevationProfileService, private loaderService: LoaderService) {
     this.isReversed = elevationService.isReversed;
   }
 
-  onResizeEnd($event) {
+  onResizeEnd ($event) {
     this.elevationService.resizeChart($event.width - 30, $event.height - 90);
   }
-  startDrawingGraphics(value: any) {
+
+  startDrawingGraphics (value: any) {
     this.elvUtils = undefined;
     this.elvUtils = this.elevationService.initialize({
       mapView: this.mapView,
@@ -46,26 +46,26 @@ export class ElevationProfileComponent {
     this.elvUtils.start(value);
   }
 
-  modelClosed() {
+  modelClosed () {
     this.elevationService.close();
     this.drawTool = undefined;
   }
 
-  clearElevationProfile() {
+  clearElevationProfile () {
     this.elevationProfileModal.hide();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy () {
     this.chartDataObservable$.unsubscribe();
     this.drawingObservable$.unsubscribe();
   }
 
-  reverseProfile() {
+  reverseProfile () {
     this.isReversed = !this.isReversed;
     this.elevationService.reverseProfile();
   }
 
-  createReport() {
+  createReport () {
     this.elevationService.createReport();
   }
 }

@@ -52,12 +52,11 @@ const createMapView = (mapViewEl: ElementRef, searchBarDiv: ElementRef): __esri.
     resultGraphicEnabled: false
   });
 
-
   const searchExpand = new Expand({
     id: 'searchExpand',
     view: view,
     content: searchInsideMap,
-    expandTooltip: 'Search',
+    expandTooltip: 'Search'
   })
 
   const scaleBar = new ScaleBar({

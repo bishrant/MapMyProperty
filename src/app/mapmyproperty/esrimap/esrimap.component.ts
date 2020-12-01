@@ -6,7 +6,6 @@ import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls'
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { createMapView } from 'src/app/shared/utils/CreateMapView';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
-import { AccordionPanelService } from 'src/app/shared/components/accordion-panel/accordion-panel.service';
 import { AccordionPanelComponent } from 'src/app/shared/components/accordion-panel/accordion-panel.component';
 import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.service';
 
@@ -16,12 +15,12 @@ import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.serv
   styleUrls: ['./esrimap.component.scss']
 })
 export class EsrimapComponent implements OnInit {
-  @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
-  @ViewChild('drawAccPanel') private drawAccPanel: any;
-  @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true })
-  private graphicsStoreEl!: GraphicsStoreComponent;
+
   @ViewChildren(AccordionPanelComponent) accordionPanels: QueryList<AccordionPanelComponent>;
+
+  @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
+  @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
 
   mapView!: __esri.MapView;
   clickToAddText = false;
@@ -30,39 +29,49 @@ export class EsrimapComponent implements OnInit {
   sidebarVisible = window.innerWidth > 640;
 
   mapCoords: any;
+
   geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
-  geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: "geomlabels" });
+  geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: 'geomlabels' });
   polygonGraphicsLayer: GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
 
-  constructor(private esrimapService: EsrimapService) { }
-  @HostListener('keydown.control.z') undoFromKeyboard() {
+  private graphicsStoreEl!: GraphicsStoreComponent;
+
+  constructor (private esrimapService: EsrimapService) { }
+
+  @HostListener('keydown.control.z') undoFromKeyboard (): void {
     this.graphicsStoreEl.undo();
   }
 
-  @HostListener('keydown.control.y') redoFromKeyboard() {
+  @HostListener('keydown.control.y') redoFromKeyboard (): void {
     this.graphicsStoreEl.redo();
   }
-  @HostListener('document:keydown.delete') deleteFromKeyboard(){
+
+  @HostListener('document:keydown.delete') deleteFromKeyboard (): void {
     this.graphicsStoreEl.delete();
   }
 
-  @HostListener('keydown.meta.shift.z') redoFromKeyboardMac() {
+  @HostListener('keydown.meta.shift.z') redoFromKeyboardMac (): void {
     this.graphicsStoreEl.redo();
   }
 
-  @HostListener('keydown.meta.z') undoFromKeyboardMac() {
+  @HostListener('keydown.meta.z') undoFromKeyboardMac (): void {
     this.graphicsStoreEl.undo();
   }
 
-  showCoordinates = (pt: any) => {
+  showCoordinates = (pt: any): void => {
     this.mapCoords = 'Lat: ' + pt.latitude.toFixed(5) + '  Long:' + pt.longitude.toFixed(5);
   };
 
-  closeOtherPanels = ((panelTitle: string) => {
+  closeOtherPanels = ((panelTitle: string): void => {
     const panelToOpen: AccordionPanelComponent[] = this.accordionPanels.filter((panel: any) => panel.title === panelTitle);
     if (panelToOpen.length > 0) panelToOpen[0].toggleOthers();
   });
+
+  ngOnInit (): void {
+    this.initializeMap();
+    this.esrimapService.closeAllPanelsExcept.subscribe((panelTitle: string) => this.closeOtherPanels(panelTitle));
+  }
 
   private showMapCoordinates = () => {
     if (this.mapView) {
@@ -95,7 +104,7 @@ export class EsrimapComponent implements OnInit {
       this.sketchVM.activePointSymbol = p;
       this.showMapCoordinates();
       this.mapView.on('layerview-create-error', (ee) => {
-        let error = new Error();
+        const error = new Error();
         error.message = ee.error.message;
         error.name = ee.error.name;
         throw error;
@@ -104,10 +113,4 @@ export class EsrimapComponent implements OnInit {
       console.error('Map load error ', error);
     }
   };
-
-  ngOnInit() {
-    this.initializeMap();
-
-    this.esrimapService.closeAllPanelsExcept.subscribe((panelTitle: string) => this.closeOtherPanels(panelTitle));
-  }
 }

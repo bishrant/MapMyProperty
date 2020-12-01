@@ -1,11 +1,9 @@
-import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, AbstractControl, FormGroupDirective, NgForm, ValidatorFn } from '@angular/forms';
 import PrintTask from 'esri/tasks/PrintTask';
 import PrintParameters from 'esri/tasks/support/PrintParameters';
 import { AppConfiguration } from 'src/config';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { ViewChild } from '@angular/core';
-import { ElementRef } from '@angular/core';
 import { TraceGPError } from '../../services/error/GPServiceError';
 import { LoaderService } from '../../services/Loader.service';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
@@ -21,7 +19,7 @@ import BingMapsLayer from 'esri/layers/BingMapsLayer';
   selector: 'app-print-tool',
   templateUrl: './print-tool.component.html',
   styleUrls: ['./print-tool.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None
 })
 export class PrintToolComponent implements OnInit {
   @ViewChild('printMapModal') printMapModal: any;
@@ -31,15 +29,16 @@ export class PrintToolComponent implements OnInit {
   MAX: number = 200;
   MAXLINES: number = 5;
   showCurrentDate = true;
-  constructor(
+  constructor (
     private formBuilder: FormBuilder,
     private config: AppConfiguration,
-    private loaderService: LoaderService,
+    private loaderService: LoaderService
   ) { }
+
   matcher = new MyErrorStateMatcher();
   popupMapView: __esri.MapView;
   printTask = new PrintTask({ url: this.config.printGPServiceURL });
-  showPrintMapPreview(): void {
+  showPrintMapPreview (): void {
     this.printMapModal.closeOnEscape = false;
     this.printMapModal.show();
     setTimeout(() => {
@@ -47,14 +46,11 @@ export class PrintToolComponent implements OnInit {
     }, 10);
   }
 
-
-  private createLayer(layer: __esri.Layer): any
-  {
+  private createLayer (layer: __esri.Layer): any {
     const _id = layer.id;
     const _minScale = (layer as any).minScale;
     let lyr:any;
-    switch(layer.type)
-    {
+    switch (layer.type) {
       case 'map-image':
         lyr = new MapImageLayer();
         break;
@@ -80,59 +76,53 @@ export class PrintToolComponent implements OnInit {
           key: (layer as any).key
         });
         break;
-
     }
 
-    lyr.id = _id +'popup';
+    lyr.id = _id + 'popup';
     if (layer.type !== 'bing-maps') {
       lyr.url = (layer as any).url;
     }
 
     lyr.visible = layer.visible;
-    if (_minScale !== null)
-    {
+    if (_minScale !== null) {
       lyr.minScale = _minScale;
     }
 
     return lyr;
   }
 
-  copyLayers() {
+  copyLayers () {
     const lrArray: any = [];
     this.mapView.map.layers.forEach((lrs: __esri.Layer) => {
       if (lrs.type === 'graphics') {
-          const grs = (lrs as any).graphics;
-          if (grs.length > 0) {
-            const grLr = new GraphicsLayer({ id: lrs.id + 'popup' });
-            grs.forEach((graphic: __esri.Graphic) => {
-              grLr.add(Graphic.fromJSON(graphic.toJSON()));
-            });
-            lrArray.push(grLr);
-          }
+        const grs = (lrs as any).graphics;
+        if (grs.length > 0) {
+          const grLr = new GraphicsLayer({ id: lrs.id + 'popup' });
+          grs.forEach((graphic: __esri.Graphic) => {
+            grLr.add(Graphic.fromJSON(graphic.toJSON()));
+          });
+          lrArray.push(grLr);
         }
-        else if (['map-image', 'feature', 'vector-tile', 'imagery', 'wms', 'bing-maps'].includes(lrs.type)) {
-          const l = this.createLayer(lrs);
-          console.log(l);
-          lrArray.push(l);
-        }
-       else {
-          lrArray.push(lrs);
+      } else if (['map-image', 'feature', 'vector-tile', 'imagery', 'wms', 'bing-maps'].includes(lrs.type)) {
+        const l = this.createLayer(lrs);
+        console.log(l);
+        lrArray.push(l);
+      } else {
+        lrArray.push(lrs);
       }
-
     });
     return lrArray;
   }
 
-  async initializeMap() {
-
+  async initializeMap () {
     try {
       const lrArray = this.copyLayers();
       const mapProperties: any = {
         basemap: this.mapView.map.basemap,
-        layers: lrArray,
+        layers: lrArray
       };
 
-      let ESRIMap = await import('arcgis-js-api/Map');
+      const ESRIMap = await import('arcgis-js-api/Map');
       const map = new ESRIMap.default(mapProperties);
       const mapViewProperties: any = {
         container: this.mapViewEl.nativeElement,
@@ -154,7 +144,7 @@ export class PrintToolComponent implements OnInit {
     }
   }
 
-  async generatePDF() {
+  async generatePDF () {
     this.loaderService.isLoading.next(true);
     const printParameters = new PrintParameters({
       view: this.popupMapView,
@@ -163,8 +153,8 @@ export class PrintToolComponent implements OnInit {
         title: this.printForm.get('title')?.value,
         Layout_Template: 'MMP',
         Format: 'PDF',
-        showCurrentDate: this.showCurrentDate,
-      },
+        showCurrentDate: this.showCurrentDate
+      }
     });
 
     this.printTask
@@ -177,52 +167,52 @@ export class PrintToolComponent implements OnInit {
       })
       .catch((error: any) => {
         console.error(error);
-        let gpError = TraceGPError(this.config.printGPServiceURL, error);
+        const gpError = TraceGPError(this.config.printGPServiceURL, error);
         throw gpError;
       });
   }
 
-  previewClosed() {
+  previewClosed () {
     this.popupMapView.map.layers.forEach(lrs => {
       this.popupMapView.map.remove(lrs);
     });
   }
 
-  ngOnInit(): void {
+  ngOnInit (): void {
     this.printForm = this.formBuilder.group({
       title: [''],
       comments: [
         '',
-        { validators: [ValidateCommentsLength(this.MAX), ValidateLineBreaks(this.MAXLINES)], updateOn: 'change' },
-      ],
+        { validators: [ValidateCommentsLength(this.MAX), ValidateLineBreaks(this.MAXLINES)], updateOn: 'change' }
+      ]
     });
   }
 
-  get comments() {
+  get comments () {
     return this.printForm.get('comments');
   }
 }
 
-export function ValidateCommentsLength(MAX: number): ValidatorFn {
+export function ValidateCommentsLength (MAX: number): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     if (control.value && control.value.length > MAX) {
-      return { 'commentsInvalid': true }; // return object if the validation is not passed.
+      return { commentsInvalid: true }; // return object if the validation is not passed.
     }
     return null;
   }
 }
 
-export function ValidateLineBreaks(MAXLINES: number): ValidatorFn {
+export function ValidateLineBreaks (MAXLINES: number): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    if (control.value && control.value.split("\n").length > MAXLINES) {
-      return { 'commentsLineBreaksInvalid': true }; // return object if the validation is not passed.
+    if (control.value && control.value.split('\n').length > MAXLINES) {
+      return { commentsLineBreaksInvalid: true }; // return object if the validation is not passed.
     }
     return null;
   }
 }
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState (control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     return !!(control && control.invalid && control.dirty);
   }
 }

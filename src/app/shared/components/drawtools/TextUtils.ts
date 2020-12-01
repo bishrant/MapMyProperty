@@ -1,6 +1,3 @@
-const WIDTH = 200;
-const PADDING = 10;
-
 const SetInputStyleAttributes = (input: any, textProps: any, geometry: any, inputId: any) => {
   const color = textProps.color;
   input.classList.add('mapTextInput');

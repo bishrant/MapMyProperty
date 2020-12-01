@@ -10,18 +10,16 @@ import { GetDefaultSoilsLineProps } from '../pmloUtils/SoilsStyles';
   providedIn: 'root'
 })
 export class OperationLegendService {
+  @Output() GetOperationLegend: EventEmitter<PMLOOperationLegItem[]> = new EventEmitter<PMLOOperationLegItem[]>();
+  @Output() SetActiveHarvOperationLegenRadio: EventEmitter<string> = new EventEmitter<string>();
+  @Output() SetActiveRegOperationLegenRadio: EventEmitter<string> = new EventEmitter<string>();
 
-  @Output() GetOperationLegend:EventEmitter<PMLOOperationLegItem[]> = new EventEmitter<PMLOOperationLegItem[]>();
-  @Output() SetActiveHarvOperationLegenRadio:EventEmitter<string> = new EventEmitter<string>();
-  @Output() SetActiveRegOperationLegenRadio:EventEmitter<string> = new EventEmitter<string>();
+  constructor () { }
 
-  constructor() { }
-
-  setOperationLegendSymbols(value:string, pmloSoilsGL: __esri.GraphicsLayer, sliderValue:number):void {
-    pmloSoilsGL.graphics.forEach((g:__esri.Graphic) => {
-      let symbolColor:any = {};
+  setOperationLegendSymbols (value: string, pmloSoilsGL: __esri.GraphicsLayer, sliderValue: number): void {
+    pmloSoilsGL.graphics.forEach((g: __esri.Graphic) => {
+      let symbolColor: any = {};
       switch (g.attributes[value]) {
-
         case OperationValues.excessDr:
           symbolColor = OperationValues.darkBrownLegColor;
           break;
@@ -95,10 +93,10 @@ export class OperationLegendService {
           break;
       }
 
-      const opac:number = (100 - sliderValue) / 100;
+      const opac: number = (100 - sliderValue) / 100;
       symbolColor.a = opac
       const lineProps = GetDefaultSoilsLineProps(opac);
-      const fillProps:FillProps = {
+      const fillProps: FillProps = {
         color: symbolColor,
         style: (g.symbol as any).style,
         opacity: 1
@@ -107,10 +105,9 @@ export class OperationLegendService {
     });
   }
 
-  setOperationLegend(value:string, isFromHarvest:boolean):void {
-    const operationLegItems:PMLOOperationLegItem[] = [];
-    if (['drclassdcd'].includes(value))
-    {      
+  setOperationLegend (value: string, isFromHarvest: boolean): void {
+    const operationLegItems: PMLOOperationLegItem[] = [];
+    if (['drclassdcd'].includes(value)) {
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.darkBrownLegColor), OperationValues.excessDr));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.mediumBrownLegColor), OperationValues.someExcessDr));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.lightBrownLegColor), OperationValues.wellDr));
@@ -119,18 +116,15 @@ export class OperationLegendService {
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.mediumBlueLegColor), OperationValues.poorDr));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.darkBlueLegColor), OperationValues.veryPoorDr));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.greyLegColor), OperationValues.notRated));
-    } else if (['RoadSuitNS', 'HEquipOp', 'MechPlant', 'HandPlant', 'SitePrepS', 'SitePrepD'].includes(value))
-    {
-      if (['MechPlant', 'HandPlant', 'SitePrepS', 'SitePrepD'].includes(value))
-      {
+    } else if (['RoadSuitNS', 'HEquipOp', 'MechPlant', 'HandPlant', 'SitePrepS', 'SitePrepD'].includes(value)) {
+      if (['MechPlant', 'HandPlant', 'SitePrepS', 'SitePrepD'].includes(value)) {
         operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.darkRedLegColor), OperationValues.unsuited));
       }
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.orangeLegColor), OperationValues.poorSuited));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.yellowLegColor), OperationValues.modSuited));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.greenLegColor), OperationValues.wellSuited));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.greyLegColor), OperationValues.notRated));
-    } else if (['EroHzdORT'].includes(value))
-    {
+    } else if (['EroHzdORT'].includes(value)) {
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.darkRedLegColor), OperationValues.verySevere));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.orangeLegColor), OperationValues.severe));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.yellowLegColor), OperationValues.moderate));
@@ -141,15 +135,13 @@ export class OperationLegendService {
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.yellowLegColor), OperationValues.moderate));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.greenLegColor), OperationValues.slight));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.greyLegColor), OperationValues.notRated));
-    } else if (['SeedMortal', 'FireDamage'].includes(value))
-    {
+    } else if (['SeedMortal', 'FireDamage'].includes(value)) {
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.orangeLegColor), OperationValues.high));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.yellowLegColor), OperationValues.moderate));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.greenLegColor), OperationValues.low));
       operationLegItems.push(new PMLOOperationLegItem(this.GetLegendHexColor(OperationValues.greyLegColor), OperationValues.notRated));
     }
-    if (isFromHarvest)
-    {
+    if (isFromHarvest) {
       this.SetActiveHarvOperationLegenRadio.emit(value);
     } else {
       this.SetActiveRegOperationLegenRadio.emit(value);
@@ -157,7 +149,7 @@ export class OperationLegendService {
     this.GetOperationLegend.emit(operationLegItems);
   }
 
-  private GetLegendHexColor(legendColor:any):string {    
+  private GetLegendHexColor (legendColor: any): string {
     return RGBToHex([legendColor.r, legendColor.g, legendColor.b]);
   }
 }

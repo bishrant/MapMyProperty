@@ -16,7 +16,7 @@ const createWebMercatorPointFromGraphic = (gJson: any) => {
 }
 
 function fixRingOrder(polygon: Polygon) {
-  let nr = [];
+  const nr = [];
   polygon.rings.forEach(r => {
       if (!polygon.isClockwise(r)) {
           nr.push(r.reverse());

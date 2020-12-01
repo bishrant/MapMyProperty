@@ -1,12 +1,12 @@
-import {NgModule} from '@angular/core';
-import {DraggableDirective} from './draggable.directive';
+import { NgModule } from '@angular/core';
+import { DraggableDirective } from './draggable.directive';
 
 @NgModule({
   declarations: [
-    DraggableDirective,
+    DraggableDirective
   ],
   exports: [
-    DraggableDirective,
+    DraggableDirective
   ]
 })
 export class DraggableModule {}
