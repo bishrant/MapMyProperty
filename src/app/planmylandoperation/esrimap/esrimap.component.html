@@ -2,42 +2,42 @@
   <div class="sidebar">
     <app-sidebar>
       <app-accordion>
-        <app-accordion-panel #drawAccPanel title="Draw">
+        <app-accordion-panel #drawAccPanel panelTitle="Draw">
           <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
             [geomLabelsSketchVM]="geomLabelsSketchVM" [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer"
             [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer" [polygonGraphicsLayer]="polygonGraphicsLayer">
           </app-drawtools>
         </app-accordion-panel>
 
-        <app-accordion-panel #sensAreasAccPanel title="Sensitive Areas">
+        <app-accordion-panel #sensAreasAccPanel panelTitle="Sensitive Areas">
           <pmlo-sens-areas [mapView]="mapView"></pmlo-sens-areas>
         </app-accordion-panel>
 
-        <app-accordion-panel #soilsAccPanel title="Soils">
+        <app-accordion-panel #soilsAccPanel panelTitle="Soils">
           <pmlo-soils [mapView]="mapView"></pmlo-soils>
         </app-accordion-panel>
 
-        <app-accordion-panel #harvestAccPanel title="Harvest Operations">
+        <app-accordion-panel #harvestAccPanel panelTitle="Harvest Operations">
           <pmlo-harvest-operations [mapView]="mapView"></pmlo-harvest-operations>
         </app-accordion-panel>
 
-        <app-accordion-panel #regenerationAccPanel title="Regeneration Operations">
+        <app-accordion-panel #regenerationAccPanel panelTitle="Regeneration Operations">
           <pmlo-regeneration-operations [mapView]="mapView"></pmlo-regeneration-operations>
         </app-accordion-panel>
 
-        <app-accordion-panel #elevationAccPanel title="Elevation Profile">
+        <app-accordion-panel #elevationAccPanel panelTitle="Elevation Profile">
           <app-elevation-profile [mapView]="mapView"></app-elevation-profile>
         </app-accordion-panel>
 
-        <app-accordion-panel #culvertAccPanel title="Culvert Size">
+        <app-accordion-panel #culvertAccPanel panelTitle="Culvert Size">
           <app-culvert-size [mapView]="mapView"></app-culvert-size>
         </app-accordion-panel>
 
-        <app-accordion-panel #importExportAccPanel title="Import | Export">
+        <app-accordion-panel #importExportAccPanel panelTitle="Import | Export">
           <app-import-export [mapView]="mapView"></app-import-export>
         </app-accordion-panel>
 
-        <app-accordion-panel #exportMapAccPanel title="Export Map to PDF">
+        <app-accordion-panel #exportMapAccPanel panelTitle="Export Map to PDF">
           <app-print-tool [mapView]="mapView"></app-print-tool>
         </app-accordion-panel>
 
