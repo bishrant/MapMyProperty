@@ -17,6 +17,7 @@ fieldset {
     min-width: unset !important;
     width: 50px;
     margin: 2px;
+    outline: none;
 }
 .fontStyle {
     justify-content: center;
@@ -34,4 +35,7 @@ fieldset {
 }
 .marginTop10px {
     margin-top: 10px;
+}
+legend{
+  font-weight: 600;
 }
