@@ -46,6 +46,11 @@ const RGBA = (c: any) => {
   return { r: c[0], g: c[1], b: c[2], a: c[3] / 255 }
 }
 
+const RGBAText = (c: any) => {
+  const alpha = c[3] === 0 ? 0.1 : c[3]/255;
+  return { r: c[0], g: c[1], b: c[2], a: alpha }
+}
+
 const RGBA_Hollow = (c: any) => {
   return { r: c[0], g: c[1], b: c[2], a: 0 }
 }
@@ -215,7 +220,7 @@ const createTextGraphicJSON = (labelJSON: any) => {
 const CreateTextSymbolForLabels = (symbol: any) => {
   return {
     type: "text",
-    color: RGBA(symbol.color),
+    color: RGBAText(symbol.color),
     xoffset: 3,
     yoffset: 3,
     font: {
