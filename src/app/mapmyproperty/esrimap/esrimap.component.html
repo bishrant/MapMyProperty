@@ -11,23 +11,23 @@
 
       </button>
     <app-accordion>
-      <app-accordion-panel #drawAccPanel title="Draw">
+      <app-accordion-panel #drawAccPanel panelTitle="Draw">
         <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
         [geomLabelsSketchVM]= "geomLabelsSketchVM" [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer"
         [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer" [polygonGraphicsLayer]="polygonGraphicsLayer">
         </app-drawtools>
       </app-accordion-panel>
 
-      <app-accordion-panel title="Themes">
+      <app-accordion-panel panelTitle="Themes">
         <app-mmp-themes [mapView]="mapView">
         </app-mmp-themes>
       </app-accordion-panel>
 
-      <app-accordion-panel title="Import | Export">
-        <app-import-export></app-import-export>
+      <app-accordion-panel panelTitle="Import | Export">
+        <app-import-export [mapView]="mapView"></app-import-export>
       </app-accordion-panel>
 
-      <app-accordion-panel title="Export Map to PDF">
+      <app-accordion-panel panelTitle="Export Map to PDF">
         <app-print-tool [mapView]="mapView"></app-print-tool>
       </app-accordion-panel>
     </app-accordion>

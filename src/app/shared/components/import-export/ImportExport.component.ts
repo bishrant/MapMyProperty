@@ -7,8 +7,6 @@ import { kmlToGeoJson, createKMLForExport } from '../../utils/KMLUtils';
 import { createGPXForExport, gpxToGeoJson } from '../../utils/GPXUtils';
 import { convertSHPToGraphics, downloadSHP } from '../../utils/SHPUtils';
 import { downloadFile } from '../../utils/DownloadFile';
-import Graphic from 'esri/Graphic';
-import Polygon from 'esri/geometry/Polygon';
 import { GetGraphicsForExtentUsingString } from '../../utils/DrawUtils';
 import { convertMMPJSONToGraphics } from './OldMMPUtils';
 
@@ -21,7 +19,7 @@ export class ImportExportComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
   @Input() mapView: __esri.MapView;
   files: any = [];
-  format = 'shp';
+  format = 'mmp';
   graphicsSub$: any;
   exportEnabled: boolean = false;
   fileUploadError = '';
@@ -55,13 +53,16 @@ export class ImportExportComponent implements OnInit {
           convertSHPToGraphics(file, this.store, this.mapView);
           break;
         case 'mmp':
-          if (typeof JSON.parse(r).length === undefined) {
+          const jsn = JSON.parse(r);
+          if (typeof jsn.length === 'undefined') {
             //old mmp
-            alert("It looks like you are trying to load a MMP file that was created using legacy Map My Property App."+
-            "We are planning to add this feature. Please check back later or use existing MapMyProperty app to load it.")
-            // convertMMPJSONToGraphics(r, this.mapView, this.store);
+            // alert("It looks like you are trying to load a MMP file that was created using legacy Map My Property App."+
+            // "We are planning to add this feature. Please check back later or use existing MapMyProperty app to load it.")
+            const oldMMP = convertMMPJSONToGraphics(jsn);
+            this.store.dispatch(addGraphics({ graphics: oldMMP }));
+            this.mapView.goTo(GetGraphicsForExtentUsingString(JSON.stringify(oldMMP)));
           } else {
-            this.store.dispatch(addGraphics({ graphics: JSON.parse(r) }));
+            this.store.dispatch(addGraphics({ graphics: jsn }));
             this.mapView.goTo(GetGraphicsForExtentUsingString(r));
           }
 
