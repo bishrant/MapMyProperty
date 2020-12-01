@@ -15,7 +15,6 @@ module.exports = {
     },
     "plugins": [
         "@typescript-eslint",
-        "@typescript-eslint/tslint"
     ],
     "rules": {
         "@typescript-eslint/array-type": "off",
@@ -45,7 +44,7 @@ module.exports = {
             "as-needed"
         ],
         "camelcase": "error",
-        "comma-dangle": "off",
+        "comma-dangle": 1,
         "complexity": "off",
         "constructor-super": "error",
         "dot-notation": "error",
@@ -69,7 +68,6 @@ module.exports = {
         "id-match": "error",
         "import/no-deprecated": "warn",
         "import/order": "off",
-        "jsdoc/no-types": "error",
         "max-classes-per-file": "off",
         "max-len": [
             "error",
@@ -139,7 +137,7 @@ module.exports = {
             "error",
             "never"
         ],
-        "prefer-arrow/prefer-arrow-functions": "error",
+        "prefer-arrow-callback": "error",
         "quote-props": [
             "error",
             "as-needed"
@@ -148,41 +146,5 @@ module.exports = {
         "spaced-comment": "error",
         "use-isnan": "error",
         "valid-typeof": "off",
-        "@typescript-eslint/tslint/config": [
-            "error",
-            {
-                "rules": {
-                    "component-class-suffix": true,
-                    "component-selector": [
-                        true,
-                        "element",
-                        "app",
-                        "kebab-case"
-                    ],
-                    "contextual-lifecycle": true,
-                    "directive-class-suffix": true,
-                    "directive-selector": [
-                        true,
-                        "attribute",
-                        "app",
-                        "camelCase"
-                    ],
-                    "jsdoc-format": true,
-                    "no-conflicting-lifecycle": true,
-                    "no-host-metadata-property": true,
-                    "no-input-rename": true,
-                    "no-inputs-metadata-property": true,
-                    "no-output-native": true,
-                    "no-output-on-prefix": true,
-                    "no-output-rename": true,
-                    "no-outputs-metadata-property": true,
-                    "no-reference-import": true,
-                    "template-banana-in-box": true,
-                    "template-no-negated-async": true,
-                    "use-lifecycle-interface": true,
-                    "use-pipe-transform-interface": true
-                }
-            }
-        ]
     }
 };

@@ -1,4 +1,4 @@
-@import '../../styles/sidebar.scss';
+@use '../../styles/sidebar';
 .infoBtn {
     width: 20px;
     height: 20px;
@@ -40,10 +40,6 @@
   box-sizing: border-box;
 //   gap: 1px;
   border: none !important;
-}
-
-legend{
-  font-weight: 600;
 }
 
 #shapes label {
