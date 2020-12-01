@@ -18,7 +18,7 @@ const FillStyles = [
   'forward-diagonal',
   'backward-diagonal',
   'cross',
-  'diagonal-cross',
+  'diagonal-cross'
 ];
 
 const CheckIfColorIsHollow = (RGBAarray: any) => {
@@ -73,7 +73,6 @@ const CreateLineSymbol = (outline: any) => {
     join: 'round'
   };
 }
-
 
 export {
   LineStyles,

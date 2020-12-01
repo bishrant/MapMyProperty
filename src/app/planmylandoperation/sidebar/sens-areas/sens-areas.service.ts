@@ -1,4 +1,4 @@
-import { Injectable, Output, EventEmitter, Directive } from '@angular/core';
+import { Injectable, Directive } from '@angular/core';
 import Query from 'esri/tasks/support/Query';
 import QueryTask from 'esri/tasks/QueryTask';
 import FeatureSet from 'esri/tasks/support/FeatureSet';
@@ -20,11 +20,11 @@ import { AppConfiguration } from 'src/config';
   providedIn: 'root'
 })
 export class SensAreasService {
-  constructor(
-    private appConfig:AppConfiguration
-  ) {}
+  constructor (
+    private appConfig: AppConfiguration
+  ) { }
 
-  async isWithinTexas(geo: __esri.Geometry): Promise<boolean> {
+  async isWithinTexas (geo: __esri.Geometry): Promise<boolean> {
     return new Promise((resolve) => {
       const _queryTask = new QueryTask({
         url: this.appConfig.usCountyLayerURL
@@ -39,10 +39,9 @@ export class SensAreasService {
         if (result.features.length === 0) {
           resolve(false);
         } else {
-          let isInTexas:boolean = true;
-          result.features.forEach((co:__esri.Graphic) => {
-            if (co.attributes.STATE_FIPSCODE !== '48')
-            {
+          let isInTexas: boolean = true;
+          result.features.forEach((co: __esri.Graphic) => {
+            if (co.attributes.STATE_FIPSCODE !== '48') {
               isInTexas = false;
             }
           });
@@ -52,7 +51,7 @@ export class SensAreasService {
     });
   }
 
-  getSensAreas(graph: __esri.Graphic, isInTexas:boolean): Promise<any[]> {
+  getSensAreas (graph: __esri.Graphic, isInTexas: boolean): Promise<any[]> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
@@ -73,7 +72,7 @@ export class SensAreasService {
                 gp.getResultData(jobInfo2.jobId, 'outputWetlands'),
                 gp.getResultData(jobInfo2.jobId, 'outputSevereSlopes'),
                 gp.getResultData(jobInfo2.jobId, 'outputSMZ'),
-                gp.getResultData(jobInfo2.jobId, 'outputStreams'),
+                gp.getResultData(jobInfo2.jobId, 'outputStreams')
               ]).then((value) => {
                 resolve(value);
               });
@@ -87,8 +86,8 @@ export class SensAreasService {
     });
   }
 
-  addSensAreasToMap(gl: __esri.GraphicsLayer, areas: any[], boundaryId:string, sliderValue: number): void {
-    const graphicTransparency:number = (100 - sliderValue) / 100;
+  addSensAreasToMap (gl: __esri.GraphicsLayer, areas: any[], boundaryId: string, sliderValue: number): void {
+    const graphicTransparency: number = (100 - sliderValue) / 100;
     areas.forEach((area, index) => {
       let symbol: any;
       let fillProps: FillProps;
@@ -127,19 +126,18 @@ export class SensAreasService {
     });
   }
 
-  updateOpacity(gl: __esri.GraphicsLayer, origin: string, visible: boolean): void {
+  updateOpacity (gl: __esri.GraphicsLayer, origin: string, visible: boolean): void {
     gl.graphics.forEach((g) => {
       if (g.attributes.origin === origin) {
         g.visible = visible;
       }
-      if (origin === 'wetlands' && g.attributes.origin === 'wetlandsBuffer')
-      {
+      if (origin === 'wetlands' && g.attributes.origin === 'wetlandsBuffer') {
         g.visible = visible;
       }
     });
   }
 
-  async bufferGraphic(origin: string, graph: __esri.Graphic, inputFeet: number): Promise<any> {
+  async bufferGraphic (origin: string, graph: __esri.Graphic, inputFeet: number): Promise<any> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
@@ -170,10 +168,10 @@ export class SensAreasService {
     });
   }
 
-  addBuffersOrSlopeToMap(gl: __esri.GraphicsLayer, fs: FeatureSet, origin: string, sliderValue: number, boundaryId:string): void {
-    const graphicTransparency:number = (100 - sliderValue) / 100;
+  addBuffersOrSlopeToMap (gl: __esri.GraphicsLayer, fs: FeatureSet, origin: string, sliderValue: number, boundaryId: string): void {
+    const graphicTransparency: number = (100 - sliderValue) / 100;
     let fillProps: FillProps = GetSMZProps(graphicTransparency);
-    let lineProps: LineProps = GetDefaultLineProps();
+    const lineProps: LineProps = GetDefaultLineProps();
     let isSlope: boolean = false;
     let groupOrder: number = 0;
 
@@ -194,8 +192,8 @@ export class SensAreasService {
     this.addGraphicsToGL(gl, fs, isSlope, symbol, origin, groupOrder, true, boundaryId);
   }
 
-  updateGraphicsOpacity(gl: __esri.GraphicsLayer, sliderValue: number): void {
-    const graphicTransparency:number = (100 - sliderValue) / 100;
+  updateGraphicsOpacity (gl: __esri.GraphicsLayer, sliderValue: number): void {
+    const graphicTransparency: number = (100 - sliderValue) / 100;
     gl.graphics.forEach(g => {
       let symbol: any;
       let fillProps: FillProps;
@@ -231,15 +229,15 @@ export class SensAreasService {
     });
   }
 
-  async setSlope(graph: __esri.Graphic, inputSlope: number, isInTexas:boolean): Promise<any>  {
+  async setSlope (graph: __esri.Graphic, inputSlope: number, isInTexas: boolean): Promise<any> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
       const params = {
-         inputPolygon: featureSet,
-         minSlopeValue: inputSlope.toString(),
-         isOnlyTexas: isInTexas
-       };
+        inputPolygon: featureSet,
+        minSlopeValue: inputSlope.toString(),
+        isOnlyTexas: isInTexas
+      };
 
       const gp: Geoprocessor = new Geoprocessor({
         url: this.appConfig.severeSlopesGPServiceURL
@@ -262,7 +260,7 @@ export class SensAreasService {
     });
   }
 
-  removeGraphicsByAttribute(gl: __esri.GraphicsLayer, attribute: string): void {
+  removeGraphicsByAttribute (gl: __esri.GraphicsLayer, attribute: string): void {
     const graphicsToRemove: any = gl.graphics.filter((gra: __esri.Graphic) => {
       return (gra.attributes.origin === attribute);
     });
@@ -270,7 +268,7 @@ export class SensAreasService {
     gl.removeMany(graphicsToRemove);
   }
 
-  private addGraphicsToGL(
+  private addGraphicsToGL (
     gl: __esri.GraphicsLayer,
     fs: FeatureSet,
     isSlope: boolean,
@@ -288,36 +286,33 @@ export class SensAreasService {
 
     if (fs.features.length > 0) {
       const graphicsCollection: __esri.Graphic[] = [];
-        fs.features.forEach((element) => {
-          element.symbol = symbol;
-          element.setAttribute('origin', origin);
-          element.setAttribute('groupOrder', groupOrder);
-          element.setAttribute('boundaryId', boundaryId);
-          if (isSlope) {
-            if (element.attributes.gridcode !== undefined) {
-              if (element.attributes.gridcode === 1) {
-                graphicsCollection.push(element);
-              }
-            } else {
+      fs.features.forEach((element) => {
+        element.symbol = symbol;
+        element.setAttribute('origin', origin);
+        element.setAttribute('groupOrder', groupOrder);
+        element.setAttribute('boundaryId', boundaryId);
+        if (isSlope) {
+          if (element.attributes.gridcode !== undefined) {
+            if (element.attributes.gridcode === 1) {
               graphicsCollection.push(element);
             }
           } else {
             graphicsCollection.push(element);
           }
-        });
+        } else {
+          graphicsCollection.push(element);
+        }
+      });
 
       gl.addMany(graphicsCollection);
 
-      if (isFromBufferOrSlope)
-      {
+      if (isFromBufferOrSlope) {
         gl.graphics.sort((a, b) => {
-          if(a.attributes.groupOrder > b.attributes.groupOrder){
+          if (a.attributes.groupOrder > b.attributes.groupOrder) {
             return 1;
-          }
-          else if (a.attributes.groupOrder < b.attributes.groupOrder){
+          } else if (a.attributes.groupOrder < b.attributes.groupOrder) {
             return -1;
-          }
-          else {
+          } else {
             return 0;
           }
         });

@@ -21,18 +21,19 @@ export class DraggableDirective implements OnChanges, OnDestroy {
   lastPageX: number;
   lastPageY: number;
   private globalListeners = new Map<string, {
-    handler: (event: Event) => void,
+    handler:(event: Event) => void,
     options?: AddEventListenerOptions | boolean
   }>();
+
   private elementWidth: number;
   private elementHeight: number;
   private vw: number;
   private vh: number;
 
-  constructor(private element: ElementRef, private ngZone: NgZone) {
+  constructor (private element: ElementRef, private ngZone: NgZone) {
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges (changes: SimpleChanges): void {
     if (this.dragEnabled) {
       if (changes.dragEventTarget && changes.dragEventTarget.currentValue) {
         this.onMousedown(this.dragEventTarget);
@@ -40,11 +41,11 @@ export class DraggableDirective implements OnChanges, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy (): void {
     this.removeEventListener();
   }
 
-  onMousedown(event: MouseEvent | TouchEvent): void {
+  onMousedown (event: MouseEvent | TouchEvent): void {
     if (!isLeftButton(event)) {
       return;
     }
@@ -56,13 +57,13 @@ export class DraggableDirective implements OnChanges, OnDestroy {
     }
   }
 
-  onMousemove(event: MouseEvent | TouchEvent): void {
+  onMousemove (event: MouseEvent | TouchEvent): void {
     const evt = getEvent(event);
     this.onDrag(evt.pageX, evt.pageY);
     this.dragMove.emit(event);
   }
 
-  onMouseup(event: MouseEvent | TouchEvent): void {
+  onMouseup (event: MouseEvent | TouchEvent): void {
     this.endDrag();
     this.removeEventListener();
 
@@ -70,7 +71,7 @@ export class DraggableDirective implements OnChanges, OnDestroy {
     this.dragEnd.emit({ left: st.left, top: st.top });
   }
 
-  addEventListeners(event: MouseEvent | TouchEvent) {
+  addEventListeners (event: MouseEvent | TouchEvent) {
     const isTouchEvent = event.type.startsWith('touch');
     const moveEvent = isTouchEvent ? 'touchmove' : 'mousemove';
     const upEvent = isTouchEvent ? 'touchend' : 'mouseup';
@@ -92,13 +93,13 @@ export class DraggableDirective implements OnChanges, OnDestroy {
     });
   }
 
-  removeEventListener() {
+  removeEventListener () {
     this.globalListeners.forEach((config, name) => {
       window.document.removeEventListener(name, config.handler, config.options);
     });
   }
 
-  initDrag(pageX: number, pageY: number) {
+  initDrag (pageX: number, pageY: number) {
     this.isDragging = true;
     this.lastPageX = pageX;
     this.lastPageY = pageY;
@@ -110,7 +111,7 @@ export class DraggableDirective implements OnChanges, OnDestroy {
     this.vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
   }
 
-  onDrag(pageX: number, pageY: number) {
+  onDrag (pageX: number, pageY: number) {
     if (this.isDragging) {
       const deltaX = pageX - this.lastPageX;
       const deltaY = pageY - this.lastPageY;
@@ -146,9 +147,8 @@ export class DraggableDirective implements OnChanges, OnDestroy {
     }
   }
 
-  endDrag() {
+  endDrag () {
     this.isDragging = false;
     this.element.nativeElement.classList.remove('dragging');
   }
-
 }

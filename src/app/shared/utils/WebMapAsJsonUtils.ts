@@ -11,8 +11,8 @@ const GetWebMapAsJsonString = (mv: MapView, boundaryExtent:__esri.Extent) => {
     mapOptions: GetMapOptions(mv, boundaryExtent),
     exportOptions: {
       dpi: 96,
-      outputSize: [800, 1100],
-    },
+      outputSize: [800, 1100]
+    }
   };
   return JSON.stringify(webMapAsJson);
 };
@@ -22,7 +22,7 @@ const GetMapOptions = (mv: MapView, boudaryExtent:__esri.Extent) => {
     extent: boudaryExtent === null ? mv.extent : boudaryExtent,
     spatialReference: {
       latestWkid: 3857,
-      wkid: 102100,
+      wkid: 102100
     },
     showAttribution: false,
     scale: boudaryExtent === null ? mv.scale : null
@@ -48,7 +48,7 @@ const GetBasemap = (map: Map) => {
   });
 
   const basemaps = {
-    baseMapLayers: baseMapLayers,
+    baseMapLayers
   };
   return basemaps;
 };
@@ -87,7 +87,7 @@ const FormatWMSLayerJson = (wmsLyr: WMSLayer) => {
     }),
     visibleLayers: wmsLyr.sublayers.map((sublyr) => {
       return sublyr.visible ? sublyr.name : '';
-    }),
+    })
   };
 };
 
@@ -116,29 +116,29 @@ const FormatGraphicsLayerJson = (graphLyr: GraphicsLayer) => {
       layers: [
         {
           layerDefinition: {
-            geometryType: 'esriGeometryPolygon',
+            geometryType: 'esriGeometryPolygon'
           },
           featureSet: {
             geometryType: 'esriGeometryPolygon',
-            features: polygons,
+            features: polygons
           }
         },
         {
           layerDefinition: {
-            geometryType: 'esriGeometryPolyline',
+            geometryType: 'esriGeometryPolyline'
           },
           featureSet: {
             geometryType: 'esriGeometryPolyline',
-            features: polylines,
+            features: polylines
           }
         },
         {
           layerDefinition: {
-            geometryType: 'esriGeometryPoint',
+            geometryType: 'esriGeometryPoint'
           },
           featureSet: {
             geometryType: 'esriGeometryPoint',
-            features: points,
+            features: points
           }
         }
       ]

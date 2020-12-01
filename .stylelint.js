@@ -1,6 +1,8 @@
 module.exports = {
-  plugins: ['stylelint-scss'],
-  "extends": "stylelint-config-sass-guidelines",
+  plugins: ["stylelint-scss"],
+  extends: "stylelint-config-recommended-scss",
+  syntax: "scss",
+  ignoreFiles: ["**/*.ts", "**/*.js"],
   rules: {
     "at-rule-no-unknown": [
       true,
@@ -17,5 +19,5 @@ module.exports = {
     "declaration-block-trailing-semicolon": null,
     "no-descending-specificity": null,
   },
-  "ignoreFiles": ["**/*.js"]
+
 };

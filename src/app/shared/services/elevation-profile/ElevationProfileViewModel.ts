@@ -1,19 +1,19 @@
 import { ElevationUnits } from './interfaces.d';
-import Accessor  from "esri/core/Accessor";
-import { property, subclass, } from "esri/core/accessorSupport/decorators";
-import { ElevationProfileProperties } from "./interfaces";
-import { CalculateLength, CalculateSlope, GetSegmentsWithHigherSlope, CalculateSegmentLength, lengthAbbrMap, elevationUnitMap, sum, max, min, Decimal, avg, } from "./Uitls";
-import { CreateNormalElevationLine, CreateHigherSlopeLine, GetGraphOptions, ConvertElevationUnits, } from "./GraphStyles";
-import Graphic from "esri/Graphic";
-import MapView  from 'esri/views/MapView';
+import Accessor from 'esri/core/Accessor';
+import { property, subclass } from 'esri/core/accessorSupport/decorators';
+import { ElevationProfileProperties } from './interfaces';
+import { CalculateLength, CalculateSlope, GetSegmentsWithHigherSlope, CalculateSegmentLength, lengthAbbrMap, elevationUnitMap, sum, max, min, Decimal, avg } from './Uitls';
+import { CreateNormalElevationLine, CreateHigherSlopeLine, GetGraphOptions, ConvertElevationUnits } from './GraphStyles';
+import Graphic from 'esri/Graphic';
+import MapView from 'esri/views/MapView';
 import PrintTemplate from 'esri/tasks/support/PrintTemplate';
 import PrintParameters from 'esri/tasks/support/PrintParameters';
-import PrintTask  from 'esri/tasks/PrintTask';
+import PrintTask from 'esri/tasks/PrintTask';
 import * as Plotly from './lib/plotly-basic-1.55.2.min.js';
 
-@subclass("esri.widgets.ElevationProfileViewModel")
+@subclass('esri.widgets.ElevationProfileViewModel')
 class ElevationProfileViewModel extends Accessor {
-  constructor(props?: ElevationProfileProperties) {
+  constructor (props?: ElevationProfileProperties) {
     super();
   }
 
@@ -33,13 +33,13 @@ class ElevationProfileViewModel extends Accessor {
   ptArrayOriginal: any = [];
 
   @property()
-  state: string = "";
+  state: string = '';
 
   @property()
   unit: ElevationUnits = 'miles';
 
   @property()
-  error: string = "";
+  error: string = '';
 
   @property()
   isMSL: boolean = false;
@@ -47,43 +47,43 @@ class ElevationProfileViewModel extends Accessor {
   @property()
   divId: string = 'elevation-plotly';
 
-  GetElevationData(graphic: Graphic, elevationGPServiceURL: string) {
+  GetElevationData (graphic: Graphic, elevationGPServiceURL: string) {
     let feat = graphic.toJSON();
     feat.atttributes = { OID: 1 };
     var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
     var urlencoded = new URLSearchParams();
-    urlencoded.append("f", "json");
-    urlencoded.append("returnZ", "true");
-    urlencoded.append("DEMResolution", "FINEST");
-    urlencoded.append("ProfileIDField", "ObjectID");
-    //format
+    urlencoded.append('f', 'json');
+    urlencoded.append('returnZ', 'true');
+    urlencoded.append('DEMResolution', 'FINEST');
+    urlencoded.append('ProfileIDField', 'ObjectID');
+    // format
     let format = {
-      fields: [{ name: "OID", type: "esriFieldTypeObjectID", alias: "OID" }],
-      geometryType: "esriGeometryPolyline",
+      fields: [{ name: 'OID', type: 'esriFieldTypeObjectID', alias: 'OID' }],
+      geometryType: 'esriGeometryPolyline',
       features: [feat],
-      sr: { wkid: 102100 },
+      sr: { wkid: 102100 }
     };
-    urlencoded.append("InputLineFeatures", JSON.stringify(format));
-    var requestOptions: any = {
-      method: "POST",
+    urlencoded.append('InputLineFeatures', JSON.stringify(format));
+    const requestOptions: any = {
+      method: 'POST',
       headers: myHeaders,
       body: urlencoded,
-      redirect: "follow",
+      redirect: 'follow'
     };
     return fetch(elevationGPServiceURL, requestOptions);
   }
 
-  getChartData(pts: any, unit: ElevationUnits) {
+  getChartData (pts: any, unit: ElevationUnits) {
     pts = ConvertElevationUnits(pts, unit);
     pts = CalculateLength(pts, unit);
     pts = CalculateSlope(pts);
 
-    let normalLine: any = CreateNormalElevationLine(pts, unit);
-    var data: any;
+    const normalLine: any = CreateNormalElevationLine(pts, unit);
+    let data: any;
     if (this.slopeThreshold && this.slopeThreshold > 0) {
       const higherSlope = GetSegmentsWithHigherSlope(pts, this.slopeThreshold);
-      var higherSlopeLine = CreateHigherSlopeLine(higherSlope);
+      const higherSlopeLine = CreateHigherSlopeLine(higherSlope);
 
       data = [normalLine, higherSlopeLine] as any;
     } else {
@@ -93,60 +93,57 @@ class ElevationProfileViewModel extends Accessor {
     return [data, options, pts];
   }
 
-  initializeHover(Plotly: any, _pts: any, mapView: __esri.MapView, graphicsLayer: __esri.GraphicsLayer) {
+  initializeHover (Plotly: any, _pts: any, mapView: __esri.MapView, graphicsLayer: __esri.GraphicsLayer) {
     console.log(_pts);
-    var myPlot: any = document.getElementById(this.divId);
+    const myPlot: any = document.getElementById(this.divId);
     myPlot
-      .on("plotly_hover", function (data: any) {
+      .on('plotly_hover', function (data: any) {
         try {
           const pId = data.points[0].pointIndex;
           const pt = _pts[pId];
-          var point: any = {
-            type: "point", // autocasts as new Point()
+          const point: any = {
+            type: 'point', // autocasts as new Point()
             x: pt[0],
             y: pt[1],
-            spatialReference: { wkid: 102100 },
+            spatialReference: { wkid: 102100 }
           };
 
           // Create a symbol for drawing the point
-          var markerSymbol: any = {
-            type: "simple-marker",
-            style: "cross",
-            color: "cyan",
-            outline: {  // autocasts as new SimpleLineSymbol()
+          const markerSymbol: any = {
+            type: 'simple-marker',
+            style: 'cross',
+            color: 'cyan',
+            outline: { // autocasts as new SimpleLineSymbol()
               color: [ 0, 255,255],
-              width: "2px"
+              width: '2px'
             }
           };
 
           // Create a graphic and add the geometry and symbol to it
-          var pointGraphic = new Graphic({
+          const pointGraphic = new Graphic({
             geometry: point,
-            symbol: markerSymbol,
+            symbol: markerSymbol
           });
           graphicsLayer.removeAll();
           graphicsLayer.add(pointGraphic);
         } catch (error) {
           console.log(error);
-
         }
-
       })
-      .on("plotly_unhover", function (data: any) {
+      .on('plotly_unhover', function (data: any) {
         graphicsLayer.removeAll();
       });
-
   }
-  GetStatistics() {
-    console.time("stats");
+  GetStatistics () {
+    console.time('stats');
     let pts = JSON.parse(JSON.stringify(this.ptArrayOriginal));
     pts = ConvertElevationUnits(pts, this.unit);
     pts = CalculateLength(pts, this.unit);
     pts = CalculateSlope(pts);
     pts = CalculateSegmentLength(pts, this.unit);
 
-    const unitAbbr = " " + lengthAbbrMap[this.unit];
-    const elevAbbr = " " + lengthAbbrMap[elevationUnitMap[this.unit]];
+    const unitAbbr = ' ' + lengthAbbrMap[this.unit];
+    const elevAbbr = ' ' + lengthAbbrMap[elevationUnitMap[this.unit]];
 
     const totalDistance = pts[pts.length - 1][3];
     const slopes = pts.map((p: any) => p[4]);
@@ -157,7 +154,7 @@ class ElevationProfileViewModel extends Accessor {
 
     const elevationGain = sum(elevationDiff.filter((d: any) => d > 0));
     const elevationLoss = sum(elevationDiff.filter((d: any) => d < 0));
-    console.timeEnd("stats");
+    console.timeEnd('stats');
     // gets the stats needed for PLMO report
     return {
       TotalDistance: totalDistance + unitAbbr,
@@ -169,15 +166,15 @@ class ElevationProfileViewModel extends Accessor {
       MinimumElevation: Decimal(min(elevation)) + elevAbbr,
       MaximumElevation: Decimal(max(elevation)) + elevAbbr,
       TotalElevationGain: Decimal(elevationGain) + elevAbbr,
-      TotalElevationLost: Decimal(elevationLoss) + elevAbbr,
+      TotalElevationLost: Decimal(elevationLoss) + elevAbbr
     }
   }
 
-  async printReport(mapView: MapView, reportURL: string, exportMapGPServiceURL: string) {
+  async printReport (mapView: MapView, reportURL: string, exportMapGPServiceURL: string) {
     return new Promise(async (resolve: any, reject: any) => {
       try {
         const printTemplate = new PrintTemplate({
-          format: 'jpg',
+          format: 'jpg'
         });
         const printParameters = new PrintParameters({
           view: mapView,
@@ -197,41 +194,38 @@ class ElevationProfileViewModel extends Accessor {
         var reportData = {
           title: _title.value,
           summaryStats: this.GetStatistics(),
-          graphImage: (img as any).split("data:image/png;base64,")[1],
+          graphImage: (img as any).split('data:image/png;base64,')[1],
           mapLink: printURLData.url
         };
 
         console.log(reportData);
         var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append('Content-Type', 'application/json');
         var requestOptions: any = {
-          method: "POST",
+          method: 'POST',
           headers: myHeaders,
           body: JSON.stringify(reportData),
-          redirect: "follow",
+          redirect: 'follow'
         };
         const reportResponse: any = await fetch(reportURL, requestOptions).then((response: any) => response.json())
         resolve(reportResponse)
       } catch (error) {
-        this.state = "error";
+        this.state = 'error';
         this.error = error;
         console.error(error);
         reject(error);
       }
     })
-
   }
 
-  exportImage() {
+  exportImage () {
     return new Promise((resolve: any, reject: any) => {
-      var myPlot: any = document.getElementById(this.divId);
+      const myPlot: any = document.getElementById(this.divId);
       Plotly.toImage(myPlot, { height: 400, width: 856 })
         .then(function (url: any) { resolve(url); })
         .catch((err: any) => reject(err))
     });
   }
-
-
 }
 
 export default ElevationProfileViewModel;

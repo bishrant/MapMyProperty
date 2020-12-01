@@ -1,8 +1,8 @@
-import { PMLOSoil } from "../models/pmloSoil.model";
+import { PMLOSoil } from '../models/pmloSoil.model';
 
 const GetPMLOSoilPopupContent = (soil: PMLOSoil) => {
-    const ecoclassidUrl:string = 'https://edit.jornada.nmsu.edu/catalogs/esd/' + soil.ecoclassid.substring(1,5) + '/' + soil.ecoclassid;
-    const popupContent: string = `
+  const ecoclassidUrl:string = 'https://edit.jornada.nmsu.edu/catalogs/esd/' + soil.ecoclassid.substring(1, 5) + '/' + soil.ecoclassid;
+  const popupContent: string = `
     <div class="pmlo-popup-content">
         <p class="my-1"><b>Map Unit Name: </b><span>${soil.muname}</span></p>
         <p class="my-1"><b>Map Unit Dominant Component: </b><span>${soil.compname}</span></p>
@@ -39,7 +39,7 @@ const GetPMLOSoilPopupContent = (soil: PMLOSoil) => {
         <p class="my-1"><b>Spatial Verson: </b><span>${soil.spatialversion}</span></p>
     </div>
     `;
-    return popupContent;
+  return popupContent;
 }
 
 export { GetPMLOSoilPopupContent }

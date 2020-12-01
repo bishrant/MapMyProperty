@@ -38,9 +38,9 @@ export class CulvertSizeService {
   public Plotly: any;
   private _graphicsLayer: __esri.GraphicsLayer;
 
-  constructor(private config: AppConfiguration, private loaderService: LoaderService, private http: HttpClient) { }
+  constructor (private config: AppConfiguration, private loaderService: LoaderService, private http: HttpClient) { }
 
-  public initialize(props: any) {
+  public initialize (props: any) {
     this.mapView = props.mapView;
     this._graphicsLayer = props.graphicsLayer;
     this.mapView.map.add(props.graphicsLayer);
@@ -48,10 +48,10 @@ export class CulvertSizeService {
       layer: props.graphicsLayer,
       view: this.mapView,
       pointSymbol: {
-        type: "simple-marker",
-        style: "circle",
-        color: "blue",
-        size: "8px",
+        type: 'simple-marker',
+        style: 'circle',
+        color: 'blue',
+        size: '8px'
       }
     });
 
@@ -59,7 +59,7 @@ export class CulvertSizeService {
     return this;
   }
 
-  private _DrawingComplete() {
+  private _DrawingComplete () {
     this.sketchVM.on('create', (evt: any) => {
       if (evt.state === 'complete') {
         console.log(evt.graphic);
@@ -70,11 +70,11 @@ export class CulvertSizeService {
     })
   }
 
-  get isReversed(): boolean {
+  get isReversed (): boolean {
     return this.reveresed;
   }
 
-  GetCulvertData(graphic: Graphic): [Geoprocessor, any] {
+  GetCulvertData (graphic: Graphic): [Geoprocessor, any] {
     let featureSet = new FeatureSet({
       features: [graphic],
       geometryType: 'point',
@@ -90,30 +90,29 @@ export class CulvertSizeService {
     return [geoprocessor, params];
   }
 
-  public start() {
+  public start () {
     if (this._graphicsLayer.graphics.length > 1) {
       this._graphicsLayer.graphics.removeAll();
     }
     this.sketchVM.create('point');
   }
 
-  public close() {
+  public close () {
     this._graphicsLayer.removeAll();
     this.sketchVM.destroy();
   }
 
-
-  async GeneratePDFReport(params: CulvertSizeReportParams) {
+  async GeneratePDFReport (params: CulvertSizeReportParams) {
     this.http.post(this.config.culvertSize.reportURL, params).subscribe((d: any) => {
       window.open(d.fileName);
       this.loaderService.isLoading.next(false);
     }, (error : any) =>  {
       this.loaderService.isLoading.next(false);
-      throw new Error("Failed to generate report. Please try again");
+      throw new Error('Failed to generate report. Please try again');
     })
   }
 
-  async createReport(watershedGeometry: __esri.Polygon, culvertData) {
+  async createReport (watershedGeometry: __esri.Polygon, culvertData) {
     try {
       this.loaderService.isLoading.next(true);
       const printTask: PrintTask = new PrintTask({
@@ -123,7 +122,7 @@ export class CulvertSizeService {
       const printParameters: PrintParameters = new PrintParameters({
         view: this.mapView,
         extraParameters: {
-          Format: 'PDF',
+          Format: 'PDF'
         }
       });
 
@@ -135,9 +134,9 @@ export class CulvertSizeService {
       (printTask as any)._getPrintDefinition(printParameters, this.mapView)
         .then(async (webmapJson: any) => {
           const usa_topo = {
-            "id": "ArcGISTiledMapServiceLayer1661",
-            "url": "http://server.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer",
-            "title": "ArcGISTiledMapServiceLayer1659", "minScale": 0, "maxScale": 0
+            'id': 'ArcGISTiledMapServiceLayer1661',
+            'url': 'http://server.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer',
+            'title': 'ArcGISTiledMapServiceLayer1659', 'minScale': 0, 'maxScale': 0
           }
 
           const operationalLayers = [usa_topo];
@@ -155,7 +154,6 @@ export class CulvertSizeService {
             f: 'json'
           };
 
-
           const gp: JobInfo = await printMapGpService.submitJob(gpParams);
           const jobDetails = await printMapGpService.waitForJobCompletion(gp.jobId);
           if (jobDetails.jobStatus === 'job-succeeded') {
@@ -169,7 +167,5 @@ export class CulvertSizeService {
       console.error(error);
       this.loaderService.isLoading.next(false);
     }
-
-
   }
 }

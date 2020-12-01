@@ -1,22 +1,22 @@
 import { ElevationUnits } from './interfaces.d';
-import Polyline from "esri/geometry/Polyline";
-import { planarLength } from "esri/geometry/geometryEngine";
+import Polyline from 'esri/geometry/Polyline';
+import { planarLength } from 'esri/geometry/geometryEngine';
 
 const elevationUnitMap = {
-  meters: "meters",
-  feet: "feet",
-  kilometers: "meters",
-  miles: "feet",
-  "nautical-miles": "feet",
-  yards: "feet",
+  meters: 'meters',
+  feet: 'feet',
+  kilometers: 'meters',
+  miles: 'feet',
+  'nautical-miles': 'feet',
+  yards: 'feet',
 };
 const lengthAbbrMap = {
-  meters: "m.",
-  feet: "ft.",
-  kilometers: "km.",
-  miles: "mi.",
-  "nautical-miles": "n.m.",
-  yards: "yd.",
+  meters: 'm.',
+  feet: 'ft.',
+  kilometers: 'km.',
+  miles: 'mi.',
+  'nautical-miles': 'n.m.',
+  yards: 'yd.',
 };
 
 const Decimal = (num: number): number=> {
@@ -33,7 +33,7 @@ const _slope = (p1: any[], p2: any[]) => {
 };
 
 const min = (input: any):number => {
-  if (toString.call(input) !== "[object Array]") return 0;
+  if (toString.call(input) !== '[object Array]') return 0;
   return Math.min.apply(null, input);
 };
 const avg = (input: any):number => {
@@ -42,7 +42,7 @@ const avg = (input: any):number => {
 }
 
 const max = (input: any):number => {
-  if (toString.call(input) !== "[object Array]") return 0;
+  if (toString.call(input) !== '[object Array]') return 0;
   return Math.max.apply(null, input);
 };
 

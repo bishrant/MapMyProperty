@@ -36,7 +36,7 @@ export class PointcontrolComponent {
     this.updateMarkerShape();
   }
 
-  constructor () {}
+
 
   markerStyles: any = [
     { name: 'circle', type: 'simple-marker', asp: 1 },
@@ -56,8 +56,9 @@ export class PointcontrolComponent {
   ];
 
   iconName: any;
-  markerSize: number = 12;
+  markerSize = 12;
   pointSymbol: any = this.markerStyles[0];
+
 
   public markerProps: any = {
     type: this.pointSymbol.type,
@@ -81,6 +82,7 @@ export class PointcontrolComponent {
     fill: RGBObjectToHexA(this.markerProps.color)
   };
 
+  constructor () {}
   changeMarkerSize = () => {
     const size = this.markerSize + 'px';
     this.markerProps.size = size;
@@ -119,4 +121,6 @@ export class PointcontrolComponent {
     this.fillSvgStyle.fill = RGBObjectToHexA(this.markerProps.color);
     this.fillSvgStyle2.fill = RGBObjectToHexA(this.markerProps.color);
   };
+
+
 }

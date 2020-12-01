@@ -34,8 +34,8 @@ import { LoaderModule } from './shared/components/loader/loader.module';
     LoaderModule
   ],
   providers: [
-    {provide: ErrorHandler, useClass: GlobalErrorHandler},
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {horizontalPosition: 'end', verticalPosition: 'top'}}],
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { horizontalPosition: 'end', verticalPosition: 'top' } }],
   bootstrap: [AppComponent],
   exports: [HeaderModule, MatIconModule, MatButtonModule, MatTooltipModule]
 })
