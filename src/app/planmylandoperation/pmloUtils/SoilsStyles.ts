@@ -13,7 +13,7 @@ const GetSoilFillProps: any = (gra: __esri.Graphic, alpha: number) => {
   const fillProps: FillProps = {
     color: { r: rgbObject.r, g: rgbObject.g, b: rgbObject.b, a: alpha },
     style: 'solid',
-    opacity: 100,
+    opacity: 100
   };
   return fillProps;
 };
@@ -23,7 +23,7 @@ const GetOrageLineProps: any = () => {
     style: 'solid',
     color: orangeColor,
     opacity: 100,
-    width: 1,
+    width: 1
   };
   return lineProps;
 };
@@ -42,8 +42,8 @@ const GetSoilTextSymbol: any = (text: string, isOrange: boolean, alpha: number) 
     font: {
       size: '12px',
       family: 'arial',
-      weight: 'bold',
-    },
+      weight: 'bold'
+    }
   };
 
   return textSymbol;
@@ -54,7 +54,7 @@ const GetDefaultSoilsLineProps: any = (alpha: number) => {
     style: 'solid',
     color: { r: 105, g: 105, b: 105, a: alpha },
     opacity: 100,
-    width: 1,
+    width: 1
   };
 
   return lineProps;
@@ -66,7 +66,7 @@ const GetSelectedSoilFillProps: any = () => {
   const fillProps: FillProps = {
     color: { r: 0, g: 0, b: 0, a: 1 },
     style: 'diagonal-cross',
-    opacity: 100,
+    opacity: 100
   };
 
   return fillProps;
@@ -77,7 +77,7 @@ const GetSelectedSoilLineProps: any = () => {
     style: 'solid',
     color: { r: 0, g: 255, b: 0, a: 1 },
     opacity: 100,
-    width: 2,
+    width: 2
   };
 
   return lineProps;
@@ -123,7 +123,7 @@ const GetDrainageClassFillProps: any = (gra: __esri.Graphic, alpha: number) => {
   const fillProps: FillProps = {
     color: { r: colorModel.r, g: colorModel.g, b: colorModel.b, a: alpha },
     style: 'solid',
-    opacity: 100,
+    opacity: 100
   };
   return fillProps;
 };
@@ -136,5 +136,5 @@ export {
   WaterBlueHexColor,
   GetSelectedSoilFillProps,
   GetSelectedSoilLineProps,
-  GetDrainageClassFillProps,
+  GetDrainageClassFillProps
 };

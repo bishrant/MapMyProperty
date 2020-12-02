@@ -37,7 +37,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() mapView: any;
   @Input() textGraphicsLayer: any;
   @Input() polygonGraphicsLayer: __esri.GraphicsLayer;
-  // @Output() selectedTextGraphicsChanged: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('radiusInput') radiusElmRef: ElementRef;
   @ViewChild('textcontrols') textcontrolsElmRef: any;
@@ -66,12 +65,12 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   id = (): string => Math.random().toString(36).substr(2, 9);
 
   changeLabelsColor = (e: any): void => {
-    const txt = this.selectedLabelsGraphics[0].graphic;
-    const _color = e;
-    _color.a = _color.a * 100;
+    const txt = this.selectedLabelsGraphics[0].graphic.toJSON();
+    const _color = JSON.parse(JSON.stringify(e));
     txt.symbol.color = _color;
     txt.attributes.symbol.color = _color;
-    this.geomLabelsGraphicsLayer.add(txt);
+    const _txt = Graphic.fromJSON(txt);
+    this.geomLabelsGraphicsLayer.add(_txt);
     const _input = document.getElementById(txt.attributes.id);
     this.selectedInputBox.CleanupListenerForInputFrame(_input);
     this.selectedLabelsGraphics = [];

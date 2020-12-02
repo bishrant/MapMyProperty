@@ -37,7 +37,7 @@
     <br>
     Color of the selected label:
     <app-color-picker [color]="selectedLabelsGraphics[0].graphic.attributes.symbol.color"
-      [opacity]="selectedLabelsGraphics[0].graphic.attributes.symbol.color.a"
+      [opacity]="selectedLabelsGraphics[0].graphic.symbol.color.a*100"
       (colorSelected)="changeLabelsColor($event)">
     </app-color-picker>
   </div>

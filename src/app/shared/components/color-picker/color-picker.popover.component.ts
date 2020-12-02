@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import { ColorsPopoverService } from '../../services/ColorsPopover.service';
-import {ColorPallete} from './ColorPallete'
+import { ColorPallete } from './ColorPallete'
 @Component({
   selector: 'app-color-popover',
   templateUrl: './color-picker.popover.component.html',
@@ -22,11 +22,6 @@ export class ColorPickerPopoverComponent {
     this.closePopupWithColor(true);
   }
 
-  public changeOpacity (v: any) {
-    this.opacity =v;
-    this.closePopupWithColor(false);
-  }
-
   public changeColorManual (color: string): void {
     const isValid = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(color);
     if (isValid) {
@@ -38,6 +33,11 @@ export class ColorPickerPopoverComponent {
   openColorPalettee = () => {
     this.customColorInput.nativeElement.click();
   };
+
+  changeOpacity = (transparency: any) => {
+    this.opacity = 100 - transparency;
+    this.closePopupWithColor(false);
+  }
 
   closePopupWithColor = (closePopup: any) => {
     const colorInfo = { color: this.color, opacity: this.opacity, closePopup: closePopup };

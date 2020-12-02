@@ -21,6 +21,7 @@ export class TextControlService {
   creatGeomLabelGraphic = (anchorPoint: Point, textSymbol: any, parent: Graphic) => {
     // add text labels for polygon and polylines
     const _textSymbol = JSON.parse(JSON.stringify(textSymbol));
+    _textSymbol.color.a = 1;
     if (parent.geometry.type === 'polygon') {
       _textSymbol.text = createAreaLabels(parent);
     } else if (parent.geometry.type === 'polyline') {
