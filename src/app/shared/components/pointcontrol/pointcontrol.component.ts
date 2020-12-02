@@ -43,14 +43,14 @@ export class PointcontrolComponent {
     { name: 'x', type: 'simple-marker', asp: 1 },
     { name: 'diamond', type: 'simple-marker', asp: 1 },
     { name: 'square', type: 'simple-marker', asp: 1 },
-    { name: 'tree', type: 'picture-marker', asp: 0.75 },
+    { name: 'tree', type: 'picture-marker', asp: 1 },
     { name: 'flag', type: 'picture-marker', asp: 1 },
-    { name: 'exclamation-triangle', type: 'picture-marker', asp: 1.125 },
-    { name: 'parking', type: 'picture-marker', asp: 0.875 },
-    { name: 'tint', type: 'picture-marker', asp: 0.687 },
-    { name: 'thumbtack', type: 'picture-marker', asp: 0.75 },
-    { name: 'torii-gate', type: 'picture-marker', asp: 1 },
-    { name: 'home', type: 'picture-marker', asp: 1.125 }
+    { name: 'warning', type: 'picture-marker', asp: 1 },
+    { name: 'parking', type: 'picture-marker', asp: 1 },
+    { name: 'water', type: 'picture-marker', asp: 1 },
+    { name: 'pin', type: 'picture-marker', asp: 1 },
+    { name: 'gate', type: 'picture-marker', asp: 1 },
+    { name: 'home', type: 'picture-marker', asp: 1 }
   ];
 
   iconName: any;
@@ -75,7 +75,7 @@ export class PointcontrolComponent {
   };
 
   fillSvgStyle2 = {
-    'width.px': 18,
+    'width.px': 30,
     fill: RGBObjectToHexA(this.markerProps.color)
   };
 
