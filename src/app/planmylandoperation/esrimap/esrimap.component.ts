@@ -23,6 +23,7 @@ import { Subscription } from 'rxjs';
 import { HelpService } from 'src/app/shared/services/help/help.service';
 import { HelpObj } from 'src/app/shared/services/help/HelpObj.model';
 import { InitializeArcGISWorkers } from 'src/app/shared/utils/ArcGISWorkersUtil';
+import { isMapViewActive } from 'src/app/shared/ScreenUtils';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -50,7 +51,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   mapCoords: any;
 
   geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
-  geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: "geomlabels" });
+  geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: 'geomlabels' });
   polygonGraphicsLayer: __esri.GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
 
@@ -60,13 +61,12 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   helpItem = '';
   savedData: any;
 
-
   closeOtherPanels = ((panelTitle: string) => {
     const panelToOpen: AccordionPanelComponent[] = this.accordionPanels.filter((panel: any) => panel.title === panelTitle);
     if (panelToOpen.length > 0) panelToOpen[0].toggleOthers();
   });
 
-  constructor(
+  constructor (
     private store: Store<AppState>,
     private mapViewService: MapviewService,
     private soilsService: SoilsService,
@@ -77,7 +77,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
     private helpService: HelpService
   ) { }
 
-  checkIfSavedGraphicsExists() {
+  checkIfSavedGraphicsExists () {
     this.savedData = getSavedState();
     if (this.savedData) {
       if (this.savedData.length > 0) {
@@ -91,7 +91,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
 
   graphicsStoreSub: Subscription;
 
-  listenToGraphicsStore() {
+  listenToGraphicsStore () {
     const graphics$ = this.store.select((state) => state.app.graphics);
     if (this.graphicsStoreSub) { this.graphicsStoreSub.unsubscribe() }
     this.graphicsStoreSub = graphics$.subscribe((g: any) => {
@@ -99,42 +99,43 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit (): void {
     setTimeout(() => {
       this.closeOtherPanels('Draw');
     }, 100);
   }
 
-  restoreSession(e: any) {
+  restoreSession (e: any) {
     if (e !== null) this.sessionModal.hide();
     if (e) {
       this.store.dispatch(addGraphics({ graphics: this.savedData }));
       setTimeout(() => {
         this.mapView.goTo(this.polygonGraphicsLayer.graphics);
       }, 500);
-
     } else {
       clearLocalStorage();
     }
     this.listenToGraphicsStore();
   }
 
-  @HostListener('keydown.control.z') undoFromKeyboard() {
-    this.graphicsStoreEl.undo();
+  @HostListener('keydown.control.z') undoFromKeyboard (): void {
+    if (isMapViewActive()) { this.graphicsStoreEl.undo(); }
   }
 
-  @HostListener('keydown.control.y') redoFromKeyboard() {
-    this.graphicsStoreEl.redo();
-  }
-  @HostListener('document:keydown.delete') deleteFromKeyboard() {
-    this.graphicsStoreEl.delete();
-  }
-  @HostListener('keydown.meta.shift.z') redoFromKeyboardMac() {
-    this.graphicsStoreEl.redo();
+  @HostListener('keydown.control.y') redoFromKeyboard (): void {
+    if (isMapViewActive()) { this.graphicsStoreEl.redo(); }
   }
 
-  @HostListener('keydown.meta.z') undoFromKeyboardMac() {
-    this.graphicsStoreEl.undo();
+  @HostListener('document:keydown.delete') deleteFromKeyboard (): void {
+    if (isMapViewActive()) { this.graphicsStoreEl.delete(); }
+  }
+
+  @HostListener('keydown.meta.shift.z') redoFromKeyboardMac (): void {
+    if (isMapViewActive()) { this.graphicsStoreEl.redo(); }
+  }
+
+  @HostListener('keydown.meta.z') undoFromKeyboardMac (): void {
+    if (isMapViewActive()) { this.graphicsStoreEl.undo(); }
   }
 
   showCoordinates = (pt: any) => {
@@ -200,13 +201,13 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
       });
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
       const p = {
-        type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
-        style: "circle",
-        color: "cyan",
-        size: "20px",  // pixels
-        outline: {  // autocasts as new SimpleLineSymbol()
+        type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
+        style: 'circle',
+        color: 'cyan',
+        size: '20px', // pixels
+        outline: { // autocasts as new SimpleLineSymbol()
           color: [0, 0, 0],
-          width: 1  // points
+          width: 1 // points
         }
       };
       this.sketchVM.updatePointSymbol = p;
@@ -217,7 +218,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
     }
   };
 
-  ngOnInit() {
+  ngOnInit () {
     this.initializeMap();
     this.soilsService.showTableModal.subscribe((show: boolean) => {
       if (show) {

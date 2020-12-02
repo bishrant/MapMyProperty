@@ -8,6 +8,7 @@ import { createMapView } from 'src/app/shared/utils/CreateMapView';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import { AccordionPanelComponent } from 'src/app/shared/components/accordion-panel/accordion-panel.component';
 import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.service';
+import { isMapViewActive } from 'src/app/shared/ScreenUtils';
 
 @Component({
   selector: 'app-esrimap',
@@ -15,10 +16,7 @@ import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.serv
   styleUrls: ['./esrimap.component.scss']
 })
 export class EsrimapComponent implements OnInit {
-  @ViewChild('graphicsStore', { static: true })
-
   @ViewChildren(AccordionPanelComponent) accordionPanels: QueryList<AccordionPanelComponent>;
-
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
 
@@ -35,28 +33,28 @@ export class EsrimapComponent implements OnInit {
   polygonGraphicsLayer: GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
 
-  private graphicsStoreEl!: GraphicsStoreComponent;
+  @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
 
   constructor (private esrimapService: EsrimapService) { }
 
   @HostListener('keydown.control.z') undoFromKeyboard (): void {
-    this.graphicsStoreEl.undo();
+    if (isMapViewActive()) { this.graphicsStoreEl.undo(); }
   }
 
   @HostListener('keydown.control.y') redoFromKeyboard (): void {
-    this.graphicsStoreEl.redo();
+    if (isMapViewActive()) { this.graphicsStoreEl.redo(); }
   }
 
   @HostListener('document:keydown.delete') deleteFromKeyboard (): void {
-    this.graphicsStoreEl.delete();
+    if (isMapViewActive()) { this.graphicsStoreEl.delete(); }
   }
 
   @HostListener('keydown.meta.shift.z') redoFromKeyboardMac (): void {
-    this.graphicsStoreEl.redo();
+    if (isMapViewActive()) { this.graphicsStoreEl.redo(); }
   }
 
   @HostListener('keydown.meta.z') undoFromKeyboardMac (): void {
-    this.graphicsStoreEl.undo();
+    if (isMapViewActive()) { this.graphicsStoreEl.undo(); }
   }
 
   showCoordinates = (pt: any): void => {

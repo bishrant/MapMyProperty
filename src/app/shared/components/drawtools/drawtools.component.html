@@ -54,16 +54,13 @@
         [tooltip]="'Specifies how vertices are added while the graphic can be created. Applies only while creating polygon, polyline and circle geometries'"
         [ariaLabel]="'info button for drawing mode'">
       </app-infobutton>
-
-      <div class="centerAlign">
-        <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [(ngModel)]="drawingMode"
-          (change)="changeDrawingMode()">
-
-          <mat-button-toggle value="click" class="drawModeBtn">Click</mat-button-toggle>
-          <mat-button-toggle value="freehand" class="drawModeBtn">FreeHand</mat-button-toggle>
-          <mat-button-toggle value="hybrid" class="drawModeBtn" [hidden]="drawingTool === 'circle'">Hybrid
-          </mat-button-toggle>
-        </mat-button-toggle-group>
+      <div class="centerAlign toggle-buttons">
+        <label *ngFor="let drMode of drawModes" class="drLabels"
+          [ngClass]="{drLabelSelected: drMode === drawingMode, drHidden: (drMode === 'hybrid' && drawingTool === 'circle')}">
+          <input type="radio" name="drawingMode" [value]="drMode" [(ngModel)]="drawingMode"
+            (ngModelChange)="changeDrawingMode($event)" aria-label="draw mode" />
+          {{drMode | titlecase }}
+        </label>
       </div>
 
     </fieldset>
