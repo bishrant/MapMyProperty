@@ -71,9 +71,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     _color.a = _color.a * 100;
     txt.symbol.color = _color;
     txt.attributes.symbol.color = _color;
-
     this.geomLabelsGraphicsLayer.add(txt);
-
     const _input = document.getElementById(txt.attributes.id);
     this.selectedInputBox.CleanupListenerForInputFrame(_input);
     this.selectedLabelsGraphics = [];
