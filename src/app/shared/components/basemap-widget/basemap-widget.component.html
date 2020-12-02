@@ -19,7 +19,7 @@
     </div>
     <div class="basemapcard texasimagery" [ngClass]="{selected: texasImageryVisible}">
       <img src="assets/icons/basemap/texas.png" aria-label="texas imagery" (click)="toggleTexasImagery()" />
-      <span *ngIf="!texasImageryVisible"> Texas Imagery</span>
+      <span *ngIf="!texasImageryVisible"> Texas High Resolution Imagery</span>
 
       <select *ngIf="texasImageryVisible" [(ngModel)]="selectedTexasBasemap" aria-label="Basemap"
         (ngModelChange)="changeTexasBasemap(false)">

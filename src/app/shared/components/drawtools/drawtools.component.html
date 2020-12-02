@@ -1,7 +1,7 @@
 <div>
   <br>
   <div class="centerAlign">
-    <app-help-button [header]="'Draw'" [itemName]= "'draw'"></app-help-button>
+    <app-help-button [header]="'Draw'" [itemName]="'draw'"></app-help-button>
     <br>
     Select a drawing tool:<br>
     <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value, true)">
@@ -26,10 +26,12 @@
     <button class="mmp-primary primary-button clearDrawTools" *ngIf="drawingTool !== ''"
       (click)="clearDrawTools()">Cancel Drawing</button>
   </div>
-  <br>
-  <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleLabels" checked
-    aria-label="show/hide area labels">
-  <label for="toggleLables">&nbsp;&nbsp; Area/Distance labels</label><br>
+  <br><span *ngIf="!(drawingTool === 'point' || drawingTool === 'text')">
+    <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleLabels" checked
+      aria-label="show/hide area labels">
+    <label for="toggleLables">&nbsp;&nbsp; Area/Distance labels</label><br>
+  </span>
+
 
   <div *ngIf="selectedLabelsGraphics.length>0">
     <br>
