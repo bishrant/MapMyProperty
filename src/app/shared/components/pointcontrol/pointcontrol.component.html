@@ -13,11 +13,7 @@
           [(ngModel)]="pointSymbol" (ngModelChange)="changePointShapeEvt($event)"
             aria-label="tes" />
           <span>
-            <svg-icon *ngIf="symbol.type === 'simple-marker'" [src]="'assets/icons/symbols-sms-'+symbol.name+'.svg'"
-              class="toggleBtn" [svgStyle]="fillSvgStyle">
-            </svg-icon>
-            <svg-icon *ngIf="symbol.type === 'picture-marker'" [src]="'assets/pointsymbols/'+symbol.name+'.svg'"
-              class="toggleBtn" [svgStyle]="fillSvgStyle2">
+            <svg-icon  [src]="'assets/pointsymbols/'+symbol.name+'.svg'" class="toggleBtn" [svgStyle]="fillSvgStyle2">
             </svg-icon>
           </span>
         </label>
@@ -39,6 +35,5 @@
         &nbsp;50
       </div>
     </div>
-
   </fieldset>
 </div>
