@@ -3,6 +3,12 @@ import Graphic from 'esri/Graphic';
 
 const createAreaLabels = (graphic: Graphic) => {
   const area = geodesicArea(graphic.geometry, 'acres');
+  if (area < 0.1) {
+    return numberWithCommas(Math.round(area * 100) / 100) + ' acres';
+  }
+  if (area > 1000) {
+    return numberWithCommas(area) + ' acres';
+  }
   return numberWithCommas(Math.round(area * 10) / 10) + ' acres';
 }
 
