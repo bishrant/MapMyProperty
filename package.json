@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
-    "super": "node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve --hmr",
+    "super": "node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve",
     "build": "ng build --base-href ./ --prod",
     "test": "ng test",
     "lint": "eslint -c .eslintrc.json --ext .ts ./src",
