@@ -33,7 +33,7 @@ export class FillstyleComponent {
   }
 
   public fillProps: FillPropsRGBA = {
-    color: { r: 255, g: 255, b: 0, a: 1 },
+    color: { r: 255, g: 255, b: 0, a: 0.5 },
     style: 'none'
   };
 
