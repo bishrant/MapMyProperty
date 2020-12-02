@@ -89,12 +89,11 @@ const CreateCircleWithGeometry = (originalGraphic: any) => {
   return c;
 };
 
-const CreateCircleFromPoint = (pointGeom: any, radius: number) => {
-  const c = new TFSCircle({
+const CreateTFSCircleFromPoint = (pointGeom: any, radius: number) => {
+  return new TFSCircle({
     center: pointGeom,
     radius: radius,
     radiusUnit: 'miles'
   });
-  return c;
 };
-export { SetupSketchViewModel, CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon, TFSPolyline };
+export { SetupSketchViewModel, CreateCircleWithGeometry, CreateTFSCircleFromPoint, TFSPolygon, TFSPolyline };

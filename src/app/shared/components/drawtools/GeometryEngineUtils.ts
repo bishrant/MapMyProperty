@@ -7,7 +7,7 @@ const createAreaLabels = (graphic: Graphic) => {
     return numberWithCommas(Math.round(area * 100) / 100) + ' acres';
   }
   if (area > 1000) {
-    return numberWithCommas(area) + ' acres';
+    return numberWithCommas(Math.round(area)) + ' acres';
   }
   return numberWithCommas(Math.round(area * 10) / 10) + ' acres';
 }

@@ -13,7 +13,6 @@ import {
   CreatePointFromGraphic
 } from 'src/app/shared/utils/DrawUtils';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
-import { CreateCircleFromPoint } from 'src/app/shared/utils/SketchViewModelUitls';
 import { id } from '../../store/todo';
 import { dragElement } from './drag';
 import { AreGraphicsEqual } from '../../utils/GeometryEngine';
@@ -23,6 +22,7 @@ import { Subscription } from 'rxjs';
 import Graphic from 'esri/Graphic';
 import { syncLabelsToGeometry } from './LabelsUtils';
 import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.service';
+import { CreateTFSCircleFromPoint } from '../../utils/SketchViewModelUitls';
 
 @Component({
   selector: 'app-drawtools',
@@ -53,6 +53,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   textSubscription: Subscription;
   radius: number;
   drawingMode = 'click';
+  drawModes = ['click', 'freehand', 'hybrid'];
   drawingTool = '';
   clickToAddTextboxHandler: any;
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
@@ -222,7 +223,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.fillStyleElmRef.fillProps
       );
       circleJSON.toJSON = undefined;
-      circleJSON.geometry = CreateCircleFromPoint(this.selectedGraphics[0].geometry.centroid, this.radius).asJSON();
+      circleJSON.geometry = CreateTFSCircleFromPoint(this.selectedGraphics[0].geometry.centroid, this.radius).asJSON();
       circleJSON.attributes.radius = circleJSON.geometry.radius;
       this.store.dispatch(updateGraphics({ graphics: JSON.stringify([circleJSON]) }));
       this.sketchVM.cancel();
@@ -351,7 +352,8 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  changeDrawingMode = ():void => {
+  changeDrawingMode = (mode: string):void => {
+    this.drawingMode = mode;
     if (this.drawingTool !== '') {
       this.startDrawingGraphics(this.drawingTool, false);
     }
