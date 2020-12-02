@@ -1,9 +1,11 @@
 @use '../../styles/sidebar';
 
 .importExportFormat {
-  display: flex;
-    justify-content: space-around;
-    margin: 10px;
+  display: grid;
+  grid-template-columns: 100px 100px;
+  grid-template-rows: 40px 40px;
+  justify-content: center;
+  margin-top: 10px;
 }
 
 .infoBtn {
@@ -14,4 +16,15 @@
     right: 2px;
     position: absolute;
     top: -2px;
+}
+
+.importExportFormat2 {
+  display: grid;
+  grid-template-columns: 90px 90px;
+  grid-column-gap: 20px;
+  justify-content: center;
+}
+.importExportFormat span {
+
+  padding-left: 20px;
 }
