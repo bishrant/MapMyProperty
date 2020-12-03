@@ -32,7 +32,7 @@ export class ElevationProfileService {
     this.viewModel.isMSL = props.isMSL;
     this.viewModel.unit = props.unit;
     this.viewModel.slopeThreshold = props.slopeThreshold;
-    this.mapView.map.addMany([this.graphicsLayer, this.lineGraphicsLayer]);
+    this.mapView.map.addMany([this.lineGraphicsLayer, this.graphicsLayer]);
     this.sketchVM = new SketchViewModel({
       layer: this.lineGraphicsLayer,
       view: this.mapView,
