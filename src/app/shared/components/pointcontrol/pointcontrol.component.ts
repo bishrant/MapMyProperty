@@ -40,7 +40,7 @@ export class PointcontrolComponent {
     { name: 'circle', type: 'simple-marker', asp: 1 },
     { name: 'cross', type: 'simple-marker', asp: 1 },
     { name: 'triangle', type: 'simple-marker', asp: 1 },
-    { name: 'x', type: 'simple-marker', asp: 1 },
+    { name: 'x', type: 'picture-marker', asp: 1 },
     { name: 'diamond', type: 'simple-marker', asp: 1 },
     { name: 'square', type: 'simple-marker', asp: 1 },
     { name: 'tree', type: 'picture-marker', asp: 1 },

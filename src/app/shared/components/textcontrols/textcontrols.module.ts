@@ -1,4 +1,3 @@
-import { InfobuttonModule } from './../infobutton/infobutton.module';
 import { MatButtonModule } from '@angular/material/button';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -26,7 +25,6 @@ import { SliderModule } from '../slider/slider.module';
     MatButtonToggleModule,
     MatTooltipModule,
     ToggleButtonModule,
-    InfobuttonModule,
     SliderModule
   ],
   exports: [TextcontrolsComponent]

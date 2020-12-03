@@ -1,4 +1,3 @@
-import { InfobuttonModule } from './../infobutton/infobutton.module';
 import { PointcontrolComponent } from './pointcontrol.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -10,7 +9,7 @@ import { SliderModule } from '../slider/slider.module';
 
 @NgModule({
   declarations: [PointcontrolComponent],
-  imports: [CommonModule, InfobuttonModule, SliderModule, FormsModule, MatFormFieldModule,
+  imports: [CommonModule, SliderModule, FormsModule, MatFormFieldModule,
     ColorPickerModule, AngularSvgIconModule],
   exports: [PointcontrolComponent]
 })
