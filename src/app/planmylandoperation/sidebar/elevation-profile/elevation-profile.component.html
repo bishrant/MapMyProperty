@@ -1,20 +1,14 @@
 <div class="py-3">
-  <app-help-button [header]="'Elevation Profile'" [itemName]= "'elevation'"></app-help-button>
+  <app-help-button [header]="'Elevation Profile'" [itemName]="'elevation'"></app-help-button>
   <br>
   <div class="centerAlign">
-    <div>
-      <ul class="btn-group">
-        <li>
-          <input type="radio" id="draw_line" name="amount" [value]="'polyline'" aria-label="Line"
-            (ngModelChange)="startDrawingGraphics($event)" [(ngModel)]="drawTool" />
-          <label for="draw_line" class="pmlo-secondary shadow-none">Draw Line</label>
-        </li>
-        <li>
-          <input type="radio" id="draw_freehand" name="amount" [value]="'freehand'" aria-label="Point"
-            (ngModelChange)="startDrawingGraphics($event)" [(ngModel)]="drawTool" />
-          <label for="draw_freehand" class="pmlo-secondary shadow-none">Draw FreeHand</label>
-        </li>
-      </ul>
+    <div class="btn-group">
+      <input type="radio" id="draw_line" name="amount" [value]="'polyline'" aria-label="Line"
+        (ngModelChange)="startDrawingGraphics($event)" [(ngModel)]="drawTool" />
+      <label for="draw_line" class="pmlo-secondary shadow-none">Draw Line</label>
+      <input type="radio" id="draw_freehand" name="amount" [value]="'freehand'" aria-label="Point"
+        (ngModelChange)="startDrawingGraphics($event)" [(ngModel)]="drawTool" />
+      <label for="draw_freehand" class="pmlo-secondary shadow-none">Draw Freehand</label>
     </div>
     <br>
     <div class="centerAlign">
@@ -24,17 +18,10 @@
       </label>
     </div>
     <br>
-
-    <div class="centerAlign">
-      <button class='pmlo-btn pmlo-secondary py-2 px-4' (click)="clearElevationProfile()"
-        [disabled]="!isElevationProfileToolActive">
-        Clear
-      </button>
-    </div>
   </div>
 </div>
 
-<app-modal #elevationProfileModal [maximizable]="false" [backdrop]="true" [dragEnabled]="true"
+<app-modal #elevationProfileModal [maximizable]="false" [backdrop]="false" [dragEnabled]="true"
   (closeModal)="modelClosed()" (resizeEnd)="onResizeEnd($event)" [headerBackgroundColor]="headerBgColor">
   <ng-container class="app-modal-header bg-pmlo_secondary">Elevation Profile</ng-container>
   <ng-container class="app-modal-body">
@@ -50,7 +37,8 @@
     </span>
   </ng-container>
   <ng-container class="app-modal-footer">
-    <button (click)="reverseProfile()" class="generalBtn tooltip profileDirection" title="Reverse the profile direction">
+    <button (click)="reverseProfile()" class="generalBtn tooltip profileDirection"
+      title="Reverse the profile direction">
       <span class="{{isReversed ? 'icon-arrow-right': 'icon-arrow-left'}} text-black"></span>
 
       <span class='tooltip-text bg-gray-700 w-100 p-3 -mt-6 -ml-6 rounded'>Profile Direction:

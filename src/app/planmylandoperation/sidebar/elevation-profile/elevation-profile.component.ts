@@ -34,6 +34,9 @@ export class ElevationProfileComponent {
   }
 
   startDrawingGraphics (value: any) {
+    if (this.elevationProfileModal.visible) {
+      this.elevationProfileModal.hide();
+    }
     this.elvUtils = undefined;
     this.elvUtils = this.elevationService.initialize({
       mapView: this.mapView,

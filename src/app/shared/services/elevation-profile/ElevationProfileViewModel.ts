@@ -1,7 +1,6 @@
 import { ElevationUnits } from './interfaces.d';
 import Accessor from 'esri/core/Accessor';
 import { property, subclass } from 'esri/core/accessorSupport/decorators';
-import { ElevationProfileProperties } from './interfaces';
 import { CalculateLength, CalculateSlope, GetSegmentsWithHigherSlope, CalculateSegmentLength, lengthAbbrMap, elevationUnitMap, sum, max, min, Decimal, avg } from './Uitls';
 import { CreateNormalElevationLine, CreateHigherSlopeLine, GetGraphOptions, ConvertElevationUnits } from './GraphStyles';
 import Graphic from 'esri/Graphic';
@@ -13,7 +12,7 @@ import * as Plotly from './lib/plotly-basic-1.55.2.min.js';
 
 @subclass('esri.widgets.ElevationProfileViewModel')
 class ElevationProfileViewModel extends Accessor {
-  constructor (props?: ElevationProfileProperties) {
+  constructor () {
     super();
   }
 
@@ -48,17 +47,17 @@ class ElevationProfileViewModel extends Accessor {
   divId: string = 'elevation-plotly';
 
   GetElevationData (graphic: Graphic, elevationGPServiceURL: string) {
-    let feat = graphic.toJSON();
+    const feat = graphic.toJSON();
     feat.atttributes = { OID: 1 };
-    var myHeaders = new Headers();
+    const myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/x-www-form-urlencoded');
-    var urlencoded = new URLSearchParams();
+    const urlencoded = new URLSearchParams();
     urlencoded.append('f', 'json');
     urlencoded.append('returnZ', 'true');
     urlencoded.append('DEMResolution', 'FINEST');
     urlencoded.append('ProfileIDField', 'ObjectID');
     // format
-    let format = {
+    const format = {
       fields: [{ name: 'OID', type: 'esriFieldTypeObjectID', alias: 'OID' }],
       geometryType: 'esriGeometryPolyline',
       features: [feat],
@@ -94,7 +93,6 @@ class ElevationProfileViewModel extends Accessor {
   }
 
   initializeHover (Plotly: any, _pts: any, mapView: __esri.MapView, graphicsLayer: __esri.GraphicsLayer) {
-    console.log(_pts);
     const myPlot: any = document.getElementById(this.divId);
     myPlot
       .on('plotly_hover', function (data: any) {
@@ -114,7 +112,7 @@ class ElevationProfileViewModel extends Accessor {
             style: 'cross',
             color: 'cyan',
             outline: { // autocasts as new SimpleLineSymbol()
-              color: [ 0, 255,255],
+              color: [0, 255, 255],
               width: '2px'
             }
           };
@@ -126,16 +124,14 @@ class ElevationProfileViewModel extends Accessor {
           });
           graphicsLayer.removeAll();
           graphicsLayer.add(pointGraphic);
-        } catch (error) {
-          console.log(error);
-        }
+        } catch (error) { }
       })
-      .on('plotly_unhover', function (data: any) {
+      .on('plotly_unhover', function () {
         graphicsLayer.removeAll();
       });
   }
+
   GetStatistics () {
-    console.time('stats');
     let pts = JSON.parse(JSON.stringify(this.ptArrayOriginal));
     pts = ConvertElevationUnits(pts, this.unit);
     pts = CalculateLength(pts, this.unit);
@@ -154,7 +150,6 @@ class ElevationProfileViewModel extends Accessor {
 
     const elevationGain = sum(elevationDiff.filter((d: any) => d > 0));
     const elevationLoss = sum(elevationDiff.filter((d: any) => d < 0));
-    console.timeEnd('stats');
     // gets the stats needed for PLMO report
     return {
       TotalDistance: totalDistance + unitAbbr,
@@ -190,8 +185,7 @@ class ElevationProfileViewModel extends Accessor {
         const _title = document.getElementById('elevationProfileTitle') as any;
         const img = await this.exportImage();
 
-
-        var reportData = {
+        const reportData = {
           title: _title.value,
           summaryStats: this.GetStatistics(),
           graphImage: (img as any).split('data:image/png;base64,')[1],
@@ -199,9 +193,9 @@ class ElevationProfileViewModel extends Accessor {
         };
 
         console.log(reportData);
-        var myHeaders = new Headers();
+        const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json');
-        var requestOptions: any = {
+        const requestOptions: any = {
           method: 'POST',
           headers: myHeaders,
           body: JSON.stringify(reportData),
