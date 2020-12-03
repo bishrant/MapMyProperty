@@ -2,18 +2,14 @@
   <br>
   <fieldset>
     <legend>Point Style</legend>
-    <app-infobutton [tooltip]="'Specifies how the point marker is styled.'"
-      [ariaLabel]="'info button for point marker style'">
-    </app-infobutton>
     <div class="marginTop10px">
       Shape <br>
       <div id="shapes">
-        <label *ngFor="let symbol of markerStyles" class="labelCls"><input type="radio" name="shapes"
-          [value]="symbol"
-          [(ngModel)]="pointSymbol" (ngModelChange)="changePointShapeEvt($event)"
-            aria-label="tes" />
+        <label *ngFor="let symbol of markerStyles" class="labelCls">
+          <input type="radio" name="shapes" [value]="symbol" aria-label="tes" [(ngModel)]="pointSymbol"
+            (ngModelChange)="changePointShapeEvt($event)" />
           <span>
-            <svg-icon  [src]="'assets/pointsymbols/'+symbol.name+'.svg'" class="toggleBtn" [svgStyle]="fillSvgStyle2">
+            <svg-icon [src]="'assets/pointsymbols/'+symbol.name+'.svg'" class="toggleBtn" [svgStyle]="fillSvgStyle2">
             </svg-icon>
           </span>
         </label>

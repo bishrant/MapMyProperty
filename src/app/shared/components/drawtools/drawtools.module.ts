@@ -1,7 +1,6 @@
 import { LinestyleModule } from './linestyle/linestyle.module';
 import { FillstyleModule } from './fillstyle/fillstyle.module';
 import { PointcontrolModule } from './../pointcontrol/pointcontrol.module';
-import { InfobuttonModule } from './../infobutton/infobutton.module';
 import { RGBtoHEX } from '../../utils/Colors.pipe';
 import { MatButtonModule } from '@angular/material/button';
 import { NgModule } from '@angular/core';
@@ -32,7 +31,6 @@ import { HelpbuttonModule } from '../help-button/help-button.module';
     MatButtonToggleModule,
     ToggleButtonModule,
     TextcontrolsModule,
-    InfobuttonModule,
     PointcontrolModule,
     FillstyleModule,
     LinestyleModule,

@@ -1,5 +1,4 @@
 import { MatSelectModule } from '@angular/material/select';
-import { InfobuttonModule } from '../../infobutton/infobutton.module';
 import { MatButtonModule } from '@angular/material/button';
 import { LinestyleComponent } from './linestyle.component';
 import { NgModule } from '@angular/core';
@@ -15,7 +14,6 @@ import { SliderModule } from '../../slider/slider.module';
   declarations: [LinestyleComponent],
   imports: [
     CommonModule,
-    InfobuttonModule,
     SliderModule,
     FormsModule,
     MatFormFieldModule,
