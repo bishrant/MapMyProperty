@@ -13,7 +13,7 @@ import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-
 
 @NgModule({
   declarations: [EsrimapComponent],
-  imports: [CommonModule, GraphicsStoreModule,  DrawtoolsModule,
+  imports: [CommonModule, GraphicsStoreModule, DrawtoolsModule,
     SliderModule, MMPThemesModule,
     ImportExportModule, PrintToolModule, AccordionPanelModule, BasemapWidgetModule, SwipeWidgetModule],
   exports: [EsrimapComponent]

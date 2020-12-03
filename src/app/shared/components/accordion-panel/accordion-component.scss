@@ -13,6 +13,9 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
 }
 
 .mypanel .body {
@@ -24,8 +27,8 @@
 }
 
 .mypanel svg {
-  height: 25px;
-  width: 30px;
+  height: 15px;
+  width: 15px;
   display: block;
   float: right;
   transition-duration: 0.25s;

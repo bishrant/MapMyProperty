@@ -3,21 +3,21 @@ import Graphic from 'esri/Graphic';
 import { CreatePointFromGraphic, CreatePolygonFromGraphic, CreatePolylineFromGraphic, id } from '../../utils/DrawUtils';
 import { getPointSvg } from '../pointcontrol/pointSymbols';
 
-
-var lineStyles = ["dash", "dash-dot", "dot", "long-dash", "long-dash-dot", "long-dash-dot-dot", "none", "short-dash", "short-dash-dot", "short-dash-dot-dot", "short-dot", "solid"];
+const lineStyles = ['dash', 'dash-dot', 'dot', 'long-dash', 'long-dash-dot', 'long-dash-dot-dot', 'none',
+  'short-dash', 'short-dash-dot', 'short-dash-dot-dot', 'short-dot', 'solid'];
 const OldlineStyles = {
-  esriSLSDash: "dash",
-  esriSLSDashDotDot: "long-dash-dot-dot",
-  esriSLSDashDot: "dash-dot",
-  esriSLSDot: "dot",
-  esriSLSLongDash: "long-dash",
-  esriSLSLongDashDot: "long-dash-dot",
-  esriSLSNull: "none",
-  esriSLSShortDash: "short-dash",
-  esriSLSShortDashDot: "short-dash-dot",
-  esriSLSShortDashDotDot: "short-dash-dot-dot",
-  esriSLSShortDot: "short-dot",
-  esriSLSSolid: "solid"
+  esriSLSDash: 'dash',
+  esriSLSDashDotDot: 'long-dash-dot-dot',
+  esriSLSDashDot: 'dash-dot',
+  esriSLSDot: 'dot',
+  esriSLSLongDash: 'long-dash',
+  esriSLSLongDashDot: 'long-dash-dot',
+  esriSLSNull: 'none',
+  esriSLSShortDash: 'short-dash',
+  esriSLSShortDashDot: 'short-dash-dot',
+  esriSLSShortDashDotDot: 'short-dash-dot-dot',
+  esriSLSShortDot: 'short-dot',
+  esriSLSSolid: 'solid'
 };
 
 const OldPointStyles = {
@@ -33,7 +33,7 @@ const getLineStyle = (outline: any) => {
   const _outline = { color: RGBA(outline.color), style: outline.style, width: outline.width }
   if (!(lineStyles.includes(outline.style))) {
     const _oldStyle = OldlineStyles[outline.style];
-    if (typeof _oldStyle === undefined) {
+    if (typeof _oldStyle === 'undefined') {
       _outline.style = 'solid'
     } else {
       _outline.style = _oldStyle;
@@ -47,7 +47,7 @@ const RGBA = (c: any) => {
 }
 
 const RGBAText = (c: any) => {
-  const alpha = c[3] === 0 ? 0.1 : c[3]/255;
+  const alpha = c[3] === 0 ? 0.1 : c[3] / 255;
   return { r: c[0], g: c[1], b: c[2], a: alpha }
 }
 
@@ -60,8 +60,8 @@ const getFillStyle = (fill: any, isHollow: boolean) => {
   return { color: isHollow ? RGBA_Hollow(c) : RGBA(c), style: 'solid' };
 }
 
-const setAttributes = (_geomType: String) => {
-  return { "id": id(), "geometryType": _geomType, "radius": 0 };
+const setAttributes = (_geomType: string) => {
+  return { id: id(), geometryType: _geomType, radius: 0 };
 }
 const createGraphicForPolygon = (p: any, isHollow: boolean) => {
   const pp = Graphic.fromJSON(p);
@@ -74,7 +74,7 @@ const createGraphicForPolygon = (p: any, isHollow: boolean) => {
 
 const createGraphicForPoint = (pt: any) => {
   const ptGr: Graphic = Graphic.fromJSON(pt);
-  ptGr.attributes = { "id": id(), "geometryType": "point" }
+  ptGr.attributes = { id: id(), geometryType: 'point' }
   const tt = CreatePointFromGraphic(ptGr, CreatePointSymbol(pt.symbol));
   return tt;
 }
@@ -94,7 +94,7 @@ const createGraphicForLine = (l: any) => {
 }
 
 const convertMMPJSONToGraphics = (j: any) => {
-  let gArray = [];
+  const gArray = [];
   if (j.boundary.length > 0) {
     j.boundary.forEach((p: any) => {
       gArray.push(JSON.stringify(createGraphicForPolygon(p, true)));
@@ -126,7 +126,7 @@ const convertMMPJSONToGraphics = (j: any) => {
     })
   }
 
-  //ranch
+  // ranch
   if (j.ranchLabels.length > 0) {
     j.ranchLabels.forEach((pt: any) => {
       gArray.push(JSON.stringify(createTextGraphicJSON(pt)));
@@ -155,24 +155,23 @@ const convertMMPJSONToGraphics = (j: any) => {
   return gArray;
 }
 
-
 const CreatePointSymbol = (symbol) => {
   if (symbol.type === 'esriPMS') {
-    const _name = symbol.url.split("images/")[1];
+    const _name = symbol.url.split('images/')[1];
     const name = _name === 'watersource.png' ? 'tint' : 'exclamation-triangle';
     const asp = name === 'tint' ? 0.687 : 1.125;
     const _color = name === 'tint' ? { r: 41, g: 171, b: 226, a: 1 } : { r: 248, g: 206, b: 41, a: 1 };
     const url = getPointSvg(name, _color);
-    const size = Math.round(parseInt(symbol.width) * 1.3);
+    const size = Math.round(parseInt(symbol.width, 10) * 1.3);
     return {
       type: 'picture-marker',
       size: size + 'px',
-      url: url,
+      url,
       width: size + 'px',
-      height: Math.round(size/asp) + 'px',
+      height: Math.round(size / asp) + 'px',
       style: 'circle',
       contentType: 'image/svg',
-      name: name,
+      name,
       color: _color
     }
   } else {
@@ -185,13 +184,12 @@ const CreatePointSymbol = (symbol) => {
       url: '',
       width: size + 'px',
       height: size + 'px',
-      style: style,
+      style,
       contentType: 'image/svg',
       name: style,
-      color: color
+      color
     }
   }
-
 };
 
 const createTextGraphicJSON = (labelJSON: any) => {
@@ -204,13 +202,13 @@ const createTextGraphicJSON = (labelJSON: any) => {
       spatialReference: labelJSON.geometry.spatialReference,
       type: 'point'
     },
-    symbol: symbol,
+    symbol,
     attributes: {
       geometryType: 'text',
       id: id(),
       parentId: 0,
       readonly: false,
-      symbol: symbol
+      symbol
     }
 
   };
@@ -219,20 +217,20 @@ const createTextGraphicJSON = (labelJSON: any) => {
 
 const CreateTextSymbolForLabels = (symbol: any) => {
   return {
-    type: "text",
+    type: 'text',
     color: RGBAText(symbol.color),
     xoffset: 3,
     yoffset: 3,
     font: {
-      size: (parseInt(symbol.font.size) === NaN) ? '12px' : Math.round(parseInt(symbol.font.size) * 1.33) + 'px',
-      family: 'Arial', //symbol.font.family,
+      size: (isNaN(parseInt(symbol.font.size, 10))) ? '12px' : Math.round(parseInt(symbol.font.size, 10) * 1.33) + 'px',
+      family: 'Arial', // symbol.font.family,
       weight: symbol.font.weight,
       style: symbol.font.style,
-      decoration: symbol.font.decoration,
+      decoration: symbol.font.decoration
 
     },
     text: symbol.text,
-    lineWidth: '500px',
+    lineWidth: '500px'
 
   }
 }

@@ -1,7 +1,7 @@
 import SketchViewModel from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
 import { emptyPoint, bluePolygon } from './Renderers';
 import Circle from 'esri/geometry/Circle';
-import { planarArea } from 'esri/geometry/geometryEngine';
+import { geodesicArea, planarArea } from 'esri/geometry/geometryEngine';
 import { subclass } from 'esri/core/accessorSupport/decorators';
 import { Polygon, Polyline } from 'esri/geometry';
 
@@ -70,22 +70,30 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: __esri.MapView): __es
 const CreateCircleWithGeometry = (originalGraphic: any) => {
   // calculate area to get the radius
   const _area = planarArea(originalGraphic.geometry, 'square-miles');
+  let finalRadius
   const polygonRadius = Math.sqrt(_area / Math.PI);
-  const rr = Math.round(((polygonRadius + Number.EPSILON) * 10) / 10);
+
+  finalRadius = polygonRadius;
+  if (originalGraphic.attributes) {
+    if (typeof originalGraphic.attributes.radius !== 'undefined') {
+      const _r = originalGraphic.attributes.radius;
+      finalRadius = Math.abs(_r - polygonRadius) < 0.05 ? _r : polygonRadius;
+    }
+  }
+  // const rr = polygonRadius + Number.EPSILON) * 100) / 100);
   const c = new TFSCircle({
     center: originalGraphic.geometry.centroid,
-    radius: rr,
+    radius: finalRadius,
     radiusUnit: 'miles'
   });
   return c;
 };
 
-const CreateCircleFromPoint = (pointGeom: any, radius: number) => {
-  const c = new TFSCircle({
+const CreateTFSCircleFromPoint = (pointGeom: any, radius: number) => {
+  return new TFSCircle({
     center: pointGeom,
     radius: radius,
     radiusUnit: 'miles'
   });
-  return c;
 };
-export { SetupSketchViewModel, CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon, TFSPolyline };
+export { SetupSketchViewModel, CreateCircleWithGeometry, CreateTFSCircleFromPoint, TFSPolygon, TFSPolyline };

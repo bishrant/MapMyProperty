@@ -16,11 +16,12 @@ export class TextControlService {
   windowListener: any;
   private _textGraphicState = new BehaviorSubject<any>(false);
   textGraphicState$ = this._textGraphicState.asObservable();
-  constructor() { }
+  constructor () { }
 
   creatGeomLabelGraphic = (anchorPoint: Point, textSymbol: any, parent: Graphic) => {
     // add text labels for polygon and polylines
     const _textSymbol = JSON.parse(JSON.stringify(textSymbol));
+    _textSymbol.color.a = 1;
     if (parent.geometry.type === 'polygon') {
       _textSymbol.text = createAreaLabels(parent);
     } else if (parent.geometry.type === 'polyline') {
@@ -40,16 +41,16 @@ export class TextControlService {
     return gr;
   }
 
-  HideOnlyTextGraphics(textGraphic: Graphic, graphicsLayer: __esri.GraphicsLayer, store: any, cleanupFn) {
+  HideOnlyTextGraphics (textGraphic: Graphic, graphicsLayer: __esri.GraphicsLayer, store: any, cleanupFn) {
     if (graphicsLayer.id === 'userTextGraphicsLayer') {
-      store.dispatch(removeGraphics({ids: [textGraphic.attributes.id]}));
+      store.dispatch(removeGraphics({ ids: [textGraphic.attributes.id] }));
     }
     textGraphic.geometry = undefined;
     graphicsLayer.add(textGraphic);
     cleanupFn();
   }
 
-  AddTextToMap(originalGraphic:any, id: any, mapX: any, mapY: any, textSymbol: any, store: any, isUpdate = false, readonly = false, graphicsLayer) {
+  AddTextToMap (originalGraphic:any, id: any, mapX: any, mapY: any, textSymbol: any, store: any, isUpdate = false, readonly = false, graphicsLayer) {
     const point: any = {
       type: 'point',
       x: mapX,
@@ -86,7 +87,7 @@ export class TextControlService {
     this._textGraphicState.next(null);
   };
 
-  createInput(mapEvt: any, inputId = '0', store: any, textProps: any) {
+  createInput (mapEvt: any, inputId = '0', store: any, textProps: any) {
     const fontSize = parseInt(textProps.font.size.split('px')[0]);
     const height = fontSize + 2 * this.PADDING;
     let _input = document.createElement('input');

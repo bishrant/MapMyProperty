@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { TextControlSelectionService } from '../../services/TextControlSelection-service';
 
 @Component({
   selector: 'app-textcontrols',
@@ -8,7 +7,7 @@ import { TextControlSelectionService } from '../../services/TextControlSelection
 })
 export class TextcontrolsComponent implements OnInit {
   private _selectedTextGraphics: any[];
-  constructor (private TextSelectionService: TextControlSelectionService) {}
+  constructor () {}
 
   @Input() set selectedTextGraphics (value: any[]) {
     this._selectedTextGraphics = value;
@@ -53,7 +52,8 @@ export class TextcontrolsComponent implements OnInit {
 
   bold: boolean = true;
 
-  changeFontSize = () => {
+  changeFontSize = (value: any) => {
+    this.fontSize = value;
     if (this.selectedTextGraphics.length > 0) {
       const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id) as any;
       _input.setAttribute('fontSize', this.fontSize + 'px');
@@ -63,7 +63,7 @@ export class TextcontrolsComponent implements OnInit {
   };
 
   _textSymbol = {
-    type: 'text', // autocasts as new TextSymbol()Tex
+    type: 'text',
     color: 'white',
     haloColor: 'black',
     haloSize: '1px',

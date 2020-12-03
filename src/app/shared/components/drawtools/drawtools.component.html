@@ -1,7 +1,7 @@
 <div>
   <br>
   <div class="centerAlign">
-    <app-help-button [header]="'Draw'" [itemName]= "'draw'"></app-help-button>
+    <app-help-button [header]="'Draw'" [itemName]="'draw'"></app-help-button>
     <br>
     Select a drawing tool:<br>
     <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value, true)">
@@ -26,16 +26,18 @@
     <button class="mmp-primary primary-button clearDrawTools" *ngIf="drawingTool !== ''"
       (click)="clearDrawTools()">Cancel Drawing</button>
   </div>
-  <br>
-  <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleLabels" checked
-    aria-label="show/hide area labels">
-  <label for="toggleLables">&nbsp;&nbsp; Area/Distance labels</label><br>
+  <br><span *ngIf="!(drawingTool === 'point' || drawingTool === 'text')">
+    <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleLabels" checked
+      aria-label="show/hide area labels">
+    <label for="toggleLables">&nbsp;&nbsp; Area/Distance labels</label><br>
+  </span>
+
 
   <div *ngIf="selectedLabelsGraphics.length>0">
     <br>
     Color of the selected label:
     <app-color-picker [color]="selectedLabelsGraphics[0].graphic.attributes.symbol.color"
-      [opacity]="selectedLabelsGraphics[0].graphic.attributes.symbol.color.a"
+      [opacity]="selectedLabelsGraphics[0].graphic.symbol.color.a*100"
       (colorSelected)="changeLabelsColor($event)">
     </app-color-picker>
   </div>
@@ -48,20 +50,13 @@
     <br>
     <fieldset>
       <legend>Drawing Mode</legend>
-      <app-infobutton
-        [tooltip]="'Specifies how vertices are added while the graphic can be created. Applies only while creating polygon, polyline and circle geometries'"
-        [ariaLabel]="'info button for drawing mode'">
-      </app-infobutton>
-
-      <div class="centerAlign">
-        <mat-button-toggle-group name="drawingMode" aria-label="Drawing Mode" [(ngModel)]="drawingMode"
-          (change)="changeDrawingMode()">
-
-          <mat-button-toggle value="click" class="drawModeBtn">Click</mat-button-toggle>
-          <mat-button-toggle value="freehand" class="drawModeBtn">FreeHand</mat-button-toggle>
-          <mat-button-toggle value="hybrid" class="drawModeBtn" [hidden]="drawingTool === 'circle'">Hybrid
-          </mat-button-toggle>
-        </mat-button-toggle-group>
+      <div class="centerAlign toggle-buttons">
+        <label *ngFor="let drMode of drawModes" class="drLabels"
+          [ngClass]="{drLabelSelected: drMode === drawingMode, drHidden: (drMode === 'hybrid' && drawingTool === 'circle')}">
+          <input type="radio" name="drawingMode" [value]="drMode" [(ngModel)]="drawingMode"
+            (ngModelChange)="changeDrawingMode($event)" aria-label="draw mode" />
+          {{drMode | titlecase }}
+        </label>
       </div>
 
     </fieldset>

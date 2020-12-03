@@ -33,8 +33,8 @@ export class FillstyleComponent {
   }
 
   public fillProps: FillPropsRGBA = {
-    color: { r: 0, g: 0, b: 0, a: 0 },
-    style: 'solid'
+    color: { r: 255, g: 255, b: 0, a: 0.5 },
+    style: 'none'
   };
 
   fillSvgStyle = {

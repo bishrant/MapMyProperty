@@ -2,22 +2,14 @@
   <br>
   <fieldset>
     <legend>Point Style</legend>
-    <app-infobutton [tooltip]="'Specifies how the point marker is styled.'"
-      [ariaLabel]="'info button for point marker style'">
-    </app-infobutton>
     <div class="marginTop10px">
       Shape <br>
       <div id="shapes">
-        <label *ngFor="let symbol of markerStyles" class="labelCls"><input type="radio" name="shapes"
-          [value]="symbol"
-          [(ngModel)]="pointSymbol" (ngModelChange)="changePointShapeEvt($event)"
-            aria-label="tes" />
+        <label *ngFor="let symbol of markerStyles" class="labelCls">
+          <input type="radio" name="shapes" [value]="symbol" aria-label="tes" [(ngModel)]="pointSymbol"
+            (ngModelChange)="changePointShapeEvt($event)" />
           <span>
-            <svg-icon *ngIf="symbol.type === 'simple-marker'" [src]="'assets/icons/symbols-sms-'+symbol.name+'.svg'"
-              class="toggleBtn" [svgStyle]="fillSvgStyle">
-            </svg-icon>
-            <svg-icon *ngIf="symbol.type === 'picture-marker'" [src]="'assets/pointsymbols/'+symbol.name+'.svg'"
-              class="toggleBtn" [svgStyle]="fillSvgStyle2">
+            <svg-icon [src]="'assets/pointsymbols/'+symbol.name+'.svg'" class="toggleBtn" [svgStyle]="fillSvgStyle2">
             </svg-icon>
           </span>
         </label>
@@ -30,11 +22,14 @@
         (colorSelected)="changePointColor($event)">
       </app-color-picker>
     </div>
+
     <div class="marginTop10px">
       Size: {{markerSize}}px<br>
-      0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5"
-        (change)="changeMarkerSize()" [(ngModel)]="markerSize" min="5" max="50">
-      </mat-slider> &nbsp;50
+      <div class="widthSliderContainer">
+        5 &nbsp;<app-slider class="widthSlider" [value]="markerSize" [min]="5" [max]="50"
+          (onChange)="changeMarkerSize($event)"></app-slider>
+        &nbsp;50
+      </div>
     </div>
   </fieldset>
 </div>

@@ -4,11 +4,14 @@ import { getDefaultSymbol } from './DefaultSymbols';
 import * as shpwrite from './lib/shp-write';
 import * as shpwriteGeoJSON from './lib/shp-write/src/geojson';
 import { arcgisToGeoJSON } from './GeoJSONUtils';
-import { createWebMercatorPointFromGraphic, createWebMercatorPolygonFromGraphic, createWebMercatorLineFromGraphic } from './WebMercatorUtils';
+import {
+  createWebMercatorPointFromGraphic, createWebMercatorPolygonFromGraphic,
+  createWebMercatorLineFromGraphic
+} from './WebMercatorUtils';
 import { addGraphics } from '../store/graphics.actions';
 import { id } from '../store/todo';
-import Graphic = require('esri/Graphic');
 import { GetGraphicsForExtentUsingString } from './DrawUtils';
+import Graphic = require('esri/Graphic');
 declare const zip: any;
 zip.workerScriptsPath = 'scripts/';
 
@@ -42,7 +45,7 @@ const getWriter = (entry: any) => {
   });
 };
 
-const zipToSHP_AGOL = (file: File, store: any, mapView: __esri.MapView) => {
+const zipToShpAGOL = (file: File, store: any, mapView: __esri.MapView) => {
   const formData = new FormData();
   const publishParams: any = {
     targetSR: { wkid: 102100 },
@@ -77,7 +80,6 @@ const zipToSHP_AGOL = (file: File, store: any, mapView: __esri.MapView) => {
 
           const geometryType = g.split('esriGeometry')[1].toLowerCase();
           layer.featureSet.features.forEach((feature: any) => {
-
             const _g = feature.geometry;
             _g.type = geometryType;
             const _graphic = new Graphic({
@@ -98,7 +100,7 @@ const zipToSHP_AGOL = (file: File, store: any, mapView: __esri.MapView) => {
         });
         store.dispatch(addGraphics({ graphics: graphicArray }));
 
-        setTimeout(() => {mapView.goTo(_graphicToZoom)}, 250)
+        setTimeout(() => { mapView.goTo(_graphicToZoom) }, 250)
       }
     });
 };
@@ -133,19 +135,20 @@ const readerCompleteMultiple = (zipReader: any, file: any, store: any, mapView: 
           graphicsArray = _graphicArray;
           store.dispatch(addGraphics({ graphics: _graphicArray }));
         } catch (error) {
-          zipToSHP_AGOL(file, store, mapView);
+          zipToShpAGOL(file, store, mapView);
         }
       }
       mapView.goTo(GetGraphicsForExtentUsingString(JSON.stringify(graphicsArray)));
     });
   } catch (error) {
     console.error(error);
-    zipToSHP_AGOL(file, store, mapView);
+    zipToShpAGOL(file, store, mapView);
   }
 };
 
 const zipClass = (function () {
-  let zipWriter: any, blobWriter: any;
+  let zipWriter: any;
+  let blobWriter: any;
   return {
     addFiles: (filenames: any, files: any, onend: any) => {
       let addIndex = 0;

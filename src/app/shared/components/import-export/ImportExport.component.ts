@@ -23,9 +23,9 @@ export class ImportExportComponent implements OnInit {
   graphicsSub$: any;
   exportEnabled: boolean = false;
   fileUploadError = '';
-  constructor(private store: Store<AppState>) { }
+  constructor (private store: Store<AppState>) { }
 
-  ngOnInit() {
+  ngOnInit () {
     // convertMMPJSONToGraphics(null, this.mapView, this.store);
     this.graphicsSub$ = this.store
       .select((state: any) => state.app.graphics)
@@ -34,7 +34,7 @@ export class ImportExportComponent implements OnInit {
       });
   }
 
-  parseUploadedFiles(file: any) {
+  parseUploadedFiles (file: any) {
     const fileReader: any = new FileReader();
     fileReader.onload = () => {
       const r = fileReader.result as any;
@@ -74,7 +74,7 @@ export class ImportExportComponent implements OnInit {
     fileReader.readAsText(file);
   }
 
-  chooseFile() {
+  chooseFile () {
     const fileInput = this.fileInput.nativeElement;
     this.files = [];
     fileInput.accept = '.' + this.format;
@@ -91,7 +91,7 @@ export class ImportExportComponent implements OnInit {
     fileInput.click();
   }
 
-  export() {
+  export () {
     const graphics$: any = this.store.select(
       (state: any) => state.app.graphics
     );
@@ -116,7 +116,7 @@ export class ImportExportComponent implements OnInit {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy () {
     this.graphicsSub$.unsubscribe();
   }
 }

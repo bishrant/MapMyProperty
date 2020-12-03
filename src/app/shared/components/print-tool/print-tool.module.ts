@@ -1,7 +1,6 @@
-import { InfobuttonModule } from '../infobutton/infobutton.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PrintToolComponent, } from './print-tool.component';
+import { PrintToolComponent } from './print-tool.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -15,7 +14,6 @@ import { HelpbuttonModule } from '../help-button/help-button.module';
   declarations: [PrintToolComponent],
   imports: [
     CommonModule,
-    InfobuttonModule,
     FormsModule,
     MatInputModule,
     MatFormFieldModule,
@@ -26,6 +24,6 @@ import { HelpbuttonModule } from '../help-button/help-button.module';
     AccordionPanelModule,
     HelpbuttonModule
   ],
-  exports: [PrintToolComponent],
+  exports: [PrintToolComponent]
 })
 export class PrintToolModule { }

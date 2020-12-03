@@ -1,9 +1,9 @@
 <div class="opened">
-  Opacity: <span>
-    {{opacity | number}}%
+  Transparency: <span>
+    {{100-opacity | number}}%
   </span>
   <div class="opacitySliderContainer">
-    <app-slider [value]="opacity" (onChange)="changeOpacity($event)"></app-slider>
+    <app-slider [value]="100 - opacity" (onChange)="changeOpacity($event)" [min]="0" [max]="100"></app-slider>
   </div>
 
   Color
@@ -19,8 +19,7 @@
 
   <div class="hex-code">
     <div class="hexDiv">
-      HEX:
-      <div class="g-input">
+      HEX&nbsp;<div class="g-input">
         <input type="text" maxlength="7" [value]="color" (keyup)="changeColorManual(paintInput.value)"
           aria-label="enter color hex code" (keydown.enter)="closePopupWithColor(true)" #paintInput />
       </div>
@@ -31,11 +30,6 @@
       <a (click)="openColorPalettee()"><u style="cursor: pointer;">Custom</u></a>
       <input type="color" #customColorInput style="visibility: hidden" [value]="color" aria-hidden="true"
         (change)="changeColorCustom($event.srcElement.value)" />
-
-
     </div>
   </div>
-
-
-
 </div>

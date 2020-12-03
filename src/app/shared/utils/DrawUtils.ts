@@ -1,7 +1,7 @@
 import { Polygon, Polyline } from 'esri/geometry';
 import Graphic from 'esri/Graphic';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from './GraphicStyles';
-import { CreateCircleWithGeometry, CreateCircleFromPoint, TFSPolygon, TFSPolyline } from './SketchViewModelUitls';
+import { CreateCircleWithGeometry, TFSPolygon, TFSPolyline, CreateTFSCircleFromPoint } from './SketchViewModelUitls';
 const id = (): string => Math.random().toString(36).substr(2, 9);
 
 const CreateCircleFromGraphic = (graphic: any, lineProps: any, fillProps: any) => {
@@ -57,7 +57,7 @@ const CreateCircleFromEvent = (evt: any, lineProps: any, fillProps: any) => {
 const CreatecircleFromPoint = (evt: any, radius: number, lineProps: any, fillProps: any) => {
   let _g = evt.graphic.toJSON();
   _g.attributes = { id: id(), symbol: _g.symbol, geometryType: evt.tool, radius: 0 };
-  _g.geometry = CreateCircleFromPoint(evt.graphic.geometry, radius).asJSON();
+  _g.geometry = CreateTFSCircleFromPoint(evt.graphic.geometry, radius).asJSON();
   _g = CreatePolygonGraphicWithSymbology(_g, lineProps, fillProps);
   _g.attributes.geometryType = 'circle';
   _g.attributes.radius = _g.geometry.radius;

@@ -1,9 +1,5 @@
 <fieldset>
     <legend>Text Style</legend>
-
-    <app-infobutton [tooltip]="'Specifies how the text is styled.'" [ariaLabel]="'Show info about text styling'">
-    </app-infobutton>
-
     <div class="flex verticalCenter">
         <div> Font:</div>
         <select [(ngModel)]="textProps.font.family" class="matSelect" (selectionChange)="changeFontFamily()">
@@ -26,10 +22,9 @@
     </div>
     <div class="marginTop10px">
         Font Size: {{textProps.font.size}}<br>
-        0 &nbsp;<mat-slider class="widthSlider mat-slider-has-ticks" [thumbLabel]="true" step="5"
-            (change)="changeFontSize()" [(ngModel)]="fontSize" min="0" max="50">
-        </mat-slider> &nbsp;50
+        <div class="widthSliderContainer">
+          5 &nbsp;<app-slider class="widthSlider" [value]="fontSize" [min]="5" [max]="50" (onChange)="changeFontSize($event)"></app-slider>
+          &nbsp;50
+        </div>
     </div>
-
-
 </fieldset>

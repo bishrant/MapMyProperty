@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ViewChild } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { CulvertSizeService } from 'src/app/shared/services/culvert-size.service';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
@@ -9,13 +8,13 @@ import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import Graphic from 'esri/Graphic';
 import { Point, Polygon, SpatialReference } from 'esri/geometry';
 import { SimpleFillSymbol, SimpleMarkerSymbol } from 'esri/symbols';
-import { getSoilTextureClass,getCulvertSize } from './CulvertDetailsUtils';
+import { getSoilTextureClass, getCulvertSize } from './CulvertDetailsUtils';
 const projection = require('arcgis-js-api/geometry/projection');
 
 @Component({
   selector: 'app-culvert-size',
   templateUrl: './culvert-size.component.html',
-  styleUrls: ['./culvert-size.component.scss'],
+  styleUrls: ['./culvert-size.component.scss']
 })
 export class CulvertSizeComponent implements AfterViewInit {
   @ViewChild('culvertModal') culvertModal: any;
@@ -32,13 +31,13 @@ export class CulvertSizeComponent implements AfterViewInit {
     Shape_Length: 194,
     Silt_WA: 37,
     Soil_Texture: 'Clay Loam',
-    CulvertSize: '12 inches',
+    CulvertSize: '12 inches'
   };
 
   graphicsLayer: GraphicsLayer = new GraphicsLayer({ id: 'culvertGraphics' });
 
   headerBgColor = '#353535';
-  drawTool: String;
+  drawTool: string;
   isCulvertToolActive = false;
   culvertUtils: any;
 
@@ -47,16 +46,16 @@ export class CulvertSizeComponent implements AfterViewInit {
   watershedGeometry: Polygon;
   pourPointReportWGS: Point;
 
-  constructor(
+  constructor (
     private culvertService: CulvertSizeService,
-    private loaderService: LoaderService,
+    private loaderService: LoaderService
   ) {}
 
-  ngAfterViewInit() {
+  ngAfterViewInit () {
     console.log(projection);
   }
 
-  drawPourPoint() {
+  drawPourPoint () {
     this.culvertUtils = this.culvertService.initialize({ mapView: this.mapView, graphicsLayer: this.graphicsLayer });
     this.culvertUtils.start();
 
@@ -75,12 +74,12 @@ export class CulvertSizeComponent implements AfterViewInit {
         const pourPt = new Point({
           x: pourPt0.features[0].geometry.x,
           y: pourPt0.features[0].geometry.y,
-          spatialReference: { wkid: pourPt0.spatialReference.wkid },
+          spatialReference: { wkid: pourPt0.spatialReference.wkid }
         });
 
         const waterShedPolygon = new Polygon({
           rings: wsJSON.features[0].geometry.rings,
-          spatialReference: { wkid: wsJSON.spatialReference.wkid },
+          spatialReference: { wkid: wsJSON.spatialReference.wkid }
         });
 
         this.culvertData = wsJSON.features[0].attributes;
@@ -103,15 +102,15 @@ export class CulvertSizeComponent implements AfterViewInit {
         const watershedGraphics = new Graphic({
           geometry: this.watershedGeometry,
           symbol: new SimpleFillSymbol({
-            color: [218, 47, 47, 0.25],
+            color: [218, 47, 47, 0.25]
           }),
-          attributes: wsJSON.features[0].attributes,
+          attributes: wsJSON.features[0].attributes
         });
 
         const pourPtWGS = projection.project(pourPt, new SpatialReference({ wkid: 102100 }));
         const pourPtGraphics = new Graphic({
           geometry: pourPtWGS,
-          symbol: new SimpleMarkerSymbol({ style: 'cross', outline: { width: 1.5 } }),
+          symbol: new SimpleMarkerSymbol({ style: 'cross', outline: { width: 1.5 } })
         });
 
         this.graphicsLayer.addMany([pourPtGraphics, watershedGraphics]);
@@ -127,23 +126,23 @@ export class CulvertSizeComponent implements AfterViewInit {
     });
   }
 
-  modelClosed() {
+  modelClosed () {
     this.culvertService.close();
     this.drawTool = undefined;
   }
 
-  clearCulvertTool() {
+  clearCulvertTool () {
     this.isCulvertToolActive = false;
     this.drawingObservable$.unsubscribe();
     this.culvertModal.hide();
     this.culvertService.close();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy () {
     this.drawingObservable$.unsubscribe();
   }
 
-  createReport() {
+  createReport () {
     const c = this.culvertData;
     const culvertData = {
       watershedImageURL: '',
@@ -156,7 +155,7 @@ export class CulvertSizeComponent implements AfterViewInit {
       zzSilt: c.Silt_WA.toFixed(2),
       zzSand: c.Sand_WA.toFixed(2),
       zzClay: c.Clay_WA.toFixed(2),
-      zzCulvertDiam: c.CulvertSize,
+      zzCulvertDiam: c.CulvertSize
     };
     this.culvertService.createReport(this.watershedGeometry, culvertData);
   }

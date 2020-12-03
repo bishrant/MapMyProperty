@@ -1,6 +1,6 @@
 export class HelpObj {
-    constructor(
+  constructor (
         public header:string = '',
         public itemName:string = ''
-    ){}
+  ) {}
 }

@@ -15,9 +15,9 @@ export class TextControlSelectionService {
   deleteListener: any;
   frame: any;
   inputBox: any;
-  constructor(private TextService: TextControlService) { }
+  constructor (private TextService: TextControlService) { }
 
-  createInputWithFrame(graphicCenter: any, textGraphic: any, textProps: any, store: any, mapView: any, graphicsLayer, cleanupFn) {
+  createInputWithFrame (graphicCenter: any, textGraphic: any, textProps: any, store: any, mapView: any, graphicsLayer, cleanupFn) {
     const inputId = textGraphic.attributes.id;
 
     this.frame = <HTMLElement>htmlToElement(`<div id="${inputId}_container" class="mapTextInputContainer">
@@ -44,8 +44,6 @@ export class TextControlSelectionService {
     this._input.value = textProps.text;
 
     this._input.style.lineHeight = textProps.font.size;
-
-
 
     const _AddTextToMap = (target: any) => {
       const container = document.getElementById(inputId + '_container') as any;
@@ -82,15 +80,14 @@ export class TextControlSelectionService {
     };
 
     this.deleteListener = (e:any) => {
-        let i = document.getElementById(inputId);
-        this.TextService.HideOnlyTextGraphics(textGraphic, graphicsLayer, store, cleanupFn);
-        this.CleanupListenerForInputFrame(i);
+      const i = document.getElementById(inputId);
+      this.TextService.HideOnlyTextGraphics(textGraphic, graphicsLayer, store, cleanupFn);
+      this.CleanupListenerForInputFrame(i);
     }
 
     this.deleteBtn.addEventListener('click', this.deleteListener);
     this._input.addEventListener('keyup', this.enterKeylistener);
     window.addEventListener('click', this.windowListener);
-
 
     this.frame.appendChild(this._input);
     this.frame.appendChild(headerDiv);
@@ -102,17 +99,14 @@ export class TextControlSelectionService {
     return this;
   };
 
-  CleanupListenerForInputFrame (target: any){
+  CleanupListenerForInputFrame (target: any) {
     // remove parent div
     setTimeout(() => {
       const _containerEl = (document.getElementById(target.id + '_container') as any)
-      if (_containerEl){_containerEl.remove()};
+      if (_containerEl) { _containerEl.remove() };
       target.remove();
       window.removeEventListener('click', this.windowListener);
       this._input.removeEventListener('keyup', this.enterKeylistener);
     }, 10);
-
   };
-
-
 }

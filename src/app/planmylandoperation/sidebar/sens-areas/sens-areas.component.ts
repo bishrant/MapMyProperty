@@ -49,8 +49,8 @@ export class SensAreasComponent implements OnInit {
     private reportsService: ReportsService,
     private esrimapService:EsrimapService,
     private notificationsService:NotificationsService,
-    private mapViewService:MapviewService,
-    ) {}
+    private mapViewService:MapviewService
+  ) {}
 
   ngOnInit (): void {
     this.boundaryLayer = this.mapView.map.findLayerById('userGraphicsLayer');
@@ -61,8 +61,7 @@ export class SensAreasComponent implements OnInit {
     });
 
     this.esrimapService.sensAreasAccordionOpen.subscribe((opened:boolean) => {
-      if (opened)
-      {
+      if (opened) {
         const maxAcres: number = 100000;
         this.slopeValue = 8;
         this.slopeLabelValue = this.slopeValue;
@@ -86,8 +85,7 @@ export class SensAreasComponent implements OnInit {
 
           this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((isInTexas:boolean) => {
             this.sensAreasService.getSensAreas(inputBoundary, isInTexas).then((result) => {
-              if (result.length === 0)
-              {
+              if (result.length === 0) {
                 this.loaderService.isLoading.next(false);
                 this.esrimapService.sensAreasAccordionOpen.emit(false);
                 this.pmloNote.body = 'There was an error calculating "Sensitive Areas". Please try again and, if the problem persists, contact the administrator.';
@@ -104,7 +102,7 @@ export class SensAreasComponent implements OnInit {
     });
   }
 
-  updateSliderValue(value: number):void {
+  updateSliderValue (value: number):void {
     this.sensAreasService.updateGraphicsOpacity(this.sensAreaGL, value);
   }
 
@@ -112,14 +110,13 @@ export class SensAreasComponent implements OnInit {
     this.sensAreasService.updateOpacity(this.sensAreaGL, origin, isChecked);
   }
 
-  bufferGraphic(origin: string):void {
+  bufferGraphic (origin: string):void {
     this.loaderService.isLoading.next(true);
     const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
     const inputFeet: number = origin === 'smz' ? this.smzBufferValue : this.wetlandsBufferValue;
     if (inputFeet > 0) {
       this.sensAreasService.bufferGraphic(origin, inputBoundary, inputFeet).then(result => {
-        if (result === null)
-        {
+        if (result === null) {
           this.loaderService.isLoading.next(false);
           this.pmloNote.body = 'There was an error creating the buffer. Please try again and, if the problem persists, contact the administrator.';
           this.notificationsService.openNotificationsModal.emit(this.pmloNote);
@@ -130,22 +127,19 @@ export class SensAreasComponent implements OnInit {
         }
       });
     } else {
-      if (origin === 'smz' || origin === 'wetlandsBuffer')
-      {
+      if (origin === 'smz' || origin === 'wetlandsBuffer') {
         this.sensAreasService.removeGraphicsByAttribute(this.sensAreaGL, origin);
         this.loaderService.isLoading.next(false);
       }
     }
-
   }
 
-  setSlope(origin: string):void {
+  setSlope (origin: string):void {
     this.loaderService.isLoading.next(true);
     const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
     this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((isInTexas:boolean) => {
       this.sensAreasService.setSlope(inputBoundary, this.slopeValue, isInTexas).then(result => {
-        if (result === null)
-        {
+        if (result === null) {
           this.loaderService.isLoading.next(false);
           this.pmloNote.body = 'There was an error setting the severe slope. Please try again and, if the problem persists, contact the administrator.';
           this.notificationsService.openNotificationsModal.emit(this.pmloNote);
@@ -159,37 +153,35 @@ export class SensAreasComponent implements OnInit {
     });
   }
 
-  clearSMZGraphics(): void {
+  clearSMZGraphics (): void {
     this.sensAreaGL.removeAll();
     this.esrimapService.sensAreasAccordionOpen.emit(false);
   }
 
-  buildSMZReport(): void {
+  buildSMZReport (): void {
     this.loaderService.isLoading.next(true);
     this.printTaskService.exportWebMap(this.mapView, 'PMLOSensAreasTemplate', 'jpg', this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry.extent.clone().expand(1.05)).then((url) => {
-      if (url === 'error')
-      {
+      if (url === 'error') {
         this.loaderService.isLoading.next(false);
         this.pmloNote.body = 'There was an error creating the report. Please try again and, if the problem persists, contact the administrator.';
         this.notificationsService.openNotificationsModal.emit(this.pmloNote);
       } else {
         let severeSlopeArea: number = 0;
-        if(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'slopes').length > 0)
-        {
-          severeSlopeArea = SquareMetersToAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'slopes').getItemAt(0).attributes['Shape_Area']);
+        if (this.sensAreaGL.graphics.filter(item => item.attributes.origin === 'slopes').length > 0) {
+          severeSlopeArea = SquareMetersToAcres(this.sensAreaGL.graphics.filter(item => item.attributes.origin === 'slopes').getItemAt(0).attributes.Shape_Area);
         }
         const reportParams = {
           zzProjNamezz: this.reportTitle,
           imageUrl: url,
-          zzStreamsLengthzz: FormatRoundNumber(GetFeaturesLength(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'streams')), 0) + ' feet',
-          zzSmzAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'smz')), 1) + ' acres',
+          zzStreamsLengthzz: FormatRoundNumber(GetFeaturesLength(this.sensAreaGL.graphics.filter(item => item.attributes.origin === 'streams')), 0) + ' feet',
+          zzSmzAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes.origin === 'smz')), 1) + ' acres',
           zzSevereSlopezz: this.slopeValue,
           zzSevereSlopesAreazz: FormatRoundNumber(severeSlopeArea, 1) + ' acres',
-          zzWetAreasAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'wetlands')), 1) + ' acres',
-          zzWetAreasBufferAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes['origin'] === 'wetlandsBuffer')), 1) + ' acres'
+          zzWetAreasAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes.origin === 'wetlands')), 1) + ' acres',
+          zzWetAreasBufferAreazz: FormatRoundNumber(GetFeaturesAreaAcres(this.sensAreaGL.graphics.filter(item => item.attributes.origin === 'wetlandsBuffer')), 1) + ' acres'
         };
-        this.reportsService.getSMZReports({content: JSON.stringify(reportParams)}).subscribe(
-        (response:any) => {
+        this.reportsService.getSMZReports({ content: JSON.stringify(reportParams) }).subscribe(
+          (response:any) => {
             this.loaderService.isLoading.next(false);
             window.open(response.fileName, '_blank', 'noopener');
           }
