@@ -13,31 +13,11 @@
 }
 
 .btn-group {
-  list-style-type: none;
-  margin: 5px 0 0 0;
-  padding: 0;
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-
-.btn-group li {
-  float: left;
-  margin: 5px 5px 0 0;
-  width: 120px;
-  height: 40px;
-  position: relative;
-}
-
-.btn-group label,
-.btn-group input {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
 .btn-group input[type="radio"] {
   opacity: 0.011;
   z-index: 100;
@@ -55,6 +35,8 @@
   justify-content: center;
   align-items: center;
   display: flex;
+  width: 150px;
+  height: 45px;
 }
 
 .btn-group label:hover {
