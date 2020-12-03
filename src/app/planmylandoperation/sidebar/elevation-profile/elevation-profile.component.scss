@@ -1,4 +1,4 @@
-@use "../../styles/pmlo-shared-styles.scss";
+@import "../../styles/pmlo-shared-styles.scss";
 
 .toggleBtn {
   border: 1px solid;
@@ -31,7 +31,6 @@
   padding: 5px;
   border: 1px solid #ccc;
   cursor: pointer;
-  z-index: 90;
   justify-content: center;
   align-items: center;
   display: flex;
@@ -47,11 +46,7 @@
   height: 35px;
   width: 35px;
   font-size: 25px;
-  border-radius: 35px;
-  background: white;
-  border: 1px solid black;
   margin-left: 20px;
-  box-shadow: none;
 }
 
 .createreportBar {
@@ -64,4 +59,7 @@
   align-items: center;
   margin-top: -30px;
   margin-left: 20px;
+}
+.createReportBtn {
+  height: auto;
 }

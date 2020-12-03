@@ -113,7 +113,7 @@ class ElevationProfileViewModel extends Accessor {
             color: 'cyan',
             outline: { // autocasts as new SimpleLineSymbol()
               color: [0, 255, 255],
-              width: '2px'
+              width: '3px'
             }
           };
 
