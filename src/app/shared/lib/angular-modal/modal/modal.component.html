@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <div class="ui-modal-body" #modalBody>
+    <div class="ui-modal-body" #modalBody [ngClass]="{'overflow-x-hidden': isOverflowXHidden }">
       <ng-content select=".app-modal-body"></ng-content>
     </div>
     <div class="ui-modal-footer" #modalFooter>

@@ -37,6 +37,7 @@ import { ScaleTextModule } from 'src/app/shared/components/scale-text/scale-text
 import { SwipeHelpModule } from 'src/app/shared/components/help-components/swipe-help/swipe-help.module';
 import { BasemapsHelpModule } from 'src/app/shared/components/help-components/basemaps-help/basemaps-help.module';
 import { SearchWidgetHelpModule } from 'src/app/shared/components/help-components/search-widget-help/search-widget-help.module';
+import { OverallHelpComponent } from '../help-templates/overall-help/overall-help.component';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -50,7 +51,8 @@ import { SearchWidgetHelpModule } from 'src/app/shared/components/help-component
     SensAreasHelpComponent,
     HarvestOperationsHelpComponent,
     RegenerationOperationsHelpComponent,
-    CulvertHelpComponent
+    CulvertHelpComponent,
+    OverallHelpComponent
   ],
   imports: [
     CommonModule,

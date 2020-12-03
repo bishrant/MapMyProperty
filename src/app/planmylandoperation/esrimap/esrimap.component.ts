@@ -56,8 +56,8 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
 
   notificationHeader = '';
   notificationBody = '';
-  helpHeader = '';
-  helpItem = '';
+  helpHeader = 'Getting Started Tour';
+  helpItem = 'gettingStartedTour';
   savedData: any;
 
 
