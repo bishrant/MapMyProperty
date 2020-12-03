@@ -3,6 +3,7 @@ import Map from 'esri/Map';
 import Collection from 'esri/core/Collection';
 import WMSLayer from 'esri/layers/WMSLayer';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
+import BingMapsLayer from 'esri/layers/BingMapsLayer';
 
 const GetWebMapAsJsonString = (mv: MapView, boundaryExtent:__esri.Extent) => {
   const webMapAsJson = {
@@ -32,11 +33,14 @@ const GetMapOptions = (mv: MapView, boudaryExtent:__esri.Extent) => {
 const GetBasemap = (map: Map) => {
   const baseMapLayers = [];
   (map.basemap.baseLayers as Collection<any>).forEach((lyr) => {
-    let lyrUrl: string = lyr.url;
-    if (!lyr.url.includes('http')) {
-      lyrUrl = 'https:' + lyrUrl;
+    if (!lyr.type.includes('bing'))
+    {
+      let lyrUrl: string = lyr.url;
+      if (!lyr.url.includes('http')) {
+        lyrUrl = 'https:' + lyrUrl;
+      }
+      baseMapLayers.push({ url: lyrUrl });
     }
-    baseMapLayers.push({ url: lyrUrl });
   });
 
   (map.basemap.referenceLayers as Collection<any>).forEach((lyr) => {
@@ -56,6 +60,11 @@ const GetBasemap = (map: Map) => {
 const GetOperationalLayers = (map: Map) => {
   const operationalLayers = [];
 
+  (map.basemap.baseLayers as Collection<any>).filter(l => l.type.includes('bing')).forEach((lyr) => {
+      let opLayer = FormatBingLayerJson(lyr);
+      operationalLayers.push(opLayer);
+  });
+
   (map.layers as Collection<any>).forEach((lyr) => {
     let opLayer = null;
     if (lyr.visible) {
@@ -74,6 +83,14 @@ const GetOperationalLayers = (map: Map) => {
     }
   });
   return operationalLayers;
+};
+
+const FormatBingLayerJson = (bingLyr: any) => {
+  return {
+    culture: bingLyr.culture,
+    key: bingLyr.key,
+    type: bingLyr.operationalLayerType
+  }
 };
 
 const FormatWMSLayerJson = (wmsLyr: WMSLayer) => {

@@ -1,5 +1,5 @@
 import {
-  Component, ElementRef, ViewChild, Input, Output, AfterViewChecked, HostListener, EventEmitter, ViewEncapsulation
+  Component, ElementRef, ViewChild, Input, Output, AfterViewChecked, HostListener, EventEmitter, ViewEncapsulation, OnInit
 } from '@angular/core';
 import { ResizableEvent } from '../resizable/types';
 import { maxZIndex, findAncestor } from '../utils/utils';
@@ -10,7 +10,7 @@ import { maxZIndex, findAncestor } from '../utils/utils';
   styleUrls: ['modal.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class ModalComponent implements AfterViewChecked {
+export class ModalComponent implements AfterViewChecked, OnInit {
   @Input() dragEnabled = true;
   @Input() scrollTopEnable = true;
   @Input() maximizable: boolean;
@@ -18,6 +18,8 @@ export class ModalComponent implements AfterViewChecked {
   @Input() inViewport: boolean;
   @Input() closeOnEscape = true;
   @Input() headerBackgroundColor = 'darkgray';
+  @Input() isHelpModal = false;
+  @Input() isOverflowXHidden = false;
 
   @Output() closeModal: EventEmitter<boolean> = new EventEmitter();
   @Output() resizeEnd: EventEmitter<ResizableEvent> = new EventEmitter();
@@ -40,6 +42,14 @@ export class ModalComponent implements AfterViewChecked {
   hasBeenDraggedBefore: boolean = false;
 
   constructor (private element: ElementRef) { }
+
+  ngOnInit() {
+    if (!document.cookie.includes('PMLOCookie') && this.isHelpModal)
+    {
+      this.show();
+      document.cookie = 'PMLOCookie=true';
+    }
+  }
 
   ngAfterViewChecked () {
     if (this.executePostDisplayActions) {

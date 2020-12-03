@@ -87,7 +87,7 @@
   </ng-container>
 </app-modal>
 
-<app-modal class="pmloModal helpModal" #helpModal [maximizable]="false" [backdrop]="false" [inViewport]="true">
+<app-modal class="pmloModal helpModal" #helpModal [maximizable]="false" [backdrop]="false" [inViewport]="true" [isHelpModal]="true" [isOverflowXHidden]="true">
   <ng-container class="app-modal-header">{{helpHeader}}</ng-container>
   <ng-container class="app-modal-body" [ngSwitch]="helpItem">
     <ng-container *ngSwitchCase="'draw'">
@@ -140,6 +140,10 @@
 
     <ng-container *ngSwitchCase="'search'">
       <app-search-widget-help></app-search-widget-help>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'gettingStartedTour'">
+      <pmlo-overall-help></pmlo-overall-help>
     </ng-container>
   </ng-container>
 </app-modal>
