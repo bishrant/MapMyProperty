@@ -75,7 +75,7 @@ export class CulvertSizeService {
   }
 
   GetCulvertData (graphic: Graphic): [Geoprocessor, any] {
-    let featureSet = new FeatureSet({
+    const featureSet = new FeatureSet({
       features: [graphic],
       geometryType: 'point',
       spatialReference: { wkid: 3857 }
@@ -106,9 +106,9 @@ export class CulvertSizeService {
     this.http.post(this.config.culvertSize.reportURL, params).subscribe((d: any) => {
       window.open(d.fileName);
       this.loaderService.isLoading.next(false);
-    }, (error : any) =>  {
+    }, (error : any) => {
       this.loaderService.isLoading.next(false);
-      throw new Error('Failed to generate report. Please try again');
+      throw new Error('Failed to generate report. Please try again' + error);
     })
   }
 
@@ -134,9 +134,11 @@ export class CulvertSizeService {
       (printTask as any)._getPrintDefinition(printParameters, this.mapView)
         .then(async (webmapJson: any) => {
           const usa_topo = {
-            'id': 'ArcGISTiledMapServiceLayer1661',
-            'url': 'http://server.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer',
-            'title': 'ArcGISTiledMapServiceLayer1659', 'minScale': 0, 'maxScale': 0
+            id: 'ArcGISTiledMapServiceLayer1661',
+            url: 'http://server.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer',
+            title: 'ArcGISTiledMapServiceLayer1659',
+            minScale: 0,
+            maxScale: 0
           }
 
           const operationalLayers = [usa_topo];

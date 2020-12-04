@@ -14,20 +14,17 @@ export class LoaderComponent {
   height: string = '50px';
   width: string = '50px';
   loading: boolean = false;
-  constructor(private loaderService: LoaderService) {
-
+  constructor (private loaderService: LoaderService) {
     this.loaderService.isLoading.subscribe((v) => {
       this.loading = v;
     });
-
   }
 
-  public show() {
+  public show () {
     this.loading = true;
   }
 
-  public hide() {
+  public hide () {
     this.loading = false;
   }
-
 }

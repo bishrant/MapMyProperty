@@ -15,7 +15,7 @@ fetch('./assets/config.json').then(async res => {
   const configuration = await res.json();
 
   platformBrowserDynamic([
-    { provide: AppConfiguration, useValue: configuration },
+    { provide: AppConfiguration, useValue: configuration }
   ])
     .bootstrapModule(AppModule)
     .catch(err => console.error(err));

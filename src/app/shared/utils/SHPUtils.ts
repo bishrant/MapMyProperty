@@ -183,11 +183,15 @@ const zipClass = (function () {
     },
 
     getBlobURL: () => new Promise((resolve: any, reject: any) => {
-      zipWriter.close((blob: any) => {
-        const blobURL = URL.createObjectURL(blob);
-        resolve(blobURL);
-        zipWriter = undefined;
-      })
+      try {
+        zipWriter.close((blob: any) => {
+          const blobURL = URL.createObjectURL(blob);
+          resolve(blobURL);
+          zipWriter = undefined;
+        })
+      } catch (error) {
+        reject(error);
+      }
     })
   }
 })();
@@ -255,7 +259,7 @@ const downloadSHP = async (data: any, filename: string) => {
         dlink.download = filename;
         dlink.href = blobURL;
         dlink.onclick = function () {
-        // revokeObjectURL needs a delay to work properly
+          // revokeObjectURL needs a delay to work properly
           setTimeout(function () {
             window.URL.revokeObjectURL(dlink.href);
           }, 500);

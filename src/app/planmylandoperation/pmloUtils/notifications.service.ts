@@ -5,8 +5,7 @@ import { PMLONotification } from '../models/pmloNotification.model';
   providedIn: 'root'
 })
 export class NotificationsService {
-
   @Output() openNotificationsModal:EventEmitter<PMLONotification> = new EventEmitter<PMLONotification>();
 
-  constructor() { }
+  constructor () { }
 }

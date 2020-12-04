@@ -5,8 +5,7 @@ import { AccordionPanelComponent } from './accordion-panel.component';
   providedIn: 'root'
 })
 export class AccordionPanelService {
-
   @Output() setActivePanel:EventEmitter<AccordionPanelComponent> = new EventEmitter<AccordionPanelComponent>();
 
-  constructor() { }
+  constructor () { }
 }

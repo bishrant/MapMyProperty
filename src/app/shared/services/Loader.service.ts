@@ -6,5 +6,5 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class LoaderService {
   public isLoading = new BehaviorSubject(false);
-  constructor() { }
+  constructor () { }
 }

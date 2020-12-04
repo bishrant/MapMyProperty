@@ -63,7 +63,7 @@ export class DraggableDirective implements OnChanges, OnDestroy {
     this.dragMove.emit(event);
   }
 
-  onMouseup (event: MouseEvent | TouchEvent): void {
+  onMouseup (event: any): void {
     this.endDrag();
     this.removeEventListener();
 
