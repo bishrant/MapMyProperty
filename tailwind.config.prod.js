@@ -1,7 +1,10 @@
 module.exports = {
   purge: {
     enabled: true,
-    content: ['./src/**/*.html', './src/**/*.scss']
+    content: ['./src/**/*.html', './src/**/*.scss'],
+    options: {
+      whitelist: ['-translate-x-full']
+    } 
   },
   theme: {
     extend: {
