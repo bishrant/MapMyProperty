@@ -43,9 +43,8 @@ export class ModalComponent implements AfterViewChecked, OnInit {
 
   constructor (private element: ElementRef) { }
 
-  ngOnInit() {
-    if (!document.cookie.includes('PMLOCookie') && this.isHelpModal)
-    {
+  ngOnInit () {
+    if (!document.cookie.includes('PMLOCookie') && this.isHelpModal) {
       this.show();
       document.cookie = 'PMLOCookie=true';
     }

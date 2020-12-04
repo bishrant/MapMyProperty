@@ -79,7 +79,7 @@ export class TextControlSelectionService {
       }
     };
 
-    this.deleteListener = (e:any) => {
+    this.deleteListener = () => {
       const i = document.getElementById(inputId);
       this.TextService.HideOnlyTextGraphics(textGraphic, graphicsLayer, store, cleanupFn);
       this.CleanupListenerForInputFrame(i);

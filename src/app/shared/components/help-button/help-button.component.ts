@@ -12,7 +12,7 @@ export class HelpbuttonComponent {
   @Input() fillColor: string = 'black';
   constructor (private helpService: HelpService) { }
 
-  openHelp(): void {
+  openHelp (): void {
     this.helpService.openHelp.emit({ header: this.header, itemName: this.itemName });
   }
 }

@@ -4,12 +4,11 @@ import { ErrorService } from './error.service';
 import { LoggingService } from './logging.service';
 import { NotificationService } from './notification.service';
 
-
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
-  constructor(private injector: Injector) { }
+  constructor (private injector: Injector) { }
 
-  handleError(error: any) {
+  handleError (error: any) {
     const errorService = this.injector.get(ErrorService);
     const logger = this.injector.get(LoggingService);
     const notifier = this.injector.get(NotificationService);

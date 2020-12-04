@@ -8,7 +8,7 @@ import { Component, Input } from '@angular/core';
 export class MMPThemesComponent {
   @Input() mapView: any;
   transparency = 10;
-  transparencyChanged($e) {
+  transparencyChanged ($e) {
     console.log($e);
     this.transparency = $e;
   }

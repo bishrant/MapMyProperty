@@ -19,7 +19,6 @@ const topo2015 = new ImageryLayer({ url: _tnrisURL + 'TOP/TOP15_NC_CIR_50cm/Imag
 const naip2016 = new ImageryLayer({ url: _tnrisURL + 'NAIP/NAIP16_NC_CIR_1m/ImageServer', id: 'TX NAIP 2016' });
 const naip2018 = new ImageryLayer({ url: _tnrisURL + 'NAIP/NAIP18_NC_CIR_60cm/ImageServer', id: 'TX NAIP 2018' });
 
-
 const texasBasemaps = ['TX Google 6-inch', 'TX NAIP 2018', 'TX NAIP 2016', 'TX TOP 2015', 'TX NAIP 2014',
   'TX NAIP 2012', 'TX NAIP 2010',
   'TXe TOP 2009', 'TXw TOP 2008', 'TX NAIP 2004', 'TX TOP 1996'];
@@ -37,7 +36,6 @@ const texasBasemapsDict = {
   'TX NAIP 2004': naip2004,
   'TX TOP 1996': topo1996
 }
-
 
 export {
   texasBasemaps, texasBasemapsDict,

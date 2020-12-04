@@ -38,31 +38,31 @@ export class ImportExportComponent implements OnInit {
     const fileReader: any = new FileReader();
     fileReader.onload = () => {
       const r = fileReader.result as any;
+      let _temp;
+      let _jsn;
       switch (this.format) {
         case 'kml':
-          const _kml = kmlToGeoJson(r)
-          this.store.dispatch(addGraphics({ graphics: _kml }));
-          this.mapView.goTo(GetGraphicsForExtentUsingString(_kml));
+          _temp = kmlToGeoJson(r);
+          this.store.dispatch(addGraphics({ graphics: _temp }));
+          this.mapView.goTo(GetGraphicsForExtentUsingString(_temp));
           break;
         case 'gpx':
-          const _gpx = gpxToGeoJson(r);
-          this.store.dispatch(addGraphics({ graphics: _gpx }));
-          this.mapView.goTo(GetGraphicsForExtentUsingString(_gpx));
+          _temp = gpxToGeoJson(r);
+          this.store.dispatch(addGraphics({ graphics: _temp }));
+          this.mapView.goTo(GetGraphicsForExtentUsingString(_temp));
           break;
         case 'shp':
           convertSHPToGraphics(file, this.store, this.mapView);
           break;
         case 'mmp':
-          const jsn = JSON.parse(r);
-          if (typeof jsn.length === 'undefined') {
-            //old mmp
-            // alert("It looks like you are trying to load a MMP file that was created using legacy Map My Property App."+
-            // "We are planning to add this feature. Please check back later or use existing MapMyProperty app to load it.")
-            const oldMMP = convertMMPJSONToGraphics(jsn);
+          _jsn = JSON.parse(r);
+          if (typeof _jsn.length === 'undefined') {
+            // old mmp
+            const oldMMP = convertMMPJSONToGraphics(_jsn);
             this.store.dispatch(addGraphics({ graphics: oldMMP }));
             this.mapView.goTo(GetGraphicsForExtentUsingString(JSON.stringify(oldMMP)));
           } else {
-            this.store.dispatch(addGraphics({ graphics: jsn }));
+            this.store.dispatch(addGraphics({ graphics: _jsn }));
             this.mapView.goTo(GetGraphicsForExtentUsingString(r));
           }
 

@@ -26,7 +26,7 @@ const CreateTextSymbolFromHTML = (targetElement: any, textProps: any) => {
   }
   if (targetElement.getAttribute('textStyle') !== null) {
     const _style = targetElement.getAttribute('textStyle');
-    textProps.font.style = _style === 'none' ? 'normal': _style;
+    textProps.font.style = _style === 'none' ? 'normal' : _style;
   }
   if (targetElement.getAttribute('fontFamily') !== null) {
     textProps.font.family = targetElement.getAttribute('fontFamily');
@@ -57,7 +57,7 @@ const getTextParamsFromHTML = (target: any, textProps:any) => {
   const mapX = target.getAttribute('mapX');
   const mapY = target.getAttribute('mapY');
   const textSymbol = CreateTextSymbolFromHTML(target, textProps);
-  return {mapX, mapY, textSymbol};
+  return { mapX, mapY, textSymbol };
 }
 
 export { htmlToElement, SetInputStyleAttributes, CreateTextSymbolFromHTML, getTextParamsFromHTML };

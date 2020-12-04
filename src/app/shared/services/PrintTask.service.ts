@@ -5,21 +5,21 @@ import Geoprocessor from 'esri/tasks/Geoprocessor';
 import { GetWebMapAsJsonString } from '../utils/WebMapAsJsonUtils';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class PrintTaskService {
-  constructor(private appConfig: AppConfiguration) {}
+  constructor (private appConfig: AppConfiguration) {}
 
-  exportWebMap(mv: MapView, layout: any, format: any, boundaryExtent:__esri.Extent): Promise<string> {
+  exportWebMap (mv: MapView, layout: any, format: any, boundaryExtent:__esri.Extent): Promise<string> {
     return new Promise((resolve) => {
       const printParameters = {
         Web_Map_as_JSON: GetWebMapAsJsonString(mv, boundaryExtent),
         Format: format,
-        Layout_Template: layout,
+        Layout_Template: layout
       };
 
       const printGP: Geoprocessor = new Geoprocessor({
-        url: this.appConfig.printGPServiceURL,
+        url: this.appConfig.printGPServiceURL
       });
       printGP.submitJob(printParameters).then((jobInfo) => {
         printGP.waitForJobCompletion(jobInfo.jobId).then((jobInfo2) => {

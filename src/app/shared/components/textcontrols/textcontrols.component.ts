@@ -26,7 +26,7 @@ export class TextcontrolsComponent implements OnInit {
     return this._selectedTextGraphics;
   }
 
-  fontFamilyOptions: any[] = ['Arial', 'Montserrat', 'Noto Sans', 'Noto Serif',  'Ubuntu'];
+  fontFamilyOptions: any[] = ['Arial', 'Montserrat', 'Noto Sans', 'Noto Serif', 'Ubuntu'];
   fontSize: number = 18;
   public textProps: any = {
     color: { r: 255, g: 255, b: 0, a: 1 },
@@ -110,15 +110,13 @@ export class TextcontrolsComponent implements OnInit {
   };
 
   toggleFontStyle = () => {
-    this.textProps.font.style = this.textProps.font.style === 'italic' ? 'none' : 'italic';
+    this.textProps.font.style = this.textProps.font.style === 'italic' ? 'normal' : 'italic';
     if (this.selectedTextGraphics.length > 0) {
       const _input = document.getElementById(this.selectedTextGraphics[0].graphic.attributes.id) as any;
       _input.setAttribute('textStyle', this.textProps.font.style);
       _input.style.fontStyle = this.textProps.font.style;
     }
   };
-
-
 
   ngOnInit (): void {}
 }
