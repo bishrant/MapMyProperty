@@ -62,7 +62,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   savedData: any;
 
   closeOtherPanels = ((panelTitle: string) => {
-    const panelToOpen: AccordionPanelComponent[] = this.accordionPanels.filter((panel: any) => panel.title === panelTitle);
+    const panelToOpen: AccordionPanelComponent[] = this.accordionPanels.filter((panel: any) => panel.panelTitle === panelTitle);
     if (panelToOpen.length > 0) panelToOpen[0].toggleOthers();
   });
 
