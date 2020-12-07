@@ -1,5 +1,5 @@
 <nav class="flex items-center justify-between flex-wrap" [ngStyle]="{'background-color': headerColor}">
-  <div class="flex items-center flex-shrink-0 text-black hover:text-gray-700 mr-6">
+  <div class="flex items-center flex-shrink-0 text-black mr-6">
     <img src="assets/TFS_Star_Maroon.png" alt="tfs logo" class="logo flex lg:hidden xl:hidden fill-current" />
     <img src="assets/TFS_Maroon.png" alt="tfs logo full" class="logo hidden lg:inline-flex xl:inline-flex  fill-current" />
     <span class="font-semibold sm:text-lg md:text-xl xl:text-2xl tracking-tight ">{{title}}</span>
@@ -27,7 +27,7 @@
       <a href="#" class="headerItem">
         About
       </a>
-      <a class="headerItem" href="https://texasforestinfo.tamu.edu/Contact" target="_blank">
+      <a class="headerItem" href="https://texasforestinfo.tamu.edu/Contact" target="_blank" rel="noopener">
         Contact
       </a>
       <button class="headerItem" (click)="openHelp()">

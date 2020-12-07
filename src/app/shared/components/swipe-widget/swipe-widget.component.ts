@@ -1,21 +1,24 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import Collection from 'esri/core/Collection';
 import Layer from 'esri/layers/Layer';
 import Swipe from 'esri/widgets/Swipe';
+import { Subscription } from 'rxjs';
 import { googleWMSlayer, texasBasemaps, texasBasemapsDict } from '../../layers/NAIPLayers';
 import { LoaderService } from '../../services/Loader.service';
+import { WidgetToggleService } from '../../services/WidgetToggleService';
 
 @Component({
   selector: 'app-swipe-widget',
   templateUrl: './swipe-widget.component.html',
   styleUrls: ['./swipe-widget.component.scss']
 })
-export class SwipeWidgetComponent implements AfterViewInit {
+export class SwipeWidgetComponent implements AfterViewInit, OnDestroy {
   loadingBaseLayer: Layer;
   @Input() mapView: __esri.MapView;
   texasBasemaps = texasBasemaps;
   texasBasemapsDict = texasBasemapsDict;
   googleWMSlayer = googleWMSlayer;
+  subscriptions$ : Subscription;
   state: any = {
     open: false
   };
@@ -88,14 +91,23 @@ export class SwipeWidgetComponent implements AfterViewInit {
       if (this.swipeWidget) { this.swipeWidget.destroy() }
       this.mapView.map.removeMany([this.texasBasemapsDict[this.firstLayer], this.texasBasemapsDict[this.secondLayer]])
     }
+    this.widgetToggleService.changeWidgetView('swipe', this.state.open);
   }
 
-  ngOnDestroy () { }
+  ngOnDestroy () {
+    this.subscriptions$.unsubscribe();
+  }
 
   public close () {
     this.state.open = false;
     if (this.swipeWidget) { this.swipeWidget.destroy() }
   }
 
-  constructor (private loadingService: LoaderService) { }
+  constructor (private loadingService: LoaderService, private widgetToggleService: WidgetToggleService) {
+    this.subscriptions$ = this.widgetToggleService.widgetViewChanged.subscribe((widgetInfo: any) => {
+      if (widgetInfo.name !== 'swipe' && this.state.open) {
+        this.toggle();
+      }
+    })
+  }
 }
