@@ -1,19 +1,23 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren, OnDestroy } from '@angular/core';
 import MapImageLayer from 'esri/layers/MapImageLayer';
 import FeatureLayer from 'esri/layers/FeatureLayer';
 import VectorLayer from 'esri/layers/VectorTileLayer';
 import { HttpClient } from '@angular/common/http';
 import { MapviewService } from '../../services/mapview.service';
+import { WidgetToggleService } from '../../services/WidgetToggleService';
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-overlay-layers-widget',
   templateUrl: './overlay-layers-widget.component.html',
   styleUrls: ['./overlay-layers-widget.component.scss']
 })
-export class OverlayLayersWidgetComponent implements OnInit {
+export class OverlayLayersWidgetComponent implements OnInit, OnDestroy {
   @Input() mapView: __esri.MapView;
   @Input() colorPrefix: string;
   @ViewChildren('checkboxes') checkboxes: QueryList<ElementRef>;
   isOpen: boolean = false;
+  subscriptions$ : Subscription;
 
   wetAreasId = 'wetAreas';
   floodZonesId = 'floodZones';
@@ -83,9 +87,18 @@ export class OverlayLayersWidgetComponent implements OnInit {
   );
 
   constructor (
-    private http:HttpClient,
-    private mapviewService:MapviewService
-  ) {}
+    private http: HttpClient,
+    private mapviewService: MapviewService, private widgetToggleService: WidgetToggleService) {
+    this.subscriptions$ = this.widgetToggleService.widgetViewChanged.subscribe((widgetInfo: any) => {
+      if (widgetInfo.name !== 'layers' && this.isOpen) {
+        this.toggle();
+      }
+    })
+  }
+
+  ngOnDestroy () {
+    this.subscriptions$.unsubscribe();
+  }
 
   ngOnInit (): void {
     this.mapView.map.addMany([
@@ -97,11 +110,11 @@ export class OverlayLayersWidgetComponent implements OnInit {
       this.parcelsLayer
     ]);
 
-    this.http.get(this.wetAreasUrl + '/Legend?f=pjson').subscribe((pjson:any) => {
+    this.http.get(this.wetAreasUrl + '/Legend?f=pjson').subscribe((pjson: any) => {
       this.wetAreasLegendList = pjson.layers[0].legend;
     });
 
-    this.mapviewService.scaleChanged.subscribe((scale:number) => {
+    this.mapviewService.scaleChanged.subscribe((scale: number) => {
       if (scale <= 3000000) {
         this.layersList.find(l => l.id === this.contoursId).enabled = true;
       } else {
@@ -125,10 +138,11 @@ export class OverlayLayersWidgetComponent implements OnInit {
   }
 
   toggle (): void {
+    this.widgetToggleService.changeWidgetView('layers', this.isOpen);
     this.isOpen = !this.isOpen;
   }
 
-  updateVisibility (id:string) {
+  updateVisibility (id: string) {
     switch (id) {
       case this.contoursId:
         this.contoursLayer.visible = !this.contoursLayer.visible;
@@ -156,8 +170,8 @@ export class OverlayLayersWidgetComponent implements OnInit {
     }
   }
 
-  private createLayer (layerType:string, id:string, minScale:number, url:string): any {
-    let lyr:any;
+  private createLayer (layerType: string, id: string, minScale: number, url: string): any {
+    let lyr: any;
     switch (layerType) {
       case 'mapImage':
         lyr = new MapImageLayer();

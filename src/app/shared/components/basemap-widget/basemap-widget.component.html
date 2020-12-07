@@ -1,4 +1,4 @@
-<span class="basemapLabel hidden md:block">
+<span class="basemapLabel hidden md:block" *ngIf="showBasemapLabel">
   {{state.basemap.label}}
 </span>
 <button (click)="toggle()" class="basemapToggleBtn" [ngClass]="{selectedBtn: state.open}">
@@ -6,8 +6,10 @@
 </button>
 
 <div [hidden]="!state.open" class="basemapBody basemap-open">
-  <div class="basemapTitle">Basemaps
+  <div class="widgetTitle">
+    <span class="widgetTitleText">Basemaps</span>
     <app-help-button [header]="'Basemaps'" [itemName]="'basemaps'" [fillColor]="'white'"></app-help-button>
+    <i class="widgetCloseBtn ui-icon dt-icon-close" (click)="toggle()"></i>
   </div>
   <div style="flex: 1;">
     <div class="basemapgrid">
