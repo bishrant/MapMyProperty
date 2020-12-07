@@ -51,9 +51,7 @@ export class CulvertSizeComponent implements AfterViewInit {
     private loaderService: LoaderService
   ) {}
 
-  ngAfterViewInit () {
-    console.log(projection);
-  }
+  ngAfterViewInit () {}
 
   drawPourPoint () {
     this.culvertUtils = this.culvertService.initialize({ mapView: this.mapView, graphicsLayer: this.graphicsLayer });
