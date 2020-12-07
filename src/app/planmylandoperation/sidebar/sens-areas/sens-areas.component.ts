@@ -56,8 +56,11 @@ export class SensAreasComponent implements OnInit {
     this.boundaryLayer = this.mapView.map.findLayerById('userGraphicsLayer');
     this.mapView.map.add(this.sensAreaGL);
 
-    this.mapViewService.clearSensAreasGraphics.subscribe(() => {
-      this.sensAreaGL.removeAll();
+    this.mapViewService.sensAreasGLHasPolygons.subscribe((val:boolean) => {
+      if (!val)
+      {
+        this.sensAreaGL.removeAll();
+      }
     });
 
     this.esrimapService.sensAreasAccordionOpen.subscribe((opened:boolean) => {

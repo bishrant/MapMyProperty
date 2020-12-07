@@ -6,7 +6,7 @@ import { EventEmitter, Injectable, Output } from '@angular/core';
 export class MapviewService {
   @Output() soilsDisabled: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() soilsGLHasPolygons: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() clearSensAreasGraphics: EventEmitter<void> = new EventEmitter<void>();
+  @Output() sensAreasGLHasPolygons: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() scaleChanged: EventEmitter<number> = new EventEmitter<number>();
 
   constructor () { }

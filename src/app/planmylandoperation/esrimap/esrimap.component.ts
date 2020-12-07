@@ -186,16 +186,25 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
         boundaryLayerView.watch('updating', (val) => {
           if (val) {
             let soilsGLHasPolygons: boolean = true;
+            let sensAreasGLHasPolygons: boolean = true;
             const pmloSoilsGL: __esri.GraphicsLayer = this.mapView.map.findLayerById('pmloSoilsGL') as __esri.GraphicsLayer;
+            const sensAreasGL: __esri.GraphicsLayer = this. mapView.map.findLayerById('sensAreasGL') as __esri.GraphicsLayer;
 
-            if (GetPolygonGraphics(boundaryLayerView.layer as __esri.GraphicsLayer).length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
+            if (GetPolygonGraphics(boundaryLayerView.layer as __esri.GraphicsLayer).length === 0) {
               soilsGLHasPolygons = false;
-              this.mapViewService.clearSensAreasGraphics.emit();
-              this.harvestAccPanel.opened = false;
-              this.regenerationAccPanel.opened = false;
-              this.sensAreasAccPanel.opened = false;
+              sensAreasGLHasPolygons = false;
+            } else {
+              if ((pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined))
+              {
+                soilsGLHasPolygons = false;
+              }
+
+              if ((sensAreasGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, sensAreasGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
+                sensAreasGLHasPolygons = false;
+              }
             }
             this.mapViewService.soilsGLHasPolygons.emit(soilsGLHasPolygons);
+            this.mapViewService.sensAreasGLHasPolygons.emit(sensAreasGLHasPolygons);
           }
         });
       });
