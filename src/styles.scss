@@ -4,15 +4,30 @@
 @import "./tailwind.scss";
 
 @import "./app/shared/styles/CustomSlider.scss";
-@import "./app/shared/styles/themes/pmlo.theme.scss";
-@import url("https://js.arcgis.com/4.17/esri/css/main.css");
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 @import './icons.scss';
 
+$pmlo-bg: #353535;
 :root{
   --map-button-width: 2.5em;
   --map-button-height: 2.5em;
 }
+
+.parentContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.esriMap {
+  flex: 1;
+  display: inline-flex;
+  overflow: hidden;
+}
+
 
 html,
 body {
@@ -241,7 +256,7 @@ $sliderBase: 6px;
 }
 
 .pmloMap .esri-popup__header, .esri-popup__header-title:hover {
-  @apply bg-pmlo_primary;
+  background-color: $pmlo-bg;
 }
 
 .pmloMap .esri-popup__header, .pmloMap .esri-popup__button {
@@ -271,10 +286,6 @@ $sliderBase: 6px;
 
 .helpModal .ui-modal-footer {
   display: none;
-}
-
-.pmloModal .ui-modal-header {
-  @apply bg-pmlo_primary !important;
 }
 
 .esri-swipe__container {

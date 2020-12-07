@@ -12,13 +12,13 @@
   @apply bg-gray-700;
 }
 
-.btn-icon {
-  @apply py-2 px-2 rounded bg-gray-800 inline-flex items-center text-white;
-}
+// .btn-icon {
+//   @apply py-2 px-2 rounded bg-gray-800 inline-flex items-center text-white;
+// }
 
-.btn-icon:disabled {
-  @apply btn-icon opacity-50 cursor-not-allowed;
-}
+// .btn-icon:disabled {
+//   @apply btn-icon opacity-50 cursor-not-allowed;
+// }
 
 button:disabled {
   @apply opacity-50 cursor-not-allowed;

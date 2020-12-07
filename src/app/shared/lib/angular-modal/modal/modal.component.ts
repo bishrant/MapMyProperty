@@ -17,9 +17,10 @@ export class ModalComponent implements AfterViewChecked, OnInit {
   @Input() backdrop = true;
   @Input() inViewport: boolean;
   @Input() closeOnEscape = true;
-  @Input() headerBackgroundColor = 'darkgray';
+  @Input() headerBackgroundColor = '#353535';
   @Input() isHelpModal = false;
   @Input() isOverflowXHidden = false;
+  @Input() showFooter = false;
 
   @Output() closeModal: EventEmitter<boolean> = new EventEmitter();
   @Output() resizeEnd: EventEmitter<ResizableEvent> = new EventEmitter();
