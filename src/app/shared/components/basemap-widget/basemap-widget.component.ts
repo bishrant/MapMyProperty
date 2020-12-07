@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import Basemap from 'esri/Basemap';
 import Layer from 'esri/layers/Layer';
 import MapImageLayer from 'esri/layers/MapImageLayer';
 import { createBingBasemap } from '../../utils/CreateMapView';
 import { googleWMSlayer, texasBasemaps, texasBasemapsDict } from '../../layers/NAIPLayers';
+import { WidgetToggleService } from '../../services/WidgetToggleService';
+import { Subscription } from 'rxjs';
 const watchUtils = require('esri/core/watchUtils');
 
 @Component({
@@ -12,17 +14,19 @@ const watchUtils = require('esri/core/watchUtils');
   templateUrl: './basemap-widget.component.html',
   styleUrls: ['./basemap-widget.component.scss']
 })
-export class BasemapWidgetComponent implements AfterViewInit {
+export class BasemapWidgetComponent implements AfterViewInit, OnDestroy {
   basemapObject: Basemap;
   loadingBaseLayer: Layer;
   @Input() mapView: __esri.MapView;
   texasImageryVisible = false;
   updatedDate: Date;
   loading = false;
+  showBasemapLabel = true;
   _tnrisURL = 'https://webservices.tnris.org/arcgis/rest/services/';
   texasBasemaps= texasBasemaps;
   texasBasemapsDict = texasBasemapsDict;
   googleWMSlayer = googleWMSlayer;
+  subscriptions$ : Subscription;
 
   basemaps: any = [
     { label: 'Bing Hybrid', value: 'bing', image: 'bing' },
@@ -41,6 +45,7 @@ export class BasemapWidgetComponent implements AfterViewInit {
   selectedTexasBasemap = this.texasBasemaps[0];
 
   toggle () {
+    this.widgetToggleService.changeWidgetView('basemap', this.state.open);
     this.state.open = !this.state.open;
   }
 
@@ -150,7 +155,18 @@ export class BasemapWidgetComponent implements AfterViewInit {
   ngOnDestroy () {
     this.mapViewListener.remove();
     this.layerViewEvent.remove();
+    this.subscriptions$.unsubscribe();
   }
 
-  constructor (private http: HttpClient) { }
+  constructor (private http: HttpClient, private widgetToggleService: WidgetToggleService) {
+    this.subscriptions$ = this.widgetToggleService.widgetViewChanged.subscribe((widgetInfo: any) => {
+      this.showBasemapLabel = true;
+      if (widgetInfo.name !== 'basemap' && this.state.open) {
+        this.toggle();
+      }
+      if (widgetInfo.name === 'swipe' && widgetInfo.visible) {
+        this.showBasemapLabel = false;
+      }
+    })
+  }
 }

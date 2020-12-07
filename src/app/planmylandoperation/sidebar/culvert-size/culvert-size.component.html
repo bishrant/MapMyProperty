@@ -1,23 +1,18 @@
 <div class="py-3">
-  <app-help-button [header]="'Culvert Size'" [itemName]= "'culvert'"></app-help-button>
+  <app-help-button [header]="'Culvert Size'" [itemName]="'culvert'"></app-help-button>
   <br>
   <div class="centerAlign">
-    <div>
-      <input type="button" class="pmlo-btn pmlo-secondary shadow-none culvertSizeBtn" aria-label="point" value="Draw Point"
-        (click)="drawPourPoint()" />
-
-    </div>
-    <br>
-
-    <div class="centerAlign">
-      <button class='pmlo-btn pmlo-secondary culvertSizeBtn' (click)="clearCulvertTool()" [disabled]="!isCulvertToolActive">
+    <div class="btn-group">
+      <input type="button" class="pmlo-btn pmlo-secondary generalBtn" aria-label="point" value="Draw Point"
+        (click)="drawPourPoint()" /><br>
+      <button class='pmlo-btn pmlo-secondary generalBtn' (click)="clearCulvertTool()" [disabled]="!isCulvertToolActive">
         Clear
       </button>
     </div>
   </div>
 </div>
 
-<app-modal #culvertModal [maximizable]="false" [backdrop]="false" (closeModal)="modelClosed()"
+<app-modal #culvertModal [maximizable]="false" [backdrop]="false" (closeModal)="modelClosed()" [showFooter]="true"
   [headerBackgroundColor]="headerBgColor">
   <ng-container class="app-modal-header bg-pmlo_secondary">Watershed Properties</ng-container>
   <ng-container class="app-modal-body">

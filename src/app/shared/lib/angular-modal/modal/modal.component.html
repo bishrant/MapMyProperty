@@ -35,7 +35,7 @@
     <div class="ui-modal-body" #modalBody [ngClass]="{'overflow-x-hidden': isOverflowXHidden }">
       <ng-content select=".app-modal-body"></ng-content>
     </div>
-    <div class="ui-modal-footer" #modalFooter>
+    <div class="ui-modal-footer" #modalFooter *ngIf="showFooter">
       <ng-content select=".app-modal-footer"></ng-content>
     </div>
 </div>

@@ -3,8 +3,11 @@
 </button>
 
 <div [hidden]="!state.open" class="swipeWidgetBody basemap-open">
-  <div class="widget-title">Swipe Layers
+  <div class="widgetTitle">
+    <span class="widgetTitleText">Swipe Layers</span>
+
     <app-help-button [header]="'Swipe Layers'" [itemName]="'swipe'" [fillColor]="'white'"></app-help-button>
+    <i class="widgetCloseBtn ui-icon dt-icon-close" (click)="toggle()"></i>
   </div>
 
   <div class="swipeBodyContainer">

@@ -51,11 +51,7 @@
             },
             "styles": [
               "src/styles.scss",
-              {
-                "input": "src/app/shared/styles/themes/dmr.theme.scss",
-                "inject": false,
-                "bundleName": "dmr-theme"
-              }
+              "src/app/shared/styles/pmlo-shared-styles.scss"
             ],
             "scripts": []
           },
@@ -129,7 +125,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/app/shared/styles/pmlo-shared-styles.scss"
             ],
             "scripts": []
           }

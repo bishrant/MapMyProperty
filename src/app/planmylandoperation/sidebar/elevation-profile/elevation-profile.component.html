@@ -5,10 +5,10 @@
     <div class="btn-group">
       <input type="radio" id="draw_line" name="amount" [value]="'polyline'" aria-label="Line"
         (ngModelChange)="startDrawingGraphics($event)" [(ngModel)]="drawTool" />
-      <label for="draw_line" class="pmlo-secondary shadow-none">Draw Line</label>
+      <label for="draw_line" class="pmlo-btn pmlo-secondary generalBtn">Draw Line</label>
       <input type="radio" id="draw_freehand" name="amount" [value]="'freehand'" aria-label="Point"
         (ngModelChange)="startDrawingGraphics($event)" [(ngModel)]="drawTool" />
-      <label for="draw_freehand" class="pmlo-secondary shadow-none">Draw Freehand</label>
+      <label for="draw_freehand" class="pmlo-btn pmlo-secondary generalBtn">Draw Freehand</label>
     </div>
     <br>
     <div class="centerAlign">
@@ -21,7 +21,7 @@
   </div>
 </div>
 
-<app-modal #elevationProfileModal [maximizable]="false" [backdrop]="false" [dragEnabled]="true"
+<app-modal #elevationProfileModal [maximizable]="false" [backdrop]="false" [dragEnabled]="true" [showFooter]="true"
   (closeModal)="modelClosed()" (resizeEnd)="onResizeEnd($event)" [headerBackgroundColor]="headerBgColor">
   <ng-container class="app-modal-header bg-pmlo_secondary">Elevation Profile</ng-container>
   <ng-container class="app-modal-body">

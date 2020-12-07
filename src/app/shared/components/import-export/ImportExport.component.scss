@@ -8,23 +8,17 @@
   margin-top: 10px;
 }
 
-.infoBtn {
-    width: 20px;
-    height: 20px;
-    margin: 0;
-    padding: 0;
-    right: 2px;
-    position: absolute;
-    top: -2px;
-}
-
-.importExportFormat2 {
+.importBtns {
   display: grid;
-  grid-template-columns: 90px 90px;
-  grid-column-gap: 20px;
+  grid-template-columns: 110px 110px;
+  grid-column-gap: 10px;
   justify-content: center;
+  margin-bottom: 20px;
 }
 .importExportFormat span {
-
   padding-left: 20px;
+}
+
+.btnIcon {
+  @apply inline-flex items-center justify-center
 }

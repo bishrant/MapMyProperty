@@ -1,5 +1,4 @@
 <div>
-  <br>
   <div class="centerAlign">
     <app-help-button [header]="'Draw'" [itemName]="'draw'"></app-help-button>
     <br>
@@ -23,7 +22,7 @@
       </mat-button-toggle>
     </mat-button-toggle-group>
 
-    <button class="mmp-primary primary-button clearDrawTools" *ngIf="drawingTool !== ''"
+    <button class="pmlo-btn pmlo-secondary clearDrawTools" *ngIf="drawingTool !== ''"
       (click)="clearDrawTools()">Cancel Drawing</button>
   </div>
   <br><span *ngIf="!(drawingTool === 'point' || drawingTool === 'text')">

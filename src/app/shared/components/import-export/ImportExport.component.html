@@ -1,4 +1,4 @@
-<div>
+<div class="py-3">
   <app-help-button [header]="'Import | Export'" [itemName]="'importExport'"></app-help-button> <br>
   <div class="importExportFormat">
     <span><input type="radio" name="format" [value]="'mmp'" [(ngModel)]="format" aria-label="MMP" /> &nbsp; MMP</span>
@@ -7,8 +7,8 @@
     <span><input type="radio" name="format" [value]="'gpx'" [(ngModel)]="format" aria-label="GPX" /> &nbsp; GPX</span>
   </div>
 
-  <div class="importExportFormat2">
-    <button class="btn-icon" (click)="chooseFile()" type="button">
+  <div class="importBtns">
+    <button class="btnIcon pmlo-btn pmlo-secondary" (click)="chooseFile()" type="button">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-4 mr-1" fill="#FFF" height="24" viewBox="0 0 24 24"
         width="24">
         <path d="M0 0h24v24H0z" fill="none" />
@@ -17,7 +17,7 @@
     </button>
     <input type="file" #fileInput id="fileUpload" name="fileUpload" multiple="multiple" accept="*"
       style="display:none;" />
-    <button class="btn-icon" (click)="export()" [disabled]="!exportEnabled" type="button">
+    <button class="btnIcon pmlo-btn pmlo-secondary" (click)="export()" [disabled]="!exportEnabled" type="button">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-4 mr-1" fill="#FFF" height="24" viewBox="0 0 24 24"
         width="24">
         <path d="M0 0h24v24H0z" fill="none" />
