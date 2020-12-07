@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { DMRHomeComponent } from './dmrhome.component';
 import { EsrimapComponent } from './esrimap/esrimap.component';
 import { FormsModule } from '@angular/forms';
-import { GraphicsStoreModule } from '../shared/store/GraphicsStore.module';
 import { HeaderModule } from '../shared/components/header/header.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgModule } from '@angular/core';
+import { GraphicsStoreModule } from '../shared/components/graphics-store/GraphicsStore.module';
 
 const routes: Routes = [
   {

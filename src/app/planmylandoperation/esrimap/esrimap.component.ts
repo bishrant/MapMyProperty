@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer, FindGraphicById, GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
-import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
 import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { createMapView } from 'src/app/shared/utils/CreateMapView';
@@ -24,6 +23,7 @@ import { HelpService } from 'src/app/shared/services/help/help.service';
 import { HelpObj } from 'src/app/shared/services/help/HelpObj.model';
 import { InitializeArcGISWorkers } from 'src/app/shared/utils/ArcGISWorkersUtil';
 import { isMapViewActive } from 'src/app/shared/ScreenUtils';
+import { GraphicsStoreComponent } from 'src/app/shared/components/graphics-store/GraphicsStore.component';
 
 @Component({
   selector: 'pmlo-esrimap',
