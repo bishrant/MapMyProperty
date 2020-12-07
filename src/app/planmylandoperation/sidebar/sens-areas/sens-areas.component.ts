@@ -28,11 +28,15 @@ export class SensAreasComponent implements OnInit {
   slopesChkboxValue: boolean = true;
   wetAreasChkboxValue: boolean = true;
   smzBufferValue: number = 50;
+  smzLabelValue: number = 50;
   wetlandsBufferValue:number = 0;
+  wetLabelValue:number = 0;
   slopeValue:number = 8;
   slopeLabelValue:number = 8;
 
-  reportTitle = '';
+  areasCalculated:boolean = false;
+
+  reportTitle:string = '';
 
   @Input() mapView: any;
 
@@ -60,6 +64,7 @@ export class SensAreasComponent implements OnInit {
       if (!val)
       {
         this.sensAreaGL.removeAll();
+        this.areasCalculated = false;
       }
     });
 
@@ -68,41 +73,46 @@ export class SensAreasComponent implements OnInit {
         const maxAcres: number = 100000;
         this.slopeValue = 8;
         this.slopeLabelValue = this.slopeValue;
-
-        if (this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').length === 0) {
-          this.esrimapService.sensAreasAccordionOpen.emit(false);
-          this.pmloNote.body = 'A drawn boundary is needed to be able to calculate sensitive areas.';
-          this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-        } else if (this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').length > 1) {
-          this.esrimapService.sensAreasAccordionOpen.emit(false);
-          this.pmloNote.body = 'You can only display sensitive areas from one polygon at a time.';
-          this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-        } else if (GreaterThanMaxArea(this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry, maxAcres, 'acres')) {
-          this.esrimapService.sensAreasAccordionOpen.emit(false);
-          this.pmloNote.body = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(maxAcres) + ' acres.';
-          this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-        } else if (this.sensAreaGL.graphics.length === 0) {
-          this.loaderService.isLoading.next(true);
-
-          const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
-
-          this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((isInTexas:boolean) => {
-            this.sensAreasService.getSensAreas(inputBoundary, isInTexas).then((result) => {
-              if (result.length === 0) {
-                this.loaderService.isLoading.next(false);
-                this.esrimapService.sensAreasAccordionOpen.emit(false);
-                this.pmloNote.body = 'There was an error calculating "Sensitive Areas". Please try again and, if the problem persists, contact the administrator.';
-                this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-              } else {
-                const boundaryId: string = inputBoundary.attributes.id;
-                this.sensAreasService.addSensAreasToMap(this.sensAreaGL, result, boundaryId, this.sliderValue);
-                this.loaderService.isLoading.next(false);
-              }
-            });
-          });
-        }
       }
     });
+  }
+
+  calculareSensAreas():void {
+    const maxAcres: number = 100000;
+
+    if (this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').length === 0) {
+      this.pmloNote.body = 'A drawn boundary is needed to be able to calculate sensitive areas.';
+      this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+    } else if (this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').length > 1) {
+      this.pmloNote.body = 'You can only display sensitive areas from one polygon at a time.';
+      this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+    } else if (GreaterThanMaxArea(this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry, maxAcres, 'acres')) {
+      this.pmloNote.body = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(maxAcres) + ' acres.';
+      this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+    } else if (this.sensAreaGL.graphics.length === 0) {
+      this.loaderService.isLoading.next(true);
+
+      const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
+
+      this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((isInTexas:boolean) => {
+        this.sensAreasService.getSensAreas(inputBoundary, isInTexas).then((result) => {
+          if (result.length === 0) {
+            this.loaderService.isLoading.next(false);
+            this.esrimapService.sensAreasAccordionOpen.emit(false);
+            this.pmloNote.body = 'There was an error calculating "Sensitive Areas". Please try again and, if the problem persists, contact the administrator.';
+            this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+          } else {
+            const boundaryId: string = inputBoundary.attributes.id;
+            this.sensAreasService.addSensAreasToMap(this.sensAreaGL, result, boundaryId, this.sliderValue);
+            this.areasCalculated = true;
+            this.smzLabelValue = this.smzBufferValue;
+            this.slopeLabelValue = this.slopeValue;
+            this.wetLabelValue = this.wetlandsBufferValue
+            this.loaderService.isLoading.next(false);
+          }
+        });
+      });
+    }
   }
 
   updateSliderValue (value: number):void {
@@ -156,9 +166,14 @@ export class SensAreasComponent implements OnInit {
     });
   }
 
-  clearSMZGraphics (): void {
-    this.sensAreaGL.removeAll();
-    this.esrimapService.sensAreasAccordionOpen.emit(false);
+  calcClearSMZGraphics (): void {
+    if (this.areasCalculated)
+    {
+      this.sensAreaGL.removeAll();
+      this.areasCalculated = false;
+    } else {
+      this.calculareSensAreas();
+    }
   }
 
   buildSMZReport (): void {

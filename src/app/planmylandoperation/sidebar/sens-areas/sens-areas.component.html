@@ -30,7 +30,7 @@
         <label class="inline-flex cursor-pointer">
           <input type="checkbox" class="m-auto form-checkbox h-5 w-5 text-pmlo_secondary cursor-pointer" [attr.checked]="smzChkboxValue" [(ngModel)]="smzChkboxValue"
             (change)="updateGraphicOpacity($event.target.checked, 'smz')">
-          <span class="checkbox-label">(SMZ)</span>
+          <span class="checkbox-label">SMZ ({{ smzLabelValue }} ft)</span>
         </label>
 
         <div class="saSymbol smzBack"></div>
@@ -48,7 +48,7 @@
             </div>
           </div>
         </div>
-        <button type="button" class="pmlo-btn pmlo-secondary sm-btn" (click)="bufferGraphic('smz')">Buffer</button>
+        <button *ngIf="areasCalculated" type="button" class="pmlo-btn pmlo-secondary sm-btn" (click)="bufferGraphic('smz')">Buffer</button>
       </div>
       <div class="flex items-center">
         <div class="plusSign" (click)="slopeCollapsed = !slopeCollapsed">
@@ -76,7 +76,7 @@
             </div>
           </div>
         </div>
-        <button type="button" class="pmlo-btn pmlo-secondary sm-btn" (click)="setSlope('slopes')">Set</button>
+        <button *ngIf="areasCalculated" type="button" class="pmlo-btn pmlo-secondary sm-btn" (click)="setSlope('slopes')">Set</button>
       </div>
       <div class="flex items-center">
         <div class="plusSign" (click)="wetCollapsed = !wetCollapsed">
@@ -87,7 +87,7 @@
         <label class="inline-flex cursor-pointer">
           <input type="checkbox" class="m-auto form-checkbox h-5 w-5 text-pmlo_secondary cursor-pointer" [attr.checked]="wetAreasChkboxValue" [(ngModel)]="wetAreasChkboxValue"
             (change)="updateGraphicOpacity($event.target.checked, 'wetlands')">
-          <span class="checkbox-label">Wet Areas</span>
+          <span class="checkbox-label">Wet Areas ({{ wetLabelValue }} ft)</span>
         </label>
 
         <div class="saSymbol wetBack"></div>
@@ -103,16 +103,16 @@
             </div>
           </div>
         </div>
-        <button type="button" class="pmlo-btn pmlo-secondary sm-btn"
+        <button *ngIf="areasCalculated" type="button" class="pmlo-btn pmlo-secondary sm-btn"
           (click)="bufferGraphic('wetlandsBuffer')">Buffer</button>
         <div class="saSymbol wetBufferBack"></div>
       </div>
 
       <div class="flex mt-3">
-        <button type="button" class="pmlo-btn generalBtn" (click)="clearSMZGraphics()">Clear Layer</button>
+        <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="calcClearSMZGraphics()">{{ areasCalculated ? 'Clear Layer' : 'Calculate Areas' }}</button>
       </div>
 
-      <div class="flex mt-3">
+      <div class="flex mt-3" *ngIf="areasCalculated">
         <div class="md-input-main mx-3">
           <div class="md-input-box">
             <input id="saReportTitle" name="saReportTitle" type="text" class="pmlo-md-input md-input" placeholder=" "
@@ -124,7 +124,7 @@
       </div>
 
       <div class="flex mt-3">
-        <button type="button" class="pmlo-btn pmlo-secondary generalBtn"
+        <button type="button" class="pmlo-btn pmlo-secondary generalBtn"  [disabled]="!areasCalculated"
           (click)="buildSMZReport()">Create a Report</button>
       </div>
   </div>
