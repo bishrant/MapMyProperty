@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToggleButtonModule } from '../togglebutton/togglebutton';
 import { TextcontrolsComponent } from './textcontrols.component';
 import { SliderModule } from '../slider/slider.module';
@@ -23,7 +22,6 @@ import { SliderModule } from '../slider/slider.module';
     MatButtonModule,
     MatIconModule,
     MatButtonToggleModule,
-    MatTooltipModule,
     ToggleButtonModule,
     SliderModule
   ],

@@ -15,7 +15,7 @@ export class GraphicsStoreComponent implements AfterViewInit {
   readonly disableRedo$ = this.store.select((state) => !state.app.canRedo);
 
   selectedGraphics: any[] = [];
-  constructor (private readonly store: Store<AppState>) {}
+  constructor (private readonly store: Store<AppState>) { }
 
   initSketchVMUpdate = () => {
     this.sketchVM.on('update', (gg: any) => {
@@ -33,6 +33,11 @@ export class GraphicsStoreComponent implements AfterViewInit {
     this.initSketchVMUpdate();
   }
 
+  fillSvgStyle = {
+    'width.px': 20,
+    fill: 'white'
+  };
+
   undo (): void {
     this.sketchVM.undo();
     if (this.sketchVM.state !== 'active') {
@@ -41,8 +46,11 @@ export class GraphicsStoreComponent implements AfterViewInit {
   }
 
   deleteAll (): void {
-    console.log('delete all map graphics');
-    this.store.dispatch(removeAllGraphics());
+    const r = confirm('Are you sure you want to delete all graphics/drawings?');
+    if (r === true) {
+      console.log('delete all map graphics');
+      this.store.dispatch(removeAllGraphics());
+    }
   }
 
   delete (): void {

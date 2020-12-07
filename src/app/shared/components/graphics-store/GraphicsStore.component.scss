@@ -38,6 +38,11 @@ button {
   align-items: center;
   cursor: pointer;
 }
+.flexCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .button-remove {
   color: crimson;
@@ -48,4 +53,27 @@ input[type="range"]::-moz-range-progress {
 }
 input[type="range"]::-moz-range-track {
   background-color: gray;
+}
+
+.storeBtn {
+  @extend .flexCenter;
+  padding: 5px;
+  height: 36px;
+  font-size: 12px;
+}
+
+.width60 {
+  width: 60px;
+  max-width: 60px;
+}
+
+.deleteBtn {
+  width: 90px;
+}
+.pmlo-warning {
+  @apply text-white;
+  background-color: #f44336;
+}
+.saveBtn {
+  width: 80px;
 }
