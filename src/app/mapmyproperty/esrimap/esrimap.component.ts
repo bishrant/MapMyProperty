@@ -1,7 +1,6 @@
 
 import { Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
-import { GraphicsStoreComponent } from 'src/app/shared/store/GraphicsStore.component';
 import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { createMapView } from 'src/app/shared/utils/CreateMapView';
@@ -9,6 +8,7 @@ import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import { AccordionPanelComponent } from 'src/app/shared/components/accordion-panel/accordion-panel.component';
 import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.service';
 import { isMapViewActive } from 'src/app/shared/ScreenUtils';
+import { GraphicsStoreComponent } from 'src/app/shared/components/graphics-store/GraphicsStore.component';
 
 @Component({
   selector: 'app-esrimap',
