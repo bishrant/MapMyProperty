@@ -1,6 +1,0 @@
-@import '@angular/material/_theming.scss';
-@import '../variables/pmlo.theme.colors.scss';
-
-$pmlo-primary: mat-palette($pmloPrimaryPalette);
-$pmlo-accent: mat-palette($pmloSecondaryPalette);
-$pmlo-warn: mat-palette($mat-red);

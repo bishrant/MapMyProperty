@@ -1,4 +1,4 @@
-<div>
+<div class="py-3">
   <app-help-button [header]="'Export Map to PDF'" [itemName]="'exportMap'"></app-help-button> <br>
   <form [formGroup]="printForm">
     <strong>Title</strong><br>
@@ -31,23 +31,24 @@
     </div>
     <br>
 
-    <div class="centerAlign">
+    <div class="centerAlign flex">
       <button type="button" (click)="showPrintMapPreview()" [disabled]="printForm.invalid"
-        class="mmp-primary primary-button">
+        class="pmlo-btn pmlo-secondary generalBtn">
         Preview
       </button>
     </div>
   </form>
 </div>
 
-<app-modal #printMapModal [maximizable]="false" [backdrop]="true" [headerBackgroundColor]="'black'" (closeModal)="previewClosed()">
+<app-modal #printMapModal [maximizable]="false" [backdrop]="true" [showFooter]="true"
+[headerBackgroundColor]="'#353535'" (closeModal)="previewClosed()">
   <ng-container class="app-modal-header">Map Preview</ng-container>
   <ng-container class="app-modal-body">
     <div #modalMapViewNode class="mapViewNode"> </div>
   </ng-container>
   <ng-container class="app-modal-footer">
     <div class="footer">
-      <button type="button" class="mmp-primary primary-button" (click)="generatePDF()">
+      <button type="button" class="pmlo-btn pmlo-secondary printBtn" (click)="generatePDF()">
         Generate PDF
       </button>
     </div>
