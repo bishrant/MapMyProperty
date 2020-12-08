@@ -23,7 +23,9 @@
     (input)="updateSliderValue($event.value)">
     </mat-slider>
     <div>100</div>
-  </div>
+  </div>{{sliderValue}}
+  <app-slider [value]="sliderValue" (onChange)="updateSliderValue($event)" [min]="0" [max]="100" [steps]="5"></app-slider>
+
 </ng-container>
 
 
