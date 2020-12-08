@@ -53,8 +53,8 @@
         <div #searchBar class="mr-2"></div>
         <app-help-button [header]="'Find Location'" [itemName]="'search'" [fillColor]="'white'"></app-help-button>
       </div>
-      <div class="coordsDisplay">
-        Mouse Coordinates [ {{mapCoords}} ]
+      <div class="coordsDisplay hidden md:inline">
+        Mouse Coordinates [ <span [innerHTML]="mapCoords"></span> ]
       </div>
     </div>
   </div>
