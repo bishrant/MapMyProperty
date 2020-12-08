@@ -95,7 +95,7 @@ export class SensAreasComponent implements OnInit {
       const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
 
       this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((isInTexas:boolean) => {
-        this.sensAreasService.getSensAreas(inputBoundary, isInTexas).then((result) => {
+        this.sensAreasService.getSensAreas(inputBoundary, isInTexas, this.smzBufferValue, this.wetlandsBufferValue, this.slopeValue).then((result) => {
           if (result.length === 0) {
             this.loaderService.isLoading.next(false);
             this.esrimapService.sensAreasAccordionOpen.emit(false);
@@ -107,7 +107,7 @@ export class SensAreasComponent implements OnInit {
             this.areasCalculated = true;
             this.smzLabelValue = this.smzBufferValue;
             this.slopeLabelValue = this.slopeValue;
-            this.wetLabelValue = this.wetlandsBufferValue
+            this.wetLabelValue = this.wetlandsBufferValue;
             this.loaderService.isLoading.next(false);
           }
         });

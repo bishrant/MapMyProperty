@@ -51,13 +51,16 @@ export class SensAreasService {
     });
   }
 
-  getSensAreas (graph: __esri.Graphic, isInTexas: boolean): Promise<any[]> {
+  getSensAreas (graph: __esri.Graphic, isInTexas: boolean, smzValue: number, wetAreasBufferValue: number, severeSlopesValue: number): Promise<any[]> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
       const params = {
         inputPolygon: featureSet,
-        isOnlyTexas: isInTexas
+        isOnlyTexas: isInTexas,
+        smzValue: smzValue,
+        wetAreasBufferValue: wetAreasBufferValue,
+        severeSlopesValue: severeSlopesValue
       };
 
       const gp: __esri.Geoprocessor = new Geoprocessor({
@@ -70,6 +73,7 @@ export class SensAreasService {
             if (jobInfo2.jobStatus === 'job-succeeded') {
               Promise.all([
                 gp.getResultData(jobInfo2.jobId, 'outputWetlands'),
+                gp.getResultData(jobInfo2.jobId, 'outputWetlandsBuffer'),
                 gp.getResultData(jobInfo2.jobId, 'outputSevereSlopes'),
                 gp.getResultData(jobInfo2.jobId, 'outputSMZ'),
                 gp.getResultData(jobInfo2.jobId, 'outputStreams')
@@ -103,19 +107,25 @@ export class SensAreasService {
           break;
 
         case 1:
+          fillProps = GetWetlandsBufferProps(graphicTransparency);
+          symbol = CreatePolygonSymbol(lineProps, fillProps);
+          origin = 'wetlandsBuffer';
+          break;
+
+        case 2:
           fillProps = GetSlopeProps(graphicTransparency);
           symbol = CreatePolygonSymbol(lineProps, fillProps);
           origin = 'slopes';
           isSlope = true;
           break;
 
-        case 2:
+        case 3:
           fillProps = GetSMZProps(graphicTransparency);
           symbol = CreatePolygonSymbol(lineProps, fillProps);
           origin = 'smz';
           break;
 
-        case 3:
+        case 4:
           lineProps = GetStreamsLineProps(graphicTransparency);
           symbol = CreatePolylineSymbol(lineProps);
           origin = 'streams';
