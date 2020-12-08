@@ -90,8 +90,9 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.selectedGraphics.length > 0) {
       const _geomType = this.selectedGraphics[0].attributes.geometryType;
-      if (['polygon', 'circle'].includes(_geomType)) {
-        this.sketchVM.updateGraphics.getItemAt(0).symbol = this.getUpdatedGraphicsStyle(_geomType)
+      if (['polygon', 'circle', 'polyline'].includes(_geomType)) {
+        this.sketchVM.updateGraphics.getItemAt(0).symbol = this.getUpdatedGraphicsStyle(_geomType);
+        this.selectedGraphics[0].attributes.symbol = this.getUpdatedGraphicsStyle(_geomType);
       }
     }
   };
@@ -112,6 +113,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
           this.sketchVM.createGraphic.symbol = this.getUpdatedGraphicsStyle(evt.tool);
         }
       }
+
       if (evt.state === 'complete') {
         let createdGraphic;
         if (evt.tool === 'circle') {
@@ -148,6 +150,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         this.store.dispatch(addGraphics({ graphics: [JSON.stringify(createdGraphic)] }));
+        this.drawingTool = '';
       }
     });
   };
@@ -170,6 +173,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if (['polyline', 'circle', 'polygon'].includes(gg.tool)) {
           this.sketchVM.updateGraphics.getItemAt(0).symbol = this.getUpdatedGraphicsStyle(gg.tool);
+          this.selectedGraphics[0].attributes.symbol = this.getUpdatedGraphicsStyle(gg.tool);
         }
       } else if (gg.state === 'complete') {
         this.mapView.graphics.removeAll();
