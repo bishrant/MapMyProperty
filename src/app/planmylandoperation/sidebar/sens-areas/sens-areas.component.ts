@@ -66,14 +66,6 @@ export class SensAreasComponent implements OnInit {
         this.areasCalculated = false;
       }
     });
-
-    this.esrimapService.sensAreasAccordionOpen.subscribe((opened:boolean) => {
-      if (opened) {
-        const maxAcres: number = 100000;
-        this.slopeValue = 8;
-        this.slopeLabelValue = this.slopeValue;
-      }
-    });
   }
 
   calculareSensAreas():void {
