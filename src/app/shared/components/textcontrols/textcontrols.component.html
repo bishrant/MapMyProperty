@@ -2,7 +2,7 @@
     <legend>Text Style</legend>
     <div class="flex verticalCenter">
         <div> Font:</div>
-        <select [(ngModel)]="textProps.font.family" class="matSelect" (selectionChange)="changeFontFamily()">
+        <select [(ngModel)]="textProps.font.family" (selectionChange)="changeFontFamily()">
           <option *ngFor="let font of fontFamilyOptions" [ngValue]="font">{{font}}</option>
         </select>
     </div>
