@@ -6,11 +6,6 @@
   @apply bg-pmlo_secondary text-white;
 }
 
-.mat-slider-horizontal {
-  height: 100%;
-  width: 80%;
-}
-
 .generalBtn {
   width: 100%;
   margin-right: 0.625em;
@@ -81,6 +76,10 @@
     opacity: 0;
     transform: scale(10);
   }
+}
+.transparencySlider {
+  width: 80%;
+  display: inline-block;
 }
 
 // .pmlo-btn:enabled:hover {

@@ -11,7 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSliderModule } from '@angular/material/slider';
 import { NgModule } from '@angular/core';
 import { GraphicsStoreModule } from '../shared/components/graphics-store/GraphicsStore.module';
 
@@ -30,7 +29,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     MatIconModule,
     MatButtonModule,
-    MatSliderModule,
     MatSelectModule,
     FormsModule,
     MatFormFieldModule,

@@ -17,26 +17,25 @@
       <span class="checkbox-label">Identify</span>
     </label>
   </div>
-<ng-container *ngIf="areSoilsClipped">
-  <div class="pt-3">Transparency</div>
-  <div class="flex justify-between items-baseline pb-1">
-    <div>0</div>
-    <mat-slider class="mat-slider-has-ticks" [thumbLabel]="true" step="5" min="0" max="100" [value]="sliderValue"
-    (input)="updateSliderValue($event.value)">
-    </mat-slider>
-    <div>100</div>
-  </div>{{sliderValue}}
-  <app-slider [value]="sliderValue" (onChange)="updateSliderValue($event)" [min]="0" [max]="100" [steps]="5"></app-slider>
-
-</ng-container>
+  <ng-container *ngIf="areSoilsClipped">
+    <div class="pt-3">Transparency: {{sliderValue}}%</div>
+    <div class="flex justify-between items-baseline pb-1">
+      <div>0</div>
+      <app-slider [value]="sliderValue" (onChange)="updateSliderValue($event)" [min]="0" [max]="100" [steps]="5" class="transparencySlider">
+      </app-slider>
+      <div>100</div>
+    </div>
+  </ng-container>
 
   <div class="flex justify-center mt-3">
-    <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="clipClearSoils()">{{ areSoilsClipped ? 'Clear Layer' : 'Clip' }}</button>
+    <button type="button" class="pmlo-btn pmlo-secondary generalBtn"
+      (click)="clipClearSoils()">{{ areSoilsClipped ? 'Clear Layer' : 'Clip' }}</button>
   </div>
 
   <ng-container *ngIf="areSoilsClipped">
     <div class="flex justify-center mt-3">
-      <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="toggleTable()">{{ isTableVisible ? 'Hide' : 'Show' }} Table</button>
+      <button type="button" class="pmlo-btn pmlo-secondary generalBtn"
+        (click)="toggleTable()">{{ isTableVisible ? 'Hide' : 'Show' }} Table</button>
     </div>
     <div class="flex mt-3">
       <div class="md-input-main mx-3">
@@ -51,6 +50,7 @@
   </ng-container>
 
   <div class="flex justify-center mt-3">
-    <button type="button" class="pmlo-btn pmlo-secondary generalBtn" [disabled]="!areSoilsClipped" (click)="buildSoilsReport()">Create A Report</button>
+    <button type="button" class="pmlo-btn pmlo-secondary generalBtn" [disabled]="!areSoilsClipped"
+      (click)="buildSoilsReport()">Create A Report</button>
   </div>
 </div>

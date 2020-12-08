@@ -105,8 +105,9 @@ export class SensAreasComponent implements OnInit {
     }
   }
 
-  updateSliderValue (value: number):void {
-    this.sensAreasService.updateGraphicsOpacity(this.sensAreaGL, value);
+  updateSliderValue (value: any):void {
+    this.sliderValue = parseInt(value);
+    this.sensAreasService.updateGraphicsOpacity(this.sensAreaGL, parseInt(value));
   }
 
   updateGraphicOpacity (isChecked: boolean, origin: string) {
