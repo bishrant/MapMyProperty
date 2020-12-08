@@ -30,7 +30,6 @@ export class SensAreasComponent implements OnInit {
   smzBufferValue: number = 50;
   smzLabelValue: number = 50;
   wetlandsBufferValue:number = 0;
-  wetLabelValue:number = 0;
   slopeValue:number = 8;
   slopeLabelValue:number = 8;
 
@@ -107,7 +106,6 @@ export class SensAreasComponent implements OnInit {
             this.areasCalculated = true;
             this.smzLabelValue = this.smzBufferValue;
             this.slopeLabelValue = this.slopeValue;
-            this.wetLabelValue = this.wetlandsBufferValue;
             this.loaderService.isLoading.next(false);
           }
         });
