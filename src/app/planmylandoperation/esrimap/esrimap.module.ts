@@ -3,7 +3,6 @@ import { EsrimapComponent } from './esrimap.component';
 import { NgModule } from '@angular/core';
 import { SidebarModule } from '../sidebar/sidebar.module';
 import { DrawtoolsModule } from 'src/app/shared/components/drawtools/drawtools.module';
-import { MatSliderModule } from '@angular/material/slider';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { SensAreasComponent } from '../sidebar/sens-areas/sens-areas.component';
@@ -60,7 +59,6 @@ import { SliderModule } from 'src/app/shared/components/slider/slider.module';
     GraphicsStoreModule,
     SidebarModule,
     DrawtoolsModule,
-    MatSliderModule,
     MatButtonModule,
     FormsModule,
     ElevationProfileModule,

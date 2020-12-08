@@ -1,85 +1,92 @@
 <div class="py3">
   <app-help-button [header]="'Regeneration Operations'" [itemName]="'regOperations'"></app-help-button> <br>
-    <ng-container *ngIf="hasBoundary">
-        <div class="pt-3">Transparency</div>
-        <div class="flex justify-between items-baseline pb-1">
-            <div>0</div>
-            <mat-slider class="mat-slider-has-ticks" [thumbLabel]="true" step="5" min="0" max="100"
-                [value]="sliderValue" (input)="updateSliderValue($event.value)">
-            </mat-slider>
-            <div>100</div>
-        </div>
+  <ng-container *ngIf="hasBoundary">
+    <div class="pt-3">Transparency: {{sliderValue}}%</div>
+    <div class="flex justify-between items-baseline pb-1">
+      <div>0</div>
+      <app-slider [value]="sliderValue" (onChange)="updateSliderValue($event)" [min]="0" [max]="100" [steps]="5"
+        class="transparencySlider">
+      </app-slider>
+      <div>100</div>
+    </div>
 
-        <div class="block">
-            <div class="mt-2">
-                <fieldset>
-                    <div>
-                        <label class="inline-flex cursor-pointer">
-                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-reg"
-                                value="SeedMortal" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'SeedMortal'">
-                            <span class="ml-2">Potential for Seedling Mortality</span>
-                        </label>
-                    </div>
-                    <div class="mt-1">
-                        <label class="inline-flex cursor-pointer">
-                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-reg"
-                                value="SitePrepS" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'SitePrepS'">
-                            <span class="ml-2">Mechanical Site Preparation (Surface)</span>
-                        </label>
-                    </div>
-                    <div class="mt-1">
-                        <label class="inline-flex cursor-pointer">
-                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-reg"
-                                value="SitePrepD" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'SitePrepD'">
-                            <span class="ml-2">Mechanical Site Preparation (Deep)</span>
-                        </label>
-                    </div>
-                    <div class="mt-1">
-                        <label class="inline-flex cursor-pointer">
-                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-reg"
-                                value="MechPlant" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'MechPlant'">
-                            <span class="ml-2">Suitability for Machine Planting</span>
-                        </label>
-                    </div>
-                    <div class="mt-1">
-                        <label class="inline-flex cursor-pointer">
-                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-reg"
-                                value="HandPlant" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'HandPlant'">
-                            <span class="ml-2">Suitability for Hand Planting</span>
-                        </label>
-                    </div>
-                    <div class="mt-1">
-                        <label class="inline-flex cursor-pointer">
-                            <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer" name="pmlo-reg"
-                                value="FireDamage" (change)="radioChanged($event.target.value)" [checked]="selectedRadio === 'FireDamage'">
-                            <span class="ml-2">Potential for Damage by Fire</span>
-                        </label>
-                    </div>
-                </fieldset>
-            </div>
-        </div>
-
-        <div class="mt-3">
-            <pmlo-operation-legend [initialValue]="selectedRadio" [isFromHarvest]="false"></pmlo-operation-legend>
-        </div>
-
-        <div class="flex justify-center mt-3">
-            <button type="button" class="pmlo-btn generalBtn" (click)="clearSoilGLayers()">Clear Layer</button>
-        </div>
-
-        <div class="flex mt-3">
-            <div class="md-input-main mx-3">
-              <div class="md-input-box">
-                <input id="roReportTitle" name="soReportTitle" type="text" class="pmlo-md-input md-input" placeholder=" "
-                  [(ngModel)]="roReportTitle" maxlength="40" />
-                <label for="roReportTitle" class="md-label text-pmlo_primary">Report Title</label>
-                <div class="pmlo-md-input-underline md-input-underline"></div>
-              </div>
-            </div>
+    <div class="block">
+      <div class="mt-2">
+        <fieldset>
+          <div>
+            <label class="inline-flex cursor-pointer">
+              <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer"
+                name="pmlo-reg" value="SeedMortal" (change)="radioChanged($event.target.value)"
+                [checked]="selectedRadio === 'SeedMortal'">
+              <span class="ml-2">Potential for Seedling Mortality</span>
+            </label>
           </div>
-
-          <div class="flex justify-center mt-3">
-            <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="buildOperationsReport()">Create A Report</button>
+          <div class="mt-1">
+            <label class="inline-flex cursor-pointer">
+              <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer"
+                name="pmlo-reg" value="SitePrepS" (change)="radioChanged($event.target.value)"
+                [checked]="selectedRadio === 'SitePrepS'">
+              <span class="ml-2">Mechanical Site Preparation (Surface)</span>
+            </label>
           </div>
-    </ng-container>
+          <div class="mt-1">
+            <label class="inline-flex cursor-pointer">
+              <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer"
+                name="pmlo-reg" value="SitePrepD" (change)="radioChanged($event.target.value)"
+                [checked]="selectedRadio === 'SitePrepD'">
+              <span class="ml-2">Mechanical Site Preparation (Deep)</span>
+            </label>
+          </div>
+          <div class="mt-1">
+            <label class="inline-flex cursor-pointer">
+              <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer"
+                name="pmlo-reg" value="MechPlant" (change)="radioChanged($event.target.value)"
+                [checked]="selectedRadio === 'MechPlant'">
+              <span class="ml-2">Suitability for Machine Planting</span>
+            </label>
+          </div>
+          <div class="mt-1">
+            <label class="inline-flex cursor-pointer">
+              <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer"
+                name="pmlo-reg" value="HandPlant" (change)="radioChanged($event.target.value)"
+                [checked]="selectedRadio === 'HandPlant'">
+              <span class="ml-2">Suitability for Hand Planting</span>
+            </label>
+          </div>
+          <div class="mt-1">
+            <label class="inline-flex cursor-pointer">
+              <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer"
+                name="pmlo-reg" value="FireDamage" (change)="radioChanged($event.target.value)"
+                [checked]="selectedRadio === 'FireDamage'">
+              <span class="ml-2">Potential for Damage by Fire</span>
+            </label>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <pmlo-operation-legend [initialValue]="selectedRadio" [isFromHarvest]="false"></pmlo-operation-legend>
+    </div>
+
+    <div class="flex justify-center mt-3">
+      <button type="button" class="pmlo-btn generalBtn" (click)="clearSoilGLayers()">Clear Layer</button>
+    </div>
+
+    <div class="flex mt-3">
+      <div class="md-input-main mx-3">
+        <div class="md-input-box">
+          <input id="roReportTitle" name="soReportTitle" type="text" class="pmlo-md-input md-input" placeholder=" "
+            [(ngModel)]="roReportTitle" maxlength="40" />
+          <label for="roReportTitle" class="md-label text-pmlo_primary">Report Title</label>
+          <div class="pmlo-md-input-underline md-input-underline"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-center mt-3">
+      <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="buildOperationsReport()">Create A
+        Report</button>
+    </div>
+  </ng-container>
 </div>

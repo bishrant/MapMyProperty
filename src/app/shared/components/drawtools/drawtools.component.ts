@@ -305,6 +305,9 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   startDrawingGraphics = (toolName: string, initial: boolean): any => {
+    if (this.sketchVM.state === 'active') {
+      this.drawingTool = toolName;
+    }
     this.sketchVM.cancel();
     if (this.clickToAddTextboxHandler) {
       this.clickToAddTextboxHandler.remove();
