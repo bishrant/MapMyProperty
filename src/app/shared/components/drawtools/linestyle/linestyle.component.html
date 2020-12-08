@@ -9,13 +9,13 @@
 
         <mat-select [(ngModel)]="lineProps.style" class="matSelect" (selectionChange)="changeGraphicsStyle()">
           <mat-select-trigger>
-            <svg-icon *ngIf="lineProps.style !== 'none'" [src]="'assets/icons/symbols-sls-'+lineProps.style+'.svg'"
+            <svg-icon *ngIf="lineProps.style !== 'none'" [src]="'assets/linesymbols/symbols-sls-'+lineProps.style+'.svg'"
               [svgStyle]="lineSvgStyle">
             </svg-icon>
             <span *ngIf="lineProps.style === 'none'">None</span>
           </mat-select-trigger>
           <mat-option *ngFor="let style of lineStyles" [value]="style">
-            <svg-icon *ngIf="style !== 'none'" [src]="'assets/icons/symbols-sls-'+style+'.svg'"
+            <svg-icon *ngIf="style !== 'none'" [src]="'assets/linesymbols/symbols-sls-'+style+'.svg'"
               [svgStyle]="lineSvgStyle">
             </svg-icon>
             <span *ngIf="style === 'none'">None</span>

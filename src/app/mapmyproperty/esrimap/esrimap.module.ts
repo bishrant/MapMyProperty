@@ -1,7 +1,6 @@
 import { ImportExportModule } from './../../shared/components/import-export/ImportExport.module';
 import { CommonModule } from '@angular/common';
 import { EsrimapComponent } from './esrimap.component';
-import { GraphicsStoreModule } from 'src/app/shared/store/GraphicsStore.module';
 import { NgModule } from '@angular/core';
 import { DrawtoolsModule } from 'src/app/shared/components/drawtools/drawtools.module';
 import { PrintToolModule } from 'src/app/shared/components/print-tool/print-tool.module';
@@ -10,6 +9,7 @@ import { SliderModule } from 'src/app/shared/components/slider/slider.module';
 import { MMPThemesModule } from '../sidebar/themes/themes.module';
 import { BasemapWidgetModule } from 'src/app/shared/components/basemap-widget/basemap-widget.module';
 import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-widget.module';
+import { GraphicsStoreModule } from 'src/app/shared/components/graphics-store/GraphicsStore.module';
 
 @NgModule({
   declarations: [EsrimapComponent],

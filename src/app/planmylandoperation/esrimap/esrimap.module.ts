@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { EsrimapComponent } from './esrimap.component';
-import { GraphicsStoreModule } from 'src/app/shared/store/GraphicsStore.module';
 import { NgModule } from '@angular/core';
 import { SidebarModule } from '../sidebar/sidebar.module';
 import { DrawtoolsModule } from 'src/app/shared/components/drawtools/drawtools.module';
@@ -38,6 +37,7 @@ import { SwipeHelpModule } from 'src/app/shared/components/help-components/swipe
 import { BasemapsHelpModule } from 'src/app/shared/components/help-components/basemaps-help/basemaps-help.module';
 import { SearchWidgetHelpModule } from 'src/app/shared/components/help-components/search-widget-help/search-widget-help.module';
 import { OverallHelpComponent } from '../help-templates/overall-help/overall-help.component';
+import { GraphicsStoreModule } from 'src/app/shared/components/graphics-store/GraphicsStore.module';
 @NgModule({
   declarations: [
     EsrimapComponent,

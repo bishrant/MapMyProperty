@@ -8,14 +8,14 @@
         Pattern :<br>
         <mat-select [(ngModel)]="fillProps.style" class="matSelect" (selectionChange)="changeGraphicsStyle()">
           <mat-select-trigger>
-            <svg-icon *ngIf="fillProps.style !== 'none'" [src]="'assets/icons/symbols-sfs-'+fillProps.style+'.svg'"
+            <svg-icon *ngIf="fillProps.style !== 'none'" [src]="'assets/fillsymbols/symbols-sfs-'+fillProps.style+'.svg'"
               [svgStyle]="fillSvgStyle">
             </svg-icon>
             <span *ngIf="fillProps.style === 'none'">None</span>
           </mat-select-trigger>
           <mat-option *ngFor="let style of fillStyles" [value]="style">
             <span *ngIf="style === 'none'">None</span>
-            <svg-icon *ngIf="style !== 'none'" [src]="'assets/icons/symbols-sfs-'+style+'.svg'"
+            <svg-icon *ngIf="style !== 'none'" [src]="'assets/fillsymbols/symbols-sfs-'+style+'.svg'"
               [svgStyle]="fillSvgStyle">
             </svg-icon>
           </mat-option>
