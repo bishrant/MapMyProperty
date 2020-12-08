@@ -59,7 +59,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   private graphicsSubcription$: any;
 
-  constructor (private store: Store<AppState>, private textService: TextControlService, private esriMapService: EsrimapService,
+  constructor(private store: Store<AppState>, private textService: TextControlService, private esriMapService: EsrimapService,
     private TextSelectionService: TextControlSelectionService) { }
 
   id = (): string => Math.random().toString(36).substr(2, 9);
@@ -76,47 +76,42 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selectedLabelsGraphics = [];
   };
 
-  toggleLabels ():void {
+  toggleLabels(): void {
     this.geomLabelsGraphicsLayer.visible = !this.geomLabelsGraphicsLayer.visible;
   }
 
-  cleanupSelection = () :void => {
+  cleanupSelection = (): void => {
     this.selectedLabelsGraphics = [];
     this.selectedTextGraphics = [];
   };
 
-  changeGraphicsStyle = ():void => {
+  changeGraphicsStyle = (): void => {
     if (!this.selectedGraphics) return;
 
     if (this.selectedGraphics.length > 0) {
       const _geomType = this.selectedGraphics[0].attributes.geometryType;
-      let geomJSON;
-      if (_geomType === 'circle') {
-        geomJSON = CreateCircleFromGraphic(
-          this.selectedGraphics[0],
-          this.lineStyleElmRef.lineProps,
-          this.fillStyleElmRef.fillProps
-        );
+      if (['polygon', 'circle'].includes(_geomType)) {
+        this.sketchVM.updateGraphics.getItemAt(0).symbol = this.getUpdatedGraphicsStyle(_geomType)
       }
-      if (['polygon', 'polyline'].indexOf(_geomType) > -1) {
-      }
-      if (_geomType === 'polygon') {
-        geomJSON = CreatePolygonFromGraphic(
-          this.selectedGraphics[0],
-          this.lineStyleElmRef.lineProps,
-          this.fillStyleElmRef.fillProps
-        );
-      } else if (_geomType === 'polyline') {
-        geomJSON = CreatePolylineFromGraphic(this.selectedGraphics[0], this.lineStyleElmRef.lineProps);
-      }
-
-      this.store.dispatch(updateGraphics({ graphics: JSON.stringify([geomJSON]) }));
-      this.sketchVM.cancel();
     }
   };
 
-  initSketchVMCreate = ():void => {
+  getUpdatedGraphicsStyle = (graphicType: string) => {
+    if (['polygon', 'circle'].includes(graphicType)) {
+      return CreatePolygonSymbol(this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps);
+    } else if (graphicType === 'polyline') {
+      return CreatePolylineSymbol(this.lineStyleElmRef.lineProps);
+    }
+    return null;
+  }
+
+  initSketchVMCreate = (): void => {
     this.sketchVM.on(['create'], (evt: any) => {
+      if (['polyline', 'circle', 'polygon'].includes(evt.tool)) {
+        if (this.sketchVM.createGraphic) {
+          this.sketchVM.createGraphic.symbol = this.getUpdatedGraphicsStyle(evt.tool);
+        }
+      }
       if (evt.state === 'complete') {
         let createdGraphic;
         if (evt.tool === 'circle') {
@@ -172,6 +167,10 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedGraphics = gg.graphics;
         dragElement('mydiv', 'parent');
         this.selectedGraphicsChanged();
+
+        if (['polyline', 'circle', 'polygon'].includes(gg.tool)) {
+          this.sketchVM.updateGraphics.getItemAt(0).symbol = this.getUpdatedGraphicsStyle(gg.tool);
+        }
       } else if (gg.state === 'complete') {
         this.mapView.graphics.removeAll();
         let _updatedGraphics = gg.graphics;
@@ -230,11 +229,11 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  radiusChangedEnter = ():any => {
+  radiusChangedEnter = (): any => {
     this.updateCircleRadius();
   };
 
-  openDrawPanel = ():any => {
+  openDrawPanel = (): any => {
     this.esriMapService.closeAllPanelsExcept.emit('Draw');
   }
 
@@ -258,12 +257,12 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  ResetDrawControls = ():void => {
+  ResetDrawControls = (): void => {
     this.drawingTool = '';
     this.drawingMode = '';
   };
 
-  clearDrawTools = ():void => {
+  clearDrawTools = (): void => {
     this.sketchVM.cancel();
     if (this.clickToAddTextboxHandler) {
       this.clickToAddTextboxHandler.remove();
@@ -272,7 +271,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ResetDrawControls();
   };
 
-  ngOnInit (): void {
+  ngOnInit(): void {
     if (this.sketchVM) {
       this.sketchVM.on('update', (e: any) => {
         if (e.state === 'complete') {
@@ -297,7 +296,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit (): void {
+  ngAfterViewInit(): void {
     this.graphicsSubcription$ = this.listenToGraphicsStore();
   }
 
@@ -340,7 +339,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  radiusBlurred = ():void => {
+  radiusBlurred = (): void => {
     if (this.selectedGraphics) {
       this.updateCircleRadius();
     }
@@ -349,14 +348,14 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  changeDrawingMode = (mode: string):void => {
+  changeDrawingMode = (mode: string): void => {
     this.drawingMode = mode;
     if (this.drawingTool !== '') {
       this.startDrawingGraphics(this.drawingTool, false);
     }
   };
 
-  ngOnDestroy ():void {
+  ngOnDestroy(): void {
     this.textSubscription.unsubscribe();
     this.graphicsSubcription$.unsubscribe();
   }

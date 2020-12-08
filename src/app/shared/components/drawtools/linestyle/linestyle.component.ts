@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { RGBObjectToHexA } from '../../../utils/Colors';
 import { LinePropsRGBA } from '../DrawTools.interface';
 import { LineStyles } from 'src/app/shared/utils/GraphicStyles';
 
@@ -32,7 +31,6 @@ export class LinestyleComponent {
     this.lineProps.style = s.style;
     this.lineProps.color = s.color;
     this.lineProps.width = s.width;
-    this.setLineSVGStyle();
   }
 
   lineProps: LinePropsRGBA = {
@@ -43,16 +41,11 @@ export class LinestyleComponent {
 
   lineSvgStyle = {
     'width.px': 150,
-    fill: RGBObjectToHexA(this.lineProps.color)
-  };
-
-  setLineSVGStyle = () => {
-    this.lineSvgStyle.fill = RGBObjectToHexA(this.lineProps.color);
+    fill: 'black'
   };
 
   changeLineColor = (colorInfo: any) => {
     this.lineProps.color = colorInfo;
-    this.setLineSVGStyle();
     this.changedGraphicsStyle.emit();
   };
 
@@ -61,6 +54,11 @@ export class LinestyleComponent {
   };
 
   changeLineWidth = (width: any) => {
+    this.lineProps.width = width;
+    this.changeGraphicsStyle();
+  }
+
+  changeLineWidthComplete = (width: any) => {
     this.lineProps.width = width;
     this.changeGraphicsStyle();
   }

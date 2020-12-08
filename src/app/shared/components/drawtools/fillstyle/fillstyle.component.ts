@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { RGBObjectToHexA } from '../../../utils/Colors';
 import { FillPropsRGBA } from '../DrawTools.interface';
 import { FillStyles } from 'src/app/shared/utils/GraphicStyles';
 
@@ -29,7 +28,6 @@ export class FillstyleComponent {
     const s = value[0].attributes.symbol;
     this.fillProps.style = s.style;
     this.fillProps.color = s.color;
-    this.setFillSvgStyle();
   }
 
   public fillProps: FillPropsRGBA = {
@@ -39,16 +37,11 @@ export class FillstyleComponent {
 
   fillSvgStyle = {
     'width.px': 150,
-    fill: RGBObjectToHexA(this.fillProps.color)
-  };
-
-  setFillSvgStyle = () => {
-    this.fillSvgStyle.fill = RGBObjectToHexA(this.fillProps.color);
+    fill: 'black'
   };
 
   changeFillColor = (colorInfo: any) => {
     this.fillProps.color = colorInfo;
-    this.setFillSvgStyle();
     this.changedGraphicsStyle.emit();
   };
 

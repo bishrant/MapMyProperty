@@ -8,7 +8,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class SliderComponent {
   @Input() min: number = 1;
   @Input() max: number = 1;
+  @Input() steps: number = 1;
   @Output() onChange = new EventEmitter<number>();
+  @Output() onChangeCompleted = new EventEmitter<number>();
   _value: number;
 
   @Input()
@@ -22,7 +24,11 @@ export class SliderComponent {
 
   constructor () { }
 
-  modelChangeFn ($event: any):void {
+  modelChangeFn ($event: any): void {
     this.onChange.emit($event.target.value);
+  }
+
+  sliderChangeCompleted ($event: any): void {
+    this.onChangeCompleted.emit($event.target.value);
   }
 }
