@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { SoilsService } from './soils.service';
 import { PMLOSoil } from '../../models/pmloSoil.model';
 import { GetPMLOSoilPopupContent } from '../../pmloUtils/popupContent';
@@ -20,6 +20,7 @@ import { ReportsService } from '../../pmloUtils/reports.service';
 import { EsrimapService } from '../../esrimap/esrimap.service';
 import { PMLONotification } from '../../models/pmloNotification.model';
 import { NotificationsService } from '../../pmloUtils/notifications.service';
+import { ModalService } from 'src/app/shared/lib/angular-modal/modal/modal.service';
 
 @Component({
   selector: 'pmlo-soils',
@@ -27,6 +28,7 @@ import { NotificationsService } from '../../pmloUtils/notifications.service';
   styleUrls: ['./soils.component.scss']
 })
 export class SoilsComponent implements OnInit {
+  @ViewChild('identifyCheckbox') private identifyCheckbox: ElementRef;
   @Input() mapView: any;
 
   isIdentifyChecked:boolean = false;
@@ -59,7 +61,8 @@ export class SoilsComponent implements OnInit {
     private appConfig: AppConfiguration,
     private reportsService: ReportsService,
     private esriMapService: EsrimapService,
-    private notificationsService:NotificationsService
+    private notificationsService:NotificationsService,
+    private modalService:ModalService
   ) { }
 
   ngOnInit (): void {
@@ -144,40 +147,57 @@ export class SoilsComponent implements OnInit {
         this.pmloSoilLabelsGL.visible = true;
       }
     });
+
+    this.modalService.closedFromButton.subscribe((headerText:string) => {
+      if (headerText === 'Soils Within Project Area')
+      {
+        this.isTableVisible = false;
+      }
+    });
   }
 
   soilsVisibleChanged (isChecked: boolean) {
     this.isVisibleChecked = isChecked;
     this.soilsDynamicLayer.visible = isChecked;
     this.isIdentifyDisabled = !isChecked;
+    if (!isChecked && this.isIdentifyChecked)
+    {
+      this.identifyCheckbox.nativeElement.checked = false;
+      this.soilsIdentifyChanged(false);
+    }
     this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
   }
 
-  clipSoils ():void {
-    this.clearSoilGLayers();
-    const polygonGraphics = GetPolygonGraphics(this.userGL);
-    if (polygonGraphics.length === 0) {
-      this.pmloNote.body = 'Please make sure you draw a boundary or load a file using the tools in the previous toolbox before running this tool.';
-      this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-    } else if (polygonGraphics.length > 1) {
-      this.pmloNote.body = 'You can only clip soils areas from one polygon at a time.';
-      this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+  clipClearSoils ():void {
+    if (!this.areSoilsClipped)
+    {
+      this.clearSoilGLayers();
+      const polygonGraphics = GetPolygonGraphics(this.userGL);
+      if (polygonGraphics.length === 0) {
+        this.pmloNote.body = 'A drawn boundary is needed to be able to clip soils.';
+        this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+      } else if (polygonGraphics.length > 1) {
+        this.pmloNote.body = 'You can only clip soils areas from one polygon at a time.';
+        this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+      } else {
+        this.loaderService.isLoading.next(true);
+        const inputBoundary: __esri.Graphic = polygonGraphics.getItemAt(0);
+        this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
+          if (result.length === 0) {
+            this.loaderService.isLoading.next(false);
+            this.pmloNote.body = 'There was an error while clipping the soils. Please try again and, if the problem persists, contact the administrator.';
+            this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+          } else {
+            const boundaryId:string = inputBoundary.attributes.id;
+            this.soilsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId, this.sliderValue, this.isOrangeSymbol);
+            this.soilsService.addSoilLabelsToMap(this.pmloSoilLabelsGL, result[1], boundaryId, this.sliderValue, this.isOrangeSymbol);
+            this.soilsService.showTableModal.emit(true);
+            this.loaderService.isLoading.next(false);
+          }
+        });
+      }
     } else {
-      this.loaderService.isLoading.next(true);
-      const inputBoundary: __esri.Graphic = polygonGraphics.getItemAt(0);
-      this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
-        if (result.length === 0) {
-          this.loaderService.isLoading.next(false);
-          this.pmloNote.body = 'There was an error while clipping the soils. Please try again and, if the problem persists, contact the administrator.';
-          this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-        } else {
-          const boundaryId:string = inputBoundary.attributes.id;
-          this.soilsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId, this.sliderValue, this.isOrangeSymbol);
-          this.soilsService.addSoilLabelsToMap(this.pmloSoilLabelsGL, result[1], boundaryId, this.sliderValue, this.isOrangeSymbol);
-          this.soilsService.showTableModal.emit(true);
-          this.loaderService.isLoading.next(false);
-        }
-      });
+      this.clearSoilGLayers();
     }
   }
 
@@ -214,10 +234,6 @@ export class SoilsComponent implements OnInit {
   soilsIdentifyChanged (isChecked: boolean) {
     this.isIdentifyChecked = isChecked;
     this.createSoilsIdentifyClickEvent(isChecked);
-  }
-
-  clearSoilGLayers ():void {
-    this.soilsService.clearSoilGLayers(this.pmloSoilsGL, this.pmloSoilLabelsGL);
   }
 
   updateSliderValue (value: number):void {
@@ -293,5 +309,9 @@ export class SoilsComponent implements OnInit {
     } else {
       this.isOrangeSymbol = true;
     }
+  }
+
+  private clearSoilGLayers ():void {
+    this.soilsService.clearSoilGLayers(this.pmloSoilsGL, this.pmloSoilLabelsGL);
   }
 }

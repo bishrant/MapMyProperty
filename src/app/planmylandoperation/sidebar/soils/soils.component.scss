@@ -5,6 +5,7 @@
     padding-right: 0.625em;
 }
 
-.disabledLabel {
-    text-decoration: line-through;
+.checkboxDisabled {
+    cursor: not-allowed;
+    opacity: 0.4;
 }
