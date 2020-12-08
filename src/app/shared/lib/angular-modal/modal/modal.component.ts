@@ -3,6 +3,7 @@ import {
 } from '@angular/core';
 import { ResizableEvent } from '../resizable/types';
 import { maxZIndex, findAncestor } from '../utils/utils';
+import { ModalService } from './modal.service';
 
 @Component({
   selector: 'app-modal',
@@ -42,7 +43,7 @@ export class ModalComponent implements AfterViewChecked, OnInit {
   dragEventTarget: MouseEvent | TouchEvent;
   hasBeenDraggedBefore: boolean = false;
 
-  constructor (private element: ElementRef) { }
+  constructor (private element: ElementRef, private modalService:ModalService) { }
 
   ngOnInit () {
     if (localStorage.getItem('_pmlo_help_showed') === null && this.isHelpModal) {
@@ -88,7 +89,11 @@ export class ModalComponent implements AfterViewChecked, OnInit {
     }, 1);
   }
 
-  hide (): void {
+  hide (isFromCloseButton:boolean = false): void {
+    if (isFromCloseButton)
+    {
+      this.modalService.closedFromButton.emit(this.modalHeader.nativeElement.innerText.trim());
+    }
     this.visible = false;
     this.closeModal.emit(true);
     this.focusLastModal();
