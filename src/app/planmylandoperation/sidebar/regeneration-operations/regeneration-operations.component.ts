@@ -1,6 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
+import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { GreaterThanMaxArea } from 'src/app/shared/utils/GeometryEngine';
 import { EsrimapService } from '../../esrimap/esrimap.service';
 import { PMLONotification } from '../../models/pmloNotification.model';
@@ -17,11 +18,13 @@ import { SoilsService } from '../soils/soils.service';
 export class RegenerationOperationsComponent implements OnInit {
   @Input() mapView: __esri.MapView;
 
-  hasBoundary: boolean = false;
   sliderValue: number = 0;
   selectedRadio: string = 'SeedMortal';
+  areSoilsClipped:boolean = false;
 
   roReportTitle: string = '';
+
+  accordionOpened:boolean = false;
 
   private pmloSoilsGL: __esri.GraphicsLayer;
   private pmloSoilLabelsGL: __esri.GraphicsLayer;
@@ -36,7 +39,8 @@ export class RegenerationOperationsComponent implements OnInit {
     private harvestOperationsService: HarvestOperationsService,
     private esrimapService: EsrimapService,
     private decimalPipe: DecimalPipe,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private mapViewService: MapviewService
   ) { }
 
   ngOnInit (): void {
@@ -45,49 +49,26 @@ export class RegenerationOperationsComponent implements OnInit {
     this.userGL = this.mapView.map.findLayerById('userGraphicsLayer') as __esri.GraphicsLayer;
 
     this.esrimapService.regOpAccordionOpen.subscribe((opened) => {
+      this.accordionOpened = opened;
       if (opened) {
-        if (this.pmloSoilsGL.graphics.length > 0) {
-          this.soilsService.showTableModal.emit(false);
-          this.pmloSoilLabelsGL.visible = false;
-          this.operationLegendService.setOperationLegendSymbols(this.selectedRadio, this.pmloSoilsGL, this.sliderValue);
-          this.operationLegendService.setOperationLegend(this.selectedRadio, false);
-          this.hasBoundary = true;
-        } else if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length === 0) {
-          this.esrimapService.regOpAccordionOpen.emit(false);
-          this.pmloNote.body = 'A drawn boundary is needed to get regeneration operations.';
-          this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-          this.hasBoundary = false;
-        } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 1) {
-          this.esrimapService.regOpAccordionOpen.emit(false);
-          this.pmloNote.body = 'You can only get regeneration operations information from one polygon at a time.';
-          this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-        } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 0) {
-          if (GreaterThanMaxArea(this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry, 100000, 'acres')) {
-            this.esrimapService.regOpAccordionOpen.emit(false);
-            this.pmloNote.body = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(100000) + ' acres';
-            this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-          } else {
-            this.loaderService.isLoading.next(true);
-            this.hasBoundary = true;
-            const inputBoundary: __esri.Graphic = this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
-            this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
-              if (result.length === 0) {
-                this.loaderService.isLoading.next(false);
-                this.esrimapService.regOpAccordionOpen.emit(false);
-                this.pmloNote.body = 'There was an error while getting harvest operations information. Please try again and, if the problem persists, contact the administrator.';
-                this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-              } else {
-                const boundaryId: string = inputBoundary.attributes.id;
-                this.harvestOperationsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId, this.sliderValue);
-                this.operationLegendService.setOperationLegendSymbols(this.selectedRadio, this.pmloSoilsGL, this.sliderValue);
-                this.soilsService.addSoilLabelsToMap(this.pmloSoilLabelsGL, result[1], boundaryId, 100, false);
-                this.soilsService.shareMultiSoils.emit((result[0] as any).value.features);
-                this.loaderService.isLoading.next(false);
-              }
-            });
+          if (this.pmloSoilLabelsGL.graphics.length > 0)
+          {
+            this.soilsService.showTableModal.emit(false);
+            this.pmloSoilLabelsGL.visible = false;
+            this.operationLegendService.setOperationLegendSymbols(this.selectedRadio, this.pmloSoilsGL, this.sliderValue);
           }
-        }
+          this.operationLegendService.setOperationLegend(this.selectedRadio, false);
       }
+    });
+
+    this.mapViewService.boundaryHasPolygons.subscribe((val:boolean) => {
+      if (!val) {
+        this.clipClearSoils(true);
+      }
+    });
+
+    this.soilsService.soilsGLHasPolygons.subscribe((soilsHasPolygons:boolean) => {
+      this.areSoilsClipped = soilsHasPolygons;
     });
 
     // Sync with soils slider
@@ -113,9 +94,13 @@ export class RegenerationOperationsComponent implements OnInit {
     this.operationLegendService.setOperationLegend(value, false);
   }
 
-  clearSoilGLayers (): void {
-    this.soilsService.clearSoilGLayers(this.pmloSoilsGL, this.pmloSoilLabelsGL);
-    this.esrimapService.regOpAccordionOpen.emit(false);
+  clipClearSoils(clear:boolean = null): void {
+    if (this.areSoilsClipped || clear === true)
+    {
+      this.soilsService.clearSoilGLayers(this.pmloSoilsGL, this.pmloSoilLabelsGL);
+    } else {
+      this.clipSoils();
+    }
   }
 
   buildOperationsReport (): void {
@@ -125,5 +110,38 @@ export class RegenerationOperationsComponent implements OnInit {
       this.loaderService.isLoading.next(false);
       window.open(reportUrl, '_blank', 'noopener');
     });
+  }
+
+  private clipSoils(): void {
+    if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length === 0) {
+      this.pmloNote.body = 'A drawn boundary is needed to get regeneration operations.';
+      this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+    } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 1) {
+      this.pmloNote.body = 'You can only get regeneration operations information from one polygon at a time.';
+      this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+    } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 0) {
+      if (GreaterThanMaxArea(this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry, 100000, 'acres')) {
+        this.pmloNote.body = 'Please make sure the boundary is less than ' + this.decimalPipe.transform(100000) + ' acres';
+        this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+      } else {
+        this.loaderService.isLoading.next(true);
+        const inputBoundary: __esri.Graphic = this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
+        this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
+          if (result.length === 0) {
+            this.loaderService.isLoading.next(false);
+            this.pmloNote.body = 'There was an error while getting regeneration operations information. Please try again and, if the problem persists, contact the administrator.';
+            this.notificationsService.openNotificationsModal.emit(this.pmloNote);
+          } else {
+            const boundaryId: string = inputBoundary.attributes.id;
+            this.harvestOperationsService.addSoilsToMap(this.pmloSoilsGL, result[0], boundaryId, this.sliderValue);
+            this.operationLegendService.setOperationLegendSymbols(this.selectedRadio, this.pmloSoilsGL, this.sliderValue);
+            this.soilsService.addSoilLabelsToMap(this.pmloSoilLabelsGL, result[1], boundaryId, 100, false);
+            this.soilsService.shareMultiSoils.emit((result[0] as any).value.features);
+            this.areSoilsClipped = true;
+            this.loaderService.isLoading.next(false);
+          }
+        });
+      }
+    }
   }
 }
