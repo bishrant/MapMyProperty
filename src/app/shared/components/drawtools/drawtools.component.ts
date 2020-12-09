@@ -342,7 +342,11 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     if (toolName === 'text') {
       this.ClickToAddTextbox();
     } else {
-      this.sketchVM.create(toolName, { mode: this.drawingMode, type: toolName });
+      if (toolName === 'circle' && this.drawingMode === 'freehand') {
+        this.sketchVM.create(toolName, { mode: 'click', type: toolName });
+      } else {
+        this.sketchVM.create(toolName, { mode: this.drawingMode, type: toolName });
+      }
     }
   };
 
