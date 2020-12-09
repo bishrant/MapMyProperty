@@ -69,7 +69,7 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: __esri.MapView): __es
 
 const CreateCircleWithGeometry = (originalGraphic: any) => {
   // calculate area to get the radius
-  const _area = planarArea(originalGraphic.geometry, 'square-miles');
+  const _area = geodesicArea(originalGraphic.geometry, 'square-miles');
   let finalRadius
   const polygonRadius = Math.sqrt(_area / Math.PI);
 
@@ -84,7 +84,8 @@ const CreateCircleWithGeometry = (originalGraphic: any) => {
   const c = new TFSCircle({
     center: originalGraphic.geometry.centroid,
     radius: finalRadius,
-    radiusUnit: 'miles'
+    radiusUnit: 'miles',
+    geodesic: true
   });
   return c;
 };
@@ -93,7 +94,8 @@ const CreateTFSCircleFromPoint = (pointGeom: any, radius: number) => {
   return new TFSCircle({
     center: pointGeom,
     radius: radius,
-    radiusUnit: 'miles'
+    radiusUnit: 'miles',
+    geodesic: true
   });
 };
 export { SetupSketchViewModel, CreateCircleWithGeometry, CreateTFSCircleFromPoint, TFSPolygon, TFSPolyline };

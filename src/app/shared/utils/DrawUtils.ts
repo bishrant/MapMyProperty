@@ -64,6 +64,20 @@ const CreatecircleFromPoint = (evt: any, radius: number, lineProps: any, fillPro
   return _g;
 };
 
+const CreateCircleFromCentroid = (graphic: __esri.Graphic, radius: number, lineProps: any, fillProps: any) => {
+  let _g = new Graphic().toJSON();
+  const _centroid = (graphic.geometry as any).centroid;
+  const _id = graphic.attributes.id;
+  const _symbol = CreatePolygonSymbol(lineProps, fillProps);
+
+  _g.geometry = CreateTFSCircleFromPoint(_centroid, radius).asJSON();
+  _g.attributes = { id: _id, symbol: _symbol, geometryType: 'circle', radius: radius };
+  _g = CreatePolygonGraphicWithSymbology(_g, lineProps, fillProps);
+  _g.attributes.geometryType = 'circle';
+  _g.attributes.radius = (_g.geometry as any).radius;
+  return _g;
+};
+
 const CreatePointFromGraphic = (graphic: any, markerProps: any) => {
   const _g = graphic.toJSON();
   _g.symbol = markerProps;
@@ -105,5 +119,6 @@ export {
   CreatePolygonGraphicWithSymbology,
   CreateCircleFromEvent,
   CreatePointFromGraphic,
-  GetGraphicsForExtentUsingString
+  GetGraphicsForExtentUsingString,
+  CreateCircleFromCentroid
 };
