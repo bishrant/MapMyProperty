@@ -49,7 +49,6 @@ export class RegenerationOperationsComponent implements OnInit {
     this.userGL = this.mapView.map.findLayerById('userGraphicsLayer') as __esri.GraphicsLayer;
 
     this.esrimapService.regOpAccordionOpen.subscribe((opened) => {
-      debugger
       this.accordionOpened = opened;
       if (opened) {
           if (this.pmloSoilLabelsGL.graphics.length > 0)
