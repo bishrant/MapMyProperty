@@ -48,7 +48,7 @@ export class SwipeWidgetComponent implements AfterViewInit, OnDestroy {
     if (!this.mapView.map.layers.includes(_layer)) {
       this.mapView.map.layers.add(_layer, this.mapView.map.layers.length - 3);
       this.loadingService.isLoading.next(true);
-      this.mapView.whenLayerView(_layer).then(l => this.loadingService.isLoading.next(false))
+      this.mapView.whenLayerView(_layer).then(() => this.loadingService.isLoading.next(false))
     };
     const col = new Collection();
     col.add(_layer);

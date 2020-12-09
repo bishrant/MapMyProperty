@@ -83,6 +83,7 @@ export class SensAreasService {
             }
           },
           (error) => {
+            console.error(error);
             resolve([]);
           }
         );
@@ -171,6 +172,7 @@ export class SensAreasService {
             }
           },
           (error) => {
+            console.error(error);
             resolve(null);
           }
         );
@@ -263,6 +265,7 @@ export class SensAreasService {
             }
           },
           (error) => {
+            console.error(error);
             resolve(null);
           }
         );

@@ -88,35 +88,35 @@ const GetDrainageClassFillProps: any = (gra: __esri.Graphic, alpha: number) => {
 
   switch (gra.attributes.drclassdcd !== null ? gra.attributes.drclassdcd.toLowerCase() : null) {
     case 'excessively drained':
-        colorModel = GetDrainageClassColors().excessDr;
+      colorModel = GetDrainageClassColors().excessDr;
       break;
 
     case 'somewhat excessively drained':
-        colorModel = GetDrainageClassColors().someExcessDr;
+      colorModel = GetDrainageClassColors().someExcessDr;
       break;
 
     case 'well drained':
-        colorModel = GetDrainageClassColors().wellDr;
+      colorModel = GetDrainageClassColors().wellDr;
       break;
 
     case 'moderately well drained':
-        colorModel = GetDrainageClassColors().modWellDr;
+      colorModel = GetDrainageClassColors().modWellDr;
       break;
 
     case 'somewhat poorly drained':
-        colorModel = GetDrainageClassColors().somePoorDr;
+      colorModel = GetDrainageClassColors().somePoorDr;
       break;
 
     case 'poorly drained':
-        colorModel = GetDrainageClassColors().poorDr;
+      colorModel = GetDrainageClassColors().poorDr;
       break;
 
     case 'very poorly drained':
-        colorModel = GetDrainageClassColors().veryPoorDr;
+      colorModel = GetDrainageClassColors().veryPoorDr;
       break;
 
-      default:
-        colorModel = GetDrainageClassColors().notRated;
+    default:
+      colorModel = GetDrainageClassColors().notRated;
       break;
   }
 

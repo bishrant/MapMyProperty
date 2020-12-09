@@ -149,8 +149,7 @@ export class SoilsComponent implements OnInit {
     });
 
     this.modalService.closedFromButton.subscribe((headerText:string) => {
-      if (headerText === 'Soils Within Project Area')
-      {
+      if (headerText === 'Soils Within Project Area') {
         this.isTableVisible = false;
       }
     });
@@ -160,8 +159,7 @@ export class SoilsComponent implements OnInit {
     this.isVisibleChecked = isChecked;
     this.soilsDynamicLayer.visible = isChecked;
     this.isIdentifyDisabled = !isChecked;
-    if (!isChecked && this.isIdentifyChecked)
-    {
+    if (!isChecked && this.isIdentifyChecked) {
       this.identifyCheckbox.nativeElement.checked = false;
       this.soilsIdentifyChanged(false);
     }
@@ -169,8 +167,7 @@ export class SoilsComponent implements OnInit {
   }
 
   clipClearSoils ():void {
-    if (!this.areSoilsClipped)
-    {
+    if (!this.areSoilsClipped) {
       this.clearSoilGLayers();
       const polygonGraphics = GetPolygonGraphics(this.userGL);
       if (polygonGraphics.length === 0) {

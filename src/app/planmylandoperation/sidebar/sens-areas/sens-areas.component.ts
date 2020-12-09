@@ -60,15 +60,14 @@ export class SensAreasComponent implements OnInit {
     this.mapView.map.add(this.sensAreaGL);
 
     this.mapViewService.sensAreasGLHasPolygons.subscribe((val:boolean) => {
-      if (!val)
-      {
+      if (!val) {
         this.sensAreaGL.removeAll();
         this.areasCalculated = false;
       }
     });
   }
 
-  calculareSensAreas():void {
+  calculareSensAreas ():void {
     const maxAcres: number = 100000;
 
     if (this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').length === 0) {
@@ -158,8 +157,7 @@ export class SensAreasComponent implements OnInit {
   }
 
   calcClearSMZGraphics (): void {
-    if (this.areasCalculated)
-    {
+    if (this.areasCalculated) {
       this.sensAreaGL.removeAll();
       this.areasCalculated = false;
     } else {

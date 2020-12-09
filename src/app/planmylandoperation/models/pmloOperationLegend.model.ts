@@ -1,6 +1,6 @@
 export class PMLOOperationLegItem {
-    constructor (
+  constructor (
         public backgroundColor: string = '',
         public label: string = ''
-    ) { }
+  ) { }
 }

@@ -8,17 +8,16 @@ import { OperationLegendService } from './operation-legend.service';
   styleUrls: ['./operation-legend.component.scss']
 })
 export class OperationLegendComponent implements OnInit {
-
   @Input() initialValue:string;
   @Input() isFromHarvest:boolean;
 
   legendItems: PMLOOperationLegItem[] = [];
 
-  constructor(
+  constructor (
     private operationLegendService:OperationLegendService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit (): void {
     this.operationLegendService.GetOperationLegend.subscribe((items:PMLOOperationLegItem[]) => {
       this.legendItems = items;
     });

@@ -7,7 +7,6 @@ import {
   CreatePolygonGraphicWithSymbology,
   CreateCircleFromEvent,
   CreatecircleFromPoint,
-  CreateCircleFromGraphic,
   CreatePolygonFromGraphic,
   CreatePolylineFromGraphic,
   CreatePointFromGraphic,
@@ -60,7 +59,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   private graphicsSubcription$: any;
 
-  constructor(private store: Store<AppState>, private textService: TextControlService, private esriMapService: EsrimapService,
+  constructor (private store: Store<AppState>, private textService: TextControlService, private esriMapService: EsrimapService,
     private TextSelectionService: TextControlSelectionService) { }
 
   id = (): string => Math.random().toString(36).substr(2, 9);
@@ -77,7 +76,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selectedLabelsGraphics = [];
   };
 
-  toggleLabels(): void {
+  toggleLabels (): void {
     this.geomLabelsGraphicsLayer.visible = !this.geomLabelsGraphicsLayer.visible;
   }
 
@@ -274,7 +273,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ResetDrawControls();
   };
 
-  ngOnInit(): void {
+  ngOnInit (): void {
     if (this.sketchVM) {
       this.sketchVM.on('update', (e: any) => {
         if (e.state === 'complete') {
@@ -299,7 +298,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit (): void {
     this.graphicsSubcription$ = this.listenToGraphicsStore();
   }
 
@@ -366,7 +365,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  ngOnDestroy(): void {
+  ngOnDestroy (): void {
     this.textSubscription.unsubscribe();
     this.graphicsSubcription$.unsubscribe();
   }

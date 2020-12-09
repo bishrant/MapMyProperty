@@ -1,7 +1,7 @@
 import SketchViewModel from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
 import { emptyPoint, bluePolygon } from './Renderers';
 import Circle from 'esri/geometry/Circle';
-import { geodesicArea, planarArea } from 'esri/geometry/geometryEngine';
+import { geodesicArea } from 'esri/geometry/geometryEngine';
 import { subclass } from 'esri/core/accessorSupport/decorators';
 import { Polygon, Polyline } from 'esri/geometry';
 

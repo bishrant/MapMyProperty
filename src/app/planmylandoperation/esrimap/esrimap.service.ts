@@ -1,6 +1,4 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
-import { AccordionPanelComponent } from 'src/app/shared/components/accordion-panel/accordion-panel.component';
-import { PMLOHelpObj } from '../models/pmoHelpObj.model';
 
 @Injectable({
   providedIn: 'root'
