@@ -1,1 +1,8 @@
 @use '../../styles/sidebar';
+select {
+  border: 1px solid black;
+  height: 30px;
+  border-radius: 5px;
+  width: 160px;
+  margin-left: 10px;
+}

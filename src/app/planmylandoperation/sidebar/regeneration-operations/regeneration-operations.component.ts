@@ -87,8 +87,8 @@ export class RegenerationOperationsComponent implements OnInit {
     });
   }
 
-  updateSliderValue (value: number): void {
-    this.soilsService.updateSliderValue.emit({ sliderVal: value, isFromSoils: false, selectedRadioVal: this.selectedRadio });
+  updateSliderValue (value: any): void {
+    this.soilsService.updateSliderValue.emit({ sliderVal: parseInt(value), isFromSoils: false, selectedRadioVal: this.selectedRadio });
   }
 
   radioChanged (value: string): void {

@@ -1,7 +1,8 @@
-import { geodesicArea, geodesicLength } from 'arcgis-js-api/geometry/geometryEngine';
+import { geodesicArea, geodesicLength, planarArea } from 'arcgis-js-api/geometry/geometryEngine';
 import Graphic from 'esri/Graphic';
 
 const createAreaLabels = (graphic: Graphic) => {
+  const area1 = planarArea(graphic.geometry, 'acres');
   const area = geodesicArea(graphic.geometry, 'acres');
   if (area < 0.1) {
     return numberWithCommas(Math.round(area * 100) / 100) + ' acres';

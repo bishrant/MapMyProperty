@@ -32,7 +32,7 @@
       Width: {{lineProps.width}}px<br>
       <div class="widthSliderContainer">
         1 &nbsp;<app-slider class="widthSlider" [value]="lineProps.width" [min]="1" [max]="10"
-          (onChange)="changeLineWidth($event)"></app-slider>
+          (onChange)="changeLineWidth($event)" (onChangeCompleted)="changeLineWidthComplete($event)"></app-slider>
         &nbsp;10
       </div>
     </div>

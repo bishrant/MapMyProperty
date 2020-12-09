@@ -13,7 +13,7 @@ import { HarvestOperationsService } from './harvest-operations.service';
 @Component({
   selector: 'pmlo-harvest-operations',
   templateUrl: './harvest-operations.component.html',
-  styleUrls: ['./harvest-operations.component.scss'],
+  styleUrls: ['./harvest-operations.component.scss']
 })
 export class HarvestOperationsComponent implements OnInit {
   @Input() mapView: __esri.MapView;
@@ -33,7 +33,7 @@ export class HarvestOperationsComponent implements OnInit {
 
   private pmloNote: PMLONotification = new PMLONotification();
 
-  constructor(
+  constructor (
     private esrimapService: EsrimapService,
     private soilsService: SoilsService,
     private loaderService: LoaderService,
@@ -44,7 +44,7 @@ export class HarvestOperationsComponent implements OnInit {
     private mapViewService: MapviewService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit (): void {
     this.pmloSoilsGL = this.mapView.map.findLayerById('pmloSoilsGL') as __esri.GraphicsLayer;
     this.pmloSoilLabelsGL = this.mapView.map.findLayerById('pmloSoilLabelsGL') as __esri.GraphicsLayer;
     this.userGL = this.mapView.map.findLayerById('userGraphicsLayer') as __esri.GraphicsLayer;
@@ -85,15 +85,15 @@ export class HarvestOperationsComponent implements OnInit {
     });
   }
 
-  updateSliderValue(value: number): void {
+  updateSliderValue (value: any): void {
     this.soilsService.updateSliderValue.emit({
-      sliderVal: value,
+      sliderVal: parseInt(value),
       isFromSoils: false,
-      selectedRadioVal: this.selectedRadio,
+      selectedRadioVal: this.selectedRadio
     });
   }
 
-  radioChanged(value: string): void {
+  radioChanged (value: string): void {
     this.operationLegendService.setOperationLegendSymbols(value, this.pmloSoilsGL, this.sliderValue);
     this.operationLegendService.setOperationLegend(value, true);
   }
@@ -107,7 +107,7 @@ export class HarvestOperationsComponent implements OnInit {
     }
   }
 
-  buildOperationsReport(): void {
+  buildOperationsReport (): void {
     this.loaderService.isLoading.next(true);
     const boundary: __esri.Graphic = this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').getItemAt(0);
     this.harvestOperationsService

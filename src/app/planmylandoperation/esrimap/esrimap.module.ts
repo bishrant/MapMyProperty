@@ -3,7 +3,6 @@ import { EsrimapComponent } from './esrimap.component';
 import { NgModule } from '@angular/core';
 import { SidebarModule } from '../sidebar/sidebar.module';
 import { DrawtoolsModule } from 'src/app/shared/components/drawtools/drawtools.module';
-import { MatSliderModule } from '@angular/material/slider';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { SensAreasComponent } from '../sidebar/sens-areas/sens-areas.component';
@@ -38,6 +37,7 @@ import { BasemapsHelpModule } from 'src/app/shared/components/help-components/ba
 import { SearchWidgetHelpModule } from 'src/app/shared/components/help-components/search-widget-help/search-widget-help.module';
 import { OverallHelpComponent } from '../help-templates/overall-help/overall-help.component';
 import { GraphicsStoreModule } from 'src/app/shared/components/graphics-store/GraphicsStore.module';
+import { SliderModule } from 'src/app/shared/components/slider/slider.module';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -59,7 +59,6 @@ import { GraphicsStoreModule } from 'src/app/shared/components/graphics-store/Gr
     GraphicsStoreModule,
     SidebarModule,
     DrawtoolsModule,
-    MatSliderModule,
     MatButtonModule,
     FormsModule,
     ElevationProfileModule,
@@ -80,7 +79,8 @@ import { GraphicsStoreModule } from 'src/app/shared/components/graphics-store/Gr
     ScaleTextModule,
     SwipeHelpModule,
     BasemapsHelpModule,
-    SearchWidgetHelpModule
+    SearchWidgetHelpModule,
+    SliderModule
   ],
   exports: [EsrimapComponent]
 })

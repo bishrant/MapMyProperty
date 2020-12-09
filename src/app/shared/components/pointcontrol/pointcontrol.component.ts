@@ -31,26 +31,26 @@ export class PointcontrolComponent {
 
     this.markerProps.size = this.markerSize + 'px';
     this.markerProps.width = this.markerSize + 'px';
-    this.markerProps.height = this.markerSize / this.pointSymbol.asp + 'px';
+    this.markerProps.height = this.markerSize + 'px';
     this.markerProps.color = s.color;
     this.updateMarkerShape();
   }
 
   markerStyles: any = [
-    { name: 'circle', type: 'simple-marker', asp: 1 },
-    { name: 'cross', type: 'simple-marker', asp: 1 },
-    { name: 'triangle', type: 'simple-marker', asp: 1 },
-    { name: 'x', type: 'picture-marker', asp: 1 },
-    { name: 'diamond', type: 'simple-marker', asp: 1 },
-    { name: 'square', type: 'simple-marker', asp: 1 },
-    { name: 'tree', type: 'picture-marker', asp: 1 },
-    { name: 'flag', type: 'picture-marker', asp: 1 },
-    { name: 'warning', type: 'picture-marker', asp: 1 },
-    { name: 'parking', type: 'picture-marker', asp: 1 },
-    { name: 'water', type: 'picture-marker', asp: 1 },
-    { name: 'pin', type: 'picture-marker', asp: 1 },
-    { name: 'gate', type: 'picture-marker', asp: 1 },
-    { name: 'home', type: 'picture-marker', asp: 1 }
+    { name: 'circle', type: 'simple-marker' },
+    { name: 'cross', type: 'picture-marker' },
+    { name: 'triangle', type: 'simple-marker' },
+    { name: 'x', type: 'picture-marker' },
+    { name: 'diamond', type: 'simple-marker' },
+    { name: 'square', type: 'simple-marker' },
+    { name: 'tree', type: 'picture-marker' },
+    { name: 'flag', type: 'picture-marker' },
+    { name: 'warning', type: 'picture-marker' },
+    { name: 'parking', type: 'picture-marker' },
+    { name: 'water', type: 'picture-marker' },
+    { name: 'pin', type: 'picture-marker' },
+    { name: 'gate', type: 'picture-marker' },
+    { name: 'home', type: 'picture-marker' }
   ];
 
   iconName: any;
@@ -62,7 +62,7 @@ export class PointcontrolComponent {
     size: this.markerSize + 'px',
     url: '',
     width: this.markerSize + 'px',
-    height: this.markerSize / this.pointSymbol.asp + 'px',
+    height: this.markerSize + 'px',
     style: 'circle',
     contentType: 'image/svg',
     name: 'circle',
@@ -86,7 +86,7 @@ export class PointcontrolComponent {
     const size = this.markerSize + 'px';
     this.markerProps.size = size;
     this.markerProps.width = size;
-    this.markerProps.height = this.markerSize / this.pointSymbol.asp + 'px';
+    this.markerProps.height = this.markerSize + 'px';
     this.updateMarkerShape();
   };
 
@@ -104,7 +104,7 @@ export class PointcontrolComponent {
     this.pointSymbol = evt;
     this.markerProps.type = evt.type;
     if (evt.type === 'picture-marker') {
-      this.markerProps.height = this.markerSize / this.pointSymbol.asp + 'px';
+      this.markerProps.height = this.markerSize + 'px';
       this.markerProps.name = evt.name;
       this.updateMarkerShape();
     } else {

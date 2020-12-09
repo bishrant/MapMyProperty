@@ -4,7 +4,7 @@
     <legend>Point Style</legend>
     <div class="marginTop10px">
       Shape <br>
-      <div id="shapes">
+      <div class="toggleRadios">
         <label *ngFor="let symbol of markerStyles" class="labelCls">
           <input type="radio" name="shapes" [value]="symbol" aria-label="tes" [(ngModel)]="pointSymbol"
             (ngModelChange)="changePointShapeEvt($event)" />

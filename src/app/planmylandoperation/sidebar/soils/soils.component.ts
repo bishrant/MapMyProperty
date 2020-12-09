@@ -236,8 +236,12 @@ export class SoilsComponent implements OnInit {
     this.createSoilsIdentifyClickEvent(isChecked);
   }
 
-  updateSliderValue (value: number):void {
-    this.soilsService.updateSliderValue.emit({ sliderVal: value, isFromSoils: true, selectedRadioVal: null });
+  // updateSliderValue (value: number):void {
+  //   this.soilsService.updateSliderValue.emit({ sliderVal: value, isFromSoils: true, selectedRadioVal: null });
+  // }
+
+  updateSliderValue (value: any):void {
+    this.soilsService.updateSliderValue.emit({ sliderVal: parseInt(value), isFromSoils: true, selectedRadioVal: null });
   }
 
   toggleTable ():void {
@@ -304,6 +308,7 @@ export class SoilsComponent implements OnInit {
   }
 
   private checkIfOrange (val:number):void {
+    console.log(val < 75 || val === 100, val);
     if (val < 75 || val === 100) {
       this.isOrangeSymbol = false;
     } else {

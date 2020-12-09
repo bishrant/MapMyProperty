@@ -1,15 +1,14 @@
   <div class="py-3">
     <app-help-button [header]="'Sensitive Areas'" [itemName]="'sensAreas'"></app-help-button> <br>
-      <div>
-        Transparency<br>
-      </div>
-      <div class="flex justify-between items-baseline mb-2">
+      <div class="pt-3">Transparency: {{sliderValue}}%</div>
+      <div class="flex justify-between items-baseline pb-1">
         <div>0</div>
-        <mat-slider class="mat-slider-has-ticks" [thumbLabel]="true" [value]="sliderValue"
-          (input)="updateSliderValue($event.value)" step="5" min="0" max="100">
-        </mat-slider>
+        <app-slider [value]="sliderValue" (onChange)="updateSliderValue($event)" [min]="0" [max]="100" [steps]="5"
+          class="transparencySlider">
+        </app-slider>
         <div>100</div>
       </div>
+
       <div class="flex items-center">
         <div class="plusSign"></div>
         <label class="inline-flex cursor-pointer">
