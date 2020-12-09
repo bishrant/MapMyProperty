@@ -5,7 +5,7 @@
 }
 
 .ui-modal-overlay, .ui-modal {
-  z-index: 10;
+  z-index: 20;
 }
 
 .ui-modal-overlay {

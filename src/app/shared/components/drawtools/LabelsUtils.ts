@@ -6,7 +6,6 @@ import { CreateTextSymbolForLabels } from './DrawToolUtils';
 
 const syncLabelsToGeometry = (polygonGraphicsLayer: GraphicsLayer, geomLabelsGraphicsLayer: GraphicsLayer, mapView: MapView, textService: any) => {
   const labels = [];
-
   if (polygonGraphicsLayer.graphics.length < 1) {
     geomLabelsGraphicsLayer.removeAll();
     return;
@@ -20,6 +19,7 @@ const syncLabelsToGeometry = (polygonGraphicsLayer: GraphicsLayer, geomLabelsGra
       anchorPt = (parent.geometry as any).centroid;
     } else {
       const firstPt = (parent.geometry as any).paths[0][0];
+
       anchorPt = new Point({
         x: firstPt[0],
         y: firstPt[1],
@@ -44,7 +44,11 @@ const syncLabelsToGeometry = (polygonGraphicsLayer: GraphicsLayer, geomLabelsGra
       } else {
         const a = textService.creatGeomLabelGraphic(anchorPt, _specific.attributes.symbol, parent);
         if ((a.geometry as any).latitude === (_specific.geometry as any).latitude && (a.geometry as any).longitude === (_specific.geometry as any).longitude) {
-          labels.push(_specific);
+          if (a.symbol.text === (_specific.symbol as any).text) {
+            labels.push(_specific);
+          } else {
+            labels.push(a);
+          }
         } else {
           labels.push(a);
         }
