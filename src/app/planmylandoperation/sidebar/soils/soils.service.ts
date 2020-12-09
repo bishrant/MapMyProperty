@@ -19,6 +19,7 @@ export class SoilsService {
   @Output() shareMultiSoils:EventEmitter<Graphic[]> = new EventEmitter();
   @Output() selectPolygonFromTable:EventEmitter<Graphic> = new EventEmitter();
   @Output() updateSliderValue:EventEmitter<any> = new EventEmitter();
+  @Output() soilsGLHasPolygons:EventEmitter<boolean> = new EventEmitter();
 
   constructor (
     private http: HttpClient,

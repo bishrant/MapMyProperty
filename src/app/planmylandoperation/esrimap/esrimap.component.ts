@@ -194,16 +194,16 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
               soilsGLHasPolygons = false;
               sensAreasGLHasPolygons = false;
             } else {
-              if ((pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined))
+              if (pmloSoilsGL.graphics.length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined))
               {
                 soilsGLHasPolygons = false;
               }
 
-              if ((sensAreasGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, sensAreasGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
+              if (sensAreasGL.graphics.length === 0 || (sensAreasGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, sensAreasGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
                 sensAreasGLHasPolygons = false;
               }
             }
-            this.mapViewService.soilsGLHasPolygons.emit(soilsGLHasPolygons);
+            this.mapViewService.boundaryHasPolygons.emit(soilsGLHasPolygons);
             this.mapViewService.sensAreasGLHasPolygons.emit(sensAreasGLHasPolygons);
           }
         });

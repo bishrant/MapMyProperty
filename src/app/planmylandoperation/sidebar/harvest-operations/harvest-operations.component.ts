@@ -18,7 +18,6 @@ import { HarvestOperationsService } from './harvest-operations.service';
 export class HarvestOperationsComponent implements OnInit {
   @Input() mapView: __esri.MapView;
 
-  hasBoundary:boolean = false;
   sliderValue: number = 0;
   selectedRadio: string = 'drclassdcd';
   areSoilsClipped:boolean = false;
@@ -57,18 +56,19 @@ export class HarvestOperationsComponent implements OnInit {
           this.soilsService.showTableModal.emit(false);
           this.pmloSoilLabelsGL.visible = false;
           this.operationLegendService.setOperationLegendSymbols(this.selectedRadio, this.pmloSoilsGL, this.sliderValue);
-          this.hasBoundary = true;
         }
         this.operationLegendService.setOperationLegend(this.selectedRadio, true);
       }
     });
 
-    this.mapViewService.soilsGLHasPolygons.subscribe((val:boolean) => {
-      this.hasBoundary = val;
+    this.mapViewService.boundaryHasPolygons.subscribe((val:boolean) => {
       if (!val) {
-        this.areSoilsClipped = false;
         this.clipClearSoils(true);
       }
+    });
+
+    this.soilsService.soilsGLHasPolygons.subscribe((soilsHasPolygons:boolean) => {
+      this.areSoilsClipped = soilsHasPolygons;
     });
 
     // Sync with soils slider
@@ -128,7 +128,6 @@ export class HarvestOperationsComponent implements OnInit {
     if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length === 0) {
       this.pmloNote.body = 'A drawn boundary is needed to get harvest operations.';
       this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-      this.hasBoundary = false;
     } else if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length > 1) {
       this.pmloNote.body = 'You can only get harvest operations information from one polygon at a time.';
       this.notificationsService.openNotificationsModal.emit(this.pmloNote);
@@ -145,7 +144,6 @@ export class HarvestOperationsComponent implements OnInit {
         this.notificationsService.openNotificationsModal.emit(this.pmloNote);
       } else {
         this.loaderService.isLoading.next(true);
-        this.hasBoundary = true;
         const inputBoundary: __esri.Graphic = this.userGL.graphics
           .filter((g) => g.geometry.type === 'polygon')
           .getItemAt(0);

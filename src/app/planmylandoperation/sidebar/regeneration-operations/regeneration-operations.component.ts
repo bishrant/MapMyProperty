@@ -18,7 +18,6 @@ import { SoilsService } from '../soils/soils.service';
 export class RegenerationOperationsComponent implements OnInit {
   @Input() mapView: __esri.MapView;
 
-  hasBoundary: boolean = false;
   sliderValue: number = 0;
   selectedRadio: string = 'SeedMortal';
   areSoilsClipped:boolean = false;
@@ -58,18 +57,19 @@ export class RegenerationOperationsComponent implements OnInit {
             this.soilsService.showTableModal.emit(false);
             this.pmloSoilLabelsGL.visible = false;
             this.operationLegendService.setOperationLegendSymbols(this.selectedRadio, this.pmloSoilsGL, this.sliderValue);
-            this.hasBoundary = true;
           }
           this.operationLegendService.setOperationLegend(this.selectedRadio, false);
       }
     });
 
-    this.mapViewService.soilsGLHasPolygons.subscribe((val:boolean) => {
-      this.hasBoundary = val;
+    this.mapViewService.boundaryHasPolygons.subscribe((val:boolean) => {
       if (!val) {
-        this.areSoilsClipped = false;
         this.clipClearSoils(true);
       }
+    });
+
+    this.soilsService.soilsGLHasPolygons.subscribe((soilsHasPolygons:boolean) => {
+      this.areSoilsClipped = soilsHasPolygons;
     });
 
     // Sync with soils slider
@@ -82,7 +82,6 @@ export class RegenerationOperationsComponent implements OnInit {
     });
 
     this.operationLegendService.SetActiveRegOperationLegenRadio.subscribe((radioBtnValue: string) => {
-      debugger
       this.selectedRadio = radioBtnValue;
     });
   }
@@ -118,7 +117,6 @@ export class RegenerationOperationsComponent implements OnInit {
     if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length === 0) {
       this.pmloNote.body = 'A drawn boundary is needed to get regeneration operations.';
       this.notificationsService.openNotificationsModal.emit(this.pmloNote);
-      this.hasBoundary = false;
     } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 1) {
       this.pmloNote.body = 'You can only get regeneration operations information from one polygon at a time.';
       this.notificationsService.openNotificationsModal.emit(this.pmloNote);
@@ -128,7 +126,6 @@ export class RegenerationOperationsComponent implements OnInit {
         this.notificationsService.openNotificationsModal.emit(this.pmloNote);
       } else {
         this.loaderService.isLoading.next(true);
-        this.hasBoundary = true;
         const inputBoundary: __esri.Graphic = this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
         this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
           if (result.length === 0) {

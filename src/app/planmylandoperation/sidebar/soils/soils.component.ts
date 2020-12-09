@@ -84,7 +84,7 @@ export class SoilsComponent implements OnInit {
         this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
       }
     });
-    this.mapViewService.soilsGLHasPolygons.subscribe((val:boolean) => {
+    this.mapViewService.boundaryHasPolygons.subscribe((val:boolean) => {
       this.polygonGraphicsInBoundary = val;
       if (!val) {
         this.clearSoilGLayers();
@@ -102,6 +102,7 @@ export class SoilsComponent implements OnInit {
             soilsGLHasPolygons = false;
           }
           this.areSoilsClipped = soilsGLHasPolygons;
+          this.soilsService.soilsGLHasPolygons.emit(soilsGLHasPolygons);
         }
       });
     });
