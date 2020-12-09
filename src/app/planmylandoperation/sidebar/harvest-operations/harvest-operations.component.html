@@ -1,6 +1,6 @@
 <div class="py3">
   <app-help-button [header]="'Harvest Operations'" [itemName]="'harvOperations'"></app-help-button> <br>
-    <ng-container *ngIf="hasBoundary">
+    <ng-container>
         <div class="pt-3">Transparency</div>
         <div class="flex justify-between items-baseline pb-1">
             <div>0</div>
@@ -72,15 +72,15 @@
                 </fieldset>
             </div>
         </div>
-        <div class="mt-3">
+        <div class="mt-3" *ngIf="accordionOpened">
             <pmlo-operation-legend [initialValue]="selectedRadio" [isFromHarvest]="true"></pmlo-operation-legend>
         </div>
 
         <div class="flex justify-center mt-3">
-            <button type="button" class="pmlo-btn generalBtn" (click)="clearSoilGLayers()">Clear Layer</button>
+            <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="clipClearSoils()">{{ areSoilsClipped ? 'Clear Layer' : 'Clip' }}</button>
         </div>
 
-        <div class="flex mt-3">
+        <div class="flex mt-3" *ngIf="areSoilsClipped">
             <div class="md-input-main mx-3">
                 <div class="md-input-box">
                     <input id="hoReportTitle" name="soReportTitle" type="text" class="pmlo-md-input md-input"
@@ -92,7 +92,7 @@
         </div>
 
         <div class="flex justify-center mt-3">
-            <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="buildOperationsReport()">Create A
+            <button type="button" class="pmlo-btn pmlo-secondary generalBtn" [disabled]="!areSoilsClipped" (click)="buildOperationsReport()">Create A
                 Report</button>
         </div>
     </ng-container>
