@@ -1,5 +1,5 @@
 export class PMLOSoil {
-    constructor (
+  constructor (
         public mukey: string = '',
         public musym: string = '',
         public muname: string = '',
@@ -49,5 +49,5 @@ export class PMLOSoil {
         public saversion: string = '',
         public tabularversion: string = '',
         public spatialversion: string = ''
-    ) { }
+  ) { }
 }

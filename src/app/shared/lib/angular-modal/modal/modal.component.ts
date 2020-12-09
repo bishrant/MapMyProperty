@@ -48,7 +48,7 @@ export class ModalComponent implements AfterViewChecked, OnInit {
   ngOnInit () {
     if (localStorage.getItem('_pmlo_help_showed') === null && this.isHelpModal) {
       this.show();
-      localStorage.setItem('_pmlo_help_showed', "true");
+      localStorage.setItem('_pmlo_help_showed', 'true');
     }
   }
 
@@ -68,7 +68,7 @@ export class ModalComponent implements AfterViewChecked, OnInit {
     }
   }
 
-  onDragEnd ($event) {
+  onDragEnd () {
     this.hasBeenDraggedBefore = true;
   }
 
@@ -90,8 +90,7 @@ export class ModalComponent implements AfterViewChecked, OnInit {
   }
 
   hide (isFromCloseButton:boolean = false): void {
-    if (isFromCloseButton)
-    {
+    if (isFromCloseButton) {
       this.modalService.closedFromButton.emit(this.modalHeader.nativeElement.innerText.trim());
     }
     this.visible = false;

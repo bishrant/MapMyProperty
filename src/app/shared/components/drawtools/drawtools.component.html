@@ -54,7 +54,9 @@
           [ngClass]="{drLabelSelected: drMode === drawingMode, drHidden: (drMode === 'hybrid' && drawingTool === 'circle')}">
           <input type="radio" name="drawingMode" [value]="drMode" [(ngModel)]="drawingMode"
             (ngModelChange)="changeDrawingMode($event)" aria-label="draw mode" />
-          {{drMode | titlecase }}
+            <span *ngIf="drawingTool === 'circle' && drMode === 'click'">Radius</span>
+            <span *ngIf="!(drawingTool === 'circle' && drMode === 'click')">{{drMode | titlecase }}</span>
+
         </label>
       </div>
 

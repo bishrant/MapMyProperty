@@ -7,10 +7,10 @@ import {
   CreatePolygonGraphicWithSymbology,
   CreateCircleFromEvent,
   CreatecircleFromPoint,
-  CreateCircleFromGraphic,
   CreatePolygonFromGraphic,
   CreatePolylineFromGraphic,
-  CreatePointFromGraphic
+  CreatePointFromGraphic,
+  CreateCircleFromCentroid
 } from 'src/app/shared/utils/DrawUtils';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { id } from '../../store/todo';
@@ -59,7 +59,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   private graphicsSubcription$: any;
 
-  constructor(private store: Store<AppState>, private textService: TextControlService, private esriMapService: EsrimapService,
+  constructor (private store: Store<AppState>, private textService: TextControlService, private esriMapService: EsrimapService,
     private TextSelectionService: TextControlSelectionService) { }
 
   id = (): string => Math.random().toString(36).substr(2, 9);
@@ -76,7 +76,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selectedLabelsGraphics = [];
   };
 
-  toggleLabels(): void {
+  toggleLabels (): void {
     this.geomLabelsGraphicsLayer.visible = !this.geomLabelsGraphicsLayer.visible;
   }
 
@@ -179,9 +179,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.mapView.graphics.removeAll();
         let _updatedGraphics = gg.graphics;
         if (_updatedGraphics[0].attributes.geometryType === 'circle') {
-          _updatedGraphics = [
-            CreateCircleFromGraphic(gg.graphics[0], this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps)
-          ];
+          _updatedGraphics = [CreateCircleFromCentroid(gg.graphics[0], this.radius, this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps)];
         }
         if (_updatedGraphics[0].attributes.geometryType === 'polygon') {
           _updatedGraphics = [
@@ -275,7 +273,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ResetDrawControls();
   };
 
-  ngOnInit(): void {
+  ngOnInit (): void {
     if (this.sketchVM) {
       this.sketchVM.on('update', (e: any) => {
         if (e.state === 'complete') {
@@ -300,7 +298,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit (): void {
     this.graphicsSubcription$ = this.listenToGraphicsStore();
   }
 
@@ -343,7 +341,11 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     if (toolName === 'text') {
       this.ClickToAddTextbox();
     } else {
-      this.sketchVM.create(toolName, { mode: this.drawingMode, type: toolName });
+      if (toolName === 'circle' && this.drawingMode === 'freehand') {
+        this.sketchVM.create(toolName, { mode: 'click', type: toolName });
+      } else {
+        this.sketchVM.create(toolName, { mode: this.drawingMode, type: toolName });
+      }
     }
   };
 
@@ -363,7 +365,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  ngOnDestroy(): void {
+  ngOnDestroy (): void {
     this.textSubscription.unsubscribe();
     this.graphicsSubcription$.unsubscribe();
   }

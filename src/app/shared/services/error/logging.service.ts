@@ -7,8 +7,8 @@ import { AppConfiguration } from 'src/config';
   providedIn: 'root'
 })
 export class LoggingService {
-  constructor(private http: HttpClient, private config: AppConfiguration) { }
-  logError(name: string, message: string, stack: string) {
+  constructor (private http: HttpClient, private config: AppConfiguration) { }
+  logError (name: string, message: string, stack: string) {
     // Send errors to server here
     this.http.post(this.config.loggingURL, { appName: 'Map My Property', name: name, message: message, stack: stack })
       .subscribe();

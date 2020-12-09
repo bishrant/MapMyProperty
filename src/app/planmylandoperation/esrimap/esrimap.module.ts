@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { EsrimapComponent } from './esrimap.component';
 import { NgModule } from '@angular/core';
-import { SidebarModule } from '../sidebar/sidebar.module';
 import { DrawtoolsModule } from 'src/app/shared/components/drawtools/drawtools.module';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -57,7 +56,6 @@ import { SliderModule } from 'src/app/shared/components/slider/slider.module';
   imports: [
     CommonModule,
     GraphicsStoreModule,
-    SidebarModule,
     DrawtoolsModule,
     MatButtonModule,
     FormsModule,

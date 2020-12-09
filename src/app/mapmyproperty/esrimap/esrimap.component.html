@@ -2,14 +2,14 @@
   <div class="sidebar">
     <button class="sidebarToggle" (click)="sidebarVisible = !sidebarVisible" [class.sideOpen]="sidebarVisible">
       <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" role="img" xmlns="http://www.w3.org/2000/svg" *ngIf="sidebarVisible"
-       viewBox="0 0 448 512" class="showHideSvg rotate90" ><path _ngcontent-jrf-c86=""
+       viewBox="0 0 448 512" class="showHideSvg rotate90" ><path
         d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg>
       {{sidebarVisible ? 'Hide': 'Show'}}
       <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" role="img" xmlns="http://www.w3.org/2000/svg" *ngIf="!sidebarVisible"
-       viewBox="0 0 448 512" class="showHideSvg rotate270" ><path _ngcontent-jrf-c86=""
+       viewBox="0 0 448 512" class="showHideSvg rotate270" ><path
         d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg>
-
       </button>
+
     <app-accordion>
       <app-accordion-panel #drawAccPanel panelTitle="Draw">
         <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
@@ -31,8 +31,6 @@
         <app-print-tool [mapView]="mapView"></app-print-tool>
       </app-accordion-panel>
     </app-accordion>
-
-    <!-- <app-slider></app-slider> -->
   </div>
 
 </div>

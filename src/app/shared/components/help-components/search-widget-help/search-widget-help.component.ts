@@ -5,10 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './search-widget-help.component.html'
 })
 export class SearchWidgetHelpComponent implements OnInit {
+  constructor () { }
 
-  constructor() { }
-
-  ngOnInit(): void {
+  ngOnInit (): void {
   }
-
 }

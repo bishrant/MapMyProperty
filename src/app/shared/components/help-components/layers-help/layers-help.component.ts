@@ -5,10 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './layers-help.component.html'
 })
 export class LayersHelpComponent implements OnInit {
+  constructor () { }
 
-  constructor() { }
-
-  ngOnInit(): void {
+  ngOnInit (): void {
   }
-
 }

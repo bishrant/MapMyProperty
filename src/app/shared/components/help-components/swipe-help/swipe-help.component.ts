@@ -5,9 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './swipe-help.component.html'
 })
 export class SwipeHelpComponent implements OnInit {
+  constructor () { }
 
-  constructor() { }
-
-  ngOnInit(): void {
+  ngOnInit (): void {
   }
 }

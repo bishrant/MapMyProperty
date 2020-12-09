@@ -5,10 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './basemaps-help.component.html'
 })
 export class BasemapsHelpComponent implements OnInit {
+  constructor () { }
 
-  constructor() { }
-
-  ngOnInit(): void {
+  ngOnInit (): void {
   }
-
 }
