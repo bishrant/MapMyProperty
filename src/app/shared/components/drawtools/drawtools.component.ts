@@ -10,7 +10,8 @@ import {
   CreateCircleFromGraphic,
   CreatePolygonFromGraphic,
   CreatePolylineFromGraphic,
-  CreatePointFromGraphic
+  CreatePointFromGraphic,
+  CreateCircleFromCentroid
 } from 'src/app/shared/utils/DrawUtils';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 import { id } from '../../store/todo';
@@ -179,9 +180,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.mapView.graphics.removeAll();
         let _updatedGraphics = gg.graphics;
         if (_updatedGraphics[0].attributes.geometryType === 'circle') {
-          _updatedGraphics = [
-            CreateCircleFromGraphic(gg.graphics[0], this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps)
-          ];
+          _updatedGraphics = [CreateCircleFromCentroid(gg.graphics[0], this.radius, this.lineStyleElmRef.lineProps, this.fillStyleElmRef.fillProps)];
         }
         if (_updatedGraphics[0].attributes.geometryType === 'polygon') {
           _updatedGraphics = [
