@@ -8,17 +8,15 @@ import { FormatRoundNumber } from '../../utils/ConversionTools';
   styleUrls: ['./scale-text.component.scss']
 })
 export class ScaleTextComponent implements OnInit {
-
   scaleText:string = null;
 
-  constructor(
+  constructor (
     private mapViewService:MapviewService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit (): void {
     this.mapViewService.scaleChanged.subscribe((scale:number) => {
       this.scaleText = FormatRoundNumber(scale, 0);
     });
   }
-
 }

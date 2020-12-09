@@ -6,7 +6,6 @@ import Query from 'esri/tasks/support/Query';
 import FeatureSet from 'esri/tasks/support/FeatureSet';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
 import { AppConfiguration } from 'src/config';
-import { ReportsService } from '../../pmloUtils/reports.service';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +37,7 @@ export class SoilsReportService {
             });
           })
             .catch(() => {
-              reject('Error printing');
+              reject(new Error('Error printing'));
             });
         });
       });

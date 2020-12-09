@@ -156,7 +156,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
         this.showCoordinates(this.mapView.toMap({ x: evt.x, y: evt.y }));
       });
 
-      this.mapView.when((stats: any) => {
+      this.mapView.when(() => {
         setTimeout(() => {
           this.checkIfSavedGraphicsExists();
         }, 2000);
@@ -188,14 +188,13 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
             let soilsGLHasPolygons: boolean = true;
             let sensAreasGLHasPolygons: boolean = true;
             const pmloSoilsGL: __esri.GraphicsLayer = this.mapView.map.findLayerById('pmloSoilsGL') as __esri.GraphicsLayer;
-            const sensAreasGL: __esri.GraphicsLayer = this. mapView.map.findLayerById('sensAreasGL') as __esri.GraphicsLayer;
+            const sensAreasGL: __esri.GraphicsLayer = this.mapView.map.findLayerById('sensAreasGL') as __esri.GraphicsLayer;
 
             if (GetPolygonGraphics(boundaryLayerView.layer as __esri.GraphicsLayer).length === 0) {
               soilsGLHasPolygons = false;
               sensAreasGLHasPolygons = false;
             } else {
-              if ((pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined))
-              {
+              if ((pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
                 soilsGLHasPolygons = false;
               }
 

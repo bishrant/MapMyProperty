@@ -7,18 +7,18 @@ import { ReportsService } from '../../pmloUtils/reports.service';
 import { GetDefaultSoilsLineProps, GetDrainageClassFillProps } from '../../pmloUtils/SoilsStyles';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class HarvestOperationsService {
-  constructor(
-    private printTaskService: PrintTaskService, 
+  constructor (
+    private printTaskService: PrintTaskService,
     private reportsService: ReportsService
-    ) {}
+  ) {}
 
-  addSoilsToMap(soilsGl: __esri.GraphicsLayer, soilMulti: any, boundaryId: string, sliderValue: number): void {
+  addSoilsToMap (soilsGl: __esri.GraphicsLayer, soilMulti: any, boundaryId: string, sliderValue: number): void {
     const graphicOpacity: number = (100 - sliderValue) / 100;
     const graphicsCollection: __esri.Graphic[] = [];
-    let lineProps: LineProps = GetDefaultSoilsLineProps(graphicOpacity);
+    const lineProps: LineProps = GetDefaultSoilsLineProps(graphicOpacity);
     soilMulti.value.features.forEach((feature: any) => {
       const fillProps: FillProps = GetDrainageClassFillProps(feature, graphicOpacity);
       feature.symbol = CreatePolygonSymbol(lineProps, fillProps);
@@ -28,7 +28,7 @@ export class HarvestOperationsService {
     soilsGl.addMany(graphicsCollection);
   }
 
-  createOperationsReport(selectedRadio: string, mv: __esri.MapView, soilsGl: __esri.GraphicsLayer, boundaryExtent: __esri.Extent, reportTitle:string): Promise<string> {
+  createOperationsReport (selectedRadio: string, mv: __esri.MapView, soilsGl: __esri.GraphicsLayer, boundaryExtent: __esri.Extent, reportTitle:string): Promise<string> {
     return new Promise((resolve, reject) => {
       this.printTaskService.exportWebMap(mv, 'PMLOSensAreasTemplate', 'jpg', boundaryExtent).then((mapImageUrl: string) => {
         const soilsAttributes:any = soilsGl.graphics.map((soil:__esri.Graphic) => {
@@ -37,7 +37,7 @@ export class HarvestOperationsService {
         });
         const reportParams:any = {
           projName: reportTitle,
-          imageUrl:mapImageUrl,
+          imageUrl: mapImageUrl,
           operation: selectedRadio,
           soils: soilsAttributes
         };

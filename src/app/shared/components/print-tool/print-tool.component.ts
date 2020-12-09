@@ -15,6 +15,12 @@ import ImageryLayer from 'esri/layers/ImageryLayer';
 import WMSLayer from 'esri/layers/WMSLayer';
 import BingMapsLayer from 'esri/layers/BingMapsLayer';
 
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState (control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    return !!(control && control.invalid && control.dirty);
+  }
+}
+
 @Component({
   selector: 'app-print-tool',
   templateUrl: './print-tool.component.html',
@@ -208,11 +214,5 @@ export function ValidateLineBreaks (MAXLINES: number): ValidatorFn {
       return { commentsLineBreaksInvalid: true }; // return object if the validation is not passed.
     }
     return null;
-  }
-}
-
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState (control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    return !!(control && control.invalid && control.dirty);
   }
 }
