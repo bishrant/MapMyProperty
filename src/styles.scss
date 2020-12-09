@@ -58,13 +58,10 @@ body {
     @apply hidden;
   }
 }
-// @media screen and (max-width: 640px) {
-//   .esri-component.esri-expand.esri-widget.esri-expand--auto {
-//     display: block;
-//   }
-// }
 
-
+.cdk-overlay-container {
+  z-index: 20000 !important;
+}
 
 .centerAlign {
   text-align: center;
@@ -86,14 +83,6 @@ body {
   display: flex;
 }
 
-.mat-dialog-container {
-  background-color: white;
-  padding: 0 !important;
-}
-.mat-dialog-content {
-  margin: 0 !important;
-  -webkit-overflow-scrolling: touch;
-}
 .mat-select-value {
   padding-left: 5px !important;
 }
@@ -193,14 +182,10 @@ $textboxFrameColor: white;
   position: absolute;
   right: 0;
   width: 20px;
-  // background: rgba(170, 183, 156, 0.7);
   z-index: 2000;
-  // line-height: 40px;
   line-height: 7px;
   color: $textboxFrameColor;
   font-size: 30px;
-  // padding-left: 10px;
-  // border-radius: $border-radius $border-radius 0 0;
 }
 
 .sep {
@@ -208,10 +193,8 @@ $textboxFrameColor: white;
   left: -5px;
   height: 100%;
   width: 8px;
-  /* top: 13px; */
   font-weight: lighter;
   line-height: 34px;
-  /* font-size: 25px; */
   color: $textboxFrameColor;
 }
 .infoToolTip {
@@ -241,7 +224,6 @@ $sliderBase: 6px;
 
 .pmloSoilsTable .ui-modal {
   width: 37.5em;
-  /* for resize limits use min-width, min-height, max-width, max-height in css */
 }
 
 .notificationsModal .ui-modal {

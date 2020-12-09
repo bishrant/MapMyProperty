@@ -11,7 +11,7 @@
         <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path></svg>
     </button>
   </div>
-  <div class="w-full hidden flex-grow lg:flex lg:items-center lg:w-auto menuContainer" [class.hidden]="isHidden" [class.block]="!isHidden" >
+  <div class="w-full hidden flex-grow lg:flex lg:items-center lg:w-auto menuContainer" [class.hidden]="isHidden" [class.block]="!isHidden" [ngStyle]="{'background-color': headerColor}">
     <div class="text-sm lg:flex-grow"></div>
     <div>
       <span class="block mt-4 lg:inline-block lg:mt-0 hover:text-white mr-4">
@@ -21,18 +21,18 @@
         href="javascript:window.open('https://www.facebook.com/sharer/sharer.php?u='+ window.location.href, '_blank')"><img
           src="assets/facebook.png" class="socialMediaIcon inline" alt="share with facebook"/></a>
         </span>
-      <a rel="noopener noreferrer"  class="headerItem" href="https://texasforestinfo.tamu.edu" target="_blank">
+      <a rel="noopener noreferrer cursor-pointer"  class="headerItem" href="https://texasforestinfo.tamu.edu" target="_blank">
         Home
       </a>
-      <a href="#" class="headerItem">
+      <a href="#" class="headerItem cursor-pointer">
         About
       </a>
-      <a class="headerItem" href="https://texasforestinfo.tamu.edu/Contact" target="_blank" rel="noopener">
+      <a class="headerItem cursor-pointer" href="https://texasforestinfo.tamu.edu/Contact" target="_blank" rel="noopener">
         Contact
       </a>
-      <button class="headerItem" (click)="openHelp()">
+      <a class="headerItem cursor-pointer" (click)="openHelp()">
         Help
-      </button>
+      </a>
     </div>
   </div>
 </nav>

@@ -25,7 +25,6 @@ export class EsrimapComponent implements OnInit {
   sketchVM: any = new SketchViewModel();
   selectedGraphics!: any[] | undefined;
   sidebarVisible = window.innerWidth > 640;
-
   mapCoords: any;
 
   geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
