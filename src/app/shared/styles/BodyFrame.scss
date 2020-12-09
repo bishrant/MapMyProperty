@@ -57,3 +57,62 @@
   height: 100%;
   border-radius: 5px 5px 0 0;
 }
+
+.sidebarToggle {
+  right: -68px;
+  color: white;
+  position: absolute;
+  background: black;
+  padding: 5px;
+  display: none;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .sidebarBlanket {
+    padding: 5px 0 0px 5px;
+    position: fixed;
+    left: 0;
+    z-index: 9000;
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  .sidebarToggle {
+    display: flex;
+  }
+
+  .sidebarHidden {
+    left: -269px;
+  }
+}
+.sideOpen {
+  right: -58px;
+}
+.showHideSvg {
+  fill: white;
+  height: 20px;
+  display: inline-block;
+}
+
+.rotate90{
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.rotate270{
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
