@@ -31,6 +31,7 @@ export class PrintToolComponent implements OnInit {
   @ViewChild('printMapModal') printMapModal: any;
   @ViewChild('modalMapViewNode', { static: true }) private mapViewEl: ElementRef;
   @Input() mapView: __esri.MapView;
+  @Input() sketchVM: __esri.SketchViewModel;
   printForm: FormGroup;
   MAX: number = 200;
   MAXLINES: number = 5;
@@ -111,7 +112,6 @@ export class PrintToolComponent implements OnInit {
         }
       } else if (['map-image', 'feature', 'vector-tile', 'imagery', 'wms', 'bing-maps'].includes(lrs.type)) {
         const l = this.createLayer(lrs);
-        console.log(l);
         lrArray.push(l);
       } else {
         lrArray.push(lrs);
@@ -122,6 +122,9 @@ export class PrintToolComponent implements OnInit {
 
   async initializeMap () {
     try {
+      if (this.sketchVM.state === 'active') {
+        this.sketchVM.cancel();
+      }
       const lrArray = this.copyLayers();
       const mapProperties: any = {
         basemap: this.mapView.map.basemap,
@@ -137,13 +140,17 @@ export class PrintToolComponent implements OnInit {
         constraints: {
           rotationEnabled: false
         },
-        center: this.mapView.center,
-        zoom: this.mapView.zoom,
-        spatialReference: this.mapView.spatialReference
+        center: this.mapView.center.clone(),
+        zoom: parseInt('' + this.mapView.zoom),
+        spatialReference: this.mapView.spatialReference.clone()
       };
 
       const ESRIMapView = await import('arcgis-js-api/views/MapView');
       this.popupMapView = new ESRIMapView.default(mapViewProperties);
+      setTimeout(() => {
+        this.popupMapView.extent = this.mapView.extent.clone();
+      }, 20)
+
       return this.popupMapView;
     } catch (error) {
       console.log('Esri: ', error);
