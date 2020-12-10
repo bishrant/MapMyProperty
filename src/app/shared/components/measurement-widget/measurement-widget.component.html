@@ -1,0 +1,38 @@
+<button (click)="toggle()" class="measurementToggleBtn" [ngClass]="{selectedBtn: isOpen}" title="Measurements">
+    <img src="assets/icons/measure.png" aria-label="basemap gallery" />
+</button>
+
+<div class="measureBody" [hidden]="!isOpen">
+    <div class="widgetTitle">
+        <span class="widgetTitleText">Measurements</span>
+        <i class="widgetCloseBtn ui-icon dt-icon-close" (click)="toggle()"></i>
+    </div>
+
+    <div class="measureContent overflow-y-auto">
+        <button
+        class="action-button esri-icon-measure-line bg-pmlo_secondary text-white"
+        [ngClass]="{'active': isAreaActive === false}"
+        id="distanceButton"
+        type="button"
+        title="Measure distance between two or more points"
+        (click)="distanceMeasurement()"
+      ></button>
+      <button
+        class="action-button esri-icon-measure-area bg-pmlo_secondary text-white ml-2"
+        [ngClass]="{'active': isAreaActive === true}"
+        id="areaButton"
+        type="button"
+        title="Measure area"
+        (click)="areaMeasurement()"
+      ></button>
+      <button
+      class="action-button esri-icon-trash bg-pmlo_secondary text-white ml-2"
+      id="clearButton"
+      type="button"
+      title="Clear Measurements"
+      (click)="clearMeasurements()"
+    ></button>
+
+        <div #widgetContainer></div>
+    </div>
+</div>

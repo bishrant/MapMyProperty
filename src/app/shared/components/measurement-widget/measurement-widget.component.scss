@@ -1,0 +1,48 @@
+$right: 1em;
+
+.measurementToggleBtn {
+  position: absolute;
+  top: calc(7.5em + var(--map-button-height));
+  right: $right;
+  height: var(--map-button-height);
+  width: var(--map-button-width);
+}
+
+.measurementToggleBtn.selectedBtn {
+  box-sizing: border-box;
+  border: 2px solid cyan;
+}
+
+.measureBody {
+    position: absolute;
+    top: calc(7.5em + var(--map-button-height) + 3em);
+    right: $right;
+    width: 20em;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 10px #0000009c;
+    z-index: 1;
+  }
+
+  .action-button {
+    font-size: 16px;
+    border: 1px solid #d3d3d3;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+  }
+
+  .measureContent {
+      padding: 10px;
+  }
+
+  .action-button:hover {
+    box-shadow: 0 0 5px black;
+  }
+
+  .active {
+    border: 2px solid cyan;
+  }
