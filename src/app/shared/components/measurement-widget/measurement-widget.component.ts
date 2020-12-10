@@ -34,8 +34,8 @@ export class MeasurementWidgetComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.measurement.view = this.mapView;
     this.measurement.container = this.widgetContainerDiv.nativeElement;
-    this.measurement.linearUnit = 'imperial';
-    this.measurement.areaUnit = 'imperial';
+    this.measurement.linearUnit = 'us-feet';
+    this.measurement.areaUnit = 'acres';
   }
 
   ngOnDestroy () {
@@ -61,6 +61,8 @@ export class MeasurementWidgetComponent implements OnInit, OnDestroy {
     if (!this.isOpen)
     {
       this.widgetToggleService.changeWidgetView('measurement', this.isOpen);
+    } else {
+      this.clearMeasurements();
     }
     this.isOpen = !this.isOpen;
   }
