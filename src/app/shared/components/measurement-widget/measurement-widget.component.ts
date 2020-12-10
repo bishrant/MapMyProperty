@@ -58,7 +58,10 @@ export class MeasurementWidgetComponent implements OnInit, OnDestroy {
   }
 
   toggle (): void {
-    this.widgetToggleService.changeWidgetView('measurement', this.isOpen);
+    if (!this.isOpen)
+    {
+      this.widgetToggleService.changeWidgetView('measurement', this.isOpen);
+    }
     this.isOpen = !this.isOpen;
   }
 }
