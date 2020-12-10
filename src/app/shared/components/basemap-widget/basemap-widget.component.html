@@ -1,7 +1,7 @@
 <span class="basemapLabel hidden md:block" *ngIf="showBasemapLabel">
   {{state.basemap.label}}
 </span>
-<button (click)="toggle()" class="basemapToggleBtn" [ngClass]="{selectedBtn: state.open}">
+<button (click)="toggle()" class="basemapToggleBtn" [ngClass]="{selectedBtn: state.open}" title="Basemaps">
   <img src="assets/icons/basemaps.png" aria-label="basemap gallery" />
 </button>
 
