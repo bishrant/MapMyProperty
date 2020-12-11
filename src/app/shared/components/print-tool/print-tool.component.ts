@@ -14,6 +14,7 @@ import VectorLayer from 'esri/layers/VectorTileLayer';
 import ImageryLayer from 'esri/layers/ImageryLayer';
 import WMSLayer from 'esri/layers/WMSLayer';
 import BingMapsLayer from 'esri/layers/BingMapsLayer';
+import { NotificationService } from '../../services/error/notification.service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState (control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -29,6 +30,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class PrintToolComponent implements OnInit {
   @ViewChild('printMapModal') printMapModal: any;
+  @ViewChild('errorModal') errorModal: any;
   @ViewChild('modalMapViewNode', { static: true }) private mapViewEl: ElementRef;
   @Input() mapView: __esri.MapView;
   @Input() sketchVM: __esri.SketchViewModel;
@@ -39,7 +41,8 @@ export class PrintToolComponent implements OnInit {
   constructor (
     private formBuilder: FormBuilder,
     private config: AppConfiguration,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private notificationService: NotificationService,
   ) { }
 
   matcher = new MyErrorStateMatcher();
@@ -157,7 +160,7 @@ export class PrintToolComponent implements OnInit {
     }
   }
 
-  async generatePDF () {
+  async generatePDF (format: string) {
     this.loaderService.isLoading.next(true);
     const printParameters = new PrintParameters({
       view: this.popupMapView,
@@ -165,24 +168,27 @@ export class PrintToolComponent implements OnInit {
         comments: this.printForm.get('comments')?.value,
         title: this.printForm.get('title')?.value,
         Layout_Template: 'MMP',
-        Format: 'PDF',
-        showCurrentDate: this.showCurrentDate
+        Format: format,
+        showCurrentDate: '' + this.showCurrentDate
       }
     });
 
     this.printTask
       .execute(printParameters)
       .then((success: any) => {
-        console.log(success.url);
         window.open(success.url, '_blank');
-        this.loaderService.isLoading.next(false);
         this.printMapModal.hide();
       })
       .catch((error: any) => {
-        console.error(error);
+        this.printMapModal.hide();
+        this.errorModal.show()
         const gpError = TraceGPError(this.config.printGPServiceURL, error);
         throw gpError;
-      });
+      })
+      .finally(() => {
+        this.loaderService.isLoading.next(false);
+      })
+    ;
   }
 
   previewClosed () {
