@@ -38,6 +38,7 @@ import { OverallHelpComponent } from '../help-templates/overall-help/overall-hel
 import { GraphicsStoreModule } from 'src/app/shared/components/graphics-store/GraphicsStore.module';
 import { SliderModule } from 'src/app/shared/components/slider/slider.module';
 import { MeasurementWidgetModule } from 'src/app/shared/components/measurement-widget/measurement-widget.module';
+import { MeasurementWidgetHelpModule } from 'src/app/shared/components/help-components/measurement-widget-help/measurement-widget-help.module';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -80,7 +81,8 @@ import { MeasurementWidgetModule } from 'src/app/shared/components/measurement-w
     BasemapsHelpModule,
     SearchWidgetHelpModule,
     SliderModule,
-    MeasurementWidgetModule
+    MeasurementWidgetModule,
+    MeasurementWidgetHelpModule
   ],
   exports: [EsrimapComponent]
 })
