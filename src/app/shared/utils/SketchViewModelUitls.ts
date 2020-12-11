@@ -58,6 +58,32 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: __esri.MapView): __es
     defaultUpdateOptions: {
       enableRotation: false,
       enableScaling: false,
+      multipleSelectionEnabled: false,
+      tool: 'reshape'
+    },
+    defaultCreateOptions: {
+      mode: 'click'
+    }
+    // toggleToolOnClick: false
+  });
+};
+
+const CreateGeneralSketchViewModel = (graphicsLayer: any, mapView: __esri.MapView): __esri.SketchViewModel => {
+  return new SketchViewModel({
+    view: mapView,
+    layer: graphicsLayer,
+    pointSymbol: emptyPoint,
+    polylineSymbol: {
+      type: 'simple-line',
+      color: [0, 0, 255],
+      width: 2
+    },
+    updateOnGraphicClick: false,
+    defaultUpdateOptions: {
+      enableRotation: false,
+      enableScaling: false,
+      multipleSelectionEnabled: false,
+      toggleToolOnClick: false,
       tool: 'reshape'
     },
     defaultCreateOptions: {
@@ -98,4 +124,4 @@ const CreateTFSCircleFromPoint = (pointGeom: any, radius: number) => {
     geodesic: true
   });
 };
-export { SetupSketchViewModel, CreateCircleWithGeometry, CreateTFSCircleFromPoint, TFSPolygon, TFSPolyline };
+export { SetupSketchViewModel, CreateCircleWithGeometry, CreateTFSCircleFromPoint, TFSPolygon, TFSPolyline, CreateGeneralSketchViewModel };

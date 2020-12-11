@@ -40,4 +40,15 @@ const getDefaultSymbol: any = (geometryType: string) => {
       : defaultPointSymbol;
 }
 
-export { defaultTextSymbol, defaultPointSymbol, defaultLineSymbol, defaultPolygonSymbol, getDefaultSymbol }
+const defaultPointCircleSymbol = {
+  type: 'simple-marker', // autocasts as new SimpleMarkerSymbol()
+  style: 'circle',
+  color: 'cyan',
+  size: '20px', // pixels
+  outline: { // autocasts as new SimpleLineSymbol()
+    color: [0, 0, 0],
+    width: 1 // points
+  }
+};
+
+export { defaultTextSymbol, defaultPointSymbol, defaultLineSymbol, defaultPolygonSymbol, getDefaultSymbol, defaultPointCircleSymbol }

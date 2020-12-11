@@ -31,6 +31,7 @@ import { CreateTFSCircleFromPoint } from '../../utils/SketchViewModelUitls';
 })
 export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() sketchVM: any;
+  @Input() generalSketchVM: any;
   @Input() geomLabelsSketchVM: __esri.SketchViewModel;
   @Input() geomLabelsGraphicsLayer: __esri.GraphicsLayer;
 
@@ -426,8 +427,13 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   private detectTextGraphics = () => {
     this.mapView.on('click', (evt: any) => {
       if (this.sketchVM.state === 'active') return;
+      if (this.generalSketchVM.state === 'active') return;
+
+      if (this.sketchVM.state === 'disabled') return;
+      if (this.generalSketchVM.layer.graphics.length > 0) return;
 
       this.mapView.hitTest(evt).then((response: any) => {
+
         if (response.results.length < 1) {
           if (this.selectedGraphics.length > 0) {
             this.selectedTextGraphics = [];
