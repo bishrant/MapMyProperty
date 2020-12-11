@@ -1,10 +1,11 @@
-<button (click)="toggle()" class="measurementToggleBtn" [ngClass]="{selectedBtn: isOpen}" title="Measurements">
+<button (click)="toggle()" class="measurementToggleBtn" [ngClass]="{selectedBtn: isOpen}" title="Measurement">
     <img src="assets/icons/measure.png" aria-label="basemap gallery" />
 </button>
 
 <div class="measureBody" [hidden]="!isOpen">
     <div class="widgetTitle">
-        <span class="widgetTitleText">Measurements</span>
+        <span class="widgetTitleText">Measurement</span>
+        <app-help-button [header]="'Measurement'" [itemName]="'measurement'" [fillColor]="'white'"></app-help-button>
         <i class="widgetCloseBtn ui-icon dt-icon-close" (click)="toggle()"></i>
     </div>
 
