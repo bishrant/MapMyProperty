@@ -168,15 +168,11 @@ class ElevationProfileViewModel extends Accessor {
   async printReport (mapView: MapView, reportURL: string, exportMapGPServiceURL: string) {
     return new Promise(async (resolve: any, reject: any) => {
       try {
-        const printTemplate = new PrintTemplate({
-          format: 'jpg'
-        });
         const printParameters = new PrintParameters({
           view: mapView,
-          template: printTemplate,
           extraParameters: {
             Layout_Template: 'ProfileToolFeetTemplate',
-            f: 'json'
+            Format: 'PNG'
           }
         })
         const printTask = new PrintTask({ url: exportMapGPServiceURL })

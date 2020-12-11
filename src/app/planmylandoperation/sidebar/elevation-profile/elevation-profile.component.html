@@ -3,12 +3,12 @@
   <br>
   <div class="centerAlign">
     <div class="btn-group">
-      <input type="radio" id="draw_line" name="amount" [value]="'polyline'" aria-label="Line"
-        (ngModelChange)="startDrawingGraphics($event)" [(ngModel)]="drawTool" />
-      <label for="draw_line" class="pmlo-btn pmlo-secondary generalBtn">Draw Line</label>
-      <input type="radio" id="draw_freehand" name="amount" [value]="'freehand'" aria-label="Point"
-        (ngModelChange)="startDrawingGraphics($event)" [(ngModel)]="drawTool" />
-      <label for="draw_freehand" class="pmlo-btn pmlo-secondary generalBtn">Draw Freehand</label>
+      <button class="pmlo-btn pmlo-secondary generalBtn" (click)="startDrawingGraphics('click')"
+      [ngClass]="{'elevationBtnActive': drawTool === 'click'}">Draw Line</button> <br>
+      <button class="pmlo-btn pmlo-secondary generalBtn" (click)="startDrawingGraphics('freehand')"
+      [ngClass]="{'elevationBtnActive': drawTool === 'freehand'}"
+      >Draw Freehand</button>
+
     </div>
     <br>
     <div class="centerAlign">
