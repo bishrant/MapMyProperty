@@ -48,10 +48,20 @@
   </ng-container>
   <ng-container class="app-modal-footer">
     <div class="footer">
-      <button type="button" class="pmlo-btn pmlo-secondary printBtn" (click)="generatePDF()">
+      <button type="button" class="pmlo-btn pmlo-secondary printBtn" (click)="generatePDF('pdf')">
         Generate PDF
       </button>
+      <button type="button" class="pmlo-btn pmlo-secondary printBtn" (click)="generatePDF('png')">
+        Generate PNG
+      </button>
     </div>
+  </ng-container>
+</app-modal>
 
+<app-modal #errorModal [maximizable]="false" [backdrop]="true"
+  [headerBackgroundColor]="'red'" >
+  <ng-container class="app-modal-header">Error</ng-container>
+  <ng-container class="app-modal-body">
+    An error occured while printing your map. Please try again.
   </ng-container>
 </app-modal>
