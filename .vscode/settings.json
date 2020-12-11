@@ -17,6 +17,6 @@
         "title-require": true
     },
     "workbench.colorCustomizations": {
-        "terminal.ansiBrightWhite": "#0088ff",
+        "terminal.ansiBrightWhite": "#0088ff"
     }
 }
