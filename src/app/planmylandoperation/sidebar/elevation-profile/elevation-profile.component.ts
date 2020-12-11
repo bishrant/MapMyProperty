@@ -12,7 +12,10 @@ export class ElevationProfileComponent {
   @ViewChild('elevationProfileModal') elevationProfileModal: any;
   @Input() mapView: any;
   @Input() slopeThreshold: number = 8;
+  @Input() sketchVM: __esri.SketchViewModel;
+  @Input() generalSketchVM: __esri.SketchViewModel;
 
+  isActive = false;
   headerBgColor = '#353535';
   drawTool: String;
   isMSL = false;
@@ -25,50 +28,63 @@ export class ElevationProfileComponent {
   drawingObservable$: Subscription;
   closePopup$: Subscription;
 
-  constructor (private elevationService: ElevationProfileService, private loaderService: LoaderService) {
+  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService) {
     this.isReversed = elevationService.isReversed;
   }
 
-  onResizeEnd ($event) {
+  onResizeEnd($event) {
     this.elevationService.resizeChart($event.width - 30, $event.height - 90);
   }
 
   startDrawingGraphics (value: any) {
-    if (this.elevationProfileModal.visible) {
-      this.elevationProfileModal.hide();
+    if (this.drawTool === value) {
+      this.modelClosed();
+    } else {
+      if (this.drawTool !== '') {
+        this.modelClosed();
+      }
+      this.drawTool = value;
+      this.isActive = true;
+      if (this.sketchVM) this.sketchVM.cancel();
+
+      if (this.elevationProfileModal.visible) {
+        this.elevationProfileModal.hide();
+      }
+      this.elvUtils = undefined;
+      this.elvUtils = this.elevationService.initialize({
+        mapView: this.mapView,
+        slopeThreshold: this.slopeThreshold,
+        unit: 'feet',
+        divId: 'gd',
+        isMSL: this.isMSL,
+        popup: this.elevationProfileModal
+      }, this.generalSketchVM);
+      this.elvUtils.start(value);
     }
-    this.elvUtils = undefined;
-    this.elvUtils = this.elevationService.initialize({
-      mapView: this.mapView,
-      slopeThreshold: this.slopeThreshold,
-      unit: 'feet',
-      divId: 'gd',
-      isMSL: this.isMSL,
-      popup: this.elevationProfileModal
-    });
-    this.elvUtils.start(value);
   }
 
-  modelClosed () {
+  modelClosed() {
     this.elevationService.close();
-    this.drawTool = undefined;
+    if (this.generalSketchVM) {
+      this.generalSketchVM.layer.removeAll();
+      this.generalSketchVM.layer.graphics.removeAll();
+      this.generalSketchVM.cancel();
+    }
+    this.drawTool = '';
+    this.isActive = false;
   }
 
-  clearElevationProfile () {
-    this.elevationProfileModal.hide();
-  }
-
-  ngOnDestroy () {
+  ngOnDestroy() {
     this.chartDataObservable$.unsubscribe();
     this.drawingObservable$.unsubscribe();
   }
 
-  reverseProfile () {
+  reverseProfile() {
     this.isReversed = !this.isReversed;
     this.elevationService.reverseProfile();
   }
 
-  createReport () {
+  createReport() {
     this.elevationService.createReport();
   }
 }

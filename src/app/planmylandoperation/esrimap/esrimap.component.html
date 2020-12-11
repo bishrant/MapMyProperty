@@ -14,7 +14,9 @@
         <app-accordion-panel #drawAccPanel panelTitle="Draw">
           <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
             [geomLabelsSketchVM]="geomLabelsSketchVM" [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer"
-            [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer" [polygonGraphicsLayer]="polygonGraphicsLayer">
+            [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer" [polygonGraphicsLayer]="polygonGraphicsLayer"
+            [generalSketchVM]="generalSketchVM"
+            >
           </app-drawtools>
         </app-accordion-panel>
 
@@ -35,7 +37,8 @@
         </app-accordion-panel>
 
         <app-accordion-panel #elevationAccPanel panelTitle="Elevation Profile">
-          <app-elevation-profile [mapView]="mapView"></app-elevation-profile>
+          <app-elevation-profile [mapView]="mapView" [sketchVM]="sketchVM" #elevationProfileComponent
+          [generalSketchVM]="generalSketchVM"></app-elevation-profile>
         </app-accordion-panel>
 
         <app-accordion-panel #culvertAccPanel panelTitle="Culvert Size">
