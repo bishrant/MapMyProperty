@@ -9,6 +9,8 @@ import { HelpService } from '../../services/help/help.service';
 export class HeaderComponent {
   @Input('headerColor') headerColor: String | undefined = 'white';
   @Input('title') title: String = 'Map My Property Suite';
+  @Input() isAboutVisible: boolean = true;
+  @Input() isHelpVisible: boolean = true;
   isHidden = true;
   constructor (
     private helpService:HelpService

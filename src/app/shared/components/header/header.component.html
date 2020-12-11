@@ -21,16 +21,16 @@
         href="javascript:window.open('https://www.facebook.com/sharer/sharer.php?u='+ window.location.href, '_blank')"><img
           src="assets/facebook.png" class="socialMediaIcon inline" alt="share with facebook"/></a>
         </span>
-      <a rel="noopener noreferrer cursor-pointer"  class="headerItem" href="https://texasforestinfo.tamu.edu" target="_blank">
+      <a rel="noopener noreferrer cursor-pointer"  class="headerItem" [href]="isAboutVisible ? 'https://texasforestinfo.tamu.edu' : '../'" target="_blank">
         Home
       </a>
-      <a href="#" class="headerItem cursor-pointer">
+      <a *ngIf="isAboutVisible" href="../about" class="headerItem cursor-pointer" target="_blank" rel="noopener noreferrer">
         About
       </a>
       <a class="headerItem cursor-pointer" href="https://texasforestinfo.tamu.edu/Contact" target="_blank" rel="noopener">
         Contact
       </a>
-      <a class="headerItem cursor-pointer" (click)="openHelp()">
+      <a *ngIf="isHelpVisible" class="headerItem cursor-pointer" (click)="openHelp()">
         Help
       </a>
     </div>
