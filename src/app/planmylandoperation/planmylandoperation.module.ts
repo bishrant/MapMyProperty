@@ -5,16 +5,22 @@ import { PmloComponent } from './pmlo/pmlo.component';
 import { NgModule } from '@angular/core';
 import { EsriMapModule } from './esrimap/esrimap.module';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { PmloAboutComponent } from './pmlo/pmlo-about/pmlo-about.component';
 
 const routes: Routes = [
   {
     path: '',
     component: PmloComponent
+  },
+  {
+    path: 'about',
+    component: PmloAboutComponent
   }
 ];
 @NgModule({
   declarations: [
-    PmloComponent],
+    PmloComponent,
+    PmloAboutComponent],
   imports: [
     CommonModule,
     EsriMapModule,
