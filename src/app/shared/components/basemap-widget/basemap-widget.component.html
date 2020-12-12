@@ -15,12 +15,12 @@
     <div class="basemapgrid">
       <div class="basemapcard" *ngFor="let basemap of basemaps" (click)="setBasemap(basemap)"
         [ngClass]="{selected: basemap===state.basemap}">
-        <img src="assets/icons/basemap/{{basemap.image}}.png" aria-label="im" attr.aria-label="{{basemap.image}}" />
+        <img src="assets/icons/basemap/{{basemap.image}}.jpg" aria-label="im" attr.aria-label="{{basemap.image}}" />
         <span> {{basemap.label}}</span>
       </div>
     </div>
     <div class="basemapcard texasimagery" [ngClass]="{selected: texasImageryVisible}">
-      <img src="assets/icons/basemap/texas.png" aria-label="texas imagery" (click)="toggleTexasImagery()" />
+      <img src="assets/icons/basemap/texas.jpg" aria-label="texas imagery" (click)="toggleTexasImagery()" />
       <span *ngIf="!texasImageryVisible"> Texas High Resolution Imagery</span>
 
       <select *ngIf="texasImageryVisible" [(ngModel)]="selectedTexasBasemap" aria-label="Basemap"
