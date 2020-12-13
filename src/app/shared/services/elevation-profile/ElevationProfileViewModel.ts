@@ -1,49 +1,23 @@
 import { ElevationUnits } from './interfaces.d';
-import Accessor from 'esri/core/Accessor';
-import { property, subclass } from 'esri/core/accessorSupport/decorators';
 import { CalculateLength, CalculateSlope, GetSegmentsWithHigherSlope, CalculateSegmentLength, lengthAbbrMap, elevationUnitMap, sum, max, min, Decimal, avg } from './Uitls';
 import { CreateNormalElevationLine, CreateHigherSlopeLine, GetGraphOptions, ConvertElevationUnits } from './GraphStyles';
 import Graphic from 'esri/Graphic';
 import MapView from 'esri/views/MapView';
-import PrintTemplate from 'esri/tasks/support/PrintTemplate';
 import PrintParameters from 'esri/tasks/support/PrintParameters';
 import PrintTask from 'esri/tasks/PrintTask';
-import * as Plotly from './lib/plotly-basic-1.55.2.min.js';
 
-@subclass('esri.widgets.ElevationProfileViewModel')
-class ElevationProfileViewModel extends Accessor {
-  constructor () {
-    super();
-  }
+class ElevationProfileViewModel {
+  constructor () {}
 
-  @property()
   slopeThreshold: number | undefined;
-
-  @property()
   plot: any;
-
-  @property()
   userGraphic: Graphic;
-
-  @property()
   showWidget: boolean = false;
-
-  @property()
   ptArrayOriginal: any = [];
-
-  @property()
   state: string = '';
-
-  @property()
   unit: ElevationUnits = 'miles';
-
-  @property()
   error: string = '';
-
-  @property()
   isMSL: boolean = false;
-
-  @property()
   divId: string = 'elevation-plotly';
 
   GetElevationData (graphic: Graphic, elevationGPServiceURL: string) {
@@ -92,7 +66,7 @@ class ElevationProfileViewModel extends Accessor {
     return [data, options, pts];
   }
 
-  initializeHover (Plotly: any, _pts: any, mapView: __esri.MapView, graphicsLayer: __esri.GraphicsLayer) {
+  initializeHover (_pts: any, graphicsLayer: __esri.GraphicsLayer) {
     const myPlot: any = document.getElementById(this.divId);
     myPlot
       .on('plotly_hover', function (data: any) {
@@ -165,7 +139,7 @@ class ElevationProfileViewModel extends Accessor {
     }
   }
 
-  async printReport (mapView: MapView, reportURL: string, exportMapGPServiceURL: string) {
+  async printReport (plotly:any, mapView: MapView, reportURL: string, exportMapGPServiceURL: string) {
     return new Promise(async (resolve: any, reject: any) => {
       try {
         const printParameters = new PrintParameters({
@@ -179,7 +153,7 @@ class ElevationProfileViewModel extends Accessor {
 
         const printURLData: any = await printTask.execute(printParameters);
         const _title = document.getElementById('elevationProfileTitle') as any;
-        const img = await this.exportImage();
+        const img = await this.exportImage(plotly);
 
         const reportData = {
           title: _title.value,
@@ -208,10 +182,10 @@ class ElevationProfileViewModel extends Accessor {
     })
   }
 
-  exportImage () {
+  exportImage (plotly: any) {
     return new Promise((resolve: any, reject: any) => {
       const myPlot: any = document.getElementById(this.divId);
-      Plotly.toImage(myPlot, { height: 400, width: 856 })
+      plotly.toImage(myPlot, { height: 400, width: 856 })
         .then(function (url: any) { resolve(url); })
         .catch((err: any) => reject(err))
     });
