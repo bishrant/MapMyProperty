@@ -59,7 +59,7 @@ export class ElevationProfileService {
     }
     const [data, options, ptArrayNew] = this.viewModel.getChartData(reveresedArrayNew, this.viewModel.unit);
     this._renderChart(data, options);
-    this.viewModel.initializeHover(this.Plotly, ptArrayNew, this.mapView, this.graphicsLayer);
+    this.viewModel.initializeHover(ptArrayNew, this.graphicsLayer);
     reveresedArrayNew = undefined;
     reversedPtArray = undefined;
   }
@@ -87,7 +87,7 @@ export class ElevationProfileService {
       this.mapView.extent = this.mapView.extent.clone().expand(2);
       setTimeout(() => {
         this.viewModel
-          .printReport(this.mapView, this.config.elevationProfileReportURL, this.config.printGPServiceURL)
+          .printReport(this.Plotly, this.mapView, this.config.elevationProfileReportURL, this.config.printGPServiceURL)
           .then((response: any) => {
             window.open(response.fileName, '_blank');
           })
@@ -158,7 +158,7 @@ export class ElevationProfileService {
       this.Plotly = await import('../../../shared/services/elevation-profile/lib/plotly.js');
     }
     this._renderChart(data, options);
-    this.viewModel.initializeHover(this.Plotly, ptArrayNew, this.mapView, this.graphicsLayer);
+    this.viewModel.initializeHover(ptArrayNew, this.graphicsLayer);
     d = null;
     [data, options, ptArrayNew] = [null, null, null];
   }
