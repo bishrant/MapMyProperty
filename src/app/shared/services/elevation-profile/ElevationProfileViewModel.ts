@@ -152,7 +152,6 @@ class ElevationProfileViewModel {
           mapLink: mapImageUrl
         };
 
-        console.log(reportData);
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json');
         const requestOptions: any = {
