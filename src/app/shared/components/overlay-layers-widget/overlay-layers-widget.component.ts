@@ -42,7 +42,7 @@ export class OverlayLayersWidgetComponent implements OnInit, OnDestroy {
 
   wetAreasLegendList: any[] = [];
 
-  private wetAreasUrl = 'https://fwspublicservices.wim.usgs.gov/server/rest/services/Wetlands/MapServer';
+  private wetAreasUrl = 'https://www.fws.gov/wetlands/arcgis/rest/services/Wetlands/MapServer';
 
   contoursLayer: MapImageLayer = this.createLayer(
     'mapImage',

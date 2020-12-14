@@ -30,6 +30,7 @@ export class SensAreasComponent implements OnInit {
   smzBufferValue: number = 50;
   smzLabelValue: number = 50;
   wetlandsBufferValue:number = 0;
+  wetlandsBufferLabel:number = 0;
   slopeValue:number = 8;
   slopeLabelValue:number = 8;
 
@@ -97,6 +98,7 @@ export class SensAreasComponent implements OnInit {
             this.areasCalculated = true;
             this.smzLabelValue = this.smzBufferValue;
             this.slopeLabelValue = this.slopeValue;
+            this.wetlandsBufferLabel = this.wetlandsBufferValue;
             this.loaderService.isLoading.next(false);
           }
         });
@@ -126,12 +128,16 @@ export class SensAreasComponent implements OnInit {
         } else {
           const boundaryId: string = inputBoundary.attributes.id;
           this.sensAreasService.addBuffersOrSlopeToMap(this.sensAreaGL, result.value, origin, this.sliderValue, boundaryId);
+          this.smzLabelValue = this.smzBufferValue;
+          this.wetlandsBufferLabel = this.wetlandsBufferValue;
           this.loaderService.isLoading.next(false);
         }
       });
     } else {
       if (origin === 'smz' || origin === 'wetlandsBuffer') {
         this.sensAreasService.removeGraphicsByAttribute(this.sensAreaGL, origin);
+        this.smzLabelValue = this.smzBufferValue;
+        this.wetlandsBufferLabel = this.wetlandsBufferValue;
         this.loaderService.isLoading.next(false);
       }
     }
