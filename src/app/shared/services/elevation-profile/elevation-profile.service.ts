@@ -6,6 +6,7 @@ import Graphic from 'esri/Graphic';
 import { ReplaySubject } from 'rxjs';
 import { AppConfiguration } from 'src/config';
 import { LoaderService } from '../Loader.service';
+import { PrintTaskService } from '../PrintTask.service';
 
 @Injectable()
 export class ElevationProfileService {
@@ -22,7 +23,7 @@ export class ElevationProfileService {
   private popup: any;
   private lineGraphicsLayer = new GraphicsLayer({ id: 'lineElevation' });
 
-  constructor(private config: AppConfiguration, private loaderService: LoaderService) { }
+  constructor(private config: AppConfiguration, private loaderService: LoaderService, private printTaskService: PrintTaskService) { }
 
   public initialize(props: ElevationProfileProperties, generalSketchVM: __esri.SketchViewModel) {
     this.mapView = props.mapView;
@@ -84,10 +85,11 @@ export class ElevationProfileService {
   async createReport() {
     this.loaderService.isLoading.next(true);
     this.mapView.goTo(this.lineGraphicsLayer.graphics, { animate: false }).then(() => {
-      this.mapView.extent = this.mapView.extent.clone().expand(2);
+      this.mapView.extent = this.mapView.extent.clone().expand(1.25);
+      const _ext = this.mapView.extent.clone();
       setTimeout(() => {
         this.viewModel
-          .printReport(this.Plotly, this.mapView, this.config.elevationProfileReportURL, this.config.printGPServiceURL)
+          .printReport(this.Plotly, this.mapView, this.config.elevationProfileReportURL, this.printTaskService, _ext)
           .then((response: any) => {
             window.open(response.fileName, '_blank');
           })

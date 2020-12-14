@@ -3,8 +3,7 @@ import { CalculateLength, CalculateSlope, GetSegmentsWithHigherSlope, CalculateS
 import { CreateNormalElevationLine, CreateHigherSlopeLine, GetGraphOptions, ConvertElevationUnits } from './GraphStyles';
 import Graphic from 'esri/Graphic';
 import MapView from 'esri/views/MapView';
-import PrintParameters from 'esri/tasks/support/PrintParameters';
-import PrintTask from 'esri/tasks/PrintTask';
+import { PrintTaskService } from '../PrintTask.service';
 
 class ElevationProfileViewModel {
   constructor () {}
@@ -20,7 +19,7 @@ class ElevationProfileViewModel {
   isMSL: boolean = false;
   divId: string = 'elevation-plotly';
 
-  GetElevationData (graphic: Graphic, elevationGPServiceURL: string) {
+  GetElevationData(graphic: Graphic, elevationGPServiceURL: string) {
     const feat = graphic.toJSON();
     feat.atttributes = { OID: 1 };
     const myHeaders = new Headers();
@@ -47,7 +46,7 @@ class ElevationProfileViewModel {
     return fetch(elevationGPServiceURL, requestOptions);
   }
 
-  getChartData (pts: any, unit: ElevationUnits) {
+  getChartData(pts: any, unit: ElevationUnits) {
     pts = ConvertElevationUnits(pts, unit);
     pts = CalculateLength(pts, unit);
     pts = CalculateSlope(pts);
@@ -105,7 +104,7 @@ class ElevationProfileViewModel {
       });
   }
 
-  GetStatistics () {
+  GetStatistics() {
     let pts = JSON.parse(JSON.stringify(this.ptArrayOriginal));
     pts = ConvertElevationUnits(pts, this.unit);
     pts = CalculateLength(pts, this.unit);
@@ -126,11 +125,11 @@ class ElevationProfileViewModel {
     const elevationLoss = sum(elevationDiff.filter((d: any) => d < 0));
     // gets the stats needed for PLMO report
     return {
-      TotalDistance: totalDistance + unitAbbr,
+      TotalDistance: Math.round(totalDistance) + unitAbbr,
       MaximumSlope: max(slopes) + '%',
       MinimumSlope: min(slopes) + '%',
       MeanSlope: Decimal(avg(slopes)) + '%',
-      SteepSlopes: sum(steepSlopes) + unitAbbr,
+      SteepSlopes: Decimal(sum(steepSlopes)) + unitAbbr,
       ElevationRange: Math.abs(Decimal(max(elevation) - min(elevation))) + elevAbbr,
       MinimumElevation: Decimal(min(elevation)) + elevAbbr,
       MaximumElevation: Decimal(max(elevation)) + elevAbbr,
@@ -139,19 +138,10 @@ class ElevationProfileViewModel {
     }
   }
 
-  async printReport (plotly:any, mapView: MapView, reportURL: string, exportMapGPServiceURL: string) {
+  async printReport(plotly: any, mapView: MapView, reportURL: string, printTaskService: PrintTaskService, ext: any) {
     return new Promise(async (resolve: any, reject: any) => {
       try {
-        const printParameters = new PrintParameters({
-          view: mapView,
-          extraParameters: {
-            Layout_Template: 'ProfileToolFeetTemplate',
-            Format: 'PNG'
-          }
-        })
-        const printTask = new PrintTask({ url: exportMapGPServiceURL })
-
-        const printURLData: any = await printTask.execute(printParameters);
+        const mapImageUrl = await printTaskService.exportWebMap(mapView, 'ProfileToolFeetTemplate', 'png', ext);
         const _title = document.getElementById('elevationProfileTitle') as any;
         const img = await this.exportImage(plotly);
 
@@ -159,10 +149,9 @@ class ElevationProfileViewModel {
           title: _title.value,
           summaryStats: this.GetStatistics(),
           graphImage: (img as any).split('data:image/png;base64,')[1],
-          mapLink: printURLData.url
+          mapLink: mapImageUrl
         };
 
-        console.log(reportData);
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json');
         const requestOptions: any = {
@@ -172,7 +161,7 @@ class ElevationProfileViewModel {
           redirect: 'follow'
         };
         const reportResponse: any = await fetch(reportURL, requestOptions).then((response: any) => response.json())
-        resolve(reportResponse)
+        resolve(reportResponse);
       } catch (error) {
         this.state = 'error';
         this.error = error;
