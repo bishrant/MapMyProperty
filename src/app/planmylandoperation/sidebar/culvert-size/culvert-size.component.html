@@ -3,16 +3,25 @@
   <br>
   <div class="centerAlign">
     <div class="btn-group">
-      <input type="button" class="pmlo-btn pmlo-secondary generalBtn" aria-label="point" value="Draw Point"
+      <input type="button" [disabled]="isPopupVisible"  [ngClass]="{'drawCulvertActive': isCulvertToolActive}"
+      class="pmlo-btn pmlo-secondary generalBtn" aria-label="point" value="Draw Point"
         (click)="drawPourPoint()" /><br>
-      <button class='pmlo-btn pmlo-secondary generalBtn' (click)="clearCulvertTool()" [disabled]="!isCulvertToolActive">
+      <!-- <button class='pmlo-btn pmlo-secondary generalBtn' (click)="clearCulvertTool()" [disabled]="!isCulvertToolActive">
         Clear
-      </button>
+      </button> -->
     </div>
   </div>
 </div>
 
-<app-modal #culvertModal [maximizable]="false" [backdrop]="false" (closeModal)="modelClosed()" [showFooter]="true"
+<app-modal #errorModal [maximizable]="false" [backdrop]="true"
+  [headerBackgroundColor]="'red'" (closeModal)="closeError()">
+  <ng-container class="app-modal-header">Error</ng-container>
+  <ng-container class="app-modal-body">
+    An error occured while processing your request. Please try again.
+  </ng-container>
+</app-modal>
+
+<app-modal #culvertModal [maximizable]="false" [backdrop]="false" (closeModal)="clearCulvertTool()" [showFooter]="true"
   [headerBackgroundColor]="headerBgColor">
   <ng-container class="app-modal-header bg-pmlo_secondary">Watershed Properties</ng-container>
   <ng-container class="app-modal-body">
@@ -37,3 +46,6 @@
     </span>
   </ng-container>
 </app-modal>
+
+
+
