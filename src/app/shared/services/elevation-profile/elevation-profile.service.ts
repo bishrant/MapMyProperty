@@ -2,11 +2,11 @@ import { Injectable, EventEmitter } from '@angular/core';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import ElevationProfileViewModel from './ElevationProfileViewModel';
 import { ElevationProfileProperties } from './interfaces';
-import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import Graphic from 'esri/Graphic';
 import { ReplaySubject } from 'rxjs';
 import { AppConfiguration } from 'src/config';
 import { LoaderService } from '../Loader.service';
+import { PrintTaskService } from '../PrintTask.service';
 
 @Injectable()
 export class ElevationProfileService {
@@ -23,9 +23,9 @@ export class ElevationProfileService {
   private popup: any;
   private lineGraphicsLayer = new GraphicsLayer({ id: 'lineElevation' });
 
-  constructor (private config: AppConfiguration, private loaderService: LoaderService) { }
+  constructor(private config: AppConfiguration, private loaderService: LoaderService, private printTaskService: PrintTaskService) { }
 
-  public initialize (props: ElevationProfileProperties) {
+  public initialize(props: ElevationProfileProperties, generalSketchVM: __esri.SketchViewModel) {
     this.mapView = props.mapView;
     this.popup = props.popup;
     this.viewModel.divId = props.divId;
@@ -33,15 +33,7 @@ export class ElevationProfileService {
     this.viewModel.unit = props.unit;
     this.viewModel.slopeThreshold = props.slopeThreshold;
     this.mapView.map.addMany([this.lineGraphicsLayer, this.graphicsLayer]);
-    this.sketchVM = new SketchViewModel({
-      layer: this.lineGraphicsLayer,
-      view: this.mapView,
-      polylineSymbol: {
-        type: 'simple-line',
-        color: [0, 0, 255],
-        width: 2
-      }
-    });
+    this.sketchVM = generalSketchVM;
 
     this._DrawingComplete();
     import('../../../shared/services/elevation-profile/lib/plotly.js').then((_plotly: any) => {
@@ -50,7 +42,7 @@ export class ElevationProfileService {
     return this;
   }
 
-  public reverseProfile () {
+  public reverseProfile() {
     this.reveresed = !this.reveresed;
     const div = document.getElementById(this.viewModel.divId) as any;
     const _h = div.clientHeight;
@@ -68,62 +60,72 @@ export class ElevationProfileService {
     }
     const [data, options, ptArrayNew] = this.viewModel.getChartData(reveresedArrayNew, this.viewModel.unit);
     this._renderChart(data, options);
-    this.viewModel.initializeHover(this.Plotly, ptArrayNew, this.mapView, this.graphicsLayer);
+    this.viewModel.initializeHover(ptArrayNew, this.graphicsLayer);
     reveresedArrayNew = undefined;
     reversedPtArray = undefined;
   }
 
-  public resizeChart (_width: number, _height: number) {
+  public resizeChart(_width: number, _height: number) {
     this.Plotly.relayout(this.viewModel.divId, { width: _width, height: _height });
   }
 
-  public start (tool: 'polyline' | 'freehand') {
-    this.sketchVM.create('polyline', { mode: tool === 'freehand' ? 'freehand' : 'click' });
+  public start(drawMode: 'click' | 'freehand') {
+    this.sketchVM.create('polyline', { mode: drawMode });
   }
 
-  public close () {
+  public close() {
     this.graphicsLayer.removeAll();
     this.lineGraphicsLayer.removeAll();
-    this.sketchVM.destroy();
+    if (this.sketchVM) {
+      this.sketchVM.layer.graphics.removeAll();
+    }
+    // this.sketchVM.destroy();
   }
 
-  async createReport () {
+  async createReport() {
     this.loaderService.isLoading.next(true);
-    await this.mapView.goTo(this.sketchVM.layer.graphics);
-    this.viewModel
-      .printReport(this.mapView, this.config.elevationProfileReportURL, this.config.exportMapGPServiceURL)
-      .then((response: any) => {
-        window.open(response.fileName, '_blank');
-      })
-      .catch((e: any) => {
-        console.error(e);
-      })
-      .finally(() => {
-        this.loaderService.isLoading.next(false);
-      });
+    this.mapView.goTo(this.lineGraphicsLayer.graphics, { animate: false }).then(() => {
+      this.mapView.extent = this.mapView.extent.clone().expand(1.25);
+      const _ext = this.mapView.extent.clone();
+      setTimeout(() => {
+        this.viewModel
+          .printReport(this.Plotly, this.mapView, this.config.elevationProfileReportURL, this.printTaskService, _ext)
+          .then((response: any) => {
+            window.open(response.fileName, '_blank');
+          })
+          .catch((e: any) => {
+            console.error(e);
+          })
+          .finally(() => {
+            this.loaderService.isLoading.next(false);
+          });
+      }, 100);
+    });
   }
 
-  protected _renderChart (data: any[], options: any): any {
+  protected _renderChart(data: any[], options: any): any {
     this.chartData$.next({ data, options });
     this.Plotly.react(this.viewModel.divId, data, options, { displayModeBar: false, responsive: true, autosize: true });
   }
 
-  private _DrawingComplete () {
-    const that = this;
+  private _DrawingComplete() {
+    // const that = this;
     this.sketchVM.on('create', (evt: any) => {
       if (evt.state === 'complete') {
+        // this.sketchVM.layer.removeAll();
+        this.lineGraphicsLayer.add(evt.graphic);
         this.viewModel.userGraphic = evt.graphic;
         this.loaderService.isLoading.next(true);
-        that.displayLineChart(evt.graphic);
+        this.displayLineChart(evt.graphic);
       }
     });
   }
 
-  get isReversed (): boolean {
+  get isReversed(): boolean {
     return this.reveresed;
   }
 
-  private async displayLineChart (graphic: Graphic) {
+  private async displayLineChart(graphic: Graphic) {
     this.viewModel.state = 'loading';
     try {
       const elevationData = await this.viewModel.GetElevationData(graphic, this.config.elevationGPServiceURL);
@@ -150,12 +152,15 @@ export class ElevationProfileService {
     }
   }
 
-  private createChart (dd: any) {
+  private async createChart(dd: any) {
     this.viewModel.state = 'ready';
     let d = JSON.parse(JSON.stringify(dd));
     let [data, options, ptArrayNew] = this.viewModel.getChartData(d, this.viewModel.unit);
+    if (typeof this.Plotly === 'undefined') {
+      this.Plotly = await import('../../../shared/services/elevation-profile/lib/plotly.js');
+    }
     this._renderChart(data, options);
-    this.viewModel.initializeHover(this.Plotly, ptArrayNew, this.mapView, this.graphicsLayer);
+    this.viewModel.initializeHover(ptArrayNew, this.graphicsLayer);
     d = null;
     [data, options, ptArrayNew] = [null, null, null];
   }
