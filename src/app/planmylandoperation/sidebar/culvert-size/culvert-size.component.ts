@@ -120,7 +120,7 @@ export class CulvertSizeComponent implements AfterViewInit {
         this.graphicsLayer.addMany([pourPtGraphics, watershedGraphics]);
 
         this.mapView.goTo(this.watershedGeometry.extent.expand(1.5));
-        this.errorModal.hide();
+        if (this.errorModal.visible) this.errorModal.hide();
         this.culvertModal.show();
         this.isPopupVisible = true;
       } catch (err: any) {

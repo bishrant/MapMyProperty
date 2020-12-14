@@ -3,24 +3,16 @@
     <app-help-button [header]="'Draw'" [itemName]="'draw'"></app-help-button>
     <br>
     Select a drawing tool:<br>
-    <mat-button-toggle-group [(ngModel)]="drawingTool" (change)="startDrawingGraphics($event.value, true)">
-      <mat-button-toggle value="polygon" aria-label="Polygon" class="toggleBtn">
-        <i class="customicon-untitled" style="line-height: 0;"></i>
-      </mat-button-toggle>
-      <mat-button-toggle value="circle" aria-label="Circle" class="toggleBtn">
-        <mat-icon style="height: 100%; width: 100%;">radio_button_unchecked</mat-icon>
-      </mat-button-toggle>
-      <mat-button-toggle value="polyline" aria-label="Line" class="toggleBtn">
-        <mat-icon>show_chart</mat-icon>
-      </mat-button-toggle>
-      <mat-button-toggle value="point" aria-label="Point" class="toggleBtn">
-        <svg-icon [src]="'assets/icons/pointSymbol.svg'" [svgStyle]="{'width.px': 20, fill: 'black'}">
-        </svg-icon>
-      </mat-button-toggle>
-      <mat-button-toggle value="text" aria-label="Text" class="toggleBtn">
-        Tt
-      </mat-button-toggle>
-    </mat-button-toggle-group>
+    <div class="toggleRadios">
+      <label *ngFor="let symbol of drawToolOptions">
+        <input type="radio" name="shapes" [value]="symbol" aria-label="tes" [(ngModel)]="drawingTool"
+          (ngModelChange)="startDrawingGraphics($event, true)" />
+        <span>
+          <svg-icon [src]="'assets/icons/'+symbol+'.svg'" [svgStyle]="{'width.px': 25, fill: 'black'}">
+          </svg-icon>
+        </span>
+      </label>
+    </div>
 
     <button class="pmlo-btn pmlo-secondary clearDrawTools" *ngIf="drawingTool !== ''"
       (click)="clearDrawTools()">Cancel Drawing</button>

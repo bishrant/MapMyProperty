@@ -5,7 +5,7 @@
     <div class="marginTop10px">
       Shape <br>
       <div class="toggleRadios">
-        <label *ngFor="let symbol of markerStyles" class="labelCls">
+        <label *ngFor="let symbol of markerStyles">
           <input type="radio" name="shapes" [value]="symbol" aria-label="tes" [(ngModel)]="pointSymbol"
             (ngModelChange)="changePointShapeEvt($event)" />
           <span>

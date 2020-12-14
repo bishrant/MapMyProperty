@@ -49,6 +49,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedTextGraphics: any = [];
   selectedLabelsGraphics: any = [];
 
+  drawToolOptions = ['polygon', 'circle', 'polyline', 'point', 'text'];
   selectedInputBox: any;
   textSubscription: Subscription;
   radius: number;

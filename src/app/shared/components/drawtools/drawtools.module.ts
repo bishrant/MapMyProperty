@@ -11,7 +11,6 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ToggleButtonModule } from '../togglebutton/togglebutton';
 import { TextcontrolsModule } from '../textcontrols/textcontrols.module';
@@ -27,7 +26,6 @@ import { HelpbuttonModule } from '../help-button/help-button.module';
     FormsModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatIconModule,
     MatButtonToggleModule,
     ToggleButtonModule,
     TextcontrolsModule,
