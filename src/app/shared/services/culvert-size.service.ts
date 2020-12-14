@@ -62,7 +62,6 @@ export class CulvertSizeService {
   private _DrawingComplete () {
     this.sketchVM.on('create', (evt: any) => {
       if (evt.state === 'complete') {
-        console.log(evt.graphic);
         this._graphicsLayer.add(evt.graphic);
         this.drawingComplete.emit(evt.graphic);
         // that.displayLineChart(evt.graphic);
@@ -86,7 +85,6 @@ export class CulvertSizeService {
     const params = {
       Input_Pour_Point: featureSet
     }
-    console.log(featureSet.toJSON());
     return [geoprocessor, params];
   }
 
@@ -102,17 +100,18 @@ export class CulvertSizeService {
     this.sketchVM.destroy();
   }
 
-  async GeneratePDFReport (params: CulvertSizeReportParams) {
+  async GeneratePDFReport (params: CulvertSizeReportParams, errorModal: any) {
     this.http.post(this.config.culvertSize.reportURL, params).subscribe((d: any) => {
       window.open(d.fileName);
       this.loaderService.isLoading.next(false);
     }, (error : any) => {
       this.loaderService.isLoading.next(false);
-      throw new Error('Failed to generate report. Please try again' + error);
+      errorModal.show();
+      console.error(error);
     })
   }
 
-  async createReport (watershedGeometry: __esri.Polygon, culvertData) {
+  async createReport (watershedGeometry: __esri.Polygon, culvertData, errorModal: any) {
     try {
       this.loaderService.isLoading.next(true);
       const printTask: PrintTask = new PrintTask({
@@ -162,12 +161,13 @@ export class CulvertSizeService {
             const file = await printMapGpService.getResultData(gp.jobId, 'Output_File');
             const _culvertData = culvertData;
             _culvertData.watershedImageURL = file.value.url;
-            this.GeneratePDFReport(_culvertData);
+            this.GeneratePDFReport(_culvertData, errorModal);
           }
         }, (e: any) => console.error(e));
     } catch (error) {
       console.error(error);
       this.loaderService.isLoading.next(false);
+      errorModal.show();
     }
   }
 }
