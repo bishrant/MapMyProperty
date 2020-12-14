@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { GraphicsReducer } from './shared/store/graphics.reducer';
-import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule } from '@angular/common/http';
@@ -36,6 +35,6 @@ import { LoaderModule } from './shared/components/loader/loader.module';
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { horizontalPosition: 'end', verticalPosition: 'top' } }],
   bootstrap: [AppComponent],
-  exports: [HeaderModule, MatIconModule, MatButtonModule]
+  exports: [HeaderModule, MatButtonModule]
 })
 export class AppModule {}

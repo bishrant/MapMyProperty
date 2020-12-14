@@ -1,21 +1,17 @@
 @use "../../styles/sidebar";
+@use '../../styles/togglebtns';
 
 .mat-option {
   padding: 0 !important;
 }
-
-.customicon-untitled:before {
-  content: "\0042";
-  font-weight: 600;
+.toggleRadios {
+  margin-top: 10px;
 }
+
 .radiusInput {
   width: 80px;
   border: 1px solid black;
   padding-left: 5px;
-}
-.toggleBtn {
-  width: 40px;
-  display: flex;
 }
 
 .clearDrawTools {
