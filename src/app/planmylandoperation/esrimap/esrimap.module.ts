@@ -39,6 +39,7 @@ import { GraphicsStoreModule } from 'src/app/shared/components/graphics-store/Gr
 import { SliderModule } from 'src/app/shared/components/slider/slider.module';
 import { MeasurementWidgetModule } from 'src/app/shared/components/measurement-widget/measurement-widget.module';
 import { MeasurementWidgetHelpModule } from 'src/app/shared/components/help-components/measurement-widget-help/measurement-widget-help.module';
+import { SitePoliciesModule } from 'src/app/shared/components/site-policies/site-policies.module';
 @NgModule({
   declarations: [
     EsrimapComponent,
@@ -82,7 +83,8 @@ import { MeasurementWidgetHelpModule } from 'src/app/shared/components/help-comp
     SearchWidgetHelpModule,
     SliderModule,
     MeasurementWidgetModule,
-    MeasurementWidgetHelpModule
+    MeasurementWidgetHelpModule,
+    SitePoliciesModule
   ],
   exports: [EsrimapComponent]
 })
