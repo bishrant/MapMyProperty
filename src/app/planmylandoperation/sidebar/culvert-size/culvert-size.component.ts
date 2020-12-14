@@ -18,6 +18,7 @@ const projection = require('arcgis-js-api/geometry/projection');
 })
 export class CulvertSizeComponent implements AfterViewInit {
   @ViewChild('culvertModal') culvertModal: any;
+  @ViewChild('errorModal') errorModal: any;
   @Input() mapView: __esri.MapView;
   culvertReportTitle = '';
 
@@ -39,6 +40,7 @@ export class CulvertSizeComponent implements AfterViewInit {
   headerBgColor = '#353535';
   drawTool: string;
   isCulvertToolActive = false;
+  isPopupVisible = false;
   culvertUtils: any;
 
   drawingObservable$: Subscription;
@@ -54,11 +56,15 @@ export class CulvertSizeComponent implements AfterViewInit {
   ngAfterViewInit () {}
 
   drawPourPoint () {
+    if (this.isCulvertToolActive) {
+      this.clearCulvertTool();
+      return;
+    }
     this.culvertUtils = this.culvertService.initialize({ mapView: this.mapView, graphicsLayer: this.graphicsLayer });
     this.culvertUtils.start();
-
+    this.isCulvertToolActive = true;
     this.drawingObservable$ = this.culvertService.drawingComplete.subscribe(async (graphics: any) => {
-      this.isCulvertToolActive = true;
+      this.isCulvertToolActive = false;
       this.loaderService.isLoading.next(true);
       try {
         const gp: [Geoprocessor, any] = this.culvertService.GetCulvertData(graphics);
@@ -114,26 +120,32 @@ export class CulvertSizeComponent implements AfterViewInit {
         this.graphicsLayer.addMany([pourPtGraphics, watershedGraphics]);
 
         this.mapView.goTo(this.watershedGeometry.extent.expand(1.5));
-
+        this.errorModal.hide();
         this.culvertModal.show();
-      } catch (err) {
-        console.error(err);
+        this.isPopupVisible = true;
+      } catch (err: any) {
+        this.errorModal.show();
       } finally {
         this.loaderService.isLoading.next(false);
       }
     });
   }
 
-  modelClosed () {
+  clearCulvertTool () {
     this.culvertService.close();
+    this.isCulvertToolActive = false;
     this.drawTool = undefined;
+    this.drawingObservable$.unsubscribe();
+    this.isPopupVisible = false;
+    this.errorModal.hide();
   }
 
-  clearCulvertTool () {
-    this.isCulvertToolActive = false;
-    this.drawingObservable$.unsubscribe();
-    this.culvertModal.hide();
+  closeError () {
     this.culvertService.close();
+    this.isCulvertToolActive = false;
+    this.drawTool = undefined;
+    this.drawingObservable$.unsubscribe();
+    this.isPopupVisible = false;
   }
 
   ngOnDestroy () {
@@ -155,6 +167,6 @@ export class CulvertSizeComponent implements AfterViewInit {
       zzClay: c.Clay_WA.toFixed(2),
       zzCulvertDiam: c.CulvertSize
     };
-    this.culvertService.createReport(this.watershedGeometry, culvertData);
+    this.culvertService.createReport(this.watershedGeometry, culvertData, this.errorModal);
   }
 }
