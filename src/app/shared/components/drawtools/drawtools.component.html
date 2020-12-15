@@ -18,7 +18,7 @@
       (click)="clearDrawTools()">Cancel Drawing</button>
   </div>
   <br><div *ngIf="!(drawingTool === 'point' || drawingTool === 'text')" class="centerAlign">
-    <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleLabels" checked
+    <input type="checkbox" (change)="toggleLabels()" value="show" id="toggleLabels" checked class="m-auto form-checkbox h-5 w-5 text-pmlo_secondary cursor-pointer"
       aria-label="show/hide area labels">
     <label for="toggleLables">&nbsp;&nbsp; Area/Distance labels</label><br>
   </div>

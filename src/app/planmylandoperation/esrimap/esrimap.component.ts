@@ -150,7 +150,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   }
 
   showCoordinates = (pt: any) => {
-    this.mapCoords = 'Lat: ' + pt.latitude.toFixed(5) + ' &nbsp; Long:' + pt.longitude.toFixed(5);
+    this.mapCoords = 'Lat: ' + pt.latitude.toFixed(5) + ' &nbsp; Long: ' + pt.longitude.toFixed(5);
   };
 
   private setMapEvents = () => {

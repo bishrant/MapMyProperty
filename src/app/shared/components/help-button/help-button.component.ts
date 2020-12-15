@@ -9,7 +9,7 @@ import { HelpService } from '../../services/help/help.service';
 export class HelpbuttonComponent {
   @Input() header: string = 'Help';
   @Input() itemName: string = 'help';
-  @Input() fillColor: string = 'black';
+  @Input() fillColor: string = '#353535';
   constructor (private helpService: HelpService) { }
 
   openHelp (): void {
