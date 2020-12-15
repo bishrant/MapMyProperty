@@ -22,7 +22,6 @@ export class BasemapWidgetComponent implements AfterViewInit, OnDestroy {
   updatedDate: Date;
   loading = false;
   showBasemapLabel = true;
-  _tnrisURL = 'https://webservices.tnris.org/arcgis/rest/services/';
   texasBasemaps= texasBasemaps;
   texasBasemapsDict = texasBasemapsDict;
   googleWMSlayer = googleWMSlayer;
