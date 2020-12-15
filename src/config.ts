@@ -6,7 +6,6 @@ export class AppConfiguration {
   culvertSize: culvertSizeReport;
   loggingURL: string;
   printGPServiceURL: string;
-  exportMapGPServiceURL: string;
   elevationProfileReportURL: string;
   elevationGPServiceURL: string;
   geometryServiceURL: string;
