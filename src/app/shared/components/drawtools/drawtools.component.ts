@@ -23,6 +23,7 @@ import Graphic from 'esri/Graphic';
 import { syncLabelsToGeometry } from './LabelsUtils';
 import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.service';
 import { CreateTFSCircleFromPoint } from '../../utils/SketchViewModelUitls';
+import { SketchSelectionService } from '../../services/SketchSelectionService';
 
 @Component({
   selector: 'app-drawtools',
@@ -60,9 +61,12 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedGraphicsGeometry = this.selectedGraphics.length > 0 ? this.selectedGraphics[0].attributes.geometryType : '';
   readonly graphics$ = this.store.select((state) => state.app.graphics);
   private graphicsSubcription$: any;
+  selectionStateSubcription$: any;
+
+  private selectionState: boolean = true;
 
   constructor (private store: Store<AppState>, private textService: TextControlService, private esriMapService: EsrimapService,
-    private TextSelectionService: TextControlSelectionService) { }
+    private TextSelectionService: TextControlSelectionService, private sketchSelectionService: SketchSelectionService) { }
 
   id = (): string => Math.random().toString(36).substr(2, 9);
 
@@ -159,6 +163,10 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   initSketchVMUpdate = (): any => {
     this.sketchVM.on('update', (gg: any) => {
+      // if (!this.selectionState) {
+      //   this.sketchVM.cancel()
+      //   return;
+      // }
       if (gg.state === 'cancel' || gg.aborted) {
         this.selectedGraphics = [];
         return;
@@ -302,6 +310,11 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit (): void {
     this.graphicsSubcription$ = this.listenToGraphicsStore();
+    this.selectionStateSubcription$ = this.sketchSelectionService.disableSketchSelection.subscribe(state => {
+      // console.log(state);
+      this.sketchVM.updateOnGraphicClick = state.status;
+      this.selectionState = state.status;
+    })
   }
 
   startDrawingGraphics = (toolName: string, initial: boolean): any => {
@@ -370,6 +383,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy (): void {
     this.textSubscription.unsubscribe();
     this.graphicsSubcription$.unsubscribe();
+    this.selectionStateSubcription$.unsubscribe();
   }
 
   private listenToGraphicsStore = () => {
@@ -427,14 +441,15 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private detectTextGraphics = () => {
     this.mapView.on('click', (evt: any) => {
+      if (!this.selectionState) return;
       if (this.sketchVM.state === 'active') return;
       if (this.generalSketchVM.state === 'active') return;
+
 
       if (this.sketchVM.state === 'disabled') return;
       if (this.generalSketchVM.layer.graphics.length > 0) return;
 
       this.mapView.hitTest(evt).then((response: any) => {
-
         if (response.results.length < 1) {
           if (this.selectedGraphics.length > 0) {
             this.selectedTextGraphics = [];
