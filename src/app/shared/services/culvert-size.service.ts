@@ -47,6 +47,7 @@ export class CulvertSizeService {
     this.sketchVM = new SketchViewModel({
       layer: props.graphicsLayer,
       view: this.mapView,
+      updateOnGraphicClick: false,
       pointSymbol: {
         type: 'simple-marker',
         style: 'circle',

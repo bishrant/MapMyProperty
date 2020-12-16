@@ -9,6 +9,7 @@ import Graphic from 'esri/Graphic';
 import { Point, Polygon, SpatialReference } from 'esri/geometry';
 import { SimpleFillSymbol, SimpleMarkerSymbol } from 'esri/symbols';
 import { getSoilTextureClass, getCulvertSize } from './CulvertDetailsUtils';
+import { SketchSelectionService } from 'src/app/shared/services/SketchSelectionService';
 const projection = require('arcgis-js-api/geometry/projection');
 
 @Component({
@@ -21,7 +22,6 @@ export class CulvertSizeComponent implements AfterViewInit {
   @ViewChild('errorModal') errorModal: any;
   @Input() mapView: __esri.MapView;
   culvertReportTitle = '';
-
   culvertData: any = {
     Avg_Slope: 5,
     Clay_WA: 28,
@@ -37,6 +37,7 @@ export class CulvertSizeComponent implements AfterViewInit {
 
   graphicsLayer: GraphicsLayer = new GraphicsLayer({ id: 'culvertGraphics' });
 
+  isActive = false;
   headerBgColor = '#353535';
   drawTool: string;
   isCulvertToolActive = false;
@@ -48,21 +49,26 @@ export class CulvertSizeComponent implements AfterViewInit {
   watershedGeometry: Polygon;
   pourPointReportWGS: Point;
 
-  constructor (
-    private culvertService: CulvertSizeService,
-    private loaderService: LoaderService
-  ) {}
+  constructor(private culvertService: CulvertSizeService, private loaderService: LoaderService,
+    private sketchSelectionService: SketchSelectionService) { }
 
-  ngAfterViewInit () {}
+  ngAfterViewInit() { }
 
-  drawPourPoint () {
-    if (this.isCulvertToolActive) {
+  updateSketchState(status: boolean) {
+    this.sketchSelectionService.changeSketchSelectionMode('culvert', status);
+  }
+
+  drawPourPoint() {
+    if (this.isCulvertToolActive || this.isActive) {
       this.clearCulvertTool();
       return;
     }
+    this.updateSketchState(false);
+    this.isCulvertToolActive = true;
+    this.isActive = true;
     this.culvertUtils = this.culvertService.initialize({ mapView: this.mapView, graphicsLayer: this.graphicsLayer });
     this.culvertUtils.start();
-    this.isCulvertToolActive = true;
+
     this.drawingObservable$ = this.culvertService.drawingComplete.subscribe(async (graphics: any) => {
       this.isCulvertToolActive = false;
       this.loaderService.isLoading.next(true);
@@ -131,28 +137,35 @@ export class CulvertSizeComponent implements AfterViewInit {
     });
   }
 
-  clearCulvertTool () {
+  public cleanup() {
+    this.culvertModal.hide();
+  }
+
+  public clearCulvertTool() {
     this.culvertService.close();
     this.isCulvertToolActive = false;
+    this.isActive = false;
     this.drawTool = undefined;
     this.drawingObservable$.unsubscribe();
     this.isPopupVisible = false;
     this.errorModal.hide();
+    this.updateSketchState(true);
   }
 
-  closeError () {
+  closeError() {
     this.culvertService.close();
     this.isCulvertToolActive = false;
+    this.isActive = false;
     this.drawTool = undefined;
     this.drawingObservable$.unsubscribe();
     this.isPopupVisible = false;
   }
 
-  ngOnDestroy () {
+  ngOnDestroy() {
     this.drawingObservable$.unsubscribe();
   }
 
-  createReport () {
+  createReport() {
     const c = this.culvertData;
     const culvertData = {
       watershedImageURL: '',

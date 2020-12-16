@@ -26,6 +26,7 @@ import { isMapViewActive } from 'src/app/shared/ScreenUtils';
 import { GraphicsStoreComponent } from 'src/app/shared/components/graphics-store/GraphicsStore.component';
 import { defaultPointCircleSymbol } from 'src/app/shared/utils/DefaultSymbols';
 import { ElevationProfileComponent } from '../sidebar/elevation-profile/elevation-profile.component';
+import { CulvertSizeComponent } from '../sidebar/culvert-size/culvert-size.component';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -36,6 +37,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
+  @ViewChild('drawAccPanel') drawAccPanel: AccordionPanelComponent;
   @ViewChild('soilsTableModal') soilsTableModal: ModalComponent;
   @ViewChild('sensAreasAccPanel') sensAreasAccPanel: AccordionPanelComponent;
   @ViewChild('soilsAccPanel') soilsAccPanel: AccordionPanelComponent;
@@ -45,6 +47,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   @ViewChild('helpModal') helpModal: ModalComponent;
   @ViewChild('sessionModal') sessionModal: ModalComponent;
   @ViewChild('elevationProfileComponent') elevationProfileComponent: ElevationProfileComponent;
+  @ViewChild('culvertSizeComponent') culvertSizeComponent: CulvertSizeComponent;
   @ViewChildren(AccordionPanelComponent) accordionPanels: QueryList<AccordionPanelComponent>;
 
   mapView!: __esri.MapView;
@@ -67,13 +70,20 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   helpItem = 'gettingStartedTour';
   savedData: any;
 
+  clearOtherPanelOnDrawOpen = () => {
+    if (this.elevationProfileComponent.isActive) {
+      this.elevationProfileComponent.cleanup();
+    }
+    if (this.culvertSizeComponent.isActive) {
+      this.culvertSizeComponent.cleanup();
+    }
+  }
+
   closeOtherPanels = ((panelTitle: string) => {
     const panelToOpen: AccordionPanelComponent[] = this.accordionPanels.filter((panel: any) => panel.panelTitle === panelTitle);
     if (panelToOpen.length > 0) {
       panelToOpen[0].toggleOthers();
-      if (this.elevationProfileComponent.isActive) {
-        this.elevationProfileComponent.modelClosed();
-      }
+      this.clearOtherPanelOnDrawOpen();
     }
   });
 
@@ -207,8 +217,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
               soilsGLHasPolygons = false;
               sensAreasGLHasPolygons = false;
             } else {
-              if (pmloSoilsGL.graphics.length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined))
-              {
+              if (pmloSoilsGL.graphics.length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
                 soilsGLHasPolygons = false;
               }
 
@@ -263,6 +272,10 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
 
         case this.soilsAccPanel:
           this.esrimapService.soilsAccordionOpen.emit(panel.opened);
+          break;
+
+        case this.drawAccPanel:
+          this.clearOtherPanelOnDrawOpen();
           break;
       }
     });
