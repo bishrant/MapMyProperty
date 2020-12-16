@@ -60,7 +60,7 @@ const CalculateLength = (ptArrayOld: any, unit: ElevationUnits = 'miles') => {
       spatialReference: { wkid: 102100 }
     });
     const l = planarLength(line, unit);
-    pts[i].push(parseFloat(l.toPrecision(2)));
+    pts[i].push(Math.round(l));
   }
   return pts;
 };
@@ -75,7 +75,7 @@ const CalculateSegmentLength = (ptArrayOld: any, unit: ElevationUnits = 'miles')
       spatialReference: { wkid: 102100 }
     });
     const l = planarLength(line, unit);
-    pts[i].push(parseFloat(l.toPrecision(2)));
+    pts[i].push(Math.round(l));
   }
   return pts;
 };
