@@ -5,6 +5,7 @@ interface culvertSizeReport {
 export class AppConfiguration {
   culvertSize: culvertSizeReport;
   loggingURL: string;
+  backendURL: string;
   printGPServiceURL: string;
   elevationProfileReportURL: string;
   elevationGPServiceURL: string;

@@ -80,7 +80,7 @@ export class CulvertSizeService {
       spatialReference: { wkid: 3857 }
     });
     const geoprocessor: Geoprocessor = new Geoprocessor({
-      url: this.config.culvertSize.gpServiceURL
+      url: (this.config.backendURL + this.config.culvertSize.gpServiceURL)
     });
     const params = {
       Input_Pour_Point: featureSet
