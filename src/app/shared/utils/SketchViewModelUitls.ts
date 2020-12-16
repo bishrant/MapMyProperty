@@ -59,12 +59,13 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: __esri.MapView): __es
       enableRotation: false,
       enableScaling: false,
       multipleSelectionEnabled: false,
+      toggleToolOnClick: false,
       tool: 'reshape'
     },
     defaultCreateOptions: {
       mode: 'click'
-    }
-    // toggleToolOnClick: false
+    },
+    toggleToolOnClick: false
   });
 };
 

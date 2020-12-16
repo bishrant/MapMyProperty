@@ -2,6 +2,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { ElevationProfileService } from 'src/app/shared/services/elevation-profile/elevation-profile.service';
 import { Subscription } from 'rxjs';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
+import { SketchSelectionService } from 'src/app/shared/services/SketchSelectionService';
 
 @Component({
   selector: 'app-elevation-profile',
@@ -28,7 +29,8 @@ export class ElevationProfileComponent {
   drawingObservable$: Subscription;
   closePopup$: Subscription;
 
-  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService) {
+  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService,
+    private sketchSelectionService: SketchSelectionService) {
     this.isReversed = elevationService.isReversed;
   }
 
@@ -43,6 +45,7 @@ export class ElevationProfileComponent {
       if (this.drawTool !== '') {
         this.modelClosed();
       }
+      this.updateSketchState(false);
       this.drawTool = value;
       this.isActive = true;
       if (this.sketchVM) this.sketchVM.cancel();
@@ -63,6 +66,10 @@ export class ElevationProfileComponent {
     }
   }
 
+  public cleanup() {
+    this.elevationProfileModal.hide();
+  }
+
   modelClosed() {
     this.elevationService.close();
     if (this.generalSketchVM) {
@@ -72,6 +79,7 @@ export class ElevationProfileComponent {
     }
     this.drawTool = '';
     this.isActive = false;
+    this.updateSketchState(true);
   }
 
   ngOnDestroy() {
@@ -86,5 +94,9 @@ export class ElevationProfileComponent {
 
   createReport() {
     this.elevationService.createReport();
+  }
+
+  updateSketchState(status: boolean) {
+    this.sketchSelectionService.changeSketchSelectionMode('elevationprofile', status);
   }
 }

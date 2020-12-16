@@ -2,6 +2,7 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { Subscription } from 'rxjs';
 import { WidgetToggleService } from '../../services/WidgetToggleService';
 import Measurement from 'esri/widgets/Measurement';
+import { SketchSelectionService } from '../../services/SketchSelectionService';
 
 @Component({
   selector: 'app-measurement-widget',
@@ -20,9 +21,8 @@ export class MeasurementWidgetComponent implements OnInit, OnDestroy {
 
   private measurement:Measurement = new Measurement();
 
-  constructor(
-    private widgetToggleService:WidgetToggleService
-  ) {
+  constructor(private widgetToggleService:WidgetToggleService,
+    private sketchSelectionService: SketchSelectionService) {
     this.subscriptions$ = this.widgetToggleService.widgetViewChanged.subscribe((widgetInfo: any) => {
       if (widgetInfo.name !== 'measurement' && this.isOpen) {
         this.clearMeasurements();
@@ -45,25 +45,33 @@ export class MeasurementWidgetComponent implements OnInit, OnDestroy {
   distanceMeasurement():void {
     this.measurement.activeTool = 'distance';
     this.isAreaActive = false;
+    this.updateSketchState(false);
   }
 
   areaMeasurement():void {
     this.measurement.activeTool = 'area';
     this.isAreaActive = true;
+    this.updateSketchState(false);
   }
 
   clearMeasurements():void {
     this.measurement.clear();
     this.isAreaActive = null;
+    this.updateSketchState(true);
+  }
+
+  updateSketchState (status: boolean) {
+    this.sketchSelectionService.changeSketchSelectionMode('measure', status);
   }
 
   toggle (): void {
-    if (!this.isOpen)
-    {
+    if (!this.isOpen) {
       this.widgetToggleService.changeWidgetView('measurement', this.isOpen);
+      this.updateSketchState(!this.isOpen);
     } else {
       this.clearMeasurements();
     }
+
     this.isOpen = !this.isOpen;
   }
 }
