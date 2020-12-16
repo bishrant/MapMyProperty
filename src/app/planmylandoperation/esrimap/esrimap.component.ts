@@ -27,6 +27,7 @@ import { GraphicsStoreComponent } from 'src/app/shared/components/graphics-store
 import { defaultPointCircleSymbol } from 'src/app/shared/utils/DefaultSymbols';
 import { ElevationProfileComponent } from '../sidebar/elevation-profile/elevation-profile.component';
 import { CulvertSizeComponent } from '../sidebar/culvert-size/culvert-size.component';
+import { SoilsComponent } from '../sidebar/soils/soils.component';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -43,9 +44,12 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   @ViewChild('soilsAccPanel') soilsAccPanel: AccordionPanelComponent;
   @ViewChild('harvestAccPanel') harvestAccPanel: AccordionPanelComponent;
   @ViewChild('regenerationAccPanel') regenerationAccPanel: AccordionPanelComponent;
+  @ViewChild('culvertAccPanel') culvertAccPanel: AccordionPanelComponent;
+  @ViewChild('elevationAccPanel') elevationAccPanel: AccordionPanelComponent;
   @ViewChild('notificationsModal') notificationsModal: ModalComponent;
   @ViewChild('helpModal') helpModal: ModalComponent;
   @ViewChild('sessionModal') sessionModal: ModalComponent;
+  @ViewChild('soilsComponent') soilsComponent: SoilsComponent;
   @ViewChild('elevationProfileComponent') elevationProfileComponent: ElevationProfileComponent;
   @ViewChild('culvertSizeComponent') culvertSizeComponent: CulvertSizeComponent;
   @ViewChildren(AccordionPanelComponent) accordionPanels: QueryList<AccordionPanelComponent>;
@@ -274,9 +278,26 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
           this.esrimapService.soilsAccordionOpen.emit(panel.opened);
           break;
 
-        case this.drawAccPanel:
-          this.clearOtherPanelOnDrawOpen();
-          break;
+        // case this.drawAccPanel:
+        //   this.clearOtherPanelOnDrawOpen();
+        //   break;
+      }
+      if (panel !== this.culvertAccPanel) {
+        if (this.culvertSizeComponent.isActive) {
+          this.culvertSizeComponent.cleanup();
+        }
+      }
+
+      if (panel !== this.elevationAccPanel) {
+        if (this.elevationProfileComponent.isActive) {
+          this.elevationProfileComponent.cleanup();
+        }
+      }
+
+      if (panel !== this.soilsAccPanel) {
+        if (this.soilsComponent.isIdentifyChecked) {
+          this.soilsComponent.disableSoilsIdentify();
+        }
       }
     });
 
