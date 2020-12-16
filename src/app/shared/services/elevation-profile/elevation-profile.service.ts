@@ -89,7 +89,7 @@ export class ElevationProfileService {
       const _ext = this.mapView.extent.clone();
       setTimeout(() => {
         this.viewModel
-          .printReport(this.Plotly, this.mapView, this.config.elevationProfileReportURL, this.printTaskService, _ext)
+          .printReport(this.Plotly, this.mapView, (this.config.backendURL + this.config.elevationProfileReportURL), this.printTaskService, _ext)
           .then((response: any) => {
             window.open(response.fileName, '_blank');
           })
