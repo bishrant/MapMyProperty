@@ -79,11 +79,13 @@ export class CulvertSizeService {
       geometryType: 'point',
       spatialReference: { wkid: 3857 }
     });
+    // featureSet.features[0].symbol = null;
     const geoprocessor: Geoprocessor = new Geoprocessor({
-      url: (this.config.backendURL + this.config.culvertSize.gpServiceURL)
+      url: (this.config.culvertSize.gpServiceURL)
     });
     const params = {
-      Input_Pour_Point: featureSet
+      Input_Pour_Point: featureSet,
+      'env:outSR': 3857
     }
     return [geoprocessor, params];
   }
@@ -101,7 +103,7 @@ export class CulvertSizeService {
   }
 
   async GeneratePDFReport (params: CulvertSizeReportParams, errorModal: any) {
-    this.http.post(this.config.culvertSize.reportURL, params).subscribe((d: any) => {
+    this.http.post(this.config.backendURL + this.config.culvertSize.reportURL, params).subscribe((d: any) => {
       window.open(d.fileName);
       this.loaderService.isLoading.next(false);
     }, (error : any) => {
