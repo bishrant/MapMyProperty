@@ -17,12 +17,7 @@ const CreateTextGraphicsLayer = (Id: string = 'userTextGraphicsLayer') => {
 
 // Gets the polygon graphics from a given graphics layer
 const GetPolygonGraphics = (gl:__esri.GraphicsLayer) => {
-  const polygonGraphics = gl.graphics.map((g:any) => {
-    if (g.geometry.type === 'polygon') {
-      return g;
-    }
-  });
-  return polygonGraphics;
+  return gl.graphics.filter((g) => g.geometry.type === 'polygon');
 };
 
 const FindGraphicById = (gl:__esri.GraphicsLayer, id:string) => {

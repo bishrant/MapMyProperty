@@ -284,8 +284,6 @@ export class SoilsComponent implements OnInit {
         soils: soilsAttributes.items
       };
 
-      console.log(reportParams);
-
       this.reportsService.getSoilsReport({ content: JSON.stringify(reportParams) }).subscribe(
         (response:any) => {
           this.loaderService.isLoading.next(false);
@@ -306,7 +304,6 @@ export class SoilsComponent implements OnInit {
   }
 
   private checkIfOrange (val:number):void {
-    console.log(val < 75 || val === 100, val);
     if (val < 75 || val === 100) {
       this.isOrangeSymbol = false;
     } else {

@@ -32,7 +32,6 @@ export class SoilsService {
 
       this.http.get(queryFile, { responseType: 'text' as 'json' }).subscribe(data => {
         const queryString = data.toString().replace('zzLon', mapPoint.longitude.toString()).replace('zzLat', mapPoint.latitude.toString());
-        console.log(queryString);
         try {
           this.http.post(this.appConfig.ssurgoTabularURL, {
             query: queryString,
