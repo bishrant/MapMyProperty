@@ -1,6 +1,6 @@
 {
   "loggingURL": "https://txfipdev.tfs.tamu.edu/AppErrorLogger/api/logs",
-  "backendURL": "https://txfipdev.tfs.tamu.edu/pmlo/api/",
+  "backendURL": "https://texasforestinfo.tamu.edu/pmlo/api/",
   "printGPServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/Shared/PrintUsingPro/GPServer/PrintUsingPro",
   "elevationProfileReportURL": "CreateElevationProfileReport",
   "elevationGPServiceURL": "https://elevation.arcgis.com/arcgis/rest/services/Tools/ElevationSync/GPServer/Profile/execute",
