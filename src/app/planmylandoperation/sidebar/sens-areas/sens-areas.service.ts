@@ -47,6 +47,8 @@ export class SensAreasService {
           });
           resolve(isInTexas);
         }
+      }).catch((error:any) => {
+        resolve(null);
       });
     });
   }
@@ -79,6 +81,9 @@ export class SensAreasService {
                 gp.getResultData(jobInfo2.jobId, 'outputStreams')
               ]).then((value) => {
                 resolve(value);
+              }).catch((error:any) => {
+                console.log(error);
+                resolve([]);
               });
             }
           },
