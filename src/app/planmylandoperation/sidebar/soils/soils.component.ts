@@ -21,6 +21,7 @@ import { EsrimapService } from '../../esrimap/esrimap.service';
 import { PMLONotification } from '../../models/pmloNotification.model';
 import { NotificationsService } from '../../pmloUtils/notifications.service';
 import { ModalService } from 'src/app/shared/lib/angular-modal/modal/modal.service';
+import { SketchSelectionService } from 'src/app/shared/services/SketchSelectionService';
 
 @Component({
   selector: 'pmlo-soils',
@@ -62,7 +63,8 @@ export class SoilsComponent implements OnInit {
     private reportsService: ReportsService,
     private esriMapService: EsrimapService,
     private notificationsService:NotificationsService,
-    private modalService:ModalService
+    private modalService:ModalService,
+    private sketchSelectionService: SketchSelectionService
   ) { }
 
   ngOnInit (): void {
@@ -213,6 +215,10 @@ export class SoilsComponent implements OnInit {
             }
             index += 1;
           }
+          this.mapView.popup.dockOptions = {
+            buttonEnabled: true,
+            position: 'top-left'
+          }
           this.mapView.popup.open({
             title: pmloSoil.musym,
             location: evt.mapPoint,
@@ -220,6 +226,7 @@ export class SoilsComponent implements OnInit {
             overwriteActions: true,
             actions: []
           });
+
           this.loaderService.isLoading.next(false);
         })
       });
@@ -229,9 +236,21 @@ export class SoilsComponent implements OnInit {
     }
   }
 
+  updateSketchState(status: boolean) {
+    this.sketchSelectionService.changeSketchSelectionMode('soils', status);
+  }
+
+  public disableSoilsIdentify() {
+    this.identifyCheckbox.nativeElement.checked = false;
+    this.mapView.popup.close();
+    this.soilsIdentifyChanged(false);
+  }
+
   soilsIdentifyChanged (isChecked: boolean) {
     this.isIdentifyChecked = isChecked;
+    this.updateSketchState(!isChecked);
     this.createSoilsIdentifyClickEvent(isChecked);
+    if (!isChecked) this.mapView.popup.close();
   }
 
   // updateSliderValue (value: number):void {
