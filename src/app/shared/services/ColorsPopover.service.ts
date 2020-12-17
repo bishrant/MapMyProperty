@@ -57,6 +57,8 @@ export class ColorsPopoverService {
         this.overlayRef = null;
         this.afterClosed.next(data);
       }
+    } else {
+      this.afterClosed.next(data);
     }
   };
 

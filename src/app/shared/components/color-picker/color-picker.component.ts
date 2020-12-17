@@ -31,11 +31,13 @@ export class ColorPickerComponent {
         // convert hex to rgb
         this.color = colorInfo.color;
         this.opacity = colorInfo.opacity;
-        if (colorInfo.closePopup) {
-          this.colorSelected.emit(this.ConvertColorToRGBA(this.color, this.opacity));
-        }
+        // if (colorInfo.closePopup) {
+        this.colorSelected.emit(this.ConvertColorToRGBA(this.color, this.opacity));
+        // }
         // Needed to fix #52
-        this.unsubscribeFromObservable(colorObervable$);
+        if (colorInfo.closePopup) {
+          this.unsubscribeFromObservable(colorObervable$);
+        }
       }
     });
   }
