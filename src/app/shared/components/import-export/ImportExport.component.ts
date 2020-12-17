@@ -40,35 +40,39 @@ export class ImportExportComponent implements OnInit {
       const r = fileReader.result as any;
       let _temp;
       let _jsn;
-      switch (this.format) {
-        case 'kml':
-          _temp = kmlToGeoJson(r);
-          this.store.dispatch(addGraphics({ graphics: _temp }));
-          this.mapView.goTo(GetGraphicsForExtentUsingString(_temp));
-          break;
-        case 'gpx':
-          _temp = gpxToGeoJson(r);
-          this.store.dispatch(addGraphics({ graphics: _temp }));
-          this.mapView.goTo(GetGraphicsForExtentUsingString(_temp));
-          break;
-        case 'shp':
-          convertSHPToGraphics(file, this.store, this.mapView);
-          break;
-        case 'mmp':
-          _jsn = JSON.parse(r);
-          if (typeof _jsn.length === 'undefined') {
-            // old mmp
-            const oldMMP = convertMMPJSONToGraphics(_jsn);
-            this.store.dispatch(addGraphics({ graphics: oldMMP }));
-            this.mapView.goTo(GetGraphicsForExtentUsingString(JSON.stringify(oldMMP)));
-          } else {
-            this.store.dispatch(addGraphics({ graphics: _jsn }));
-            this.mapView.goTo(GetGraphicsForExtentUsingString(r));
-          }
+      try {
+        switch (this.format) {
+          case 'kml':
+            _temp = kmlToGeoJson(r);
+            this.store.dispatch(addGraphics({ graphics: _temp }));
+            this.mapView.goTo(GetGraphicsForExtentUsingString(_temp));
+            break;
+          case 'gpx':
+            _temp = gpxToGeoJson(r);
+            this.store.dispatch(addGraphics({ graphics: _temp }));
+            this.mapView.goTo(GetGraphicsForExtentUsingString(_temp));
+            break;
+          case 'shp':
+            convertSHPToGraphics(file, this.store, this.mapView);
+            break;
+          case 'mmp':
+            _jsn = JSON.parse(r);
+            if (typeof _jsn.length === 'undefined') {
+              // old mmp
+              const oldMMP = convertMMPJSONToGraphics(_jsn);
+              this.store.dispatch(addGraphics({ graphics: oldMMP }));
+              this.mapView.goTo(GetGraphicsForExtentUsingString(JSON.stringify(oldMMP)));
+            } else {
+              this.store.dispatch(addGraphics({ graphics: _jsn }));
+              this.mapView.goTo(GetGraphicsForExtentUsingString(r));
+            }
 
-          break;
-        default:
-          break;
+            break;
+          default:
+            break;
+        }
+      } catch (error) {
+        throw new Error('Unable to import the selected file.')
       }
     };
     fileReader.readAsText(file);

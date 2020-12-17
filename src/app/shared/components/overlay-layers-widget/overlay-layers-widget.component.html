@@ -2,7 +2,7 @@
   <img src="assets/icons/layers.png" aria-label="basemap gallery" />
 </button>
 
-<div class="layersBody layers-open" [hidden]="!isOpen">
+<div class="layersBody layers-open" [hidden]="!isOpen" [ngClass]="{'layersContentLarge':  (floodZonesLayer.visible || wetAreasLayer.visible)}">
 
   <div class="widgetTitle">
     <span class="widgetTitleText">Layers</span>

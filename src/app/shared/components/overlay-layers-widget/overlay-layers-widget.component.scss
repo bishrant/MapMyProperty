@@ -18,7 +18,7 @@ $right: 1em;
   top: calc(4em + 3em);
   right: $right;
   max-height: 27.5em;
-  width: 25em;
+  width: 18em;
   background: white;
   display: flex;
   flex-direction: column;
@@ -27,9 +27,12 @@ $right: 1em;
 }
 
 .layersContent {
-  padding: 0.5em 0.9375em;
+  padding: 0.5em 0.5em;
 }
 
 .legendTable {
-  margin-left: 1.5625em;
+  margin-left: 1em;
+}
+.layersContentLarge {
+  width: 22em !important;
 }
