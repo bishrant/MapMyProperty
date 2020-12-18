@@ -310,14 +310,14 @@ export class SoilsComponent implements OnInit {
         },
         (error:any) => {
           this.loaderService.isLoading.next(false);
-          const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
+          const gpError = TraceGPError('Error getting soils report', error);
           throw gpError;
         }
       );
     })
       .catch((error:any) => {
         this.loaderService.isLoading.next(false);
-        const gpError = TraceGPError(this.appConfig.printGPServiceURL, error);
+        const gpError = TraceGPError('Error getting soils report', error);
         throw gpError;
       });
   }
