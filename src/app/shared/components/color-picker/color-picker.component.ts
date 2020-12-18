@@ -13,6 +13,7 @@ export class ColorPickerComponent {
   @Input() heading: string;
   @Input() color: any;
   @Input() opacity: number;
+  @Input() autoClose = false;
   @Output() colorSelected: EventEmitter<any> = new EventEmitter<any>();
 
   constructor (public colorsPopoverService: ColorsPopoverService, private viewContainerRef: ViewContainerRef) {}
@@ -24,18 +25,20 @@ export class ColorPickerComponent {
   openColorSelector (origin: any) {
     const componentPortal = new ComponentPortal(ColorPickerPopoverComponent, this.viewContainerRef);
     const colorsPopoverService$ = this.colorsPopoverService
-      .open(origin, componentPortal, { color: RGBObjectToHex(this.color), opacity: this.opacity });
+      .open(origin, componentPortal, { color: RGBObjectToHex(this.color), opacity: this.opacity }, this.autoClose);
 
     const colorObervable$ = colorsPopoverService$.subscribe((colorInfo) => {
       if (colorInfo) {
         // convert hex to rgb
         this.color = colorInfo.color;
         this.opacity = colorInfo.opacity;
-        if (colorInfo.closePopup) {
-          this.colorSelected.emit(this.ConvertColorToRGBA(this.color, this.opacity));
-        }
+        // if (colorInfo.closePopup) {
+        this.colorSelected.emit(this.ConvertColorToRGBA(this.color, this.opacity));
+        // }
         // Needed to fix #52
-        this.unsubscribeFromObservable(colorObervable$);
+        if (colorInfo.closePopup || this.autoClose) {
+          this.unsubscribeFromObservable(colorObervable$);
+        }
       }
     });
   }

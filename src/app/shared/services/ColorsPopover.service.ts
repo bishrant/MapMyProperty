@@ -15,10 +15,12 @@ export class ColorsPopoverService {
   sub: Subscription;
   private afterClosed = new Subject<any>();
   onClosed = this.afterClosed.asObservable();
+  closeOnClick = false;
 
   constructor (private overlay: Overlay) {}
 
-  open (origin: any, componentPortal: any, data: any) {
+  open (origin: any, componentPortal: any, data: any, closeOnClick: boolean) {
+    this.closeOnClick = closeOnClick;
     const config = new OverlayConfig({
       positionStrategy: this.getOverlayPosition(origin),
       scrollStrategy: this.overlay.scrollStrategies.close(),
@@ -48,7 +50,7 @@ export class ColorsPopoverService {
   }
 
   close = (data: any, closePopup = true) => {
-    if (closePopup) {
+    if (closePopup || this.closeOnClick) {
     //   this.afterClosed.next(data);
     // } else {
       this.sub && this.sub.unsubscribe();
@@ -57,6 +59,8 @@ export class ColorsPopoverService {
         this.overlayRef = null;
         this.afterClosed.next(data);
       }
+    } else {
+      this.afterClosed.next(data);
     }
   };
 
