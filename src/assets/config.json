@@ -8,7 +8,7 @@
   "bufferSensAreasGPServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/MMPSuite/BufferSensAreas/GPServer/Buffer%20Sensitive%20Areas",
   "severeSlopesGPServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/MMPSuite/GetSlope/GPServer/Get%20Slope",
   "clipSoilsGPServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/Shared/ClipSoils/GPServer/Clip%20Soils",
-  "usCountyLayerURL": "https://carto.nationalmap.gov/arcgis/rest/services/govunits/MapServer/35",
+  "usCountyLayerURL": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1",
   "usWatershedLayerURL": "https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer/4",
   "soilsReportHydroParamsGPServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/MMPSuite/SoilsReportHydroParams/GPServer/Soils%20Report%20Hydrology%20Parameters",
   "geometryServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/Utilities/Geometry/GeometryServer",

@@ -33,7 +33,7 @@ export class SensAreasService {
       query.spatialRelationship = 'intersects';
       query.returnGeometry = false;
       query.geometry = geo;
-      query.outFields = ['STATE_FIPSCODE'];
+      query.outFields = ['STATE'];
 
       _queryTask.execute(query).then((result: any) => {
         if (result.features.length === 0) {
@@ -41,7 +41,7 @@ export class SensAreasService {
         } else {
           let isInTexas: boolean = true;
           result.features.forEach((co: __esri.Graphic) => {
-            if (co.attributes.STATE_FIPSCODE !== '48') {
+            if (co.attributes.STATE !== '48') {
               isInTexas = false;
             }
           });
