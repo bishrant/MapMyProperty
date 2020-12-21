@@ -52,13 +52,13 @@ export class SoilsReportService {
         spatialRelationship: 'intersects',
         returnGeometry: false,
         geometry: aoiCentroid,
-        outFields: ['NAME', 'STATE']
+        outFields: ['NAME', 'COUNTY']
       });
 
       countyQT.execute(query).then((results: any) => {
         resolve({
           countyName: results.features[0].attributes.NAME,
-          countyFips: results.features[0].attributes.STATE
+          countyFips: results.features[0].attributes.COUNTY
         });
       })
         .catch(() => {
