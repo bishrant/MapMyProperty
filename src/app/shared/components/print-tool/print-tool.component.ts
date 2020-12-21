@@ -156,7 +156,7 @@ export class PrintToolComponent implements OnInit {
 
       return this.popupMapView;
     } catch (error) {
-      console.log('Esri: ', error);
+      console.error('Esri: ', error);
     }
   }
 

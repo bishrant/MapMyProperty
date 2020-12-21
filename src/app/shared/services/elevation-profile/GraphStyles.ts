@@ -77,7 +77,6 @@ const GetGraphOptions = (ptArray: any, unit: ElevationUnits, isMSL: boolean, div
   let elev = ptArray.map((p: any) => p[2]);
   const abbr = elevationUnitMap[unit];
   const _hostDiv = document.getElementById(divId);
-  console.log('DIV:', document.getElementById(divId));
   const options = {
     hoverMode: 'closest',
     hoverDistance: -1,

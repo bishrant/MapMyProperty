@@ -82,7 +82,7 @@ export class SensAreasService {
               ]).then((value) => {
                 resolve(value);
               }).catch((error:any) => {
-                console.log(error);
+                console.error(error);
                 resolve([]);
               });
             }

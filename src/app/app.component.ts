@@ -14,9 +14,6 @@ export class AppComponent implements OnInit {
     window.addEventListener('unhandledrejection', (event) => {
       throw event.reason;
     });
-    window.addEventListener('error', (err) => {
-      console.log('ERROR HERE', err);
-    })
   }
 
   constructor (titleService: Title, router: Router) {

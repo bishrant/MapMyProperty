@@ -149,7 +149,6 @@ export class CulvertSizeService {
           operationalLayers.push(culvertLr);
 
           webmapJson.operationalLayers = operationalLayers;
-          console.log(webmapJson);
 
           const gpParams = {
             Web_Map_as_JSON: webmapJson,
