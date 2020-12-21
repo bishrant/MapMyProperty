@@ -9,7 +9,6 @@ export class MMPThemesComponent {
   @Input() mapView: any;
   transparency = 10;
   transparencyChanged ($e) {
-    console.log($e);
     this.transparency = $e;
   }
 }

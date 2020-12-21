@@ -100,7 +100,6 @@ export class PointcontrolComponent {
   };
 
   changePointShapeEvt = (evt: any) => {
-    // console.log(evt);
     this.pointSymbol = evt;
     this.markerProps.type = evt.type;
     if (evt.type === 'picture-marker') {

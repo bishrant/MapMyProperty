@@ -48,7 +48,6 @@ export class GraphicsStoreComponent implements AfterViewInit {
   deleteAll (): void {
     const r = confirm('Are you sure you want to delete all graphics/drawings?');
     if (r === true) {
-      console.log('delete all map graphics');
       this.store.dispatch(removeAllGraphics());
     }
   }
