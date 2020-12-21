@@ -311,7 +311,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit (): void {
     this.graphicsSubcription$ = this.listenToGraphicsStore();
     this.selectionStateSubcription$ = this.sketchSelectionService.disableSketchSelection.subscribe(state => {
-      // console.log(state);
       this.sketchVM.updateOnGraphicClick = state.status;
       this.selectionState = state.status;
     })
