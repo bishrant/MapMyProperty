@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./site-policies.component.scss']
 })
 export class SitePoliciesComponent implements OnInit {
-
+  public year = new Date().getFullYear();
   constructor() { }
 
   ngOnInit(): void {
