@@ -126,10 +126,10 @@ export class HarvestOperationsComponent implements OnInit {
 
   private clipSoils(): void {
     if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length === 0) {
-      this.pmloNote.body = 'A drawn boundary is needed to get harvest operations.';
+      this.pmloNote.body = 'A drawn boundary is needed to get operational considerations.';
       this.notificationsService.openNotificationsModal.emit(this.pmloNote);
     } else if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length > 1) {
-      this.pmloNote.body = 'You can only get harvest operations information from one polygon at a time.';
+      this.pmloNote.body = 'You can only get operational considerations information from one polygon at a time.';
       this.notificationsService.openNotificationsModal.emit(this.pmloNote);
     } else if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length > 0) {
       if (
@@ -151,7 +151,7 @@ export class HarvestOperationsComponent implements OnInit {
           if (result.length === 0) {
             this.loaderService.isLoading.next(false);
             this.pmloNote.body =
-              'There was an error while getting harvest operations information. Please try again and, if the problem persists, contact the administrator.';
+              'There was an error while getting operational considerations information. Please try again and, if the problem persists, contact the administrator.';
             this.notificationsService.openNotificationsModal.emit(this.pmloNote);
           } else {
             const boundaryId: string = inputBoundary.attributes.id;
