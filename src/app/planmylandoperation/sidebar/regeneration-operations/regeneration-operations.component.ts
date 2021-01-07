@@ -114,10 +114,10 @@ export class RegenerationOperationsComponent implements OnInit {
 
   private clipSoils(): void {
     if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length === 0) {
-      this.pmloNote.body = 'A drawn boundary is needed to get regeneration operations.';
+      this.pmloNote.body = 'A drawn boundary is needed to get regeneration attributes.';
       this.notificationsService.openNotificationsModal.emit(this.pmloNote);
     } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 1) {
-      this.pmloNote.body = 'You can only get regeneration operations information from one polygon at a time.';
+      this.pmloNote.body = 'You can only get regeneration attributes from one polygon at a time.';
       this.notificationsService.openNotificationsModal.emit(this.pmloNote);
     } else if (this.userGL.graphics.filter(g => g.geometry.type === 'polygon').length > 0) {
       if (GreaterThanMaxArea(this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0).geometry, 100000, 'acres')) {
@@ -129,7 +129,7 @@ export class RegenerationOperationsComponent implements OnInit {
         this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
           if (result.length === 0) {
             this.loaderService.isLoading.next(false);
-            this.pmloNote.body = 'There was an error while getting regeneration operations information. Please try again and, if the problem persists, contact the administrator.';
+            this.pmloNote.body = 'There was an error while getting regeneration attributes. Please try again and, if the problem persists, contact the administrator.';
             this.notificationsService.openNotificationsModal.emit(this.pmloNote);
           } else {
             const boundaryId: string = inputBoundary.attributes.id;
