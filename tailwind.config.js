@@ -10,8 +10,7 @@ module.exports = {
       },
       borderWidth: {
         '1':'1px'
-      },
-
+      }
     },
     customForms: theme => ({
       default: {
@@ -21,13 +20,13 @@ module.exports = {
             borderColor: 'black',
             backgroundSize: '100% 100%',
             backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
+            backgroundRepeat: 'no-repeat'
           },
           'checkbox[checked="true"]': {
             borderColor: 'black',
             backgroundSize: '100% 100%',
             backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
+            backgroundRepeat: 'no-repeat'
           }
         }
       }
@@ -36,10 +35,10 @@ module.exports = {
   },
   future: {
     removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true,
+    purgeLayersByDefault: true
   },
   variants: {
-    borderWidth: ['responsive', 'hover', 'focus'],
+    borderWidth: ['responsive', 'hover', 'focus']
   },
-  plugins: [require('@tailwindcss/custom-forms'),],
+  plugins: [require('@tailwindcss/custom-forms')]
 }
