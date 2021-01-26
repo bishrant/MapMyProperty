@@ -28,6 +28,7 @@ import { defaultPointCircleSymbol } from 'src/app/shared/utils/DefaultSymbols';
 import { ElevationProfileComponent } from '../sidebar/elevation-profile/elevation-profile.component';
 import { CulvertSizeComponent } from '../sidebar/culvert-size/culvert-size.component';
 import { SoilsComponent } from '../sidebar/soils/soils.component';
+import { reorderGraphicsLayer } from 'src/app/shared/utils/LayerUtils';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -193,20 +194,8 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
     try {
       InitializeArcGISWorkers();
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
-      this.mapView.map.allLayers.on('change', (evt) => {
-        // Pull user graphics layers to the end of the array
-        if (evt.added.length > 0) {
-          const userGraphicsLayer = evt.added.find(l => l.id === 'userGraphicsLayer');
-          const userTextGraphicsLayer = evt.added.find(l => l.id === 'userTextGraphicsLayer');
-          const geomlabels = evt.added.find(l => l.id === 'geomlabels');
-          const generalGraphics = evt.added.find(l => l.id === 'generalGraphicsLayer');
+      reorderGraphicsLayer(this.mapView.map);
 
-          if (userGraphicsLayer !== null) this.mapView.map.reorder(userGraphicsLayer, this.mapView.map.layers.length - 1);
-          if (userTextGraphicsLayer !== null) this.mapView.map.reorder(userTextGraphicsLayer, this.mapView.map.layers.length - 1);
-          if (geomlabels !== null) this.mapView.map.reorder(geomlabels, this.mapView.map.layers.length - 1);
-          if (generalGraphics !== null) this.mapView.map.reorder(generalGraphics, this.mapView.map.layers.length - 1);
-        }
-      });
       const soilsLayer: __esri.WMSLayer = CreateSoilsLayer('soilsDynamicLayer', this.appConfig.ssurgoWMSURL);
       this.mapView.map.addMany([soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer, this.generalGraphicsLayer]);
       this.mapView.whenLayerView(this.polygonGraphicsLayer).then((boundaryLayerView) => {
@@ -261,27 +250,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
     });
 
     this.accordionPanelService.setActivePanel.subscribe((panel: AccordionPanelComponent) => {
-      switch (panel) {
-        case this.sensAreasAccPanel:
-          this.esrimapService.sensAreasAccordionOpen.emit(panel.opened);
-          break;
-
-        case this.harvestAccPanel:
-          this.esrimapService.harvOpAccordionOpen.emit(panel.opened);
-          break;
-
-        case this.regenerationAccPanel:
-          this.esrimapService.regOpAccordionOpen.emit(panel.opened);
-          break;
-
-        case this.soilsAccPanel:
-          this.esrimapService.soilsAccordionOpen.emit(panel.opened);
-          break;
-
-        // case this.drawAccPanel:
-        //   this.clearOtherPanelOnDrawOpen();
-        //   break;
-      }
+      this.esrimapService.setActivePanel(panel.panelTitle, panel.opened);
       if (panel !== this.culvertAccPanel) {
         if (this.culvertSizeComponent.isActive) {
           this.culvertSizeComponent.cleanup();

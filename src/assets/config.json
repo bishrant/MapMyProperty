@@ -14,6 +14,8 @@
   "geometryServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/Utilities/Geometry/GeometryServer",
   "ssurgoTabularURL":  "https://SDMDataAccess.sc.egov.usda.gov/Tabular/post.rest",
   "ssurgoWMSURL": "https://sdmdataaccess.nrcs.usda.gov/Spatial/sdm.wms?",
+  "geologyMapServerURL": "https://txgeo.usgs.gov/arcgis/rest/services/GDT/GeologicDatabaseOfTexas250K/MapServer",
+  "vegetationMapServerURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/MapMyProperty/MMPVegetationRaster/MapServer",
   "culvertSize": {
     "reportURL": "CreateCulvertSizeReport",
     "gpServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/PMLO/CreateWatershed/GPServer/Create%20Watershed"
