@@ -1,30 +1,54 @@
-<button (click)="toggle()" class="layersToggleBtn" [ngClass]="{selectedBtn: isOpen}" title="Layers">
+<button (click)="toggle()" class="layersToggleBtn" [ngClass]="{ selectedBtn: isOpen }" title="Layers">
   <img src="assets/icons/layers.png" aria-label="basemap gallery" />
 </button>
 
-<div class="layersBody layers-open" [hidden]="!isOpen" [ngClass]="{'layersContentLarge':  (floodZonesLayer.visible || wetAreasLayer.visible)}">
-
+<div class="layersBody layers-open" [hidden]="!isOpen" *ngIf="isFirstTime">
   <div class="widgetTitle">
     <span class="widgetTitleText">Layers</span>
     <app-help-button [header]="'Layers'" [itemName]="'layers'" [fillColor]="'white'"></app-help-button>
     <i class="widgetCloseBtn ui-icon dt-icon-close" (click)="toggle()"></i>
   </div>
-  <div class="layersContent overflow-y-auto">
+  <div class="layersContent overflow-y-auto" *ngIf="!isFirstTime">Loading...</div>
+</div>
+
+<div
+  class="layersBody layers-open"
+  [hidden]="!isOpen"
+  [ngClass]="{ layersContentLarge: floodZonesLayer.visible || wetAreasLayer.visible }"
+  *ngIf="!isFirstTime"
+>
+  <div class="widgetTitle">
+    <span class="widgetTitleText">Layers</span>
+    <app-help-button [header]="'Layers'" [itemName]="'layers'" [fillColor]="'white'"></app-help-button>
+    <i class="widgetCloseBtn ui-icon dt-icon-close" (click)="toggle()"></i>
+  </div>
+  <div *ngIf="isFirstTime">Loading...</div>
+  <div class="layersContent overflow-y-auto" *ngIf="!isFirstTime">
     <div class="row" *ngFor="let layer of layersList">
-      <label class="inline-flex cursor-pointer" [ngClass]="{'cursor-not-allowed': !layer.enabled}"
-        [ngStyle]="{'opacity': layer.enabled ? 1 : 0.4}">
-        <input #checkboxes [id]="layer.id" type="checkbox" class="m-auto form-checkbox h-5 w-5 cursor-pointer"
-          [ngClass]="['text-' + colorPrefix + '_secondary']" (change)="updateVisibility($event.target.id)"
-          [disabled]="!layer.enabled">
+      <label
+        class="inline-flex cursor-pointer"
+        [ngClass]="{ 'cursor-not-allowed': !layer.enabled }"
+        [ngStyle]="{ opacity: layer.enabled ? 1 : 0.4 }"
+      >
+        <input
+          #checkboxes
+          [id]="layer.id"
+          type="checkbox"
+          class="m-auto form-checkbox h-5 w-5 cursor-pointer"
+          [ngClass]="['text-' + colorPrefix + '_secondary']"
+          (change)="updateVisibility($event.target.id)"
+          [disabled]="!layer.enabled"
+        />
         <span class="checkbox-label">{{ layer.label }}</span>
       </label>
 
       <table *ngIf="layer.id === wetAreasId && wetAreasLayer.visible" class="legendTable">
         <tbody>
           <tr *ngFor="let wetAreaLegendItem of wetAreasLegendList">
-            <td><img [src]="'data:image/png;base64,' + wetAreaLegendItem.imageData" [alt]="wetAreaLegendItem.label">
+            <td>
+              <img [src]="'data:image/png;base64,' + wetAreaLegendItem.imageData" [alt]="wetAreaLegendItem.label" />
             </td>
-            <td>{{wetAreaLegendItem.label}}</td>
+            <td>{{ wetAreaLegendItem.label }}</td>
           </tr>
         </tbody>
       </table>
@@ -33,99 +57,147 @@
         <tbody>
           <tr>
             <td width="35">
-              <div style="width:30px;height:30px;"><svg overflow="hidden" width="30" height="30"
-                  style="touch-action: none;">
+              <div style="width: 30px; height: 30px">
+                <svg overflow="hidden" width="30" height="30" style="touch-action: none">
                   <defs></defs>
-                  <path fill="rgb(142, 52, 148)" fill-opacity="0.63" stroke="none" stroke-opacity="0" stroke-width="1"
-                    stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"
-                    path="M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z" d="M-10-10L 10 0L 10 10L-10 10L-10-10Z"
+                  <path
+                    fill="rgb(142, 52, 148)"
+                    fill-opacity="0.63"
+                    stroke="none"
+                    stroke-opacity="0"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="miter"
+                    stroke-miterlimit="4"
+                    path="M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z"
+                    d="M-10-10L 10 0L 10 10L-10 10L-10-10Z"
                     fill-rule="evenodd"
-                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></path>
-                </svg></div>
+                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"
+                  ></path>
+                </svg>
+              </div>
             </td>
-            <td>
-              1% Annual Chance Flood Hazard
-            </td>
+            <td>1% Annual Chance Flood Hazard</td>
           </tr>
           <tr>
             <td width="35">
-              <div style="width:30px;height:30px;"><svg overflow="hidden" width="30" height="30"
-                  style="touch-action: none;">
+              <div style="width: 30px; height: 30px">
+                <svg overflow="hidden" width="30" height="30" style="touch-action: none">
                   <defs></defs>
-                  <path fill="rgb(157, 125, 192)" fill-opacity="0.63" stroke="none" stroke-opacity="0" stroke-width="1"
-                    stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"
-                    path="M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z" d="M-10-10L 10 0L 10 10L-10 10L-10-10Z"
+                  <path
+                    fill="rgb(157, 125, 192)"
+                    fill-opacity="0.63"
+                    stroke="none"
+                    stroke-opacity="0"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="miter"
+                    stroke-miterlimit="4"
+                    path="M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z"
+                    d="M-10-10L 10 0L 10 10L-10 10L-10-10Z"
                     fill-rule="evenodd"
-                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></path>
-                </svg></div>
+                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"
+                  ></path>
+                </svg>
+              </div>
             </td>
-            <td>
-              0.2% Annual Chance Flood Hazard
-            </td>
+            <td>0.2% Annual Chance Flood Hazard</td>
           </tr>
           <tr>
             <td width="35">
-              <div style="width:30px;height:30px;"><svg overflow="hidden" width="30" height="30"
-                  style="touch-action: none;">
+              <div style="width: 30px; height: 30px">
+                <svg overflow="hidden" width="30" height="30" style="touch-action: none">
                   <defs></defs>
-                  <path fill="rgb(118, 156, 205)" fill-opacity="0.63" stroke="none" stroke-opacity="0" stroke-width="1"
-                    stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"
-                    path="M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z" d="M-10-10L 10 0L 10 10L-10 10L-10-10Z"
+                  <path
+                    fill="rgb(118, 156, 205)"
+                    fill-opacity="0.63"
+                    stroke="none"
+                    stroke-opacity="0"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="miter"
+                    stroke-miterlimit="4"
+                    path="M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z"
+                    d="M-10-10L 10 0L 10 10L-10 10L-10-10Z"
                     fill-rule="evenodd"
-                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></path>
-                </svg></div>
+                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"
+                  ></path>
+                </svg>
+              </div>
             </td>
-            <td>
-              Regulatory Floodway
-            </td>
+            <td>Regulatory Floodway</td>
           </tr>
           <tr>
             <td width="35">
-              <div style="width:30px;height:30px;"><svg overflow="hidden" width="30" height="30"
-                  style="touch-action: none;">
+              <div style="width: 30px; height: 30px">
+                <svg overflow="hidden" width="30" height="30" style="touch-action: none">
                   <defs></defs>
-                  <path fill="rgb(129, 192, 201)" fill-opacity="0.63" stroke="none" stroke-opacity="0" stroke-width="1"
-                    stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"
-                    path="M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z" d="M-10-10L 10 0L 10 10L-10 10L-10-10Z"
+                  <path
+                    fill="rgb(129, 192, 201)"
+                    fill-opacity="0.63"
+                    stroke="none"
+                    stroke-opacity="0"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="miter"
+                    stroke-miterlimit="4"
+                    path="M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z"
+                    d="M-10-10L 10 0L 10 10L-10 10L-10-10Z"
                     fill-rule="evenodd"
-                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></path>
-                </svg></div>
+                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"
+                  ></path>
+                </svg>
+              </div>
             </td>
-            <td>
-              Special Floodway
-            </td>
+            <td>Special Floodway</td>
           </tr>
           <tr>
             <td width="35">
-              <div style="width:30px;height:30px;"><svg overflow="hidden" width="30" height="30"
-                  style="touch-action: none;">
+              <div style="width: 30px; height: 30px">
+                <svg overflow="hidden" width="30" height="30" style="touch-action: none">
                   <defs></defs>
-                  <path fill="rgb(245, 200, 179)" fill-opacity="0.63" stroke="none" stroke-opacity="0" stroke-width="1"
-                    stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"
-                    path="M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z" d="M-10-10L 10 0L 10 10L-10 10L-10-10Z"
+                  <path
+                    fill="rgb(245, 200, 179)"
+                    fill-opacity="0.63"
+                    stroke="none"
+                    stroke-opacity="0"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="miter"
+                    stroke-miterlimit="4"
+                    path="M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z"
+                    d="M-10-10L 10 0L 10 10L-10 10L-10-10Z"
                     fill-rule="evenodd"
-                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></path>
-                </svg></div>
+                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"
+                  ></path>
+                </svg>
+              </div>
             </td>
-            <td>
-              Future Conditions 1% Annual Chance Flood Hazard
-            </td>
+            <td>Future Conditions 1% Annual Chance Flood Hazard</td>
           </tr>
           <tr>
             <td width="35">
-              <div style="width:30px;height:30px;"><svg overflow="hidden" width="30" height="30"
-                  style="touch-action: none;">
+              <div style="width: 30px; height: 30px">
+                <svg overflow="hidden" width="30" height="30" style="touch-action: none">
                   <defs></defs>
-                  <path fill="rgb(229, 208, 153)" fill-opacity="0.63" stroke="none" stroke-opacity="0" stroke-width="1"
-                    stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4"
-                    path="M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z" d="M-10-10L 10 0L 10 10L-10 10L-10-10Z"
+                  <path
+                    fill="rgb(229, 208, 153)"
+                    fill-opacity="0.63"
+                    stroke="none"
+                    stroke-opacity="0"
+                    stroke-width="1"
+                    stroke-linecap="butt"
+                    stroke-linejoin="miter"
+                    stroke-miterlimit="4"
+                    path="M -10,-10 L 10,0 L 10,10 L -10,10 L -10,-10 Z"
+                    d="M-10-10L 10 0L 10 10L-10 10L-10-10Z"
                     fill-rule="evenodd"
-                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"></path>
-                </svg></div>
+                    transform="matrix(1.00000000,0.00000000,0.00000000,1.00000000,15.00000000,15.00000000)"
+                  ></path>
+                </svg>
+              </div>
             </td>
-            <td>
-              Area with Reduced Risk Due to Levee
-            </td>
+            <td>Area with Reduced Risk Due to Levee</td>
           </tr>
         </tbody>
       </table>

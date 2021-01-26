@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { MapviewService } from '../../services/mapview.service';
 import { WidgetToggleService } from '../../services/WidgetToggleService';
 import { Subscription } from 'rxjs';
+import { CreateMapLayer } from '../../utils/CreateDynamicLayers';
 
 @Component({
   selector: 'app-overlay-layers-widget',
@@ -30,6 +31,7 @@ export class OverlayLayersWidgetComponent implements OnInit, OnDestroy {
   wetAreasEnabled = false;
   floodZonesEnabled = false;
   parcelsEnabled = false;
+  isFirstTime = true;
 
   layersList: any[] = [
     { id: this.contoursId, label: 'Contours', enabled: false },
@@ -40,67 +42,60 @@ export class OverlayLayersWidgetComponent implements OnInit, OnDestroy {
     { id: this.parcelsId, label: 'Parcels', enabled: false }
   ];
 
+  contoursLayer: MapImageLayer
+  floodZonesLayer: FeatureLayer
+  hydroLayer: MapImageLayer
+  watershedLayer: MapImageLayer
+  wetAreasLayer: MapImageLayer
+  parcelsLayer: VectorLayer
+
   wetAreasLegendList: any[] = [];
 
   private wetAreasUrl = 'https://www.fws.gov/wetlands/arcgis/rest/services/Wetlands/MapServer';
 
-  contoursLayer: MapImageLayer = this.createLayer(
-    'mapImage',
-    this.contoursId,
-    null,
-    'https://carto.nationalmap.gov/arcgis/rest/services/contours/MapServer'
-  );
+  initializeAllLayers = () => {
+    this.contoursLayer = CreateMapLayer(
+      'mapImage',
+      this.contoursId,
+      null,
+      'https://carto.nationalmap.gov/arcgis/rest/services/contours/MapServer'
+    );
 
-  floodZonesLayer: FeatureLayer = this.createLayer(
-    'feature',
-    this.floodZonesId,
-    72000,
-    'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Flood_Hazard_Reduced_Set_gdb/FeatureServer/0'
-  );
+    this.floodZonesLayer = CreateMapLayer(
+      'feature',
+      this.floodZonesId,
+      72000,
+      'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Flood_Hazard_Reduced_Set_gdb/FeatureServer/0'
+    );
 
-  hydroLayer: MapImageLayer = this.createLayer(
-    'mapImage',
-    this.hydroId,
-    null,
-    'https://basemap.nationalmap.gov/arcgis/rest/services/USGSHydroCached/MapServer'
-  );
+    this.hydroLayer = CreateMapLayer(
+      'mapImage',
+      this.hydroId,
+      null,
+      'https://basemap.nationalmap.gov/arcgis/rest/services/USGSHydroCached/MapServer'
+    );
 
-  watershedLayer: MapImageLayer = this.createLayer(
-    'mapImage',
-    this.watershedId,
-    null,
-    'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
-  );
+    this.watershedLayer = CreateMapLayer(
+      'mapImage',
+      this.watershedId,
+      null,
+      'https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer'
+    );
 
-  wetAreasLayer: MapImageLayer = this.createLayer(
-    'mapImage',
-    this.wetAreasId,
-    null,
-    this.wetAreasUrl
-  );
+    this.wetAreasLayer = CreateMapLayer(
+      'mapImage',
+      this.wetAreasId,
+      null,
+      this.wetAreasUrl
+    );
 
-  parcelsLayer: VectorLayer = this.createLayer(
-    'vector',
-    this.parcelsId,
-    72000,
-    'https://tiles.arcgis.com/tiles/jIL9msH9OI208GCb/arcgis/rest/services/VectorTiles_parcels/VectorTileServer'
-  );
+    this.parcelsLayer = CreateMapLayer(
+      'vector',
+      this.parcelsId,
+      72000,
+      'https://tiles.arcgis.com/tiles/jIL9msH9OI208GCb/arcgis/rest/services/VectorTiles_parcels/VectorTileServer'
+    );
 
-  constructor (
-    private http: HttpClient,
-    private mapviewService: MapviewService, private widgetToggleService: WidgetToggleService) {
-    this.subscriptions$ = this.widgetToggleService.widgetViewChanged.subscribe((widgetInfo: any) => {
-      if (widgetInfo.name !== 'layers' && this.isOpen) {
-        this.toggle();
-      }
-    })
-  }
-
-  ngOnDestroy () {
-    this.subscriptions$.unsubscribe();
-  }
-
-  ngOnInit (): void {
     this.mapView.map.addMany([
       this.contoursLayer,
       this.floodZonesLayer,
@@ -137,9 +132,29 @@ export class OverlayLayersWidgetComponent implements OnInit, OnDestroy {
     });
   }
 
+  constructor (
+    private http: HttpClient,
+    private mapviewService: MapviewService, private widgetToggleService: WidgetToggleService) {
+    this.subscriptions$ = this.widgetToggleService.widgetViewChanged.subscribe((widgetInfo: any) => {
+      if (widgetInfo.name !== 'layers' && this.isOpen) {
+        this.toggle();
+      }
+    })
+  }
+
+  ngOnDestroy () {
+    this.subscriptions$.unsubscribe();
+  }
+
+  ngOnInit (): void { }
+
   toggle (): void {
     this.widgetToggleService.changeWidgetView('layers', this.isOpen);
     this.isOpen = !this.isOpen;
+    if (this.isOpen && this.isFirstTime) {
+      this.isFirstTime = false;
+      this.initializeAllLayers();
+    }
   }
 
   updateVisibility (id: string) {
@@ -168,31 +183,5 @@ export class OverlayLayersWidgetComponent implements OnInit, OnDestroy {
         this.parcelsLayer.visible = !this.parcelsLayer.visible;
         break;
     }
-  }
-
-  private createLayer (layerType: string, id: string, minScale: number, url: string): any {
-    let lyr: any;
-    switch (layerType) {
-      case 'mapImage':
-        lyr = new MapImageLayer();
-        break;
-
-      case 'feature':
-        lyr = new FeatureLayer();
-        break;
-
-      case 'vector':
-        lyr = new VectorLayer();
-        break;
-    }
-
-    lyr.id = id;
-    lyr.url = url;
-    lyr.visible = false;
-    if (minScale !== null) {
-      lyr.minScale = minScale;
-    }
-
-    return lyr;
   }
 }
