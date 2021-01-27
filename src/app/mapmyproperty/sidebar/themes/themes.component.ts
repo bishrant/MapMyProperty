@@ -2,10 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import IdentifyTask from 'esri/tasks/IdentifyTask';
 import IdentifyParameters from 'esri/tasks/support/IdentifyParameters';
+import { GetMMPSoilPopupContent } from 'src/app/planmylandoperation/pmloUtils/popupContent';
+import { SoilsService } from 'src/app/planmylandoperation/sidebar/soils/soils.service';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { CreateMapLayer, CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
 import { AppConfiguration } from 'src/config';
+import { MMPSoil } from '../../models/mmpSoil.model';
 
 @Component({
   selector: 'app-mmp-themes',
@@ -38,7 +41,7 @@ export class MMPThemesComponent implements OnInit {
   activeLayer;
 
   constructor (private mapViewService: MapviewService, private appConfig: AppConfiguration,
-    private http: HttpClient,
+    private http: HttpClient, private soilsService: SoilsService,
     private loaderService: LoaderService) { }
 
   ngOnInit () {
@@ -103,15 +106,9 @@ export class MMPThemesComponent implements OnInit {
 
   themeVisibleChanged (isChecked: boolean) {
     this.isVisibleChecked = isChecked;
+    this.themeChanged(this.selectedTheme);
     this.activeLayer.visible = isChecked;
     this.isIdentifyDisabled = !this.isVisibleChecked;
-    // this.soilsDynamicLayer.visible = isChecked;
-    // this.isIdentifyDisabled = !isChecked;
-    // if (!isChecked && this.isIdentifyChecked) {
-    //   this.identifyCheckbox.nativeElement.checked = false;
-    //   this.soilsIdentifyChanged(false);
-    // }
-    // this.createSoilsIdentifyClickEvent(this.isIdentifyChecked);
   }
 
   queryRelatedFeaturesForGeology = (featureId:number, oid: number, pt: any) => {
@@ -146,7 +143,8 @@ export class MMPThemesComponent implements OnInit {
       })
   }
 
-  executeIdentifyTask = async (iTask: __esri.IdentifyTask, geometry: __esri.Geometry) => {
+  executeIdentifyTask = async (geometry: __esri.Geometry) => {
+    const iTask = new IdentifyTask(this.activeLayer.url);
     this.identifyParams.width = this.mapView.width;
     this.identifyParams.height = this.mapView.height;
     this.identifyParams.mapExtent = this.mapView.extent;
@@ -169,44 +167,55 @@ export class MMPThemesComponent implements OnInit {
     }
   }
 
+  identifySoils = (mapPoint: __esri.Point) => {
+    this.loaderService.isLoading.next(true);
+    this.soilsService.identifySoil(mapPoint, 'mmp').then((result) => {
+      const resulstTable = result.Table[0];
+      const mmpSoil: MMPSoil = new MMPSoil();
+      let index: number = 0;
+      for (const key of Object.keys(mmpSoil)) {
+        if (resulstTable[index] !== null) {
+          mmpSoil[key] = resulstTable[index];
+        }
+        index += 1;
+      }
+      this.mapView.popup.dockOptions = {
+        buttonEnabled: true,
+        position: 'top-left'
+      }
+      this.mapView.popup.open({
+        title: mmpSoil.musym,
+        location: mapPoint,
+        content: GetMMPSoilPopupContent(mmpSoil),
+        overwriteActions: true,
+        actions: []
+      });
+
+      this.loaderService.isLoading.next(false);
+    })
+  }
+
+  identifyVegetation = (mapPoint: __esri.Geometry) => {
+    console.log('vegetation', mapPoint)
+  }
+
   private createLayerIdentifyEvent (isChecked:boolean):void {
     if (isChecked && this.activeLayer.visible && this.identifyEvent === null) {
       this.identifyEvent = this.mapView.on('click', (evt: any) => {
         // const subLayer = this.activeLayer.findSublayerById(1);
-        const identifyTask = new IdentifyTask(this.activeLayer.url);
-        this.executeIdentifyTask(identifyTask, evt.mapPoint);
-
-        // const layerQuery: __esri.Query = subLayer.createQuery();
-        // layerQuery.geometry = evt.mapPoint;
-        // layerQuery.spatialRelationship = 'intersects'
-        // layerQuery.outFields = ['*'];
-
-        // subLayer.queryFeatures(layerQuery).then(d => {
-        // console.log(d);
-        // this.soilsService.identifySoil(evt.mapPoint, 'pmlo').then((result) => {
-        //   const resulstTable = result.Table[0];
-        //   const pmloSoil: PMLOSoil = new PMLOSoil();
-        //   let index: number = 0;
-        //   for (const key of Object.keys(pmloSoil)) {
-        //     if (resulstTable[index] !== null) {
-        //       pmloSoil[key] = resulstTable[index];
-        //     }
-        //     index += 1;
-        //   }
-        //   this.mapView.popup.dockOptions = {
-        //     buttonEnabled: true,
-        //     position: 'top-left'
-        //   }
-        //   this.mapView.popup.open({
-        //     title: pmloSoil.musym,
-        //     location: evt.mapPoint,
-        //     content: GetPMLOSoilPopupContent(pmloSoil),
-        //     overwriteActions: true,
-        //     actions: []
-        //   });
-
-        // this.loaderService.isLoading.next(false);
-        // })
+        switch (this.selectedTheme) {
+          case 'soils':
+            this.identifySoils(evt.mapPoint);
+            break;
+          case 'vegetation':
+            this.identifyVegetation(evt.mapPoint);
+            break;
+          case 'geology':
+            this.executeIdentifyTask(evt.mapPoint);
+            break;
+          default:
+            break;
+        }
       });
     } else if (!isChecked && this.identifyEvent !== null) {
       this.identifyEvent.remove();
