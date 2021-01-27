@@ -2,7 +2,7 @@ import { MMPSoil } from 'src/app/mapmyproperty/models/mmpSoil.model';
 import { PMLOSoil } from '../models/pmloSoil.model';
 
 const GetPMLOSoilPopupContent = (soil: PMLOSoil) => {
-  const ecoclassidUrl:string = 'https://edit.jornada.nmsu.edu/catalogs/esd/' + soil.ecoclassid.substring(1, 5) + '/' + soil.ecoclassid;
+  const ecoclassidUrl: string = 'https://edit.jornada.nmsu.edu/catalogs/esd/' + soil.ecoclassid.substring(1, 5) + '/' + soil.ecoclassid;
 
   const popupContent: string = `
       <div class="pmlo-popup-content">
@@ -108,7 +108,7 @@ const GetPMLOSoilPopupContent = (soil: PMLOSoil) => {
 }
 
 const GetMMPSoilPopupContent = (soil: MMPSoil) => {
-  const ecoclassidUrl:string = 'https://edit.jornada.nmsu.edu/catalogs/esd/' + soil.ecoclassid.substring(1, 5) + '/' + soil.ecoclassid;
+  const ecoclassidUrl: string = 'https://edit.jornada.nmsu.edu/catalogs/esd/' + soil.ecoclassid.substring(1, 5) + '/' + soil.ecoclassid;
 
   const popupContent: string = `
       <div class="pmlo-popup-content">
@@ -167,4 +167,53 @@ const GetMMPSoilPopupContent = (soil: MMPSoil) => {
   return popupContent;
 }
 
-export { GetPMLOSoilPopupContent, GetMMPSoilPopupContent }
+const GetMMPVegetationPopupContent = (vegAttr: any) => {
+  const _base = 'https://texasforestinfo.tamu.edu/mapmyproperty/';
+  const vegPDFURL: string = _base + vegAttr.VegTypePDF;
+  const subsysPDFURL: string = _base + vegAttr.SubSysPDF;
+
+  return `
+        <b>
+        <p class="mt-2 text-blue-500">${vegAttr.VegTypePDF !== '' ? '<a href="' + vegPDFURL + '" target="_blank" rel="noopener noreferrer">' + vegAttr.CommonName + '</a>' : '&mdash;'}</p>
+      </b>
+        <br>
+        <p class="mt-2"><b>System</b></p>
+        <p>${vegAttr.System}</p>
+
+        <p class="mt-2"><b>Subsystem</b></p>
+        <p class="text-blue-500">${vegAttr.SubSysPDF !== '' ? '<a href="' + subsysPDFURL + '" target="_blank" rel="noopener noreferrer">' + vegAttr.SubSystem + '</a>' : '&mdash;'}</p>
+
+  `
+}
+
+const GetMMPGeologyPopupContent = (attr: any) => {
+  return ` <p class="mt-2"><b>Rock Unit Name</b></p>
+  <p>${attr.LONG_NM}</p>
+
+  <p class="mt-2"><b>Rock Unit Code</b></p>
+  <p>${attr.ROCKUNIT_CD}</p>
+
+  <p class="mt-2"><b>Sheet Name</b></p>
+  <p>${attr.SHEET_NM}</p>
+
+  <p class="mt-2"><b>Period</b></p>
+  <p>${attr.Period}</p>
+
+  <p class="mt-2"><b>Epoch or Series</b></p>
+  <p>${attr.Epoch_or_Series}</p>
+
+  <p class="mt-2"><b>Group</b></p>
+  <p>${attr.Group_}</p>
+
+  <p class="mt-2"><b>Description</b></p>
+  <p>${attr.Description}</p>
+
+  <p class="mt-2"><b>Geo-Order Number</b></p>
+  <p>${attr.GEOORDER_NO}</p>
+  `
+}
+
+export {
+  GetPMLOSoilPopupContent, GetMMPSoilPopupContent,
+  GetMMPVegetationPopupContent, GetMMPGeologyPopupContent
+}

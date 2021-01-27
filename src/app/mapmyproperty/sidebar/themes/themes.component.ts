@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
+import { Point } from 'esri/geometry';
 import IdentifyTask from 'esri/tasks/IdentifyTask';
 import IdentifyParameters from 'esri/tasks/support/IdentifyParameters';
-import { GetMMPSoilPopupContent } from 'src/app/planmylandoperation/pmloUtils/popupContent';
+import { GetMMPGeologyPopupContent, GetMMPSoilPopupContent, GetMMPVegetationPopupContent } from 'src/app/planmylandoperation/pmloUtils/popupContent';
 import { SoilsService } from 'src/app/planmylandoperation/sidebar/soils/soils.service';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
@@ -23,10 +24,13 @@ export class MMPThemesComponent implements OnInit {
   isSoilsDisabled = true;
   selectedTheme: string = 'soils';
 
-  @Input() mapView: any;
-  transparency = 10;
+  @Input() mapView: __esri.MapView;
+  transparency = 0;
   transparencyChanged ($e) {
     this.transparency = $e;
+    if (this.selectedTheme === 'geology' || this.selectedTheme === 'vegetation') {
+      this.activeLayer.opacity = 1 - ($e / 100);
+    }
   }
 
   private identifyEvent: any = null;
@@ -68,7 +72,6 @@ export class MMPThemesComponent implements OnInit {
     layers.forEach(layer => {
       if (layer !== layerName) {
         const _ref = this.getLayerRef(layer);
-        console.log(_ref, layerName);
         if (typeof _ref !== 'undefined') {
           _ref.visible = false;
         }
@@ -102,6 +105,7 @@ export class MMPThemesComponent implements OnInit {
     }
     this.hideLayersExcept(theme + 'Layer');
     this.activeLayer.visible = this.isVisibleChecked;
+    if (this.mapView.popup.visible) this.mapView.popup.close();
   }
 
   themeVisibleChanged (isChecked: boolean) {
@@ -111,54 +115,33 @@ export class MMPThemesComponent implements OnInit {
     this.isIdentifyDisabled = !this.isVisibleChecked;
   }
 
-  queryRelatedFeaturesForGeology = (featureId:number, oid: number, pt: any) => {
+  queryRelatedFeaturesForGeology = (featureId:number, oid: number, geometry: any) => {
     this.http.get(`${this.appConfig.geologyMapServerURL}/${featureId}/queryRelatedRecords?f=json&relationshipid=1&returnGeometry=false&objectids=${oid}&outFields=*`)
       .subscribe((results: any) => {
-        console.log(results);
         if (results.relatedRecordGroups.length > 0) {
           const relatedRecords = results.relatedRecordGroups[0].relatedRecords;
           if (relatedRecords.length > 0) {
             const attr = relatedRecords[0].attributes;
-            const popupContent = `<b>Rock Unit Name: </b>${attr.LONG_NM}<br>
-            <b>Rock Unit Code:</b> ${attr.ROCKUNIT_CD}<br>
-            <b>Sheet Name: </b>${attr.SHEET_NM}<br>
-            <b>Period: </b>${attr.Period}<br>
-            <b>Epoch or Series: </b>${attr.Epoch_or_Series}<br>
-            <b>Group: </b>${attr.Group_}<br>
-            <b>Description: </b>${attr.Description}<br>
-            <b>Geo-Order Number: </b>${attr.GEOORDER_NO}`;
-            this.mapView.popup.dockOptions = {
-              buttonEnabled: true,
-              position: 'top-left'
-            }
-            this.mapView.popup.open({
-              title: attr.ROCKUNIT_CD,
-              content: popupContent,
-              location: pt,
-              overwriteActions: true,
-              actions: []
-            });
+            this.showPopup(attr.ROCKUNIT_CD, GetMMPGeologyPopupContent(attr), geometry);
           }
         }
       })
   }
 
-  executeIdentifyTask = async (geometry: __esri.Geometry) => {
+  identifyFeatures = async (geometry: __esri.Point) => {
+    this.loaderService.isLoading.next(true);
     const iTask = new IdentifyTask(this.activeLayer.url);
     this.identifyParams.width = this.mapView.width;
     this.identifyParams.height = this.mapView.height;
     this.identifyParams.mapExtent = this.mapView.extent;
     this.identifyParams.geometry = geometry;
     this.identifyParams.returnGeometry = false;
-    this.loaderService.isLoading.next(true);
+    this.identifyParams.layerOption = 'top:10' as any;
     try {
-      const iResults = await iTask.execute(this.identifyParams);
-      console.log(iResults);
-      if (iResults.results.length > 0) {
-        const oID = parseInt(iResults.results[0].feature.attributes.OBJECTID);
-        const layerId = iResults.results[0].layerId;
-        this.queryRelatedFeaturesForGeology(layerId, oID, geometry);
-        console.log(iResults.results[0].feature, iResults.results[0].layerId, iResults.results[0].feature.attributes.OBJECTID);
+      if (this.selectedTheme === 'geology') {
+        this.identifyGeology(iTask, geometry)
+      } else if (this.selectedTheme === 'vegetation') {
+        this.identifyVegetation(iTask, geometry)
       }
     } catch (err: any) {
       console.error(err);
@@ -179,42 +162,51 @@ export class MMPThemesComponent implements OnInit {
         }
         index += 1;
       }
-      this.mapView.popup.dockOptions = {
-        buttonEnabled: true,
-        position: 'top-left'
-      }
-      this.mapView.popup.open({
-        title: mmpSoil.musym,
-        location: mapPoint,
-        content: GetMMPSoilPopupContent(mmpSoil),
-        overwriteActions: true,
-        actions: []
-      });
-
-      this.loaderService.isLoading.next(false);
+      this.showPopup(mmpSoil.musym, GetMMPSoilPopupContent(mmpSoil), mapPoint)
     })
   }
 
-  identifyVegetation = (mapPoint: __esri.Geometry) => {
-    console.log('vegetation', mapPoint)
+  identifyVegetation = async (iTask: IdentifyTask, geometry: Point) => {
+    this.identifyParams.layerOption = 'top:0' as any;
+    const iResults = await iTask.execute(this.identifyParams);
+    if (iResults.results.length > 0) {
+      const attr = iResults.results[0].feature.attributes;
+      const _title = 'ID: ' + attr.VegID;
+      this.showPopup(_title, GetMMPVegetationPopupContent(attr), geometry);
+    }
+  }
+
+  showPopup = (popupTitle: string, popupContent: any, popupLocation: __esri.Point) => {
+    this.mapView.popup.dockOptions = {
+      buttonEnabled: true,
+      position: 'top-left'
+    }
+    this.mapView.popup.actions = null;
+    this.mapView.popup.open({
+      title: popupTitle,
+      location: popupLocation,
+      content: popupContent
+    });
+
+    this.loaderService.isLoading.next(false);
+  }
+
+  identifyGeology = async (iTask: IdentifyTask, geometry: Point) => {
+    const iResults = await iTask.execute(this.identifyParams);
+    if (iResults.results.length > 0) {
+      const oID = parseInt(iResults.results[0].feature.attributes.OBJECTID);
+      const layerId = iResults.results[0].layerId;
+      this.queryRelatedFeaturesForGeology(layerId, oID, geometry);
+    }
   }
 
   private createLayerIdentifyEvent (isChecked:boolean):void {
     if (isChecked && this.activeLayer.visible && this.identifyEvent === null) {
       this.identifyEvent = this.mapView.on('click', (evt: any) => {
-        // const subLayer = this.activeLayer.findSublayerById(1);
-        switch (this.selectedTheme) {
-          case 'soils':
-            this.identifySoils(evt.mapPoint);
-            break;
-          case 'vegetation':
-            this.identifyVegetation(evt.mapPoint);
-            break;
-          case 'geology':
-            this.executeIdentifyTask(evt.mapPoint);
-            break;
-          default:
-            break;
+        if (['vegetation', 'geology'].includes(this.selectedTheme)) {
+          this.identifyFeatures(evt.mapPoint);
+        } else {
+          this.identifySoils(evt.mapPoint);
         }
       });
     } else if (!isChecked && this.identifyEvent !== null) {
@@ -226,5 +218,6 @@ export class MMPThemesComponent implements OnInit {
   themeIdentifyChanged (isChecked: boolean) {
     this.isIdentifyChecked = isChecked;
     this.createLayerIdentifyEvent(isChecked);
+    if (this.mapView.popup.visible) this.mapView.popup.close();
   }
 }
