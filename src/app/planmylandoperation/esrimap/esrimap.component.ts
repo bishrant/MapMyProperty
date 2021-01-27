@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer, FindGraphicById, GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { CreateGeneralSketchViewModel, SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
@@ -22,20 +22,20 @@ import { Subscription } from 'rxjs';
 import { HelpService } from 'src/app/shared/services/help/help.service';
 import { HelpObj } from 'src/app/shared/services/help/HelpObj.model';
 import { InitializeArcGISWorkers } from 'src/app/shared/utils/ArcGISWorkersUtil';
-import { isMapViewActive } from 'src/app/shared/ScreenUtils';
 import { GraphicsStoreComponent } from 'src/app/shared/components/graphics-store/GraphicsStore.component';
 import { defaultPointCircleSymbol } from 'src/app/shared/utils/DefaultSymbols';
 import { ElevationProfileComponent } from '../sidebar/elevation-profile/elevation-profile.component';
 import { CulvertSizeComponent } from '../sidebar/culvert-size/culvert-size.component';
 import { SoilsComponent } from '../sidebar/soils/soils.component';
 import { reorderGraphicsLayer } from 'src/app/shared/utils/LayerUtils';
+import { ListenToKeyboard } from 'src/app/shared/utils/MapViewUtils';
 
 @Component({
   selector: 'pmlo-esrimap',
   templateUrl: './esrimap.component.html',
   styleUrls: ['./esrimap.component.scss']
 })
-export class EsrimapComponent implements OnInit, AfterViewInit {
+export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
@@ -75,22 +75,8 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
   helpItem = 'gettingStartedTour';
   savedData: any;
 
-  clearOtherPanelOnDrawOpen = () => {
-    if (this.elevationProfileComponent.isActive) {
-      this.elevationProfileComponent.cleanup();
-    }
-    if (this.culvertSizeComponent.isActive) {
-      this.culvertSizeComponent.cleanup();
-    }
-  }
-
-  closeOtherPanels = ((panelTitle: string) => {
-    const panelToOpen: AccordionPanelComponent[] = this.accordionPanels.filter((panel: any) => panel.panelTitle === panelTitle);
-    if (panelToOpen.length > 0) {
-      panelToOpen[0].toggleOthers();
-      this.clearOtherPanelOnDrawOpen();
-    }
-  });
+  keyboardSub$: any;
+  graphicsStoreSub$: Subscription;
 
   constructor (
     private store: Store<AppState>,
@@ -100,35 +86,35 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
     private esrimapService: EsrimapService,
     private notificationsService: NotificationsService,
     private accordionPanelService: AccordionPanelService,
-    private helpService: HelpService
+    private helpService: HelpService,
+    private renderer: Renderer2
   ) { }
 
-  checkIfSavedGraphicsExists () {
-    this.savedData = getSavedState();
-    if (this.savedData) {
-      if (this.savedData.length > 0) {
-        this.sessionModal.show();
-      }
-      this.listenToGraphicsStore();
-    } else {
-      this.listenToGraphicsStore();
-    }
+  ngAfterViewInit (): void {
+    setTimeout(() => this.closeOtherPanels('Draw'), 100);
+    this.keyboardSub$ = ListenToKeyboard(this.graphicsStoreEl, this.mapViewEl, this.renderer)
   }
 
-  graphicsStoreSub: Subscription;
+  ngOnDestroy (): void {
+    if (this.keyboardSub$) this.keyboardSub$();
+    if (this.graphicsStoreSub$) this.graphicsStoreSub$.unsubscribe();
+  }
 
-  listenToGraphicsStore () {
+  /* session management */
+  checkIfSavedGraphicsExists = () => {
+    this.savedData = getSavedState();
+    if (this.savedData && this.savedData.length > 0) {
+      this.sessionModal.show();
+    }
+    this.listenToGraphicsStore();
+  }
+
+  listenToGraphicsStore = () => {
     const graphics$ = this.store.select((state) => state.app.graphics);
-    if (this.graphicsStoreSub) { this.graphicsStoreSub.unsubscribe() }
-    this.graphicsStoreSub = graphics$.subscribe((g: any) => {
+    if (this.graphicsStoreSub$) { this.graphicsStoreSub$.unsubscribe() }
+    this.graphicsStoreSub$ = graphics$.subscribe((g: any) => {
       setSavedState(g);
     });
-  }
-
-  ngAfterViewInit (): void {
-    setTimeout(() => {
-      this.closeOtherPanels('Draw');
-    }, 100);
   }
 
   restoreSession (e: any) {
@@ -144,48 +130,19 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
     this.listenToGraphicsStore();
   }
 
-  @HostListener('keydown.control.z') undoFromKeyboard (): void {
-    if (isMapViewActive()) { this.graphicsStoreEl.undo(); }
-  }
-
-  @HostListener('keydown.control.y') redoFromKeyboard (): void {
-    if (isMapViewActive()) { this.graphicsStoreEl.redo(); }
-  }
-
-  @HostListener('document:keydown.delete') deleteFromKeyboard (): void {
-    if (isMapViewActive()) { this.graphicsStoreEl.delete(); }
-  }
-
-  @HostListener('keydown.meta.shift.z') redoFromKeyboardMac (): void {
-    if (isMapViewActive()) { this.graphicsStoreEl.redo(); }
-  }
-
-  @HostListener('keydown.meta.z') undoFromKeyboardMac (): void {
-    if (isMapViewActive()) { this.graphicsStoreEl.undo(); }
-  }
-
-  showCoordinates = (pt: any) => {
+  /* map events and initializers */
+  showCoordinates = () => {
+    const pt = this.mapView.center;
     this.mapCoords = 'Lat: ' + pt.latitude.toFixed(5) + ' &nbsp; Long: ' + pt.longitude.toFixed(5);
   };
 
   private setMapEvents = () => {
     if (this.mapView) {
-      this.mapView.watch('stationary', () => {
-        this.showCoordinates(this.mapView.center);
-      });
-
-      this.mapView.watch('scale', (value) => {
-        this.mapViewService.pushMapScale(value);
-      });
-
-      this.mapView.on('pointer-move', (evt: any) => {
-        this.showCoordinates(this.mapView.toMap({ x: evt.x, y: evt.y }));
-      });
-
+      this.mapView.watch('stationary', this.showCoordinates);
+      this.mapView.on('pointer-move', this.showCoordinates);
+      this.mapView.watch('scale', (value) => this.mapViewService.pushMapScale(value));
       this.mapView.when(() => {
-        setTimeout(() => {
-          this.checkIfSavedGraphicsExists();
-        }, 2000);
+        setTimeout(() => this.checkIfSavedGraphicsExists(), 2000);
       })
     }
   };
@@ -198,6 +155,13 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
 
       const soilsLayer: __esri.WMSLayer = CreateSoilsLayer('soilsDynamicLayer', this.appConfig.ssurgoWMSURL);
       this.mapView.map.addMany([soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer, this.generalGraphicsLayer]);
+
+      this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
+      this.generalSketchVM = CreateGeneralSketchViewModel(this.generalGraphicsLayer, this.mapView);
+      this.sketchVM.updatePointSymbol = defaultPointCircleSymbol;
+      this.sketchVM.activePointSymbol = defaultPointCircleSymbol;
+      this.setMapEvents();
+
       this.mapView.whenLayerView(this.polygonGraphicsLayer).then((boundaryLayerView) => {
         boundaryLayerView.watch('updating', (val) => {
           if (val) {
@@ -223,12 +187,6 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
           }
         });
       });
-      this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
-      this.generalSketchVM = CreateGeneralSketchViewModel(this.generalGraphicsLayer, this.mapView);
-      this.sketchVM.updatePointSymbol = defaultPointCircleSymbol;
-      this.sketchVM.activePointSymbol = defaultPointCircleSymbol;
-
-      this.setMapEvents();
     } catch (error) {
       console.error('Map load error ', error);
     }
@@ -290,4 +248,22 @@ export class EsrimapComponent implements OnInit, AfterViewInit {
       this.helpModal.show();
     });
   }
+
+  /* handle panel open/close interactions */
+  clearOtherPanelOnDrawOpen = () => {
+    if (this.elevationProfileComponent.isActive) {
+      this.elevationProfileComponent.cleanup();
+    }
+    if (this.culvertSizeComponent.isActive) {
+      this.culvertSizeComponent.cleanup();
+    }
+  }
+
+  closeOtherPanels = ((panelTitle: string) => {
+    const panelToOpen: AccordionPanelComponent[] = this.accordionPanels.filter((panel: any) => panel.panelTitle === panelTitle);
+    if (panelToOpen.length > 0) {
+      panelToOpen[0].toggleOthers();
+      this.clearOtherPanelOnDrawOpen();
+    }
+  });
 }

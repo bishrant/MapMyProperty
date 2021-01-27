@@ -10,49 +10,70 @@
         d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"></path></svg>
       </button>
 
-    <app-accordion>
-      <app-accordion-panel #drawAccPanel panelTitle="Draw">
-        <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
-        [geomLabelsSketchVM]= "geomLabelsSketchVM" [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer"
-        [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer" [polygonGraphicsLayer]="polygonGraphicsLayer">
-        </app-drawtools>
-      </app-accordion-panel>
+      <app-accordion>
+        <app-accordion-panel #drawAccPanel panelTitle="Draw">
+          <app-drawtools [sketchVM]="sketchVM" [mapView]="mapView" [textGraphicsLayer]="textGraphicsLayer"
+            [geomLabelsSketchVM]="geomLabelsSketchVM" [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer"
+            [geomLabelsGraphicsLayer]="geomLabelsGraphicsLayer" [polygonGraphicsLayer]="polygonGraphicsLayer"
+            [generalSketchVM]="generalSketchVM"
+            >
+          </app-drawtools>
+        </app-accordion-panel>
 
-      <app-accordion-panel panelTitle="Themes">
-        <app-mmp-themes [mapView]="mapView">
-        </app-mmp-themes>
-      </app-accordion-panel>
+         <app-accordion-panel #themesAccPanel panelTitle="Themes">
+          <app-mmp-themes [mapView]="mapView"></app-mmp-themes>
+        </app-accordion-panel>
 
-      <app-accordion-panel panelTitle="Import | Export">
-        <app-import-export [mapView]="mapView"></app-import-export>
-      </app-accordion-panel>
+        <app-accordion-panel #importExportAccPanel panelTitle="Import | Export">
+          <app-import-export [mapView]="mapView"></app-import-export>
+        </app-accordion-panel>
 
-      <app-accordion-panel panelTitle="Export Map to PDF">
-        <app-print-tool [mapView]="mapView" [sketchVM]="sketchVM"></app-print-tool>
-      </app-accordion-panel>
-    </app-accordion>
+        <app-accordion-panel #exportMapAccPanel panelTitle="Export Map to PDF">
+          <app-print-tool [mapView]="mapView" [sketchVM]="sketchVM"></app-print-tool>
+        </app-accordion-panel>
+
+      </app-accordion>
+
+      <app-site-policies></app-site-policies>
   </div>
 
 </div>
 <div class="mapBlanket">
   <div class="headerBlanket hidden md:block">
     <div class="header headerRow secondary">
-      <div #searchBar></div>
+      <div class="flex items-center">
+        <div #searchBar class="mr-2"></div>
+        <app-help-button [header]="'Find Location'" [itemName]="'search'" [fillColor]="'white'"></app-help-button>
+      </div>
       <div class="coordsDisplay hidden md:inline">
         Mouse Coordinates [ <span [innerHTML]="mapCoords"></span> ]
-
-        <div id="widgetDiv" class="esri-widget"></div>
       </div>
     </div>
   </div>
-  <div class="translucentPadding mapViewNodeBlanket">
+  <div class="translucentPadding mapViewNodeBlanket pmloMap">
     <div #mapViewNode class="mapViewNode " id="parent">
       <div id="textboxes"></div>
       <app-basemap-widget [mapView]="mapView"></app-basemap-widget>
+      <app-overlay-layers-widget [mapView]="mapView" [colorPrefix]="'pmlo'"></app-overlay-layers-widget>
       <app-swipe-widget [mapView]="mapView"></app-swipe-widget>
+      <app-measurement-widget [mapView]="mapView"></app-measurement-widget>
+      <app-scale-text></app-scale-text>
     </div>
     <app-graphic-store #graphicsStore [sketchVM]="sketchVM" [textGraphicsLayer]="textGraphicsLayer"
       class="graphicsControls">
     </app-graphic-store>
   </div>
 </div>
+
+<app-modal class="pmloModal sessionModal" #sessionModal [maximizable]="false" [inViewport]="true" (closeModal)="restoreSession(null)">
+  <ng-container class="app-modal-header">Restore previous session?</ng-container>
+  <ng-container class="app-modal-body">
+    This application was closed while you had some drawings. <br> Would you like to restore those drawings?
+    <br><br>
+    <div class="sessionBtns">
+      <button (click)="restoreSession(true)" class="pmlo-btn pmlo-secondary sessionBtn py-2 px-4">Restore</button>
+      <button (click)="restoreSession(false)" class="pmlo-btn pmlo-secondary sessionBtn py-2 px-4">Start New</button>
+    </div>
+  </ng-container>
+
+</app-modal>
