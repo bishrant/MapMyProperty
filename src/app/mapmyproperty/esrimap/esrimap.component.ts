@@ -1,64 +1,103 @@
 
-import { Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
-import { SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
+import { CreateGeneralSketchViewModel, SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
 import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
 import { createMapView } from 'src/app/shared/utils/CreateMapView';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import { AccordionPanelComponent } from 'src/app/shared/components/accordion-panel/accordion-panel.component';
 import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.service';
-import { isMapViewActive } from 'src/app/shared/ScreenUtils';
 import { GraphicsStoreComponent } from 'src/app/shared/components/graphics-store/GraphicsStore.component';
+import { Subscription } from 'rxjs';
+import { ListenToKeyboard } from 'src/app/shared/utils/MapViewUtils';
+import { addGraphics } from 'src/app/shared/store/graphics.actions';
+import { getSavedState, setSavedState, clearLocalStorage } from 'src/app/shared/store/storage.metareducer';
+import { ModalComponent } from 'src/app/shared/lib/angular-modal/modal/modal.component';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/shared/store/graphics.state';
+import { MapviewService } from 'src/app/shared/services/mapview.service';
+import { InitializeArcGISWorkers } from 'src/app/shared/utils/ArcGISWorkersUtil';
+import { reorderGraphicsLayer } from 'src/app/shared/utils/LayerUtils';
+import { defaultPointCircleSymbol } from 'src/app/shared/utils/DefaultSymbols';
 
 @Component({
   selector: 'app-esrimap',
   templateUrl: './esrimap.component.html',
   styleUrls: ['./esrimap.component.scss']
 })
-export class EsrimapComponent implements OnInit {
+export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(AccordionPanelComponent) accordionPanels: QueryList<AccordionPanelComponent>;
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
+  @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
+  @ViewChild('sessionModal') sessionModal: ModalComponent;
 
   mapView!: __esri.MapView;
   clickToAddText = false;
   sketchVM: any = new SketchViewModel();
+  generalSketchVM: __esri.SketchViewModel;
   selectedGraphics!: any[] | undefined;
   sidebarVisible = window.innerWidth > 640;
   mapCoords: any;
 
   geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
   geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: 'geomlabels' });
-  polygonGraphicsLayer: GraphicsLayer = CreatePolygonGraphicsLayer();
+  polygonGraphicsLayer: __esri.GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
+  generalGraphicsLayer = CreatePolygonGraphicsLayer('generalGraphicsLayer');
 
-  @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
+  notificationHeader = '';
+  notificationBody = '';
+  helpHeader = 'Getting Started Tour';
+  helpItem = 'gettingStartedTour';
+  savedData: any;
 
-  constructor (private esrimapService: EsrimapService) { }
+  keyboardSub$: any;
+  graphicsStoreSub$: Subscription;
 
-  @HostListener('keydown.control.z') undoFromKeyboard (): void {
-    if (isMapViewActive()) { this.graphicsStoreEl.undo(); }
+  constructor (private store: Store<AppState>, private esrimapService: EsrimapService,
+    private mapViewService: MapviewService,
+    private renderer: Renderer2) { }
+
+  ngAfterViewInit (): void {
+    setTimeout(() => this.closeOtherPanels('Draw'), 100);
+    this.keyboardSub$ = ListenToKeyboard(this.graphicsStoreEl, this.mapViewEl, this.renderer)
   }
 
-  @HostListener('keydown.control.y') redoFromKeyboard (): void {
-    if (isMapViewActive()) { this.graphicsStoreEl.redo(); }
+  ngOnDestroy (): void {
+    if (this.keyboardSub$) this.keyboardSub$();
+    if (this.graphicsStoreSub$) this.graphicsStoreSub$.unsubscribe();
   }
 
-  @HostListener('document:keydown.delete') deleteFromKeyboard (): void {
-    if (isMapViewActive()) { this.graphicsStoreEl.delete(); }
+  /* session management */
+  checkIfSavedGraphicsExists = () => {
+    this.savedData = getSavedState();
+    if (this.savedData && this.savedData.length > 0) {
+      this.sessionModal.show();
+    }
+    this.listenToGraphicsStore();
   }
 
-  @HostListener('keydown.meta.shift.z') redoFromKeyboardMac (): void {
-    if (isMapViewActive()) { this.graphicsStoreEl.redo(); }
+  listenToGraphicsStore = () => {
+    const graphics$ = this.store.select((state) => state.app.graphics);
+    if (this.graphicsStoreSub$) { this.graphicsStoreSub$.unsubscribe() }
+    this.graphicsStoreSub$ = graphics$.subscribe((g: any) => {
+      setSavedState(g);
+    });
   }
 
-  @HostListener('keydown.meta.z') undoFromKeyboardMac (): void {
-    if (isMapViewActive()) { this.graphicsStoreEl.undo(); }
+  restoreSession (e: any) {
+    if (e !== null) this.sessionModal.hide();
+    if (e) {
+      this.store.dispatch(addGraphics({ graphics: this.savedData }));
+      setTimeout(() => {
+        this.mapView.goTo(this.polygonGraphicsLayer.graphics);
+      }, 500);
+    } else {
+      clearLocalStorage();
+    }
+    this.listenToGraphicsStore();
   }
-
-  showCoordinates = (pt: any) => {
-    this.mapCoords = 'Lat: ' + pt.latitude.toFixed(5) + ' &nbsp; Long: ' + pt.longitude.toFixed(5);
-  };
 
   closeOtherPanels = ((panelTitle: string): void => {
     const panelToOpen: AccordionPanelComponent[] = this.accordionPanels.filter((panel: any) => panel.title === panelTitle);
@@ -70,42 +109,36 @@ export class EsrimapComponent implements OnInit {
     this.esrimapService.closeAllPanelsExcept.subscribe((panelTitle: string) => this.closeOtherPanels(panelTitle));
   }
 
-  private showMapCoordinates = () => {
-    if (this.mapView) {
-      this.mapView.watch('stationary', () => {
-        this.showCoordinates(this.mapView.center);
-      });
+  /* map events and initializers */
+  showCoordinates = () => {
+    const pt = this.mapView.center;
+    this.mapCoords = 'Lat: ' + pt.latitude.toFixed(5) + ' &nbsp; Long: ' + pt.longitude.toFixed(5);
+  };
 
-      this.mapView.on('pointer-move', (evt: any) => {
-        this.showCoordinates(this.mapView.toMap({ x: evt.x, y: evt.y }));
-      });
+  private setMapEvents = () => {
+    if (this.mapView) {
+      this.mapView.watch('stationary', this.showCoordinates);
+      this.mapView.on('pointer-move', this.showCoordinates);
+      this.mapView.watch('scale', (value) => this.mapViewService.pushMapScale(value));
+      this.mapView.when(() => {
+        setTimeout(() => this.checkIfSavedGraphicsExists(), 2000);
+      })
     }
   };
 
   private initializeMap = async () => {
     try {
+      InitializeArcGISWorkers();
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
-      this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer]);
+      reorderGraphicsLayer(this.mapView.map);
+
+      this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer, this.generalGraphicsLayer]);
+
       this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
-      const p = {
-        type: 'simple-marker',
-        style: 'circle',
-        color: 'cyan',
-        size: '20px',
-        outline: {
-          color: [0, 0, 0],
-          width: 1
-        }
-      };
-      this.sketchVM.updatePointSymbol = p;
-      this.sketchVM.activePointSymbol = p;
-      this.showMapCoordinates();
-      this.mapView.on('layerview-create-error', (ee) => {
-        const error = new Error();
-        error.message = ee.error.message;
-        error.name = ee.error.name;
-        throw error;
-      });
+      this.generalSketchVM = CreateGeneralSketchViewModel(this.generalGraphicsLayer, this.mapView);
+      this.sketchVM.updatePointSymbol = defaultPointCircleSymbol;
+      this.sketchVM.activePointSymbol = defaultPointCircleSymbol;
+      this.setMapEvents();
     } catch (error) {
       console.error('Map load error ', error);
     }

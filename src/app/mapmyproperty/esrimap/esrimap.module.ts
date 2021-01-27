@@ -10,12 +10,22 @@ import { MMPThemesModule } from '../sidebar/themes/themes.module';
 import { BasemapWidgetModule } from 'src/app/shared/components/basemap-widget/basemap-widget.module';
 import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-widget.module';
 import { GraphicsStoreModule } from 'src/app/shared/components/graphics-store/GraphicsStore.module';
+import { HelpbuttonModule } from 'src/app/shared/components/help-button/help-button.module';
+import { SitePoliciesModule } from 'src/app/shared/components/site-policies/site-policies.module';
+import { OverlayLayersWidgetModule } from 'src/app/shared/components/overlay-layers-widget/overlay-layers-widget.module';
+import { MeasurementWidgetModule } from 'src/app/shared/components/measurement-widget/measurement-widget.module';
+import { ScaleTextModule } from 'src/app/shared/components/scale-text/scale-text.module';
+import { ModalModule } from 'src/app/shared/lib/angular-modal/modal/modal-module';
 
 @NgModule({
   declarations: [EsrimapComponent],
   imports: [CommonModule, GraphicsStoreModule, DrawtoolsModule,
     SliderModule, MMPThemesModule,
-    ImportExportModule, PrintToolModule, AccordionPanelModule, BasemapWidgetModule, SwipeWidgetModule],
+    ImportExportModule, PrintToolModule, AccordionPanelModule, BasemapWidgetModule, SwipeWidgetModule,
+    SitePoliciesModule, HelpbuttonModule, OverlayLayersWidgetModule,
+    MeasurementWidgetModule, ScaleTextModule, ModalModule
+
+  ],
   exports: [EsrimapComponent]
 })
-export class EsriMapModule {}
+export class EsriMapModule { }

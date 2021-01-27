@@ -444,7 +444,6 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.sketchVM.state === 'active') return;
       if (this.generalSketchVM.state === 'active') return;
 
-
       if (this.sketchVM.state === 'disabled') return;
       if (this.generalSketchVM.layer.graphics.length > 0) return;
 
