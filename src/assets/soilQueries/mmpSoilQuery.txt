@@ -1,0 +1,193 @@
+~DeclareVarchar(@mukey,30)~
+SELECT @mukey = (select * from SDA_Get_Mukey_from_intersection_with_WktWgs84('point(zzLon zzLat)'))
+
+-------------------------------------------------------------------------------------------------------------
+--Retrieves basic attributes available straight form muaggatt and coecoclass tables into temp table #muaggatt
+SELECT muaggatt.mukey
+, muaggatt.musym
+, muaggatt.muname
+, muaggatt.slopegradwta
+, muaggatt.forpehrtdcp
+, muaggatt.flodfreqdcd
+, muaggatt.drclassdcd
+, muaggatt.hydclprs
+INTO #muaggatt
+FROM muaggatt
+WHERE muaggatt.mukey = @mukey
+-----------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------------
+--Retrieves ecological class for mapping unit for highest percentage component
+SELECT maxpc.mukey, coecoclass.ecoclassid, coecoclass.ecoclassname
+INTO #ec
+FROM coecoclass
+INNER JOIN
+       (SELECT component.mukey, component.cokey, component.comppct_r
+       FROM component
+       INNER JOIN
+              (SELECT component.mukey, MAX(component.comppct_r) as maxcomppct
+              FROM component
+              GROUP BY component.mukey) groupedcomponent
+       ON component.mukey = groupedcomponent.mukey
+       AND component.comppct_r = groupedcomponent.maxcomppct
+       WHERE component.mukey = @mukey) maxpc
+ON coecoclass.cokey = maxpc.cokey
+WHERE maxpc.mukey = @mukey
+-----------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------
+--Retrieves the site index and species name for the species having the greatest site index for dominant
+--components for a mapping unit
+
+SELECT qmaxsi.mukey, qmaxsi.cokey, coforprod.plantcomname, qmaxsi.maxsi
+INTO #ssi
+FROM
+coforprod
+INNER JOIN
+       (SELECT maxpc.mukey, maxpc.cokey, MAX(coforprod.siteindex_r) as maxsi
+       FROM coforprod
+       INNER JOIN
+              (SELECT component.mukey, component.cokey
+              FROM component
+              INNER JOIN
+                     (SELECT component.mukey, MAX(component.comppct_r) as maxcomppct
+                     FROM component
+                     GROUP BY component.mukey) groupedcomponent
+              ON component.mukey = groupedcomponent.mukey
+              AND component.comppct_r = groupedcomponent.maxcomppct
+              WHERE component.mukey = @mukey) maxpc
+       ON coforprod.cokey = maxpc.cokey
+       WHERE maxpc.mukey = @mukey
+       GROUP BY maxpc.mukey, maxpc.cokey) qmaxsi
+ON coforprod.cokey = qmaxsi.cokey AND coforprod.siteindex_r = qmaxsi.maxsi
+---------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------
+--Retrieves weighted average of highest forest productivity for map unit (weighted by component area)
+SELECT subq3fp.mukey, sum(subq3fp.fpa) AS fpa
+INTO #fp
+FROM
+       (SELECT component.mukey
+       , component.cokey
+       , 1.0*component.comppct_r/subq2fp.tcp*max(coforprod.fprod_r) as fpa
+       FROM component INNER JOIN coforprod ON component.cokey = coforprod.cokey
+       INNER JOIN
+              (SELECT subq1fp.mukey
+              , sum(subq1fp.comppct_r) AS tcp
+              FROM
+                     (SELECT component.mukey
+                     , component.cokey
+                     , component.comppct_r
+                     , max(coforprod.fprod_r) AS fp
+                     FROM component
+                     INNER JOIN coforprod ON component.cokey = coforprod.cokey
+                     WHERE component.mukey = @mukey AND coforprod.fprod_r > 0.0
+                     GROUP BY component.mukey, component.cokey, component.comppct_r) subq1fp
+              GROUP BY subq1fp.mukey) subq2fp
+       ON component.mukey = subq2fp.mukey
+       WHERE coforprod.fprod_r > 0.0
+       GROUP BY component.mukey, component.cokey, component.comppct_r, subq2fp.tcp) subq3fp
+GROUP BY subq3fp.mukey
+----------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------
+--Retrieves weighted average of highest range productivity for map unit (weighted by component area)
+SELECT subq3rp.mukey, sum(subq3rp.rpa) AS rpa
+INTO #rp
+FROM
+       (SELECT component.mukey
+       , component.cokey
+       , 1.0*component.comppct_r/subq2rp.tcp*max(component.rsprod_r) as rpa
+       FROM component
+       INNER JOIN
+              (SELECT subq1rp.mukey
+              , sum(subq1rp.comppct_r) AS tcp
+              FROM
+                     (SELECT component.mukey
+                     , component.cokey
+                     , component.comppct_r
+                     , max(component.rsprod_r) AS rp
+                     FROM component
+                     WHERE component.mukey = @mukey AND component.rsprod_r IS NOT NULL
+                     GROUP BY component.mukey, component.cokey, component.comppct_r) subq1rp
+              GROUP BY subq1rp.mukey) subq2rp
+       ON component.mukey = subq2rp.mukey
+       WHERE component.rsprod_r IS NOT NULL
+       GROUP BY component.mukey, component.cokey, component.comppct_r, subq2rp.tcp) subq3rp
+GROUP BY subq3rp.mukey
+----------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------
+--Retrieves pH(H2O) & pH(CaCl) for top horizon of largest component
+SELECT maxpc.mukey, CAST(FORMAT(chorizon.ph1to1h2o_r, '##.#') AS varchar) AS pH
+INTO #ph
+FROM chorizon
+INNER JOIN
+(SELECT component.mukey, component.cokey, component.comppct_r
+       FROM component
+       INNER JOIN
+              (SELECT component.mukey, MAX(component.comppct_r) as maxcomppct
+              FROM component
+              GROUP BY component.mukey) groupedcomponent
+       ON component.mukey = groupedcomponent.mukey
+       AND component.comppct_r = groupedcomponent.maxcomppct
+       WHERE component.mukey = @mukey) maxpc
+ON chorizon.cokey = maxpc.cokey
+WHERE chorizon.hzdept_r = 0
+----------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------
+--This select statement retrieves version information for the SSURGO data
+SELECT CONCAT ( 'v', CONVERT(VARCHAR(3), sacatalog.saversion), ', ', CONVERT(VARCHAR(12), sacatalog.saverest, 107)) AS saversion
+, CONCAT ( 'v', CONVERT(VARCHAR(3), satabularver.tabularversion), ', ', CONVERT(VARCHAR(12), satabularver.tabularverest, 107)) AS tabularversion
+, CONCAT ( 'v', CONVERT(VARCHAR(3), saspatialver.spatialversion), ', ', CONVERT(VARCHAR(12), saspatialver.spatialverest, 107)) AS spatialversion
+, mapunit.mukey
+INTO #v
+FROM sacatalog
+INNER JOIN saspatialver ON sacatalog.areasymbol = saspatialver.areasymbol
+INNER JOIN satabularver ON sacatalog.areasymbol= satabularver.areasymbol
+INNER JOIN legend ON sacatalog.areasymbol= legend.areasymbol
+INNER JOIN mapunit ON legend.lkey = mapunit.lkey
+WHERE mapunit.mukey IN (@mukey)
+----------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------
+--This select statement joins all the temporary tables.
+SELECT #muaggatt.mukey
+, #muaggatt.musym
+, #muaggatt.muname
+, FORMAT(#muaggatt.slopegradwta, '##0.#') AS slopgradwta
+, #muaggatt.forpehrtdcp
+, #muaggatt.flodfreqdcd
+, #muaggatt.drclassdcd
+, #muaggatt.hydclprs
+, #ph.pH
+, #ec.ecoclassid
+, #ec.ecoclassname
+, #ssi.maxsi AS si
+, #ssi.plantcomname
+, FORMAT(#fp.fpa, '###.#') AS fpa
+, FORMAT(#rp.rpa, '####') as rpa
+, #v.saversion
+, #v.tabularversion
+, #v.spatialversion
+FROM
+#muaggatt
+LEFT JOIN #fp ON #muaggatt.mukey = #fp.mukey
+LEFT JOIN #rp ON #muaggatt.mukey = #rp.mukey
+LEFT JOIN #ec ON #muaggatt.mukey = #ec.mukey
+LEFT JOIN #ph ON #muaggatt.mukey = #ph.mukey
+LEFT JOIN #ssi ON #muaggatt.mukey = #ssi.mukey
+LEFT JOIN #v ON #muaggatt.mukey = #v.mukey
+----------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------
+--These statements delete all the temporary tables.
+DROP TABLE #muaggatt
+DROP Table #fp
+DROP TABLE #rp
+DROP TABLE #ec
+DROP TABLE #ph
+DROP TABLE #ssi
+DROP TABLE #v
+----------------------------------------------------------------------------------------------------------
