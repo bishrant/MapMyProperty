@@ -1,8 +1,6 @@
 <div class="py-3 relative">
   <app-help-button [header]="'Map Themes'" [itemName]="'themes'"></app-help-button> <br />
-
-  <br />
-  <div class="themesBody">
+  <div>
     <div>
       <input
         id="soilsTheme"
@@ -30,11 +28,11 @@
         [(ngModel)]="selectedTheme"
         (change)="themeChanged('geology')"
       />
-      <label for="geologyTheme">TX Geology</label><br /><br />
-      {{ selectedTheme }}
+      <label for="geologyTheme">TX Geology</label><br />
+
     </div>
 
-    <div class="row prl-10">
+    <div class="row prl-10 mt-8">
       <label class="inline-flex cursor-pointer" [ngClass]="{ checkboxDisabled: isVisibleDisabled }">
         <input
           type="checkbox"
@@ -60,7 +58,14 @@
       </label>
     </div>
 
-    Transparency {{ transparency }}%
-    <app-slider [value]="transparency" (onChange)="transparencyChanged($event)"></app-slider>
+
+      <div class="pt-3">Transparency: {{transparency}}%</div>
+  <div class="flex justify-between items-baseline pb-1">
+    <div>0</div>
+    <app-slider [value]="transparency" (onChange)="transparencyChanged($event)" [min]="0" [max]="100" [steps]="5"
+      class="transparencySlider">
+    </app-slider>
+    <div>100</div>
+
   </div>
 </div>
