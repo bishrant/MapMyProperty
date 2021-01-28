@@ -1,0 +1,34 @@
+th {
+  position: relative;
+  background-color: #eeeeee;
+}
+th span {
+  position: absolute;
+  right: 0.125em;
+}
+
+.greyColor {
+  color: #d3d3d3;
+}
+
+table {
+  font-size: 0.875em;
+  min-width: 33.125em;
+  width: 100%;
+}
+
+tr {
+  border: 0.125em solid #dddddd;
+}
+
+.footerNote {
+  font-size: 0.625em;
+}
+
+.selectedSoil {
+  background-color: #007fff;
+  color: white;
+}
+.sortIcon{
+width: 0.625em;
+}

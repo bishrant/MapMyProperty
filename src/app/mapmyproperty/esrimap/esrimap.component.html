@@ -65,6 +65,7 @@
   </div>
 </div>
 
+
 <app-modal class="pmloModal sessionModal" #sessionModal [maximizable]="false" [inViewport]="true" (closeModal)="restoreSession(null)">
   <ng-container class="app-modal-header">Restore previous session?</ng-container>
   <ng-container class="app-modal-body">
@@ -76,4 +77,13 @@
     </div>
   </ng-container>
 
+</app-modal>
+
+
+<app-modal class="pmloModal pmloSoilsTable" #vegetationTableModal [maximizable]="false" [backdrop]="false"
+  [inViewport]="true">
+  <ng-container class="app-modal-header">Vegetation within property boundary</ng-container>
+  <ng-container class="app-modal-body">
+    <mmp-vegetation-table></mmp-vegetation-table>
+  </ng-container>
 </app-modal>

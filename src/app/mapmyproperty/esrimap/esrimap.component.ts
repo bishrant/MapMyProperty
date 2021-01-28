@@ -19,6 +19,8 @@ import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { InitializeArcGISWorkers } from 'src/app/shared/utils/ArcGISWorkersUtil';
 import { reorderGraphicsLayer } from 'src/app/shared/utils/LayerUtils';
 import { defaultPointCircleSymbol } from 'src/app/shared/utils/DefaultSymbols';
+import { SubscriptionCollection, serialUnsubscriber } from 'src/app/shared/utils/SubscriptionUtils';
+import { MMPModalWindowService } from 'src/app/shared/services/MMPModalWindow.service';
 
 @Component({
   selector: 'app-esrimap',
@@ -31,6 +33,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('searchBar', { static: true }) private searchBarDiv!: ElementRef;
   @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
   @ViewChild('sessionModal') sessionModal: ModalComponent;
+  @ViewChild('vegetationTableModal') vegetationTableModal: ModalComponent;
 
   mapView!: __esri.MapView;
   clickToAddText = false;
@@ -54,19 +57,15 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   keyboardSub$: any;
   graphicsStoreSub$: Subscription;
+  private subscriptions: SubscriptionCollection = {};
 
   constructor (private store: Store<AppState>, private esrimapService: EsrimapService,
-    private mapViewService: MapviewService,
+    private mapViewService: MapviewService, private mmpModalWindowService: MMPModalWindowService,
     private renderer: Renderer2) { }
 
   ngAfterViewInit (): void {
     setTimeout(() => this.closeOtherPanels('Draw'), 100);
-    this.keyboardSub$ = ListenToKeyboard(this.graphicsStoreEl, this.mapViewEl, this.renderer)
-  }
-
-  ngOnDestroy (): void {
-    if (this.keyboardSub$) this.keyboardSub$();
-    if (this.graphicsStoreSub$) this.graphicsStoreSub$.unsubscribe();
+    this.keyboardSub$ = ListenToKeyboard(this.graphicsStoreEl, this.mapViewEl, this.renderer);
   }
 
   /* session management */
@@ -126,6 +125,16 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   };
 
+  private startSubscriptions = () => {
+    this.subscriptions.showTableModal = this.mmpModalWindowService.modalVisibilityChanged.subscribe((status: any) => {
+      if (status.visible) {
+        this.vegetationTableModal.show();
+      } else {
+        this.vegetationTableModal.hide();
+      }
+    });
+  }
+
   private initializeMap = async () => {
     try {
       InitializeArcGISWorkers();
@@ -139,8 +148,15 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
       this.sketchVM.updatePointSymbol = defaultPointCircleSymbol;
       this.sketchVM.activePointSymbol = defaultPointCircleSymbol;
       this.setMapEvents();
+      this.startSubscriptions();
     } catch (error) {
       console.error('Map load error ', error);
     }
   };
+
+  ngOnDestroy (): void {
+    serialUnsubscriber(...Object.values(this.subscriptions));
+    if (this.keyboardSub$) this.keyboardSub$();
+    if (this.graphicsStoreSub$) this.graphicsStoreSub$.unsubscribe();
+  }
 }

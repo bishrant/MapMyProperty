@@ -29,6 +29,7 @@ import { CulvertSizeComponent } from '../sidebar/culvert-size/culvert-size.compo
 import { SoilsComponent } from '../sidebar/soils/soils.component';
 import { reorderGraphicsLayer } from 'src/app/shared/utils/LayerUtils';
 import { ListenToKeyboard } from 'src/app/shared/utils/MapViewUtils';
+import { serialUnsubscriber, SubscriptionCollection } from 'src/app/shared/utils/SubscriptionUtils';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -77,6 +78,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   keyboardSub$: any;
   graphicsStoreSub$: Subscription;
+  private subscriptions: SubscriptionCollection = {};
 
   constructor (
     private store: Store<AppState>,
@@ -92,11 +94,11 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit (): void {
     setTimeout(() => this.closeOtherPanels('Draw'), 100);
-    this.keyboardSub$ = ListenToKeyboard(this.graphicsStoreEl, this.mapViewEl, this.renderer)
+    this.subscriptions.keyboard = ListenToKeyboard(this.graphicsStoreEl, this.mapViewEl, this.renderer)
   }
 
   ngOnDestroy (): void {
-    if (this.keyboardSub$) this.keyboardSub$();
+    serialUnsubscriber(...Object.values(this.subscriptions));
     if (this.graphicsStoreSub$) this.graphicsStoreSub$.unsubscribe();
   }
 
@@ -194,14 +196,14 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit () {
     this.initializeMap();
-    this.soilsService.showTableModal.subscribe((show: boolean) => {
+    this.subscriptions.showTableModal = this.soilsService.showTableModal.subscribe((show: boolean) => {
       if (show) {
         this.soilsTableModal.show();
       } else {
         this.soilsTableModal.hide();
       }
     });
-    this.notificationsService.openNotificationsModal.subscribe((notification: PMLONotification) => {
+    this.subscriptions.notificationsModal = this.notificationsService.openNotificationsModal.subscribe((notification: PMLONotification) => {
       this.notificationHeader = notification.header;
       this.notificationBody = notification.body;
       this.notificationsModal.show();
