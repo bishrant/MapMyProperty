@@ -7,6 +7,7 @@ import { GetMMPGeologyPopupContent, GetMMPSoilPopupContent, GetMMPVegetationPopu
 import { SoilsService } from 'src/app/planmylandoperation/sidebar/soils/soils.service';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
+import { MMPModalWindowService } from 'src/app/shared/services/MMPModalWindow.service';
 import { CreateMapLayer, CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
 import { AppConfiguration } from 'src/config';
 import { MMPSoil } from '../../models/mmpSoil.model';
@@ -45,7 +46,7 @@ export class MMPThemesComponent implements OnInit {
   activeLayer;
 
   constructor (private mapViewService: MapviewService, private appConfig: AppConfiguration,
-    private http: HttpClient, private soilsService: SoilsService,
+    private http: HttpClient, private soilsService: SoilsService, private mmpModalWindowService: MMPModalWindowService,
     private loaderService: LoaderService) { }
 
   ngOnInit () {
@@ -126,6 +127,10 @@ export class MMPThemesComponent implements OnInit {
           }
         }
       })
+  }
+
+  clipSelectedTheme = () => {
+    this.mmpModalWindowService.changeModalVisibility(this.selectedTheme, true);
   }
 
   identifyFeatures = async (geometry: __esri.Point) => {

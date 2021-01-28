@@ -16,6 +16,7 @@ import { OverlayLayersWidgetModule } from 'src/app/shared/components/overlay-lay
 import { MeasurementWidgetModule } from 'src/app/shared/components/measurement-widget/measurement-widget.module';
 import { ScaleTextModule } from 'src/app/shared/components/scale-text/scale-text.module';
 import { ModalModule } from 'src/app/shared/lib/angular-modal/modal/modal-module';
+import { VegetationTableModule } from '../sidebar/vegetation/vegetation-table.module';
 
 @NgModule({
   declarations: [EsrimapComponent],
@@ -23,7 +24,7 @@ import { ModalModule } from 'src/app/shared/lib/angular-modal/modal/modal-module
     SliderModule, MMPThemesModule,
     ImportExportModule, PrintToolModule, AccordionPanelModule, BasemapWidgetModule, SwipeWidgetModule,
     SitePoliciesModule, HelpbuttonModule, OverlayLayersWidgetModule,
-    MeasurementWidgetModule, ScaleTextModule, ModalModule
+    MeasurementWidgetModule, ScaleTextModule, ModalModule, VegetationTableModule
 
   ],
   exports: [EsrimapComponent]
