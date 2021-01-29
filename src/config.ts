@@ -2,6 +2,11 @@ interface culvertSizeReport {
   reportURL: string,
   gpServiceURL: string
 }
+
+interface Vegetation {
+  mapserverURL: string,
+  clipGPService: string
+}
 export class AppConfiguration {
   culvertSize: culvertSizeReport;
   loggingURL: string;
@@ -20,6 +25,6 @@ export class AppConfiguration {
   ssurgoTabularURL: string;
   ssurgoWMSURL: string;
   geologyMapServerURL: string;
-  vegetationMapServerURL: string;
-  others: any
+  vegetation: Vegetation;
+  others: any;
 }
