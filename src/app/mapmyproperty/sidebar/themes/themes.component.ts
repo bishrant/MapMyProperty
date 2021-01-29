@@ -85,7 +85,7 @@ export class MMPThemesComponent implements OnInit {
     if (typeof ref === 'undefined') {
       switch (theme) {
         case 'vegetation':
-          this.vegetationLayer = CreateMapLayer('mapImage', 'vegetationLayer', null, this.appConfig.vegetationMapServerURL);
+          this.vegetationLayer = CreateMapLayer('mapImage', 'vegetationLayer', null, this.appConfig.vegetation.mapserverURL);
           this.activeLayer = this.vegetationLayer;
           break;
         case 'geology':
