@@ -51,6 +51,7 @@
   position: relative;
   padding: .625rem 1rem;
   max-height: calc(100vh - 12.5rem);
+  height: calc(100% - 43px);
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
