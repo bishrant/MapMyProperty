@@ -109,7 +109,7 @@ export class PrintToolComponent implements OnInit {
         if (grs.length > 0) {
           const grLr = new GraphicsLayer({ id: lrs.id + 'popup' });
           grs.forEach((graphic: __esri.Graphic) => {
-            grLr.add(Graphic.fromJSON(graphic.toJSON()));
+            grLr.add(graphic.clone());
           });
           lrArray.push(grLr);
         }
@@ -134,6 +134,7 @@ export class PrintToolComponent implements OnInit {
         layers: lrArray
       };
 
+      debugger
       const ESRIMap = await import('arcgis-js-api/Map');
       const map = new ESRIMap.default(mapProperties);
       const mapViewProperties: any = {
