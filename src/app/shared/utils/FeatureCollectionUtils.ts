@@ -6,6 +6,28 @@ import Polygon from 'esri/geometry/Polygon';
 import { id } from '../store/todo';
 import webMercatorUtils = require('esri/geometry/support/webMercatorUtils');
 
+const createPolygonGraphic = (coordinates: any) => {
+  const polygonAttributes: any = {
+    id: id(),
+    geometryType: 'polygon',
+    symbol: defaultPolygonSymbol
+  };
+  let polygonGeom: any = new Polygon({
+    rings: coordinates,
+    spatialReference: { wkid: 4326 }
+  });
+  polygonGeom = webMercatorUtils.geographicToWebMercator(polygonGeom);
+  const _polygonGraphicJson: any = new Graphic({
+    geometry: polygonGeom,
+    attributes: polygonAttributes,
+    symbol: defaultPolygonSymbol
+  });
+  const polygonGraphicJson: any = _polygonGraphicJson.toJSON();
+  polygonGraphicJson.symbol = defaultPolygonSymbol;
+  polygonGraphicJson.geometry.type = 'polygon';
+  return polygonGraphicJson;
+}
+
 const convertFeatureCollectionToGraphics = (featureCollection: any) => {
   const graphicArray: any = [];
   featureCollection.features.forEach((f: any) => {
@@ -73,27 +95,20 @@ const convertFeatureCollectionToGraphics = (featureCollection: any) => {
       }
 
       case 'polygon': {
-        const polygonAttributes: any = {
-          id: id(),
-          geometryType: 'polygon',
-          symbol: defaultPolygonSymbol
-        };
-        let polygonGeom: any = new Polygon({
-          rings: f.geometry.coordinates,
-          spatialReference: { wkid: 4326 }
-        });
-        polygonGeom = webMercatorUtils.geographicToWebMercator(polygonGeom);
-        const _polygonGraphicJson: any = new Graphic({
-          geometry: polygonGeom,
-          attributes: polygonAttributes,
-          symbol: defaultPolygonSymbol
-        });
-        const polygonGraphicJson: any = _polygonGraphicJson.toJSON();
-        polygonGraphicJson.symbol = defaultPolygonSymbol;
-        polygonGraphicJson.geometry.type = 'polygon';
-        graphicArray.push(JSON.stringify(polygonGraphicJson));
+        const _p = createPolygonGraphic(f.geometry.coordinates)
+        graphicArray.push(JSON.stringify(_p));
         break;
       }
+
+      case 'multipolygon': {
+        for (let index = 0; index < f.geometry.coordinates.length; index++) {
+          const cr = f.geometry.coordinates[index];
+          const _p = createPolygonGraphic(cr)
+          graphicArray.push(JSON.stringify(_p));
+        }
+        break;
+      }
+
       default:
         break;
     }
