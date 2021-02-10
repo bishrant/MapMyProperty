@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
+import { AccordionPanelComponent } from 'src/app/shared/components/accordion-panel/accordion-panel.component';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,12 @@ export class EsrimapService {
   @Output() regOpAccordionOpen:EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() closeAllPanelsExcept:EventEmitter<string> = new EventEmitter<string>();
 
-  public setActivePanel (panelTitle: String, panelOpened: boolean) {
+  public setActivePanel (panel: AccordionPanelComponent) {
+    if (!panel || panel === null) return;
+
+    const panelTitle = panel.panelTitle;
+    const panelOpened = panel.opened;
+
     switch (panelTitle) {
       case 'Sensitive Areas':
         this.sensAreasAccordionOpen.emit(panelOpened);

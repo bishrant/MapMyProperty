@@ -210,7 +210,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.accordionPanelService.setActivePanel.subscribe((panel: AccordionPanelComponent) => {
-      this.esrimapService.setActivePanel(panel.panelTitle, panel.opened);
+      this.esrimapService.setActivePanel(panel);
       if (panel !== this.culvertAccPanel) {
         if (this.culvertSizeComponent.isActive) {
           this.culvertSizeComponent.cleanup();
