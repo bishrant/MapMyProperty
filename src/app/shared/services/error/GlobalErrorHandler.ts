@@ -12,31 +12,47 @@ export class GlobalErrorHandler implements ErrorHandler {
     const errorService = this.injector.get(ErrorService);
     const logger = this.injector.get(LoggingService);
     const notifier = this.injector.get(NotificationService);
-
+    let sendLog = false;
     let message;
     let stackTrace;
     let errorName = error.name;
-    if (error instanceof HttpErrorResponse) {
-      // server error
-      message = errorService.getServerErrorMessage(error);
-      notifier.showError(message);
-      stackTrace = error.error.stack ? error.error.stack : 'Not Available';
-      stackTrace = stackTrace.replace(/\n/gi, '\n\n');
-    } else {
-      // client error
-      if (typeof error.rejection !== 'undefined') {
-        message = error.rejection.message;
+    if (/Uncaught \(in promise\): MMPCustomError?/.test(error.message)) {
+      if (error.rejection) {
+        notifier.showError(error.rejection.userMsg);
         stackTrace = error.rejection.stackTrace;
-        errorName = error.rejection.name;
+        message = error.rejection.userMsg;
+        sendLog = true;
+      }
+    }
+    if (errorName === 'MMPCustomError') {
+      notifier.showError(error.userMsg);
+      stackTrace = error.stackTrace;
+      message = error.userMsg;
+    } else {
+      if (error instanceof HttpErrorResponse) {
+        // server error
+        message = errorService.getServerErrorMessage(error);
+        // notifier.showError(message);
+        stackTrace = error.error.stack ? error.error.stack : 'Not Available';
+        stackTrace = stackTrace.replace(/\n/gi, '\n\n');
+        sendLog = true;
       } else {
-        message = errorService.getClientErrorMessage(error);
-        notifier.showError(message);
-        stackTrace = error.stack ? error.stack.replace(/\n/gi, '\n\n') : 'Not Available';
+        // client error
+        if (typeof error.rejection !== 'undefined') {
+          message = error.rejection.message;
+          stackTrace = error.rejection.stackTrace;
+          errorName = error.rejection.name;
+        } else {
+          message = errorService.getClientErrorMessage(error);
+          // notifier.showError(message);
+          stackTrace = error.stack ? error.stack.replace(/\n/gi, '\n\n') : 'Not Available';
+        }
       }
     }
 
     // log errors to backend
     logger.logError(errorName, message, stackTrace);
+    // debugger;
     console.error(error);
   }
 }

@@ -4,7 +4,7 @@ import PrintTask from 'esri/tasks/PrintTask';
 import PrintParameters from 'esri/tasks/support/PrintParameters';
 import { AppConfiguration } from 'src/config';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { TraceGPError } from '../../services/error/GPServiceError';
+import { MMPGPServiceError, TraceMMPError } from '../../services/error/GPServiceError';
 import { LoaderService } from '../../services/Loader.service';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import Graphic from 'esri/Graphic';
@@ -42,7 +42,7 @@ export class PrintToolComponent implements OnInit {
     private formBuilder: FormBuilder,
     private config: AppConfiguration,
     private loaderService: LoaderService,
-    private notificationService: NotificationService,
+    private notificationService: NotificationService
   ) { }
 
   matcher = new MyErrorStateMatcher();
@@ -134,7 +134,6 @@ export class PrintToolComponent implements OnInit {
         layers: lrArray
       };
 
-      debugger
       const ESRIMap = await import('arcgis-js-api/Map');
       const map = new ESRIMap.default(mapProperties);
       const mapViewProperties: any = {
@@ -162,34 +161,27 @@ export class PrintToolComponent implements OnInit {
   }
 
   async generatePDF (format: string) {
-    this.loaderService.isLoading.next(true);
-    const printParameters = new PrintParameters({
-      view: this.popupMapView,
-      extraParameters: {
-        comments: this.printForm.get('comments')?.value,
-        title: this.printForm.get('title')?.value,
-        Layout_Template: 'MMP',
-        Format: format,
-        showCurrentDate: '' + this.showCurrentDate
-      }
-    });
+    try {
+      this.loaderService.isLoading.next(true);
+      const printParameters = new PrintParameters({
+        view: this.popupMapView,
+        extraParameters: {
+          comments: this.printForm.get('comments')?.value,
+          title: this.printForm.get('title')?.value,
+          Layout_Template: 'MMP',
+          Format: format,
+          showCurrentDate: '' + this.showCurrentDate
+        }
+      });
 
-    this.printTask
-      .execute(printParameters)
-      .then((success: any) => {
-        window.open(success.url, '_blank');
-        this.printMapModal.hide();
-      })
-      .catch((error: any) => {
-        this.printMapModal.hide();
-        this.errorModal.show()
-        const gpError = TraceGPError(this.config.printGPServiceURL, error);
-        throw gpError;
-      })
-      .finally(() => {
-        this.loaderService.isLoading.next(false);
-      })
-    ;
+      const { url } = await this.printTask.execute(printParameters);
+      window.open(url, '_blank');
+      this.printMapModal.hide();
+    } catch (error) {
+      throw TraceMMPError('Failed to print your map. Please try again.', error.message, 'print-tool:165');
+    } finally {
+      this.loaderService.isLoading.next(false);
+    }
   }
 
   previewClosed () {
