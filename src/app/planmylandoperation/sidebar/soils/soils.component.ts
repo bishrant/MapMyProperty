@@ -14,7 +14,7 @@ import { GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import Collection from 'esri/core/Collection';
 import { SquareMetersToAcres } from 'src/app/shared/utils/ConversionTools';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
-import { TraceGPError } from 'src/app/shared/services/error/GPServiceError';
+import { TraceMMPError } from 'src/app/shared/services/error/GPServiceError';
 import { AppConfiguration } from 'src/config';
 import { ReportsService } from '../../pmloUtils/reports.service';
 import { EsrimapService } from '../../esrimap/esrimap.service';
@@ -310,15 +310,13 @@ export class SoilsComponent implements OnInit {
         },
         (error:any) => {
           this.loaderService.isLoading.next(false);
-          const gpError = TraceGPError('Error getting soils report', error);
-          throw gpError;
+          throw TraceMMPError('Error getting soils report', error.message, 'soils.component:272');
         }
       );
     })
       .catch((error:any) => {
         this.loaderService.isLoading.next(false);
-        const gpError = TraceGPError('Error getting soils report', error);
-        throw gpError;
+        throw TraceMMPError('Error getting soils report', error.message, 'soils.component:272');
       });
   }
 

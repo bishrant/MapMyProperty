@@ -226,3 +226,11 @@ $sliderBase: 6px;
 .esri-swipe__container {
   outline-width: 0 !important;
 }
+
+.error-snackbar {
+  background-color: red !important;
+  color: white;
+}
+.mat-simple-snackbar-action {
+  color: white !important;
+}
