@@ -7,6 +7,7 @@ import { CreateGL } from 'src/app/planmylandoperation/pmloUtils/layers';
 import { GetMMPGeologyPopupContent, GetMMPSoilPopupContent, GetMMPVegetationPopupContent } from 'src/app/planmylandoperation/pmloUtils/popupContent';
 import { SoilsService } from 'src/app/planmylandoperation/sidebar/soils/soils.service';
 import { NotificationModel } from 'src/app/shared/models/Notification.model';
+import { TraceMMPError } from 'src/app/shared/services/error/GPServiceError';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { MMPModalWindowService } from 'src/app/shared/services/MMPModalWindow.service';
@@ -15,6 +16,7 @@ import { CreateMapLayer, CreateSoilsLayer } from 'src/app/shared/utils/CreateDyn
 import { GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { AppConfiguration } from 'src/config';
 import { MMPSoil } from '../../models/mmpSoil.model';
+import { VegetationService } from '../vegetation/vegetation.service';
 
 @Component({
   selector: 'app-mmp-themes',
@@ -57,6 +59,7 @@ export class MMPThemesComponent implements OnInit {
     private http: HttpClient, private soilsService: SoilsService,
     private notificationsService:NotificationsService,
     private mmpModalWindowService: MMPModalWindowService,
+    private vegetationService: VegetationService,
     private loaderService: LoaderService) { }
 
   ngOnInit () {
@@ -150,7 +153,14 @@ export class MMPThemesComponent implements OnInit {
       this.notificationsService.openNotificationsModal.emit(this.notification);
     } else {
       this.loaderService.isLoading.next(true);
-      this.mmpModalWindowService.changeModalVisibility(this.selectedTheme, true);
+      const inputBoundary: __esri.Graphic = polygonGraphics.getItemAt(0);
+      this.vegetationService.getVegetationData(inputBoundary).then(d => {
+        this.mmpModalWindowService.changeModalVisibility(this.selectedTheme, true);
+      }).catch(e => {
+        throw TraceMMPError('failed to clip selected theme', e.message, 'Themes.component');
+      }).finally(() => {
+        this.loaderService.isLoading.next(false);
+      })
     }
   }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import FeatureSet from 'esri/tasks/support/FeatureSet';
 import Geoprocessor from 'esri/tasks/Geoprocessor';
 import Graphic from 'esri/Graphic';
@@ -8,12 +8,15 @@ import { AppConfiguration } from 'src/config';
   providedIn: 'root'
 })
 export class VegetationService {
+  @Output() vegetationDataStatus = new EventEmitter<string>();
+  @Output() vegetationDataChanged = new EventEmitter<any>();
   constructor (private appConfig:AppConfiguration) { }
 
-  getVegetation (graph: Graphic): Promise<any[]> {
+  getVegetationData (graphic: Graphic): Promise<any[]> {
+    this.vegetationDataStatus.emit('Loading... Please wait.')
     return new Promise((resolve, reject) => {
       const featureSet: FeatureSet = new FeatureSet();
-      featureSet.features = [graph];
+      featureSet.features = [graphic];
       const params = { inputPolygon: featureSet };
 
       const gp: __esri.Geoprocessor = new Geoprocessor({
@@ -29,11 +32,14 @@ export class VegetationService {
                 gp.getResultData(jobInfo2.jobId, 'outputClipVegetation')
               ]).then((value) => {
                 resolve(value);
+                this.vegetationDataChanged.emit(value);
+                this.vegetationDataStatus.emit('');
               });
             }
           },
           (error) => {
             reject(error);
+            this.vegetationDataStatus.emit('An error occured. Please try again.')
           });
       });
     });

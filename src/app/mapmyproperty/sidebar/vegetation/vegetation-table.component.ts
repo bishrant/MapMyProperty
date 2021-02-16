@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { TableHeader } from 'src/app/planmylandoperation/sidebar/soils/soils-table/table-header';
 import { FormatRoundNumber } from 'src/app/shared/utils/ConversionTools';
 import { ConvertSquareMetersToAcres } from 'src/app/shared/utils/GeometryEngine';
-import { outputVegetationMultipart } from './dummydata';
+import { SubscriptionCollection } from 'src/app/shared/utils/SubscriptionUtils';
+// import { outputVegetationMultipart } from './dummydata';
+import { VegetationService } from './vegetation.service';
 @Component({
   selector: 'mmp-vegetation-table',
   templateUrl: './vegetation-table.component.html',
@@ -14,11 +16,14 @@ export class VegetationTableComponent implements OnInit {
   totalAcres:string;
   selectedVegetation:__esri.Graphic;
   private totalAreaSqMt = 0;
+  private subscriptions: SubscriptionCollection = {};
 
-  constructor () { }
+  constructor (private vegetationService: VegetationService) { }
   ngOnInit (): void {
     this.resetHeadElements();
-    this.getVegetationData(outputVegetationMultipart.value.features);
+    this.subscriptions.vegetationDataChanged$ = this.vegetationService.vegetationDataChanged.subscribe(data => {
+      this.getVegetationData(data[0].value.features);
+    });
   }
 
   updateSortImages (selectedHead: TableHeader): void {
