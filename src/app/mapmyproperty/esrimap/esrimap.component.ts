@@ -21,6 +21,8 @@ import { reorderGraphicsLayer } from 'src/app/shared/utils/LayerUtils';
 import { defaultPointCircleSymbol } from 'src/app/shared/utils/DefaultSymbols';
 import { SubscriptionCollection, serialUnsubscriber } from 'src/app/shared/utils/SubscriptionUtils';
 import { MMPModalWindowService } from 'src/app/shared/services/MMPModalWindow.service';
+import { NotificationsService } from 'src/app/shared/services/Notifications.service';
+import { NotificationModel } from 'src/app/shared/models/Notification.model';
 
 @Component({
   selector: 'app-esrimap',
@@ -34,6 +36,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('graphicsStore', { static: true }) private graphicsStoreEl!: GraphicsStoreComponent;
   @ViewChild('sessionModal') sessionModal: ModalComponent;
   @ViewChild('vegetationTableModal') vegetationTableModal: ModalComponent;
+  @ViewChild('notificationsModal') notificationsModal: ModalComponent;
 
   mapView!: __esri.MapView;
   clickToAddText = false;
@@ -49,8 +52,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   textGraphicsLayer = CreateTextGraphicsLayer();
   generalGraphicsLayer = CreatePolygonGraphicsLayer('generalGraphicsLayer');
 
-  notificationHeader = '';
-  notificationBody = '';
+  notification: NotificationModel = new NotificationModel('', '');
   helpHeader = 'Getting Started Tour';
   helpItem = 'gettingStartedTour';
   savedData: any;
@@ -60,12 +62,19 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscriptions: SubscriptionCollection = {};
 
   constructor (private store: Store<AppState>, private esrimapService: EsrimapService,
-    private mapViewService: MapviewService, private mmpModalWindowService: MMPModalWindowService,
+    private mapViewService: MapviewService,
+    private notificationsService: NotificationsService,
+    private mmpModalWindowService: MMPModalWindowService,
     private renderer: Renderer2) { }
 
   ngAfterViewInit (): void {
     setTimeout(() => this.closeOtherPanels('Draw'), 100);
     this.keyboardSub$ = ListenToKeyboard(this.graphicsStoreEl, this.mapViewEl, this.renderer);
+
+    this.subscriptions.notificationsModal = this.notificationsService.openNotificationsModal.subscribe((_: NotificationModel) => {
+      this.notification = _;
+      this.notificationsModal.show();
+    });
   }
 
   /* session management */

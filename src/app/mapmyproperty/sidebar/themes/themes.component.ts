@@ -3,12 +3,16 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Point } from 'esri/geometry';
 import IdentifyTask from 'esri/tasks/IdentifyTask';
 import IdentifyParameters from 'esri/tasks/support/IdentifyParameters';
+import { CreateGL } from 'src/app/planmylandoperation/pmloUtils/layers';
 import { GetMMPGeologyPopupContent, GetMMPSoilPopupContent, GetMMPVegetationPopupContent } from 'src/app/planmylandoperation/pmloUtils/popupContent';
 import { SoilsService } from 'src/app/planmylandoperation/sidebar/soils/soils.service';
+import { NotificationModel } from 'src/app/shared/models/Notification.model';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { MMPModalWindowService } from 'src/app/shared/services/MMPModalWindow.service';
+import { NotificationsService } from 'src/app/shared/services/Notifications.service';
 import { CreateMapLayer, CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
+import { GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { AppConfiguration } from 'src/config';
 import { MMPSoil } from '../../models/mmpSoil.model';
 
@@ -24,6 +28,9 @@ export class MMPThemesComponent implements OnInit {
   isVisibleChecked: boolean = false;
   isSoilsDisabled = true;
   selectedTheme: string = 'soils';
+  notification: NotificationModel = new NotificationModel();
+  userGL;
+  private themesUserGL: __esri.GraphicsLayer = CreateGL('themesGL', 1);
 
   @Input() mapView: __esri.MapView;
   transparency = 0;
@@ -45,14 +52,18 @@ export class MMPThemesComponent implements OnInit {
   vegetationLayer;
   activeLayer;
 
-  constructor (private mapViewService: MapviewService, private appConfig: AppConfiguration,
-    private http: HttpClient, private soilsService: SoilsService, private mmpModalWindowService: MMPModalWindowService,
+  constructor (private mapViewService: MapviewService,
+    private appConfig: AppConfiguration,
+    private http: HttpClient, private soilsService: SoilsService,
+    private notificationsService:NotificationsService,
+    private mmpModalWindowService: MMPModalWindowService,
     private loaderService: LoaderService) { }
 
   ngOnInit () {
     this.mapViewService.soilsDisabled.subscribe((isDisabled: boolean) => {
       this.isSoilsDisabled = isDisabled;
     });
+    this.userGL = this.mapView.map.findLayerById('userGraphicsLayer');
   }
 
   getLayerRef (layerId: string) {
@@ -130,7 +141,17 @@ export class MMPThemesComponent implements OnInit {
   }
 
   clipSelectedTheme = () => {
-    this.mmpModalWindowService.changeModalVisibility(this.selectedTheme, true);
+    const polygonGraphics = GetPolygonGraphics(this.userGL);
+    if (polygonGraphics.length === 0) {
+      this.notification.body = `A drawn boundary is needed to be able to clip ${this.selectedTheme}.`;
+      this.notificationsService.openNotificationsModal.emit(this.notification);
+    } else if (polygonGraphics.length > 1) {
+      this.notification.body = `You can only clip ${this.selectedTheme} areas from one polygon at a time.`;
+      this.notificationsService.openNotificationsModal.emit(this.notification);
+    } else {
+      this.loaderService.isLoading.next(true);
+      this.mmpModalWindowService.changeModalVisibility(this.selectedTheme, true);
+    }
   }
 
   identifyFeatures = async (geometry: __esri.Point) => {

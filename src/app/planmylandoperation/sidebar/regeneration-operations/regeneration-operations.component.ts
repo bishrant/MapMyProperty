@@ -1,12 +1,12 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { NotificationModel } from 'src/app/shared/models/Notification.model';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
+import { NotificationsService } from 'src/app/shared/services/Notifications.service';
 import { GreaterThanMaxArea } from 'src/app/shared/utils/GeometryEngine';
 import { EsrimapService } from '../../esrimap/esrimap.service';
-import { PMLONotification } from '../../models/pmloNotification.model';
 import { OperationLegendService } from '../../operation-legend/operation-legend.service';
-import { NotificationsService } from '../../pmloUtils/notifications.service';
 import { HarvestOperationsService } from '../harvest-operations/harvest-operations.service';
 import { SoilsService } from '../soils/soils.service';
 
@@ -30,7 +30,7 @@ export class RegenerationOperationsComponent implements OnInit {
   private pmloSoilLabelsGL: __esri.GraphicsLayer;
   private userGL: __esri.GraphicsLayer;
 
-  private pmloNote: PMLONotification = new PMLONotification();
+  private pmloNote: NotificationModel = new NotificationModel();
 
   constructor (
     private soilsService: SoilsService,

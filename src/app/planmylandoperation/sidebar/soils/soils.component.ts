@@ -18,10 +18,10 @@ import { TraceMMPError } from 'src/app/shared/services/error/GPServiceError';
 import { AppConfiguration } from 'src/config';
 import { ReportsService } from '../../pmloUtils/reports.service';
 import { EsrimapService } from '../../esrimap/esrimap.service';
-import { PMLONotification } from '../../models/pmloNotification.model';
-import { NotificationsService } from '../../pmloUtils/notifications.service';
 import { ModalService } from 'src/app/shared/lib/angular-modal/modal/modal.service';
 import { SketchSelectionService } from 'src/app/shared/services/SketchSelectionService';
+import { NotificationModel } from 'src/app/shared/models/Notification.model';
+import { NotificationsService } from 'src/app/shared/services/Notifications.service';
 
 @Component({
   selector: 'pmlo-soils',
@@ -51,7 +51,7 @@ export class SoilsComponent implements OnInit {
   private pmloSoilsGL: __esri.GraphicsLayer = CreateGL('pmloSoilsGL', 1);
   private pmloSoilLabelsGL: __esri.GraphicsLayer = CreateGL('pmloSoilLabelsGL', 1);
 
-  private pmloNote:PMLONotification = new PMLONotification();
+  private pmloNote:NotificationModel = new NotificationModel();
 
   constructor (
     private soilsService: SoilsService,
