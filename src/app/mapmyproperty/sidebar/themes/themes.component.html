@@ -2,34 +2,17 @@
   <app-help-button [header]="'Map Themes'" [itemName]="'themes'"></app-help-button> <br />
   <div>
     <div>
-      <input
-        id="soilsTheme"
+      <div *ngFor="let theme of [['soils','Soils'],['vegetation', 'Texas Vegetation'], ['geology', 'Texas Geology']]">
+        <input
+        id="{{theme[0]}}Theme"
         type="radio"
         name="mapTheme"
-        [value]="'soils'"
+        [value]="theme[0]"
         [(ngModel)]="selectedTheme"
-        (change)="themeChanged('soils')"
+        (change)="themeChanged(theme[0])"
       />
-      <label for="soilsTheme">Soils</label><br />
-      <input
-        type="radio"
-        id="vegetationTheme"
-        name="mapTheme"
-        [value]="'vegetation'"
-        [(ngModel)]="selectedTheme"
-        (change)="themeChanged('vegetation')"
-      />
-      <label for="vegetationTheme">Texas Vegetation</label><br />
-      <input
-        type="radio"
-        id="geologyTheme"
-        name="mapTheme"
-        [value]="'geology'"
-        [(ngModel)]="selectedTheme"
-        (change)="themeChanged('geology')"
-      />
-      <label for="geologyTheme">exas Geology</label><br />
-
+      <label for="{{theme[0]}}Theme">{{theme[1]}}</label><br />
+      </div>
     </div>
 
     <div class="row prl-10 mt-8">
