@@ -8,9 +8,9 @@ import { ReportsService } from '../../pmloUtils/reports.service';
 import { SquareMetersToAcres, FormatRoundNumber } from 'src/app/shared/utils/ConversionTools';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { EsrimapService } from '../../esrimap/esrimap.service';
-import { PMLONotification } from '../../models/pmloNotification.model';
-import { NotificationsService } from '../../pmloUtils/notifications.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
+import { NotificationsService } from 'src/app/shared/services/Notifications.service';
+import { NotificationModel } from 'src/app/shared/models/Notification.model';
 
 @Component({
   selector: 'pmlo-sens-areas',
@@ -43,7 +43,7 @@ export class SensAreasComponent implements OnInit {
   private boundaryLayer: __esri.GraphicsLayer;
   private sensAreaGL: __esri.GraphicsLayer = CreateGL('sensAreasGL', 1);
 
-  private pmloNote:PMLONotification = new PMLONotification();
+  private pmloNote:NotificationModel = new NotificationModel();
 
   constructor (
     private decimalPipe: DecimalPipe,

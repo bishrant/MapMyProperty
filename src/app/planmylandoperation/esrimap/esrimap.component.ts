@@ -9,9 +9,7 @@ import { SoilsService } from '../sidebar/soils/soils.service';
 import { AppConfiguration } from 'src/config';
 import { AccordionPanelComponent } from 'src/app/shared/components/accordion-panel/accordion-panel.component';
 import { EsrimapService } from './esrimap.service';
-import { NotificationsService } from '../pmloUtils/notifications.service';
 import { ModalComponent } from 'src/app/shared/lib/angular-modal/modal/modal.component';
-import { PMLONotification } from '../models/pmloNotification.model';
 import { AccordionPanelService } from 'src/app/shared/components/accordion-panel/accordion-panel.service';
 import GraphicsLayer from 'esri/layers/GraphicsLayer';
 import { clearLocalStorage, getSavedState, setSavedState } from 'src/app/shared/store/storage.metareducer';
@@ -30,6 +28,8 @@ import { SoilsComponent } from '../sidebar/soils/soils.component';
 import { reorderGraphicsLayer } from 'src/app/shared/utils/LayerUtils';
 import { ListenToKeyboard } from 'src/app/shared/utils/MapViewUtils';
 import { serialUnsubscriber, SubscriptionCollection } from 'src/app/shared/utils/SubscriptionUtils';
+import { NotificationsService } from 'src/app/shared/services/Notifications.service';
+import { NotificationModel } from 'src/app/shared/models/Notification.model';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -70,8 +70,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   textGraphicsLayer = CreateTextGraphicsLayer();
   generalGraphicsLayer = CreatePolygonGraphicsLayer('generalGraphicsLayer');
 
-  notificationHeader = '';
-  notificationBody = '';
+  notification: NotificationModel = new NotificationModel('', '');
   helpHeader = 'Getting Started Tour';
   helpItem = 'gettingStartedTour';
   savedData: any;
@@ -203,9 +202,8 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.soilsTableModal.hide();
       }
     });
-    this.subscriptions.notificationsModal = this.notificationsService.openNotificationsModal.subscribe((notification: PMLONotification) => {
-      this.notificationHeader = notification.header;
-      this.notificationBody = notification.body;
+    this.subscriptions.notificationsModal = this.notificationsService.openNotificationsModal.subscribe((_: NotificationModel) => {
+      this.notification = _;
       this.notificationsModal.show();
     });
 

@@ -95,9 +95,9 @@
 </app-modal>
 
 <app-modal class="pmloModal notificationsModal" #notificationsModal [maximizable]="false" [inViewport]="true">
-  <ng-container class="app-modal-header">{{notificationHeader}}</ng-container>
+  <ng-container class="app-modal-header">{{notification.header}}</ng-container>
   <ng-container class="app-modal-body">
-    <p [innerHTML]="notificationBody"></p>
+    <p [innerHTML]="notification.body"></p>
   </ng-container>
 </app-modal>
 
