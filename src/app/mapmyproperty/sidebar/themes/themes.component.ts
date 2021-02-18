@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Point } from 'esri/geometry';
+import Graphic from 'esri/Graphic';
+import FeatureLayer from 'esri/layers/FeatureLayer';
 import IdentifyTask from 'esri/tasks/IdentifyTask';
 import IdentifyParameters from 'esri/tasks/support/IdentifyParameters';
 import { CreateGL } from 'src/app/planmylandoperation/pmloUtils/layers';
@@ -14,16 +16,18 @@ import { MMPModalWindowService } from 'src/app/shared/services/MMPModalWindow.se
 import { NotificationsService } from 'src/app/shared/services/Notifications.service';
 import { CreateMapLayer, CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
 import { GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
+import { serialUnsubscriber, SubscriptionCollection } from 'src/app/shared/utils/SubscriptionUtils';
 import { AppConfiguration } from 'src/config';
 import { MMPSoil } from '../../models/mmpSoil.model';
 import { VegetationService } from '../vegetation/vegetation.service';
+import { getVegetationBackgroundColor, getVegetationHighlightSymbol, getVegetationSymbol } from '../vegetation/VegetationUtils';
 
 @Component({
   selector: 'app-mmp-themes',
   templateUrl: './themes.component.html',
   styleUrls: ['./themes.component.scss']
 })
-export class MMPThemesComponent implements OnInit {
+export class MMPThemesComponent implements OnInit, OnDestroy {
   isIdentifyChecked: boolean = false;
   isIdentifyDisabled: boolean = true;
   isVisibleDisabled: boolean = false;
@@ -53,7 +57,7 @@ export class MMPThemesComponent implements OnInit {
   geologyLayer;
   vegetationLayer;
   activeLayer;
-
+  private subscriptions: SubscriptionCollection = {};
   constructor (private mapViewService: MapviewService,
     private appConfig: AppConfiguration,
     private http: HttpClient, private soilsService: SoilsService,
@@ -63,10 +67,24 @@ export class MMPThemesComponent implements OnInit {
     private loaderService: LoaderService) { }
 
   ngOnInit () {
-    this.mapViewService.soilsDisabled.subscribe((isDisabled: boolean) => {
+    this.subscriptions.soilsDisabled$ = this.mapViewService.soilsDisabled.subscribe((isDisabled: boolean) => {
       this.isSoilsDisabled = isDisabled;
     });
     this.userGL = this.mapView.map.findLayerById('userGraphicsLayer');
+    this.mapView.map.add(this.themesUserGL);
+    this.subscriptions.selectPolygonFromTableSub$ = this.vegetationService.selectPolygonFromTable
+      .subscribe((veg: any) => {
+        this.themesUserGL.graphics.forEach((gr: any) => {
+          if (gr.attributes.FID === veg.attributes.FID) {
+            gr.symbol = getVegetationHighlightSymbol(gr);
+          } else {
+            gr.symbol = getVegetationSymbol(gr);
+          }
+        })
+        // if (veg === null) {
+        //   this.themesUserGL.graphics.pop();
+        // }
+      })
   }
 
   getLayerRef (layerId: string) {
@@ -154,7 +172,26 @@ export class MMPThemesComponent implements OnInit {
     } else {
       this.loaderService.isLoading.next(true);
       const inputBoundary: __esri.Graphic = polygonGraphics.getItemAt(0);
-      this.vegetationService.getVegetationData(inputBoundary).then(d => {
+      this.vegetationService.mockVegetationData(inputBoundary).then(d => {
+        const t = d[0].value.features.map(f => {
+          f.symbol = getVegetationSymbol(f);
+          return f;
+        });
+
+        const gr = t.forEach(tt => {
+          return new Graphic(tt);
+        });
+
+        const fLayer = new FeatureLayer({
+          source: t,
+          objectIdField: 'FID',
+          popupTemplate: { content: '{FID} Test' }
+        })
+
+        this.mapView.map.add(fLayer);
+
+        console.log(d[0].value.features, t);
+        // this.themesUserGL.addMany(t);
         this.mmpModalWindowService.changeModalVisibility(this.selectedTheme, true);
       }).catch(e => {
         throw TraceMMPError('failed to clip selected theme', e.message, 'Themes.component');
@@ -255,5 +292,9 @@ export class MMPThemesComponent implements OnInit {
     this.isIdentifyChecked = isChecked;
     this.createLayerIdentifyEvent(isChecked);
     if (this.mapView.popup.visible) this.mapView.popup.close();
+  }
+
+  ngOnDestroy (): void {
+    serialUnsubscriber(...Object.values(this.subscriptions));
   }
 }

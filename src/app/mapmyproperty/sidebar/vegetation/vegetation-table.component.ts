@@ -5,6 +5,7 @@ import { ConvertSquareMetersToAcres } from 'src/app/shared/utils/GeometryEngine'
 import { SubscriptionCollection } from 'src/app/shared/utils/SubscriptionUtils';
 // import { outputVegetationMultipart } from './dummydata';
 import { VegetationService } from './vegetation.service';
+import { getVegetationBackgroundColor } from './VegetationUtils';
 @Component({
   selector: 'mmp-vegetation-table',
   templateUrl: './vegetation-table.component.html',
@@ -23,6 +24,7 @@ export class VegetationTableComponent implements OnInit {
     this.resetHeadElements();
     this.subscriptions.vegetationDataChanged$ = this.vegetationService.vegetationDataChanged.subscribe(data => {
       this.getVegetationData(data[0].value.features);
+      // this.getVegetationData(data[0].value.features);
     });
   }
 
@@ -56,11 +58,7 @@ export class VegetationTableComponent implements OnInit {
   }
 
   getBackgroundColor = (veg: any) => {
-    const _h: string = veg.attributes.HEXColor;
-    if (_h.length >= 7) {
-      return '#' + _h.slice(2, _h.length)
-    }
-    return _h;
+    return getVegetationBackgroundColor(veg);
   }
 
   getsoilAcres (area:number):string {
@@ -74,10 +72,10 @@ export class VegetationTableComponent implements OnInit {
   selectVegetation = (veg: any) => {
     if (this.selectedVegetation === veg) {
       this.selectedVegetation = undefined;
-      // this.soilsService.selectPolygonFromTable.emit(null);
+      this.vegetationService.selectPolygonFromTable.emit(null);
     } else {
       this.selectedVegetation = veg;
-      // this.soilsService.selectPolygonFromTable.emit(soil);
+      this.vegetationService.selectPolygonFromTable.emit(veg);
     }
   }
 
