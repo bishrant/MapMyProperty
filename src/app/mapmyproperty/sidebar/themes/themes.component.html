@@ -3,57 +3,45 @@
   <div>
     <div>
       <div *ngFor="let theme of [['soils','Soils'],['vegetation', 'Texas Vegetation'], ['geology', 'Texas Geology']]">
-        <input
-        id="{{theme[0]}}Theme"
-        type="radio"
-        name="mapTheme"
-        [value]="theme[0]"
-        [(ngModel)]="selectedTheme"
-        (change)="themeChanged(theme[0])"
-      />
-      <label for="{{theme[0]}}Theme">{{theme[1]}}</label><br />
+        <input id="{{theme[0]}}Theme" type="radio" name="mapTheme" [value]="theme[0]" [(ngModel)]="selectedTheme"
+          (change)="themeChanged(theme[0])" />
+        <label for="{{theme[0]}}Theme">{{theme[1]}}</label><br />
       </div>
     </div>
 
     <div class="row prl-10 mt-8">
       <label class="inline-flex cursor-pointer" [ngClass]="{ checkboxDisabled: isVisibleDisabled }">
-        <input
-          type="checkbox"
-          class="m-auto form-checkbox h-5 w-5 text-pmlo_secondary cursor-pointer"
+        <input type="checkbox" class="m-auto form-checkbox h-5 w-5 text-pmlo_secondary cursor-pointer"
           [ngClass]="{ 'cursor-not-allowed': isVisibleDisabled }"
-          (change)="themeVisibleChanged($event.currentTarget.checked)"
-          [disabled]="isVisibleDisabled"
-        />
+          (change)="themeVisibleChanged($event.currentTarget.checked)" [disabled]="isVisibleDisabled" />
         <span class="checkbox-label">Visible</span>
       </label>
     </div>
     <div class="row prl-10">
       <label class="inline-flex cursor-pointer" [ngClass]="{ checkboxDisabled: isIdentifyDisabled }">
-        <input
-          #identifyCheckbox
-          type="checkbox"
-          class="m-auto form-checkbox h-5 w-5 text-pmlo_secondary cursor-pointer"
+        <input #identifyCheckbox type="checkbox" class="m-auto form-checkbox h-5 w-5 text-pmlo_secondary cursor-pointer"
           [ngClass]="{ 'cursor-not-allowed': isIdentifyDisabled }"
-          (change)="themeIdentifyChanged($event.currentTarget.checked)"
-          [disabled]="isIdentifyDisabled"
-        />
+          (change)="themeIdentifyChanged($event.currentTarget.checked)" [disabled]="isIdentifyDisabled" />
         <span class="checkbox-label">Identify</span>
       </label>
     </div>
 
 
-      <div class="pt-3">Transparency: {{transparency}}%</div>
-  <div class="flex justify-between items-baseline pb-1">
-    <div>0</div>
-    <app-slider [value]="transparency" (onChange)="transparencyChanged($event)" [min]="0" [max]="100" [steps]="5"
-      class="transparencySlider">
-    </app-slider>
-    <div>100</div>
-  </div>
+    <div class="pt-3">Transparency: {{transparency}}%</div>
+    <div class="flex justify-between items-baseline pb-1">
+      <div>0</div>
+      <app-slider [value]="transparency" (onChange)="transparencyChanged($event)" [min]="0" [max]="100" [steps]="5"
+        class="transparencySlider">
+      </app-slider>
+      <div>100</div>
+    </div>
 
-  <div class="flex justify-center mt-3">
-    <button type="button" class="pmlo-btn pmlo-secondary generalBtn"
-      (click)="clipSelectedTheme()">Clip</button>
-  </div>
+    <div class="flex justify-center mt-3">
+      <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="clipSelectedTheme()">Clip</button>
+    </div>
 
-</div>
+    <div class="flex justify-center mt-3">
+      <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="clearSelectedTheme()">Clear</button>
+    </div>
+
+  </div>
