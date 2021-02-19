@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Point } from 'esri/geometry';
-import Graphic from 'esri/Graphic';
-import FeatureLayer from 'esri/layers/FeatureLayer';
 import IdentifyTask from 'esri/tasks/IdentifyTask';
 import IdentifyParameters from 'esri/tasks/support/IdentifyParameters';
 import { CreateGL } from 'src/app/planmylandoperation/pmloUtils/layers';
@@ -14,13 +12,14 @@ import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { MMPModalWindowService } from 'src/app/shared/services/MMPModalWindow.service';
 import { NotificationsService } from 'src/app/shared/services/Notifications.service';
+import { SketchSelectionService } from 'src/app/shared/services/SketchSelectionService';
 import { CreateMapLayer, CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
 import { GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { serialUnsubscriber, SubscriptionCollection } from 'src/app/shared/utils/SubscriptionUtils';
 import { AppConfiguration } from 'src/config';
 import { MMPSoil } from '../../models/mmpSoil.model';
 import { VegetationService } from '../vegetation/vegetation.service';
-import { getVegetationBackgroundColor, getVegetationHighlightSymbol, getVegetationSymbol } from '../vegetation/VegetationUtils';
+import { CreateVegetationFeatureLayer, getVegetationHighlightSymbol } from '../vegetation/VegetationUtils';
 
 @Component({
   selector: 'app-mmp-themes',
@@ -37,6 +36,7 @@ export class MMPThemesComponent implements OnInit, OnDestroy {
   notification: NotificationModel = new NotificationModel();
   userGL;
   private themesUserGL: __esri.GraphicsLayer = CreateGL('themesGL', 1);
+  private themesUserFL: __esri.FeatureLayer;
 
   @Input() mapView: __esri.MapView;
   transparency = 0;
@@ -61,9 +61,10 @@ export class MMPThemesComponent implements OnInit, OnDestroy {
   constructor (private mapViewService: MapviewService,
     private appConfig: AppConfiguration,
     private http: HttpClient, private soilsService: SoilsService,
-    private notificationsService:NotificationsService,
+    private notificationsService: NotificationsService,
     private mmpModalWindowService: MMPModalWindowService,
     private vegetationService: VegetationService,
+    private sketchSelectionService: SketchSelectionService,
     private loaderService: LoaderService) { }
 
   ngOnInit () {
@@ -74,16 +75,17 @@ export class MMPThemesComponent implements OnInit, OnDestroy {
     this.mapView.map.add(this.themesUserGL);
     this.subscriptions.selectPolygonFromTableSub$ = this.vegetationService.selectPolygonFromTable
       .subscribe((veg: any) => {
-        this.themesUserGL.graphics.forEach((gr: any) => {
-          if (gr.attributes.FID === veg.attributes.FID) {
-            gr.symbol = getVegetationHighlightSymbol(gr);
-          } else {
-            gr.symbol = getVegetationSymbol(gr);
-          }
-        })
-        // if (veg === null) {
-        //   this.themesUserGL.graphics.pop();
-        // }
+        if (veg === null) {
+          this.mapView.map.remove(this.themesUserGL);
+          this.themesUserGL.removeAll();
+        } else {
+          this.mapView.map.remove(this.themesUserGL);
+          this.themesUserGL.removeAll();
+          const gr = veg;
+          gr.symbol = getVegetationHighlightSymbol(gr);
+          this.themesUserGL.add(gr);
+          this.mapView.map.add(this.themesUserGL);
+        }
       })
   }
 
@@ -148,7 +150,7 @@ export class MMPThemesComponent implements OnInit, OnDestroy {
     this.isIdentifyDisabled = !this.isVisibleChecked;
   }
 
-  queryRelatedFeaturesForGeology = (featureId:number, oid: number, geometry: any) => {
+  queryRelatedFeaturesForGeology = (featureId: number, oid: number, geometry: any) => {
     this.http.get(`${this.appConfig.geologyMapServerURL}/${featureId}/queryRelatedRecords?f=json&relationshipid=1&returnGeometry=false&objectids=${oid}&outFields=*`)
       .subscribe((results: any) => {
         if (results.relatedRecordGroups.length > 0) {
@@ -173,25 +175,9 @@ export class MMPThemesComponent implements OnInit, OnDestroy {
       this.loaderService.isLoading.next(true);
       const inputBoundary: __esri.Graphic = polygonGraphics.getItemAt(0);
       this.vegetationService.mockVegetationData(inputBoundary).then(d => {
-        const t = d[0].value.features.map(f => {
-          f.symbol = getVegetationSymbol(f);
-          return f;
-        });
-
-        const gr = t.forEach(tt => {
-          return new Graphic(tt);
-        });
-
-        const fLayer = new FeatureLayer({
-          source: t,
-          objectIdField: 'FID',
-          popupTemplate: { content: '{FID} Test' }
-        })
-
-        this.mapView.map.add(fLayer);
-
-        console.log(d[0].value.features, t);
-        // this.themesUserGL.addMany(t);
+        if (this.themesUserFL) { this.themesUserFL.destroy() }
+        this.themesUserFL = CreateVegetationFeatureLayer(d);
+        this.mapView.map.add(this.themesUserFL);
         this.mmpModalWindowService.changeModalVisibility(this.selectedTheme, true);
       }).catch(e => {
         throw TraceMMPError('failed to clip selected theme', e.message, 'Themes.component');
@@ -273,7 +259,7 @@ export class MMPThemesComponent implements OnInit, OnDestroy {
     }
   }
 
-  private createLayerIdentifyEvent (isChecked:boolean):void {
+  private createLayerIdentifyEvent (isChecked: boolean): void {
     if (isChecked && this.activeLayer.visible && this.identifyEvent === null) {
       this.identifyEvent = this.mapView.on('click', (evt: any) => {
         if (['vegetation', 'geology'].includes(this.selectedTheme)) {
@@ -290,8 +276,15 @@ export class MMPThemesComponent implements OnInit, OnDestroy {
 
   themeIdentifyChanged (isChecked: boolean) {
     this.isIdentifyChecked = isChecked;
+    this.sketchSelectionService.changeSketchSelectionMode(this.selectedTheme, !isChecked);
     this.createLayerIdentifyEvent(isChecked);
     if (this.mapView.popup.visible) this.mapView.popup.close();
+  }
+
+  clearSelectedTheme () {
+    if (this.themesUserFL) this.themesUserFL.destroy();
+    this.themesUserGL.removeAll();
+    this.mmpModalWindowService.changeModalVisibility(this.selectedTheme, false);
   }
 
   ngOnDestroy (): void {

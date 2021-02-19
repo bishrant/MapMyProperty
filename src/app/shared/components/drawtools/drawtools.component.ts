@@ -65,8 +65,10 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private selectionState: boolean = true;
 
-  constructor (private store: Store<AppState>, private textService: TextControlService, private esriMapService: EsrimapService,
-    private TextSelectionService: TextControlSelectionService, private sketchSelectionService: SketchSelectionService) { }
+  constructor (private store: Store<AppState>, private textService: TextControlService,
+    private esriMapService: EsrimapService,
+    private TextSelectionService: TextControlSelectionService,
+    private sketchSelectionService: SketchSelectionService) { }
 
   id = (): string => Math.random().toString(36).substr(2, 9);
 

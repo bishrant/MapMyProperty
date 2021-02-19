@@ -28,7 +28,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let veg of vegList" (click)="selectVegetation(veg)" class="cursor-pointer"
-      [ngClass]="{'selectVegetation': selectVegetation === veg}">
+      [ngClass]="{'selectedVegetation': selectedVegetation === veg}">
       <td class="px-4 py-1 text-center">
         <div [ngStyle]="{'background-color': getBackgroundColor(veg)}">{{veg.attributes.VegID}}
         </div>

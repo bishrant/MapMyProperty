@@ -1,3 +1,4 @@
+import FeatureLayer from 'esri/layers/FeatureLayer';
 import CIMSymbol from 'esri/symbols/CIMSymbol';
 
 const getVegetationBackgroundColor = (veg: any) => {
@@ -20,6 +21,58 @@ const getVegetationSymbol = (veg: any) => {
   }
 };
 
+const GetVegLabelInfo = (): any => {
+  return [{
+    // autocasts as new LabelClass()
+    symbol: {
+      type: 'text', // autocasts as new TextSymbol()
+      color: 'black',
+      font: { // autocast as new Font()
+        size: 12
+      }
+    },
+    labelExpressionInfo: {
+      expression: '$feature.VegID'
+    }
+  }];
+}
+
+const CreateVegRenderer = (graphics): any => {
+  const hexSet = new Set();
+  const uniqueInfos = [];
+  for (let i = 0; i < graphics.length; i++) {
+    const hex = getVegetationBackgroundColor(graphics[i]);
+    const hexOriginal = graphics[i].attributes.HEXColor;
+    if (!hexSet.has(hex)) {
+      hexSet.add(hex);
+      uniqueInfos.push({ value: hexOriginal, symbol: { type: 'simple-fill', color: hex } })
+    }
+  }
+  return {
+    type: 'unique-value',
+    field: 'HEXColor',
+    uniqueValueInfos: uniqueInfos
+  }
+}
+
+const CreateHatch = (rotationAngle: number): any => {
+  return {
+    type: 'CIMHatchFill',
+    enable: true,
+    lineSymbol: {
+      type: 'CIMLineSymbol', // CIM line symbol that makes up the line inside the hatch fill
+      symbolLayers: [{
+        type: 'CIMSolidStroke',
+        enable: true,
+        width: 1,
+        color: [0, 0, 0, 150]
+      }]
+    },
+    rotation: rotationAngle,
+    separation: 5
+  }
+}
+
 const getVegetationHighlightSymbol = (veg: any) => {
   return new CIMSymbol({
     data: {
@@ -31,44 +84,9 @@ const getVegetationHighlightSymbol = (veg: any) => {
           width: 1,
           color: [5, 252, 240, 255]
         },
-
+        CreateHatch(45),
+        CreateHatch(135),
         {
-        // light blue hatch fill
-          type: 'CIMHatchFill',
-          enable: true,
-          lineSymbol: {
-            type: 'CIMLineSymbol', // CIM line symbol that makes up the line inside the hatch fill
-            symbolLayers: [{
-              type: 'CIMSolidStroke',
-
-              enable: true,
-              width: 1,
-              color: [0, 0, 0, 150]
-            }]
-          },
-          rotation: 45, // rotation of the lines
-          separation: 5 // distance between lines in hatch fill
-        },
-
-        {
-        // light blue hatch fill
-          type: 'CIMHatchFill',
-          enable: true,
-          lineSymbol: {
-            type: 'CIMLineSymbol', // CIM line symbol that makes up the line inside the hatch fill
-            symbolLayers: [{
-              type: 'CIMSolidStroke',
-              enable: true,
-              width: 1,
-              color: [0, 0, 0, 150]
-            }]
-          },
-          rotation: 135, // rotation of the lines
-          separation: 5 // distance between lines in hatch fill
-        },
-
-        {
-        // solid blue fill background
           type: 'CIMSolidFill',
           enable: true,
           color: getVegetationBackgroundColor(veg) as any
@@ -78,6 +96,33 @@ const getVegetationHighlightSymbol = (veg: any) => {
     }
   })
 };
+
+const CreateVegetationFeatureLayer = (vegetationData: any[]): __esri.FeatureLayer => {
+  const _graphics = vegetationData[0].value.features.map(f => {
+    f.symbol = getVegetationSymbol(f);
+    return f;
+  });
+
+  const fLayer = new FeatureLayer({
+    source: _graphics,
+    objectIdField: 'FID',
+    fields: [{
+      name: 'FID',
+      type: 'oid'
+    }, {
+      name: 'VegID',
+      type: 'integer'
+    },
+    {
+      name: 'HEXColor',
+      type: 'string'
+    }],
+    popupTemplate: { content: '{FID} Test' },
+    renderer: CreateVegRenderer(_graphics),
+    labelingInfo: GetVegLabelInfo()
+  })
+  return fLayer;
+}
 
 const GetVegetationTextSymbol: any = (text: string, alpha: number) => {
   return {
@@ -92,4 +137,8 @@ const GetVegetationTextSymbol: any = (text: string, alpha: number) => {
   };
 };
 
-export { GetVegetationTextSymbol, getVegetationBackgroundColor, getVegetationSymbol, getVegetationHighlightSymbol }
+export {
+  GetVegLabelInfo, CreateVegRenderer, CreateVegetationFeatureLayer,
+  GetVegetationTextSymbol, getVegetationBackgroundColor,
+  getVegetationSymbol, getVegetationHighlightSymbol
+}
