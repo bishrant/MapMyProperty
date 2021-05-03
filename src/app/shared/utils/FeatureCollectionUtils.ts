@@ -4,7 +4,7 @@ import Graphic from '@arcgis/core/Graphic';
 import Polyline from '@arcgis/core/geometry/Polyline';
 import Polygon from '@arcgis/core/geometry/Polygon';
 import { id } from '../store/todo';
-import webMercatorUtils = require('@arcgis/core/geometry/support/webMercatorUtils');
+import * as webMercatorUtils from '@arcgis/core/geometry/support/webMercatorUtils';
 
 const createPolygonGraphic = (coordinates: any) => {
   const polygonAttributes: any = {
