@@ -23,6 +23,7 @@ module.exports = {
       default: {
         checkbox: {
           borderColor: 'black',
+          borderWidth: '1px',
           '&:checked': {
             borderColor: 'black',
             backgroundSize: '100% 100%',
