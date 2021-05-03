@@ -13,11 +13,7 @@ module.exports = {
         mmp_secondary: '#751380',
         pmlo_primary: '#8F8364',
         pmlo_secondary: '#353535'
-      },
-      borderWidth: {
-        1: '1px'
       }
-
     },
     customForms: () => ({
       default: {
