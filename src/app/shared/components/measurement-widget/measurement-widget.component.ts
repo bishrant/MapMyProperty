@@ -1,8 +1,9 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { WidgetToggleService } from '../../services/WidgetToggleService';
-import Measurement from 'esri/widgets/Measurement';
+import Measurement from '@arcgis/core/widgets/Measurement';
 import { SketchSelectionService } from '../../services/SketchSelectionService';
+import MapView from '@arcgis/core/views/MapView';
 
 @Component({
   selector: 'app-measurement-widget',
@@ -10,7 +11,7 @@ import { SketchSelectionService } from '../../services/SketchSelectionService';
   styleUrls: ['./measurement-widget.component.scss']
 })
 export class MeasurementWidgetComponent implements OnInit, OnDestroy {
-  @Input() mapView: __esri.MapView;
+  @Input() mapView: MapView;
 
   @ViewChild('widgetContainer', { static: true }) private widgetContainerDiv!: ElementRef;
 
@@ -21,7 +22,7 @@ export class MeasurementWidgetComponent implements OnInit, OnDestroy {
 
   private measurement:Measurement = new Measurement();
 
-  constructor(private widgetToggleService:WidgetToggleService,
+  constructor (private widgetToggleService:WidgetToggleService,
     private sketchSelectionService: SketchSelectionService) {
     this.subscriptions$ = this.widgetToggleService.widgetViewChanged.subscribe((widgetInfo: any) => {
       if (widgetInfo.name !== 'measurement' && this.isOpen) {
@@ -31,7 +32,7 @@ export class MeasurementWidgetComponent implements OnInit, OnDestroy {
     })
   }
 
-  ngOnInit(): void {
+  ngOnInit (): void {
     this.measurement.view = this.mapView;
     this.measurement.container = this.widgetContainerDiv.nativeElement;
     this.measurement.linearUnit = 'us-feet';
@@ -42,19 +43,19 @@ export class MeasurementWidgetComponent implements OnInit, OnDestroy {
     this.subscriptions$.unsubscribe();
   }
 
-  distanceMeasurement():void {
+  distanceMeasurement ():void {
     this.measurement.activeTool = 'distance';
     this.isAreaActive = false;
     this.updateSketchState(false);
   }
 
-  areaMeasurement():void {
+  areaMeasurement ():void {
     this.measurement.activeTool = 'area';
     this.isAreaActive = true;
     this.updateSketchState(false);
   }
 
-  clearMeasurements():void {
+  clearMeasurements ():void {
     this.measurement.clear();
     this.isAreaActive = null;
     this.updateSketchState(true);

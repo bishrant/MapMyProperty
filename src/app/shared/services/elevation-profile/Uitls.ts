@@ -1,6 +1,6 @@
 import { ElevationUnits } from './interfaces.d';
-import Polyline from 'esri/geometry/Polyline';
-import { planarLength } from 'esri/geometry/geometryEngine';
+import Polyline from '@arcgis/core/geometry/Polyline';
+import { planarLength } from '@arcgis/core/geometry/geometryEngine';
 
 const elevationUnitMap = {
   meters: 'meters',

@@ -1,12 +1,13 @@
 import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren, OnDestroy } from '@angular/core';
-import MapImageLayer from 'esri/layers/MapImageLayer';
-import FeatureLayer from 'esri/layers/FeatureLayer';
-import VectorLayer from 'esri/layers/VectorTileLayer';
+import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import VectorLayer from '@arcgis/core/layers/VectorTileLayer';
 import { HttpClient } from '@angular/common/http';
 import { MapviewService } from '../../services/mapview.service';
 import { WidgetToggleService } from '../../services/WidgetToggleService';
 import { Subscription } from 'rxjs';
 import { CreateMapLayer } from '../../utils/CreateDynamicLayers';
+import MapView from '@arcgis/core/views/MapView';
 
 @Component({
   selector: 'app-overlay-layers-widget',
@@ -14,7 +15,7 @@ import { CreateMapLayer } from '../../utils/CreateDynamicLayers';
   styleUrls: ['./overlay-layers-widget.component.scss']
 })
 export class OverlayLayersWidgetComponent implements OnInit, OnDestroy {
-  @Input() mapView: __esri.MapView;
+  @Input() mapView: MapView;
   @Input() colorPrefix: string;
   @ViewChildren('checkboxes') checkboxes: QueryList<ElementRef>;
   isOpen: boolean = false;

@@ -9,8 +9,8 @@ import { AppState } from '../../store/graphics.state';
   styleUrls: ['./GraphicsStore.component.scss']
 })
 export class GraphicsStoreComponent implements AfterViewInit {
-  @Input('sketchVM') sketchVM: __esri.SketchViewModel;
-  @Input('textGraphicsLayer') textGraphicsLayer: __esri.GraphicsLayer;
+  @Input('sketchVM') sketchVM: SketchViewModel;
+  @Input('textGraphicsLayer') textGraphicsLayer: GraphicsLayer;
   readonly disableUndo$ = this.store.select((state) => !state.app.canUndo);
   readonly disableRedo$ = this.store.select((state) => !state.app.canRedo);
 

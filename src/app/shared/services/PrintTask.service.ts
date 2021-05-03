@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import MapView from 'esri/views/MapView';
+import MapView from '@arcgis/core/views/MapView';
 import { AppConfiguration } from 'src/config';
-import Geoprocessor from 'esri/tasks/Geoprocessor';
+import Geoprocessor from '@arcgis/core/tasks/Geoprocessor';
 import { GetWebMapAsJsonString } from '../utils/WebMapAsJsonUtils';
+import { Extent } from '@arcgis/core/geometry';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { GetWebMapAsJsonString } from '../utils/WebMapAsJsonUtils';
 export class PrintTaskService {
   constructor (private appConfig: AppConfiguration) {}
 
-  exportWebMap (mv: MapView, layout: any, format: any, boundaryExtent:__esri.Extent): Promise<string> {
+  exportWebMap (mv: MapView, layout: any, format: any, boundaryExtent:Extent): Promise<string> {
     return new Promise((resolve) => {
       const printParameters = {
         Web_Map_as_JSON: GetWebMapAsJsonString(mv, boundaryExtent),

@@ -20,7 +20,6 @@
     "typeRoots": ["node_modules/@types"],
     "lib": ["DOM", "es5", "ES6","es2015.promise", "ES7"]
   },
-  "types": ["arcgis-js-api"],
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"],
   "exclude": ["src/**/*.ngtypecheck.ts"],
   "files": [

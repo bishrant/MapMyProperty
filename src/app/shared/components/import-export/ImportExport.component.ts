@@ -9,6 +9,7 @@ import { convertSHPToGraphics, downloadSHP } from '../../utils/SHPUtils';
 import { downloadFile } from '../../utils/DownloadFile';
 import { GetGraphicsForExtentUsingString } from '../../utils/DrawUtils';
 import { convertMMPJSONToGraphics } from './OldMMPUtils';
+import MapView from '@arcgis/core/views/MapView';
 
 @Component({
   selector: 'app-import-export',
@@ -17,7 +18,7 @@ import { convertMMPJSONToGraphics } from './OldMMPUtils';
 })
 export class ImportExportComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
-  @Input() mapView: __esri.MapView;
+  @Input() mapView: MapView;
   files: any = [];
   format = 'mmp';
   graphicsSub$: any;

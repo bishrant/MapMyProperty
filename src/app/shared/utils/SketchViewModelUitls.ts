@@ -1,9 +1,10 @@
-import SketchViewModel from 'arcgis-js-api/widgets/Sketch/SketchViewModel';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import { emptyPoint, bluePolygon } from './Renderers';
-import Circle from 'esri/geometry/Circle';
-import { geodesicArea } from 'esri/geometry/geometryEngine';
-import { subclass } from 'esri/core/accessorSupport/decorators';
-import { Polygon, Polyline } from 'esri/geometry';
+import Circle from '@arcgis/core/geometry/Circle';
+import { geodesicArea } from '@arcgis/core/geometry/geometryEngine';
+import { subclass } from '@arcgis/core/core/accessorSupport/decorators';
+import { Polygon, Polyline } from '@arcgis/core/geometry';
+import MapView from '@arcgis/core/views/MapView';
 
 @subclass('esri.geometry.Circle')
 class TFSCircle extends Circle {
@@ -48,7 +49,7 @@ class TFSPolyline extends Polyline {
   }
 }
 
-const SetupSketchViewModel = (graphicsLayer: any, mapView: __esri.MapView): __esri.SketchViewModel => {
+const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): SketchViewModel => {
   return new SketchViewModel({
     view: mapView,
     layer: graphicsLayer,
@@ -69,7 +70,7 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: __esri.MapView): __es
   });
 };
 
-const CreateGeneralSketchViewModel = (graphicsLayer: any, mapView: __esri.MapView): __esri.SketchViewModel => {
+const CreateGeneralSketchViewModel = (graphicsLayer: any, mapView: MapView): SketchViewModel => {
   return new SketchViewModel({
     view: mapView,
     layer: graphicsLayer,

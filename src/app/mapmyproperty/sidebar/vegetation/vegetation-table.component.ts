@@ -15,7 +15,7 @@ export class VegetationTableComponent implements OnInit {
   headElements: TableHeader[] = [];
   vegList;
   totalAcres:string;
-  selectedVegetation:__esri.Graphic;
+  selectedVegetation:Graphic;
   private totalAreaSqMt = 0;
   private subscriptions: SubscriptionCollection = {};
 

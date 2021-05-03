@@ -16,7 +16,7 @@ import { SoilsService } from '../soils/soils.service';
   styleUrls: ['./regeneration-operations.component.scss']
 })
 export class RegenerationOperationsComponent implements OnInit {
-  @Input() mapView: __esri.MapView;
+  @Input() mapView: MapView;
 
   sliderValue: number = 0;
   selectedRadio: string = 'SeedMortal';
@@ -26,9 +26,9 @@ export class RegenerationOperationsComponent implements OnInit {
 
   accordionOpened:boolean = false;
 
-  private pmloSoilsGL: __esri.GraphicsLayer;
-  private pmloSoilLabelsGL: __esri.GraphicsLayer;
-  private userGL: __esri.GraphicsLayer;
+  private pmloSoilsGL: GraphicsLayer;
+  private pmloSoilLabelsGL: GraphicsLayer;
+  private userGL: GraphicsLayer;
 
   private pmloNote: NotificationModel = new NotificationModel();
 
@@ -44,9 +44,9 @@ export class RegenerationOperationsComponent implements OnInit {
   ) { }
 
   ngOnInit (): void {
-    this.pmloSoilsGL = this.mapView.map.findLayerById('pmloSoilsGL') as __esri.GraphicsLayer;
-    this.pmloSoilLabelsGL = this.mapView.map.findLayerById('pmloSoilLabelsGL') as __esri.GraphicsLayer;
-    this.userGL = this.mapView.map.findLayerById('userGraphicsLayer') as __esri.GraphicsLayer;
+    this.pmloSoilsGL = this.mapView.map.findLayerById('pmloSoilsGL') as GraphicsLayer;
+    this.pmloSoilLabelsGL = this.mapView.map.findLayerById('pmloSoilLabelsGL') as GraphicsLayer;
+    this.userGL = this.mapView.map.findLayerById('userGraphicsLayer') as GraphicsLayer;
 
     this.esrimapService.regOpAccordionOpen.subscribe((opened) => {
       this.accordionOpened = opened;
@@ -105,7 +105,7 @@ export class RegenerationOperationsComponent implements OnInit {
 
   buildOperationsReport (): void {
     this.loaderService.isLoading.next(true);
-    const boundary: __esri.Graphic = this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
+    const boundary: Graphic = this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
     this.harvestOperationsService.createOperationsReport(this.selectedRadio, this.mapView, this.pmloSoilsGL, boundary.geometry.extent.clone().expand(1.05), this.roReportTitle).then((reportUrl: string) => {
       this.loaderService.isLoading.next(false);
       window.open(reportUrl, '_blank', 'noopener');
@@ -125,8 +125,8 @@ export class RegenerationOperationsComponent implements OnInit {
         this.notificationsService.openNotificationsModal.emit(this.pmloNote);
       } else {
         this.loaderService.isLoading.next(true);
-        const inputBoundary: __esri.Graphic = this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
-        this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
+        const inputBoundary: Graphic = this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
+        this.soilsService.getSoils(inputBoundary).then((result: FeatureSet[]) => {
           if (result.length === 0) {
             this.loaderService.isLoading.next(false);
             this.pmloNote.body = 'There was an error while getting regeneration attributes. Please try again and, if the problem persists, contact the administrator.';

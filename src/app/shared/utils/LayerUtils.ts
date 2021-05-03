@@ -1,4 +1,4 @@
-const reorderGraphicsLayer = (mapViewMap: __esri.Map) => {
+const reorderGraphicsLayer = (mapViewMap: Map) => {
   mapViewMap.allLayers.on('change', (evt) => {
     // Pull user graphics layers to the end of the array
     if (evt.added.length > 0) {

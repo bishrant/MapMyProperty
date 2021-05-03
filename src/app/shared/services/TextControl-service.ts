@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Point } from 'esri/geometry';
-import Graphic from 'esri/Graphic';
+import { Point } from '@arcgis/core/geometry';
+import Graphic from '@arcgis/core/Graphic';
 import { BehaviorSubject } from 'rxjs';
 import { createAreaLabels, createDistanceLabels } from '../components/drawtools/GeometryEngineUtils';
 import { getTextParamsFromHTML, SetInputStyleAttributes } from '../components/drawtools/TextUtils';
@@ -41,7 +41,7 @@ export class TextControlService {
     return gr;
   }
 
-  HideOnlyTextGraphics (textGraphic: Graphic, graphicsLayer: __esri.GraphicsLayer, store: any, cleanupFn) {
+  HideOnlyTextGraphics (textGraphic: Graphic, graphicsLayer: GraphicsLayer, store: any, cleanupFn) {
     if (graphicsLayer.id === 'userTextGraphicsLayer') {
       store.dispatch(removeGraphics({ ids: [textGraphic.attributes.id] }));
     }

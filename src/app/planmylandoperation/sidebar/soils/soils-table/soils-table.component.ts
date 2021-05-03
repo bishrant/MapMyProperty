@@ -11,11 +11,11 @@ import { TableHeader } from './table-header';
   styleUrls: ['./soils-table.component.scss']
 })
 export class SoilsTableComponent implements OnInit {
-  soils:__esri.Graphic[];
+  soils:Graphic[];
   headElements: TableHeader[] = [];
   totalAcres:string;
 
-  selectedSoil:__esri.Graphic;
+  selectedSoil:Graphic;
 
   private totalAreaSqMt = 0;
 
@@ -24,7 +24,7 @@ export class SoilsTableComponent implements OnInit {
   ) { }
 
   ngOnInit (): void {
-    this.soilsService.shareMultiSoils.subscribe((multiSoils:__esri.Graphic[]) => {
+    this.soilsService.shareMultiSoils.subscribe((multiSoils:Graphic[]) => {
       const reducer = (accumulator, currentValue) => accumulator + currentValue.attributes.Shape_Area;
       this.totalAreaSqMt = multiSoils.reduce(reducer, 0)
       this.totalAcres = FormatRoundNumber(ConvertSquareMetersToAcres(this.totalAreaSqMt), 1);
@@ -65,7 +65,7 @@ export class SoilsTableComponent implements OnInit {
     );
   }
 
-  selectSoil (soil:__esri.Graphic):void {
+  selectSoil (soil:Graphic):void {
     if (this.selectedSoil === soil) {
       this.selectedSoil = undefined;
       this.soilsService.selectPolygonFromTable.emit(null);

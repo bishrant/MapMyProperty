@@ -1,8 +1,8 @@
 import { Injectable, Directive } from '@angular/core';
-import Query from 'esri/tasks/support/Query';
-import QueryTask from 'esri/tasks/QueryTask';
-import FeatureSet from 'esri/tasks/support/FeatureSet';
-import Geoprocessor from 'esri/tasks/Geoprocessor';
+import Query from '@arcgis/core/tasks/support/Query';
+import QueryTask from '@arcgis/core/tasks/QueryTask';
+import FeatureSet from '@arcgis/core/tasks/support/FeatureSet';
+import Geoprocessor from '@arcgis/core/tasks/Geoprocessor';
 import { LineProps, FillProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from 'src/app/shared/utils/GraphicStyles';
 import {
@@ -14,6 +14,9 @@ import {
   GetSMZProps
 } from '../../pmloUtils/SensAreasStyles';
 import { AppConfiguration } from 'src/config';
+import { Geometry } from '@arcgis/core/geometry';
+import Graphic from '@arcgis/core/Graphic';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 @Directive()
 @Injectable({
@@ -24,7 +27,7 @@ export class SensAreasService {
     private appConfig: AppConfiguration
   ) { }
 
-  async isWithinTexas (geo: __esri.Geometry): Promise<boolean> {
+  async isWithinTexas (geo: Geometry): Promise<boolean> {
     return new Promise((resolve) => {
       const _queryTask = new QueryTask({
         url: this.appConfig.usCountyLayerURL
@@ -40,7 +43,7 @@ export class SensAreasService {
           resolve(false);
         } else {
           let isInTexas: boolean = true;
-          result.features.forEach((co: __esri.Graphic) => {
+          result.features.forEach((co: Graphic) => {
             if (co.attributes.STATE !== '48') {
               isInTexas = false;
             }
@@ -48,12 +51,13 @@ export class SensAreasService {
           resolve(isInTexas);
         }
       }).catch((error:any) => {
+        console.error(error);
         resolve(null);
       });
     });
   }
 
-  getSensAreas (graph: __esri.Graphic, isInTexas: boolean, smzValue: number, wetAreasBufferValue: number, severeSlopesValue: number): Promise<any[]> {
+  getSensAreas (graph: Graphic, isInTexas: boolean, smzValue: number, wetAreasBufferValue: number, severeSlopesValue: number): Promise<any[]> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
@@ -65,7 +69,7 @@ export class SensAreasService {
         severeSlopesValue: severeSlopesValue
       };
 
-      const gp: __esri.Geoprocessor = new Geoprocessor({
+      const gp: Geoprocessor = new Geoprocessor({
         url: this.appConfig.sensAreasGPServiceURL
       });
 
@@ -96,7 +100,7 @@ export class SensAreasService {
     });
   }
 
-  addSensAreasToMap (gl: __esri.GraphicsLayer, areas: any[], boundaryId: string, sliderValue: number): void {
+  addSensAreasToMap (gl: GraphicsLayer, areas: any[], boundaryId: string, sliderValue: number): void {
     const graphicTransparency: number = (100 - sliderValue) / 100;
     areas.forEach((area, index) => {
       let symbol: any;
@@ -142,7 +146,7 @@ export class SensAreasService {
     });
   }
 
-  updateOpacity (gl: __esri.GraphicsLayer, origin: string, visible: boolean): void {
+  updateOpacity (gl: GraphicsLayer, origin: string, visible: boolean): void {
     gl.graphics.forEach((g) => {
       if (g.attributes.origin === origin) {
         g.visible = visible;
@@ -153,7 +157,7 @@ export class SensAreasService {
     });
   }
 
-  async bufferGraphic (origin: string, graph: __esri.Graphic, inputFeet: number): Promise<any> {
+  async bufferGraphic (origin: string, graph: Graphic, inputFeet: number): Promise<any> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
@@ -185,7 +189,7 @@ export class SensAreasService {
     });
   }
 
-  addBuffersOrSlopeToMap (gl: __esri.GraphicsLayer, fs: FeatureSet, origin: string, sliderValue: number, boundaryId: string): void {
+  addBuffersOrSlopeToMap (gl: GraphicsLayer, fs: FeatureSet, origin: string, sliderValue: number, boundaryId: string): void {
     const graphicTransparency: number = (100 - sliderValue) / 100;
     let fillProps: FillProps = GetSMZProps(graphicTransparency);
     const lineProps: LineProps = GetDefaultLineProps();
@@ -209,7 +213,7 @@ export class SensAreasService {
     this.addGraphicsToGL(gl, fs, isSlope, symbol, origin, groupOrder, true, boundaryId);
   }
 
-  updateGraphicsOpacity (gl: __esri.GraphicsLayer, sliderValue: number): void {
+  updateGraphicsOpacity (gl: GraphicsLayer, sliderValue: number): void {
     const graphicTransparency: number = (100 - sliderValue) / 100;
     gl.graphics.forEach(g => {
       let symbol: any;
@@ -246,7 +250,7 @@ export class SensAreasService {
     });
   }
 
-  async setSlope (graph: __esri.Graphic, inputSlope: number, isInTexas: boolean): Promise<any> {
+  async setSlope (graph: Graphic, inputSlope: number, isInTexas: boolean): Promise<any> {
     return new Promise((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [graph];
@@ -278,8 +282,8 @@ export class SensAreasService {
     });
   }
 
-  removeGraphicsByAttribute (gl: __esri.GraphicsLayer, attribute: string): void {
-    const graphicsToRemove: any = gl.graphics.filter((gra: __esri.Graphic) => {
+  removeGraphicsByAttribute (gl: GraphicsLayer, attribute: string): void {
+    const graphicsToRemove: any = gl.graphics.filter((gra: Graphic) => {
       return (gra.attributes.origin === attribute);
     });
 
@@ -287,7 +291,7 @@ export class SensAreasService {
   }
 
   private addGraphicsToGL (
-    gl: __esri.GraphicsLayer,
+    gl: GraphicsLayer,
     fs: FeatureSet,
     isSlope: boolean,
     symbol: any,
@@ -303,7 +307,7 @@ export class SensAreasService {
     }
 
     if (fs.features.length > 0) {
-      const graphicsCollection: __esri.Graphic[] = [];
+      const graphicsCollection: Graphic[] = [];
       fs.features.forEach((element) => {
         element.symbol = symbol;
         element.setAttribute('origin', origin);

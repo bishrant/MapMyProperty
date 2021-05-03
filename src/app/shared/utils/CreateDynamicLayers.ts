@@ -1,7 +1,7 @@
-import WMSLayer from 'arcgis-js-api/layers/WMSLayer';
-import FeatureLayer from 'esri/layers/FeatureLayer';
-import MapImageLayer from 'esri/layers/MapImageLayer';
-import VectorTileLayer from 'esri/layers/VectorTileLayer';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
+import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
 
 const CreateSoilsLayer = (Id = 'soilsDynamicLayer', ssurgoWMSURL: string) => {
   const soilsLayer = new WMSLayer({

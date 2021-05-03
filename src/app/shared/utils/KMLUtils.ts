@@ -1,4 +1,4 @@
-import { Point } from 'esri/geometry';
+import { Point } from '@arcgis/core/geometry';
 import { kml } from './lib/kml';
 import { convertFeatureCollectionToGraphics } from './FeatureCollectionUtils';
 import { createWebMercatorLineFromGraphic, createWebMercatorPointFromGraphic, createWebMercatorPolygonFromGraphic } from './WebMercatorUtils';

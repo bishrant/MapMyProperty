@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
-import Collection from 'esri/core/Collection';
-import Layer from 'esri/layers/Layer';
-import Swipe from 'esri/widgets/Swipe';
+import Collection from '@arcgis/core/core/Collection';
+import Layer from '@arcgis/core/layers/Layer';
+import Swipe from '@arcgis/core/widgets/Swipe';
 import { Subscription } from 'rxjs';
 import { googleWMSlayer, texasBasemaps, texasBasemapsDict } from '../../layers/NAIPLayers';
 import { LoaderService } from '../../services/Loader.service';
@@ -14,7 +14,7 @@ import { WidgetToggleService } from '../../services/WidgetToggleService';
 })
 export class SwipeWidgetComponent implements AfterViewInit, OnDestroy {
   loadingBaseLayer: Layer;
-  @Input() mapView: __esri.MapView;
+  @Input() mapView: MapView;
   texasBasemaps = texasBasemaps;
   texasBasemapsDict = texasBasemapsDict;
   googleWMSlayer = googleWMSlayer;

@@ -13,8 +13,8 @@ export class ElevationProfileComponent {
   @ViewChild('elevationProfileModal') elevationProfileModal: any;
   @Input() mapView: any;
   @Input() slopeThreshold: number = 8;
-  @Input() sketchVM: __esri.SketchViewModel;
-  @Input() generalSketchVM: __esri.SketchViewModel;
+  @Input() sketchVM: SketchViewModel;
+  @Input() generalSketchVM: SketchViewModel;
 
   isActive = false;
   headerBgColor = '#353535';

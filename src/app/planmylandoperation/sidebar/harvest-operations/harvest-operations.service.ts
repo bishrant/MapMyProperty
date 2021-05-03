@@ -15,9 +15,9 @@ export class HarvestOperationsService {
     private reportsService: ReportsService
   ) {}
 
-  addSoilsToMap (soilsGl: __esri.GraphicsLayer, soilMulti: any, boundaryId: string, sliderValue: number): void {
+  addSoilsToMap (soilsGl: GraphicsLayer, soilMulti: any, boundaryId: string, sliderValue: number): void {
     const graphicOpacity: number = (100 - sliderValue) / 100;
-    const graphicsCollection: __esri.Graphic[] = [];
+    const graphicsCollection: Graphic[] = [];
     const lineProps: LineProps = GetDefaultSoilsLineProps(graphicOpacity);
     soilMulti.value.features.forEach((feature: any) => {
       const fillProps: FillProps = GetDrainageClassFillProps(feature, graphicOpacity);
@@ -28,10 +28,10 @@ export class HarvestOperationsService {
     soilsGl.addMany(graphicsCollection);
   }
 
-  createOperationsReport (selectedRadio: string, mv: __esri.MapView, soilsGl: __esri.GraphicsLayer, boundaryExtent: __esri.Extent, reportTitle:string): Promise<string> {
+  createOperationsReport (selectedRadio: string, mv: MapView, soilsGl: GraphicsLayer, boundaryExtent: Extent, reportTitle:string): Promise<string> {
     return new Promise((resolve, reject) => {
       this.printTaskService.exportWebMap(mv, 'PMLOSensAreasTemplate', 'jpg', boundaryExtent).then((mapImageUrl: string) => {
-        const soilsAttributes:any = soilsGl.graphics.map((soil:__esri.Graphic) => {
+        const soilsAttributes:any = soilsGl.graphics.map((soil:Graphic) => {
           soil.attributes.Acres = SquareMetersToAcres(soil.attributes.Shape_Area);
           return soil.attributes;
         });

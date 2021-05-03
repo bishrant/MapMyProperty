@@ -1,4 +1,4 @@
-import WidgetProperties = __esri.WidgetProperties;
+import WidgetProperties = WidgetProperties;
 
 export interface ElevationProfileProperties
   extends ElevationProfileViewModelProperties,

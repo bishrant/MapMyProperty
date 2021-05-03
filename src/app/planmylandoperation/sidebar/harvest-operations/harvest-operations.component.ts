@@ -16,7 +16,7 @@ import { HarvestOperationsService } from './harvest-operations.service';
   styleUrls: ['./harvest-operations.component.scss']
 })
 export class HarvestOperationsComponent implements OnInit {
-  @Input() mapView: __esri.MapView;
+  @Input() mapView: MapView;
 
   sliderValue: number = 0;
   selectedRadio: string = 'drclassdcd';
@@ -26,9 +26,9 @@ export class HarvestOperationsComponent implements OnInit {
 
   accordionOpened:boolean = false;
 
-  private pmloSoilsGL: __esri.GraphicsLayer;
-  private pmloSoilLabelsGL: __esri.GraphicsLayer;
-  private userGL: __esri.GraphicsLayer;
+  private pmloSoilsGL: GraphicsLayer;
+  private pmloSoilLabelsGL: GraphicsLayer;
+  private userGL: GraphicsLayer;
 
   private pmloNote: NotificationModel = new NotificationModel();
 
@@ -44,9 +44,9 @@ export class HarvestOperationsComponent implements OnInit {
   ) {}
 
   ngOnInit (): void {
-    this.pmloSoilsGL = this.mapView.map.findLayerById('pmloSoilsGL') as __esri.GraphicsLayer;
-    this.pmloSoilLabelsGL = this.mapView.map.findLayerById('pmloSoilLabelsGL') as __esri.GraphicsLayer;
-    this.userGL = this.mapView.map.findLayerById('userGraphicsLayer') as __esri.GraphicsLayer;
+    this.pmloSoilsGL = this.mapView.map.findLayerById('pmloSoilsGL') as GraphicsLayer;
+    this.pmloSoilLabelsGL = this.mapView.map.findLayerById('pmloSoilLabelsGL') as GraphicsLayer;
+    this.userGL = this.mapView.map.findLayerById('userGraphicsLayer') as GraphicsLayer;
 
     this.esrimapService.harvOpAccordionOpen.subscribe((opened: boolean) => {
       this.accordionOpened = opened;
@@ -109,7 +109,7 @@ export class HarvestOperationsComponent implements OnInit {
 
   buildOperationsReport (): void {
     this.loaderService.isLoading.next(true);
-    const boundary: __esri.Graphic = this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').getItemAt(0);
+    const boundary: Graphic = this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').getItemAt(0);
     this.harvestOperationsService
       .createOperationsReport(
         this.selectedRadio,
@@ -144,10 +144,10 @@ export class HarvestOperationsComponent implements OnInit {
         this.notificationsService.openNotificationsModal.emit(this.pmloNote);
       } else {
         this.loaderService.isLoading.next(true);
-        const inputBoundary: __esri.Graphic = this.userGL.graphics
+        const inputBoundary: Graphic = this.userGL.graphics
           .filter((g) => g.geometry.type === 'polygon')
           .getItemAt(0);
-        this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
+        this.soilsService.getSoils(inputBoundary).then((result: FeatureSet[]) => {
           if (result.length === 0) {
             this.loaderService.isLoading.next(false);
             this.pmloNote.body =

@@ -16,8 +16,8 @@ export class OperationLegendService {
 
   constructor () { }
 
-  setOperationLegendSymbols (value: string, pmloSoilsGL: __esri.GraphicsLayer, sliderValue: number): void {
-    pmloSoilsGL.graphics.forEach((g: __esri.Graphic) => {
+  setOperationLegendSymbols (value: string, pmloSoilsGL: GraphicsLayer, sliderValue: number): void {
+    pmloSoilsGL.graphics.forEach((g: Graphic) => {
       let symbolColor: any = {};
       switch (g.attributes[value]) {
         case OperationValues.excessDr:
