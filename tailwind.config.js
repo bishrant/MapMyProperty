@@ -9,10 +9,10 @@ module.exports = {
         pmlo_secondary: '#353535'
       },
       borderWidth: {
-        '1':'1px'
+        1: '1px'
       }
     },
-    customForms: theme => ({
+    customForms: () => ({
       default: {
         checkbox: {
           borderColor: 'black',
@@ -33,12 +33,10 @@ module.exports = {
     })
 
   },
-  future: {
-    removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true
-  },
   variants: {
     borderWidth: ['responsive', 'hover', 'focus']
   },
-  plugins: [require('@tailwindcss/custom-forms')]
+  plugins: [require('@tailwindcss/forms')({
+    strategy: 'class'
+  })]
 }
