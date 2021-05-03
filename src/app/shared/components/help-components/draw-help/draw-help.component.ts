@@ -14,7 +14,7 @@ export class DrawHelpComponent implements OnInit {
   }
 
   setActiveTab (draw:boolean):void {
-    if (this.isDrawActive && !draw || !this.isDrawActive && draw) {
+    if ((this.isDrawActive && (!draw)) || (!this.isDrawActive && draw)) {
       this.isDrawActive = !this.isDrawActive;
     }
   }

@@ -1,5 +1,5 @@
-import { Polyline } from 'esri/geometry';
-import Graphic from 'esri/Graphic';
+import { Polyline } from '@arcgis/core/geometry';
+import Graphic from '@arcgis/core/Graphic';
 import { CreatePointFromGraphic, CreatePolygonFromGraphic, CreatePolylineFromGraphic, id } from '../../utils/DrawUtils';
 import { getPointSvg } from '../pointcontrol/pointSymbols';
 

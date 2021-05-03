@@ -1,8 +1,8 @@
-import { geodesicArea, geodesicLength } from 'arcgis-js-api/geometry/geometryEngine';
-import Graphic from 'esri/Graphic';
+import { geodesicArea, geodesicLength } from '@arcgis/core/geometry/geometryEngine';
+import Graphic from '@arcgis/core/Graphic';
 
 const createAreaLabels = (graphic: Graphic) => {
-  const area = geodesicArea(graphic.geometry, 'acres');
+  const area = geodesicArea(graphic.geometry as any, 'acres');
   if (area < 0.1) {
     return numberWithCommas(Math.round(area * 100) / 100) + ' acres';
   }
@@ -17,7 +17,7 @@ function numberWithCommas (x) {
 }
 
 const createDistanceLabels = (graphic: Graphic) => {
-  let unit = 'miles';
+  let unit: any = 'miles';
   let length = geodesicLength(graphic.geometry, unit);
   if (length < 3) {
     unit = 'feet';

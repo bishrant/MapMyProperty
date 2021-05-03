@@ -1,10 +1,11 @@
+import Graphic from '@arcgis/core/Graphic';
 import { FillProps, LineProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { HexToRGB } from 'src/app/shared/utils/Colors';
 import { GetDrainageClassColors } from './pmloColors';
 
 const orangeColor: any = { r: 240, g: 165, b: 45, a: 1 };
 
-const GetSoilFillProps: any = (gra: __esri.Graphic, alpha: number) => {
+const GetSoilFillProps: any = (gra: Graphic, alpha: number) => {
   let hexColor: string = gra.getAttribute('HexColor');
   if (gra.getAttribute('musym') === 'W') {
     hexColor = WaterBlueHexColor;
@@ -83,7 +84,7 @@ const GetSelectedSoilLineProps: any = () => {
   return lineProps;
 };
 
-const GetDrainageClassFillProps: any = (gra: __esri.Graphic, alpha: number) => {
+const GetDrainageClassFillProps: any = (gra: Graphic, alpha: number) => {
   let colorModel: any = { r: 0, g: 0, b: 0, a: alpha };
 
   switch (gra.attributes.drclassdcd !== null ? gra.attributes.drclassdcd.toLowerCase() : null) {

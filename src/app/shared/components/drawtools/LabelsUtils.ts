@@ -1,7 +1,7 @@
-import Point from 'esri/geometry/Point';
-import Graphic from 'esri/Graphic';
-import GraphicsLayer from 'esri/layers/GraphicsLayer';
-import MapView from 'esri/views/MapView';
+import Point from '@arcgis/core/geometry/Point';
+import Graphic from '@arcgis/core/Graphic';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import MapView from '@arcgis/core/views/MapView';
 import { CreateTextSymbolForLabels } from './DrawToolUtils';
 
 const syncLabelsToGeometry = (polygonGraphicsLayer: GraphicsLayer, geomLabelsGraphicsLayer: GraphicsLayer, mapView: MapView, textService: any) => {

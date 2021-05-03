@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import Graphic from '@arcgis/core/Graphic';
 import { TableHeader } from 'src/app/planmylandoperation/sidebar/soils/soils-table/table-header';
 import { FormatRoundNumber } from 'src/app/shared/utils/ConversionTools';
 import { ConvertSquareMetersToAcres } from 'src/app/shared/utils/GeometryEngine';
@@ -15,7 +16,7 @@ export class VegetationTableComponent implements OnInit {
   headElements: TableHeader[] = [];
   vegList;
   totalAcres:string;
-  selectedVegetation:__esri.Graphic;
+  selectedVegetation:Graphic;
   private totalAreaSqMt = 0;
   private subscriptions: SubscriptionCollection = {};
 

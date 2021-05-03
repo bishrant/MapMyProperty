@@ -1,14 +1,9 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
-import FeatureSet from 'esri/tasks/support/FeatureSet';
-import Geoprocessor from 'esri/tasks/Geoprocessor';
-import Graphic from 'esri/Graphic';
+import FeatureSet from '@arcgis/core/tasks/support/FeatureSet';
+import Geoprocessor from '@arcgis/core/tasks/Geoprocessor';
+import Graphic from '@arcgis/core/Graphic';
 import { AppConfiguration } from 'src/config';
 import { outputVegetationMultipart } from './dummydata';
-import Point from 'esri/geometry/Point';
-import Polygon from 'esri/geometry/Polygon';
-import GeometryService from 'esri/tasks/GeometryService';
-import { GetVegetationTextSymbol } from './VegetationUtils';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -25,7 +20,7 @@ export class VegetationService {
       featureSet.features = [graphic];
       const params = { inputPolygon: featureSet };
 
-      const gp: __esri.Geoprocessor = new Geoprocessor({
+      const gp: Geoprocessor = new Geoprocessor({
         url: this.appConfig.vegetation.clipGPService
       });
 
@@ -51,8 +46,8 @@ export class VegetationService {
     });
   }
 
-  mockVegetationData (graphic: Graphic): Promise<any> {
-    return new Promise((resolve, reject) => {
+  mockVegetationData (): Promise<any> {
+    return new Promise((resolve) => {
       resolve(outputVegetationMultipart)
       this.vegetationDataChanged.emit(outputVegetationMultipart);
       this.vegetationDataStatus.emit('');

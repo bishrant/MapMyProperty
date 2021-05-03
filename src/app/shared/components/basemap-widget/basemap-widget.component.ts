@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
-import Basemap from 'esri/Basemap';
-import Layer from 'esri/layers/Layer';
-import MapImageLayer from 'esri/layers/MapImageLayer';
+import Basemap from '@arcgis/core/Basemap';
+import Layer from '@arcgis/core/layers/Layer';
+import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
 import { createBingBasemap } from '../../utils/CreateMapView';
 import { googleWMSlayer, texasBasemaps, texasBasemapsDict } from '../../layers/NAIPLayers';
 import { WidgetToggleService } from '../../services/WidgetToggleService';
 import { Subscription } from 'rxjs';
-const watchUtils = require('esri/core/watchUtils');
+import MapView from '@arcgis/core/views/MapView';
+const watchUtils = require('@arcgis/core/core/watchUtils');
 
 @Component({
   selector: 'app-basemap-widget',
@@ -17,7 +18,7 @@ const watchUtils = require('esri/core/watchUtils');
 export class BasemapWidgetComponent implements AfterViewInit, OnDestroy {
   basemapObject: Basemap;
   loadingBaseLayer: Layer;
-  @Input() mapView: __esri.MapView;
+  @Input() mapView: MapView;
   texasImageryVisible = false;
   updatedDate: Date;
   loading = false;

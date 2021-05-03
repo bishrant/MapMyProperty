@@ -1,23 +1,26 @@
 import { Component, OnInit, Input, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, AbstractControl, FormGroupDirective, NgForm, ValidatorFn } from '@angular/forms';
-import PrintTask from 'esri/tasks/PrintTask';
-import PrintParameters from 'esri/tasks/support/PrintParameters';
+import { FormControl, FormGroup, FormBuilder, AbstractControl, ValidatorFn } from '@angular/forms';
+import PrintTask from '@arcgis/core/tasks/PrintTask';
+import PrintParameters from '@arcgis/core/tasks/support/PrintParameters';
 import { AppConfiguration } from 'src/config';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { MMPGPServiceError, TraceMMPError } from '../../services/error/GPServiceError';
+import { TraceMMPError } from '../../services/error/GPServiceError';
 import { LoaderService } from '../../services/Loader.service';
-import GraphicsLayer from 'esri/layers/GraphicsLayer';
-import Graphic from 'esri/Graphic';
-import FeatureLayer from 'esri/layers/FeatureLayer';
-import MapImageLayer from 'esri/layers/MapImageLayer';
-import VectorLayer from 'esri/layers/VectorTileLayer';
-import ImageryLayer from 'esri/layers/ImageryLayer';
-import WMSLayer from 'esri/layers/WMSLayer';
-import BingMapsLayer from 'esri/layers/BingMapsLayer';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
+import VectorLayer from '@arcgis/core/layers/VectorTileLayer';
+import ImageryLayer from '@arcgis/core/layers/ImageryLayer';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import BingMapsLayer from '@arcgis/core/layers/BingMapsLayer';
 import { NotificationService } from '../../services/error/notification.service';
+import Graphic from '@arcgis/core/Graphic';
+import Layer from '@arcgis/core/layers/Layer';
+import MapView from '@arcgis/core/views/MapView';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState (control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState (control: FormControl | null): boolean {
     return !!(control && control.invalid && control.dirty);
   }
 }
@@ -32,8 +35,8 @@ export class PrintToolComponent implements OnInit {
   @ViewChild('printMapModal') printMapModal: any;
   @ViewChild('errorModal') errorModal: any;
   @ViewChild('modalMapViewNode', { static: true }) private mapViewEl: ElementRef;
-  @Input() mapView: __esri.MapView;
-  @Input() sketchVM: __esri.SketchViewModel;
+  @Input() mapView: MapView;
+  @Input() sketchVM: SketchViewModel;
   printForm: FormGroup;
   MAX: number = 200;
   MAXLINES: number = 5;
@@ -46,7 +49,7 @@ export class PrintToolComponent implements OnInit {
   ) { }
 
   matcher = new MyErrorStateMatcher();
-  popupMapView: __esri.MapView;
+  popupMapView: MapView;
   printTask = new PrintTask({ url: this.config.printGPServiceURL });
   showPrintMapPreview (): void {
     this.printMapModal.closeOnEscape = false;
@@ -56,7 +59,7 @@ export class PrintToolComponent implements OnInit {
     }, 10);
   }
 
-  private createLayer (layer: __esri.Layer): any {
+  private createLayer (layer: Layer): any {
     const _id = layer.id;
     const _minScale = (layer as any).minScale;
     let lyr:any;
@@ -112,12 +115,12 @@ export class PrintToolComponent implements OnInit {
 
   copyLayers () {
     const lrArray: any = [];
-    this.mapView.map.layers.forEach((lrs: __esri.Layer) => {
+    this.mapView.map.layers.forEach((lrs: Layer) => {
       if (lrs.type === 'graphics') {
         const grs = (lrs as any).graphics;
         if (grs.length > 0) {
           const grLr = new GraphicsLayer({ id: lrs.id + 'popup' });
-          grs.forEach((graphic: __esri.Graphic) => {
+          grs.forEach((graphic: Graphic) => {
             grLr.add(graphic.clone());
           });
           lrArray.push(grLr);
@@ -143,7 +146,7 @@ export class PrintToolComponent implements OnInit {
         layers: lrArray
       };
 
-      const ESRIMap = await import('arcgis-js-api/Map');
+      const ESRIMap = await import('@arcgis/core/Map');
       const map = new ESRIMap.default(mapProperties);
       const mapViewProperties: any = {
         container: this.mapViewEl.nativeElement,
@@ -157,7 +160,7 @@ export class PrintToolComponent implements OnInit {
         spatialReference: this.mapView.spatialReference.clone()
       };
 
-      const ESRIMapView = await import('arcgis-js-api/views/MapView');
+      const ESRIMapView = await import('@arcgis/core/views/MapView');
       this.popupMapView = new ESRIMapView.default(mapViewProperties);
       setTimeout(() => {
         this.popupMapView.extent = this.mapView.extent.clone();

@@ -1,5 +1,5 @@
-import ImageryLayer from 'esri/layers/ImageryLayer';
-import WMSLayer from 'esri/layers/WMSLayer';
+import ImageryLayer from '@arcgis/core/layers/ImageryLayer';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
 const _tnrisURL = 'https://imagery.tnris.org/server/rest/services/';
 
 const googleWMSlayer = new WMSLayer({

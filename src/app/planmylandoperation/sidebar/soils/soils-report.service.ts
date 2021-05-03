@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Point } from 'esri/geometry';
+import { Extent, Point } from '@arcgis/core/geometry';
 import { PrintTaskService } from 'src/app/shared/services/PrintTask.service';
-import QueryTask from 'esri/tasks/QueryTask';
-import Query from 'esri/tasks/support/Query';
-import FeatureSet from 'esri/tasks/support/FeatureSet';
-import Geoprocessor from 'esri/tasks/Geoprocessor';
+import QueryTask from '@arcgis/core/tasks/QueryTask';
+import Query from '@arcgis/core/tasks/support/Query';
+import FeatureSet from '@arcgis/core/tasks/support/FeatureSet';
+import Geoprocessor from '@arcgis/core/tasks/Geoprocessor';
 import { AppConfiguration } from 'src/config';
+import Graphic from '@arcgis/core/Graphic';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import MapView from '@arcgis/core/views/MapView';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +20,10 @@ export class SoilsReportService {
   ) {}
 
   async printMaps (
-    mapView: __esri.MapView,
-    pmloSoilsGL: __esri.GraphicsLayer,
-    pmloSoilLabelsGL: __esri.GraphicsLayer,
-    boundaryExtent: __esri.Extent
+    mapView: MapView,
+    pmloSoilsGL: GraphicsLayer,
+    pmloSoilLabelsGL: GraphicsLayer,
+    boundaryExtent: Extent
   ): Promise<any> {
     pmloSoilLabelsGL.visible = false;
     pmloSoilsGL.visible = false;
@@ -44,7 +47,7 @@ export class SoilsReportService {
   }
 
   async getCountyFromCentroid (aoiCentroid: Point): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<any>((resolve) => {
       const countyQT = new QueryTask({
         url: this.appConfig.usCountyLayerURL
       });
@@ -72,7 +75,7 @@ export class SoilsReportService {
   }
 
   async getWatershedFromCentroid (aoiCentroid: Point): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string>((resolve) => {
       const watershedQT = new QueryTask({
         url: this.appConfig.usWatershedLayerURL
       });
@@ -99,8 +102,8 @@ export class SoilsReportService {
     });
   }
 
-  async getSoilsReportHydroParams (boundary: __esri.Graphic): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
+  async getSoilsReportHydroParams (boundary: Graphic): Promise<any> {
+    return new Promise<any>((resolve) => {
       const featureSet: FeatureSet = new FeatureSet();
       featureSet.features = [boundary];
       const params = {

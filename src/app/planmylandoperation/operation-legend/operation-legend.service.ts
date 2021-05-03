@@ -1,4 +1,6 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
+import Graphic from '@arcgis/core/Graphic';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import { FillProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { RGBToHex } from 'src/app/shared/utils/Colors';
 import { CreatePolygonSymbol } from 'src/app/shared/utils/GraphicStyles';
@@ -16,8 +18,8 @@ export class OperationLegendService {
 
   constructor () { }
 
-  setOperationLegendSymbols (value: string, pmloSoilsGL: __esri.GraphicsLayer, sliderValue: number): void {
-    pmloSoilsGL.graphics.forEach((g: __esri.Graphic) => {
+  setOperationLegendSymbols (value: string, pmloSoilsGL: GraphicsLayer, sliderValue: number): void {
+    pmloSoilsGL.graphics.forEach((g: Graphic) => {
       let symbolColor: any = {};
       switch (g.attributes[value]) {
         case OperationValues.excessDr:

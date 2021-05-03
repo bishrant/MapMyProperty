@@ -1,5 +1,7 @@
-import { Polygon, Point, Polyline } from 'esri/geometry';
-import { geodesicArea, equals, geodesicLength } from 'esri/geometry/geometryEngine';
+import Collection from '@arcgis/core/core/Collection';
+import { Polygon, Point, Polyline } from '@arcgis/core/geometry';
+import { geodesicArea, equals, geodesicLength } from '@arcgis/core/geometry/geometryEngine';
+import Graphic from '@arcgis/core/Graphic';
 
 // Only works with WGS84 (wkid: 4326) and Web Mercator spatial references
 const GreaterThanMaxArea = (geometry : any, maxArea : number = 10000, unit : any) => {
@@ -29,11 +31,6 @@ const AreGraphicsEqual = (existing: any, updated: any) => {
     default:
       break;
   }
-  // if (existing.geometry.type === 'point') {
-  //     geomEqual = equals(Point.fromJSON(existing.geometry), Point.fromJSON(updated.geometry))
-  // } else {
-  //     geomEqual = equals(existing.geometry, updated.geometry);
-  // }
 
   const a1 = existing.attributes;
   const a2 = updated.attributes;
@@ -54,12 +51,12 @@ const AreGraphicsEqual = (existing: any, updated: any) => {
   return geomEqual && attribEqual;
 }
 
-const GetFeaturesLength = (graphics: __esri.Collection<__esri.Graphic>) => {
+const GetFeaturesLength = (graphics: Collection<Graphic>) => {
   const reducer = (accumulator, currentValue) => accumulator + geodesicLength(currentValue.geometry, 'feet');
   return graphics.reduce(reducer, 0);
 };
 
-const GetFeaturesAreaAcres = (graphics: __esri.Collection<__esri.Graphic>) => {
+const GetFeaturesAreaAcres = (graphics: Collection<Graphic>) => {
   const reducer = (accumulator, currentValue) => accumulator + geodesicArea(currentValue.geometry, 'acres');
   return graphics.reduce(reducer, 0);
 };
