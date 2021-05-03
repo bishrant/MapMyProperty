@@ -23,9 +23,6 @@
         "no-unused-vars":"off",
         "@typescript-eslint/no-unused-vars": "error",
         "attr-lowercase": 0,
-        "prettier/prettier": [0, {
-          "endOfLine": "auto"
-        }],
         "no-underscore-dangle":"off",
         "@typescript-eslint/explicit-module-boundary-types": 0,
         "space-before-function-paren": "warn",
