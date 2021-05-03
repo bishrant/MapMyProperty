@@ -66,7 +66,16 @@ export class PrintToolComponent implements OnInit {
         break;
 
       case 'feature':
-        lyr = new FeatureLayer();
+        lyr = new FeatureLayer({
+          source: (layer as any)?.source,
+          url: (layer as any)?.url,
+          objectIdField: (layer as any)?.objectIdField,
+          fields: (layer as any)?.fields,
+          renderer: (layer as any)?.renderer,
+          labelingInfo: (layer as any)?.labelingInfo,
+          labelsVisible: true,
+          outFields: ['*']
+        });
         break;
 
       case 'vector-tile':

@@ -31,9 +31,7 @@ const GetVegLabelInfo = (): any => {
         size: 12
       }
     },
-    labelExpressionInfo: {
-      expression: '$feature.VegID'
-    }
+    labelExpression: '[HEXColor]'
   }];
 }
 
@@ -105,21 +103,26 @@ const CreateVegetationFeatureLayer = (vegetationData: any[]): __esri.FeatureLaye
 
   const fLayer = new FeatureLayer({
     source: _graphics,
+    id: 'vegFeatureLayer',
     objectIdField: 'FID',
     fields: [{
       name: 'FID',
+      alias: 'FID',
       type: 'oid'
     }, {
       name: 'VegID',
+      alias: 'VegID',
       type: 'integer'
     },
     {
       name: 'HEXColor',
+      alias: 'HEXColor',
       type: 'string'
     }],
-    popupTemplate: { content: '{FID} Test' },
+    popupTemplate: { content: '{VegID}' },
     renderer: CreateVegRenderer(_graphics),
-    labelingInfo: GetVegLabelInfo()
+    labelingInfo: GetVegLabelInfo(),
+    outFields: ['*']
   })
   return fLayer;
 }
