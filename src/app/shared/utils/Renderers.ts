@@ -1,4 +1,4 @@
-const redPolygon = {
+const redPolygon: any = {
   type: 'simple',
   symbol: {
     type: 'simple-fill',
@@ -11,7 +11,7 @@ const redPolygon = {
   }
 };
 
-const bluePolygon = {
+const bluePolygon: any = {
   type: 'simple',
   symbol: {
     type: 'simple-fill',
@@ -24,7 +24,7 @@ const bluePolygon = {
   }
 };
 
-const hollowPolygon = {
+const hollowPolygon: any = {
   type: 'simple',
   symbol: {
     type: 'simple-fill',
@@ -37,14 +37,14 @@ const hollowPolygon = {
   }
 };
 
-const emptyPoint = {
+const emptyPoint: any = {
   type: 'simple-marker',
   style: 'square',
   color: '#8A2BE2',
   size: '0px'
 };
 
-const redDiamondMarker = {
+const redDiamondMarker: any = {
   type: 'simple-marker',
   style: 'diamond',
   size: 6,

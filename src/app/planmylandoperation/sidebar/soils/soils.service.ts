@@ -1,15 +1,16 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import FeatureSet from 'esri/tasks/support/FeatureSet';
-import Geoprocessor from 'esri/tasks/Geoprocessor';
-import GeometryService from 'esri/tasks/GeometryService';
+import FeatureSet from '@arcgis/core/tasks/support/FeatureSet';
+import Geoprocessor from '@arcgis/core/tasks/Geoprocessor';
+import GeometryService from '@arcgis/core/tasks/GeometryService';
 import { FillProps, LineProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { GetDefaultSoilsLineProps, GetOrageLineProps, GetSoilFillProps, GetSoilTextSymbol } from '../../pmloUtils/SoilsStyles';
 import { CreatePolygonSymbol } from 'src/app/shared/utils/GraphicStyles';
-import { Point, Polygon } from 'esri/geometry';
-import Graphic from 'esri/Graphic';
-import { TextSymbol } from 'esri/symbols';
+import { Point, Polygon } from '@arcgis/core/geometry';
+import Graphic from '@arcgis/core/Graphic';
+import { TextSymbol } from '@arcgis/core/symbols';
 import { AppConfiguration } from 'src/config';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class SoilsService {
     private appConfig:AppConfiguration
   ) { }
 
-  identifySoil (mapPoint: __esri.Point, origin: string): Promise<any> {
+  identifySoil (mapPoint: Point, origin: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const queryFile:string = 'assets/soilQueries/' + origin + 'SoilQuery.txt';
 
@@ -55,7 +56,7 @@ export class SoilsService {
         queryFileName: 'PMLOSoilsQuery'
       };
 
-      const gp: __esri.Geoprocessor = new Geoprocessor({
+      const gp: Geoprocessor = new Geoprocessor({
         url: this.appConfig.clipSoilsGPServiceURL
       });
 
@@ -73,12 +74,13 @@ export class SoilsService {
           },
           (error) => {
             resolve([]);
+            console.error(error);
           });
       });
     });
   }
 
-  addSoilsToMap (gl: __esri.GraphicsLayer, soilMulti: any, boundaryId:string, sliderValue:number, isOrange:boolean): void {
+  addSoilsToMap (gl: GraphicsLayer, soilMulti: any, boundaryId:string, sliderValue:number, isOrange:boolean): void {
     const graphicTransparency:number = (100 - sliderValue) / 100;
     const graphicsCollection: Graphic[] = [];
     let lineProps: LineProps = GetDefaultSoilsLineProps(graphicTransparency);
@@ -99,7 +101,7 @@ export class SoilsService {
     gl.addMany(graphicsCollection);
   }
 
-  addSoilLabelsToMap (gl: __esri.GraphicsLayer, soilSingle: any, boundaryId:string, sliderValue:number, isOrange:boolean): void {
+  addSoilLabelsToMap (gl: GraphicsLayer, soilSingle: any, boundaryId:string, sliderValue:number, isOrange:boolean): void {
     const graphicTransparency:number = (100 - sliderValue) / 100;
     const geometryService: GeometryService = new GeometryService({
       url: this.appConfig.geometryServiceURL
@@ -130,7 +132,7 @@ export class SoilsService {
     }
   }
 
-  updateGraphicsOpacity (soilsgl: __esri.GraphicsLayer, labelsgl: __esri.GraphicsLayer, sliderValue: number, isOrange:boolean, isFromSoils:boolean): void {
+  updateGraphicsOpacity (soilsgl: GraphicsLayer, labelsgl: GraphicsLayer, sliderValue: number, isOrange:boolean, isFromSoils:boolean): void {
     const graphicTransparency:number = (100 - sliderValue) / 100;
     if (isFromSoils) {
       if (isOrange === false) {
@@ -146,18 +148,19 @@ export class SoilsService {
     }
   }
 
-  setSymbolColor (gl: __esri.GraphicsLayer, isOrange:boolean, alpha: number): void {
-    gl.graphics.forEach((g: __esri.Graphic) => {
+  setSymbolColor (gl: GraphicsLayer, isOrange:boolean, alpha: number): void {
+    gl.graphics.forEach((g: Graphic) => {
       let symbol: any;
+      let lineProps: LineProps;
+      let fillProps: FillProps
       switch (g.geometry.type) {
         case 'polygon':
-          let lineProps: LineProps;
           if (isOrange === false) {
             lineProps = GetDefaultSoilsLineProps(alpha);
           } else {
             lineProps = GetOrageLineProps();
           }
-          const fillProps:FillProps = GetSoilFillProps(g, alpha);
+          fillProps = GetSoilFillProps(g, alpha);
           symbol = CreatePolygonSymbol(lineProps, fillProps);
           break;
 
@@ -173,7 +176,7 @@ export class SoilsService {
     });
   }
 
-  clearSoilGLayers (soilsgl: __esri.GraphicsLayer, labelsgl: __esri.GraphicsLayer): void {
+  clearSoilGLayers (soilsgl: GraphicsLayer, labelsgl: GraphicsLayer): void {
     labelsgl.removeAll();
     soilsgl.removeAll();
     this.showTableModal.emit(false);

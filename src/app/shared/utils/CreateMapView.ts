@@ -1,13 +1,13 @@
 import { ElementRef } from '@angular/core';
-import Map from 'arcgis-js-api/Map';
-import MapView from 'arcgis-js-api/views/MapView';
-import Search from 'esri/widgets/Search';
-import SpatialReference from 'arcgis-js-api/geometry/SpatialReference';
-import Home from 'arcgis-js-api/widgets/Home';
-import Basemap from 'esri/Basemap';
-import BingMapsLayer from 'esri/layers/BingMapsLayer';
-import Expand from 'esri/widgets/Expand';
-import ScaleBar from 'esri/widgets/ScaleBar';
+import Map from '@arcgis/core/Map';
+import MapView from '@arcgis/core/views/MapView';
+import Search from '@arcgis/core/widgets/Search';
+import SpatialReference from '@arcgis/core/geometry/SpatialReference';
+import Home from '@arcgis/core/widgets/Home';
+import Basemap from '@arcgis/core/Basemap';
+import BingMapsLayer from '@arcgis/core/layers/BingMapsLayer';
+import Expand from '@arcgis/core/widgets/Expand';
+import ScaleBar from '@arcgis/core/widgets/ScaleBar';
 
 const createBingBasemap = () => {
   return new Basemap({
@@ -18,7 +18,7 @@ const createBingBasemap = () => {
     id: 'bing'
   });
 }
-const createMapView = (mapViewEl: ElementRef, searchBarDiv: ElementRef): __esri.MapView => {
+const createMapView = (mapViewEl: ElementRef, searchBarDiv: ElementRef): MapView => {
   const bing_hybrid = createBingBasemap();
 
   const mapProperties = {

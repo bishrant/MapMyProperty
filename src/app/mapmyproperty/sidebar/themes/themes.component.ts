@@ -1,8 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Point } from 'esri/geometry';
-import IdentifyTask from 'esri/tasks/IdentifyTask';
-import IdentifyParameters from 'esri/tasks/support/IdentifyParameters';
+import { Point } from '@arcgis/core/geometry';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import IdentifyTask from '@arcgis/core/tasks/IdentifyTask';
+import IdentifyParameters from '@arcgis/core/tasks/support/IdentifyParameters';
+import MapView from '@arcgis/core/views/MapView';
 import { CreateGL } from 'src/app/planmylandoperation/pmloUtils/layers';
 import { GetMMPGeologyPopupContent, GetMMPSoilPopupContent, GetMMPVegetationPopupContent } from 'src/app/planmylandoperation/pmloUtils/popupContent';
 import { SoilsService } from 'src/app/planmylandoperation/sidebar/soils/soils.service';
@@ -35,10 +38,10 @@ export class MMPThemesComponent implements OnInit, OnDestroy {
   selectedTheme: string = 'soils';
   notification: NotificationModel = new NotificationModel();
   userGL;
-  private themesUserGL: __esri.GraphicsLayer = CreateGL('themesGL', 1);
-  private themesUserFL: __esri.FeatureLayer;
+  private themesUserGL: GraphicsLayer = CreateGL('themesGL', 1);
+  private themesUserFL: FeatureLayer;
 
-  @Input() mapView: __esri.MapView;
+  @Input() mapView: MapView;
   transparency = 0;
   transparencyChanged ($e) {
     this.transparency = $e;
@@ -173,8 +176,8 @@ export class MMPThemesComponent implements OnInit, OnDestroy {
       this.notificationsService.openNotificationsModal.emit(this.notification);
     } else {
       this.loaderService.isLoading.next(true);
-      const inputBoundary: __esri.Graphic = polygonGraphics.getItemAt(0);
-      this.vegetationService.mockVegetationData(inputBoundary).then(d => {
+      // const inputBoundary: Graphic = polygonGraphics.getItemAt(0);
+      this.vegetationService.mockVegetationData().then(d => {
         if (this.themesUserFL) { this.themesUserFL.destroy() }
         this.themesUserFL = CreateVegetationFeatureLayer(d);
         this.mapView.map.add(this.themesUserFL);
@@ -187,7 +190,7 @@ export class MMPThemesComponent implements OnInit, OnDestroy {
     }
   }
 
-  identifyFeatures = async (geometry: __esri.Point) => {
+  identifyFeatures = async (geometry: Point) => {
     this.loaderService.isLoading.next(true);
     const iTask = new IdentifyTask(this.activeLayer.url);
     this.identifyParams.width = this.mapView.width;
@@ -209,7 +212,7 @@ export class MMPThemesComponent implements OnInit, OnDestroy {
     }
   }
 
-  identifySoils = (mapPoint: __esri.Point) => {
+  identifySoils = (mapPoint: Point) => {
     this.loaderService.isLoading.next(true);
     this.soilsService.identifySoil(mapPoint, 'mmp').then((result) => {
       const resulstTable = result.Table[0];
@@ -235,7 +238,7 @@ export class MMPThemesComponent implements OnInit, OnDestroy {
     }
   }
 
-  showPopup = (popupTitle: string, popupContent: any, popupLocation: __esri.Point) => {
+  showPopup = (popupTitle: string, popupContent: any, popupLocation: Point) => {
     this.mapView.popup.dockOptions = {
       buttonEnabled: true,
       position: 'top-left'

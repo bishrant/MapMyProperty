@@ -1,10 +1,11 @@
-import MapView from 'esri/views/MapView';
-import Map from 'esri/Map';
-import Collection from 'esri/core/Collection';
-import WMSLayer from 'esri/layers/WMSLayer';
-import GraphicsLayer from 'esri/layers/GraphicsLayer';
+import MapView from '@arcgis/core/views/MapView';
+import Map from '@arcgis/core/Map';
+import Collection from '@arcgis/core/core/Collection';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import { Extent } from '@arcgis/core/geometry';
 
-const GetWebMapAsJsonString = (mv: MapView, boundaryExtent:__esri.Extent) => {
+const GetWebMapAsJsonString = (mv: MapView, boundaryExtent:Extent) => {
   const webMapAsJson = {
     operationalLayers: GetOperationalLayers(mv.map),
     baseMap: GetBasemap(mv.map),
@@ -17,7 +18,7 @@ const GetWebMapAsJsonString = (mv: MapView, boundaryExtent:__esri.Extent) => {
   return JSON.stringify(webMapAsJson);
 };
 
-const GetMapOptions = (mv: MapView, boudaryExtent:__esri.Extent) => {
+const GetMapOptions = (mv: MapView, boudaryExtent:Extent) => {
   return {
     extent: boudaryExtent === null ? mv.extent : boudaryExtent,
     spatialReference: {

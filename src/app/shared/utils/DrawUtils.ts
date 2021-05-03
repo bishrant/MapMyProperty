@@ -1,5 +1,5 @@
-import { Polygon, Polyline } from 'esri/geometry';
-import Graphic from 'esri/Graphic';
+import { Polygon, Polyline } from '@arcgis/core/geometry';
+import Graphic from '@arcgis/core/Graphic';
 import { CreatePolygonSymbol, CreatePolylineSymbol } from './GraphicStyles';
 import { CreateCircleWithGeometry, TFSPolygon, TFSPolyline, CreateTFSCircleFromPoint } from './SketchViewModelUitls';
 const id = (): string => Math.random().toString(36).substr(2, 9);
@@ -64,7 +64,7 @@ const CreatecircleFromPoint = (evt: any, radius: number, lineProps: any, fillPro
   return _g;
 };
 
-const CreateCircleFromCentroid = (graphic: __esri.Graphic, radius: number, lineProps: any, fillProps: any) => {
+const CreateCircleFromCentroid = (graphic: Graphic, radius: number, lineProps: any, fillProps: any) => {
   let _g = new Graphic().toJSON();
   const _centroid = (graphic.geometry as any).centroid;
   const _id = graphic.attributes.id;

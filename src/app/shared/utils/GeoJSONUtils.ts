@@ -49,7 +49,7 @@ function ringIsClockwise (ringToTest: any) {
   return (total >= 0);
 }
 
-// ported from terraformer.js https://github.com/Esri/Terraformer/blob/master/terraformer.js#L504-L519
+// ported from terraformer.js https://github.com/@arcgis/core/Terraformer/blob/master/terraformer.js#L504-L519
 function vertexIntersectsVertex (a1: any, a2: any, b1: any, b2: any) {
   const uaT = ((b2[0] - b1[0]) * (a1[1] - b1[1])) - ((b2[1] - b1[1]) * (a1[0] - b1[0]));
   const ubT = ((a2[0] - a1[0]) * (a1[1] - b1[1])) - ((a2[1] - a1[1]) * (a1[0] - b1[0]));
@@ -67,7 +67,7 @@ function vertexIntersectsVertex (a1: any, a2: any, b1: any, b2: any) {
   return false;
 }
 
-// ported from terraformer.js https://github.com/Esri/Terraformer/blob/master/terraformer.js#L521-L531
+// ported from terraformer.js https://github.com/@arcgis/core/Terraformer/blob/master/terraformer.js#L521-L531
 function arrayIntersectsArray (a: any, b: any) {
   for (let i = 0; i < a.length - 1; i++) {
     for (let j = 0; j < b.length - 1; j++) {
@@ -80,7 +80,7 @@ function arrayIntersectsArray (a: any, b: any) {
   return false;
 }
 
-// ported from terraformer.js https://github.com/Esri/Terraformer/blob/master/terraformer.js#L470-L480
+// ported from terraformer.js https://github.com/@arcgis/core/Terraformer/blob/master/terraformer.js#L470-L480
 function coordinatesContainPoint (coordinates: any, point: any) {
   let contains = false;
   for (let i = -1, l = coordinates.length, j = l - 1; ++i < l; j = i) {
@@ -93,7 +93,7 @@ function coordinatesContainPoint (coordinates: any, point: any) {
   return contains;
 }
 
-// ported from terraformer-arcgis-parser.js https://github.com/Esri/terraformer-arcgis-parser/blob/master/terraformer-arcgis-parser.js#L106-L113
+// ported from terraformer-arcgis-parser.js https://github.com/@arcgis/core/terraformer-arcgis-parser/blob/master/terraformer-arcgis-parser.js#L106-L113
 function coordinatesContainCoordinates (outer: any, inner: any) {
   const intersects = arrayIntersectsArray(outer, inner);
   const contains = coordinatesContainPoint(outer, inner[0]);
@@ -105,7 +105,7 @@ function coordinatesContainCoordinates (outer: any, inner: any) {
 
 // do any polygons in this array contain any other polygons in this array?
 // used for checking for holes in arcgis rings
-// ported from terraformer-arcgis-parser.js https://github.com/Esri/terraformer-arcgis-parser/blob/master/terraformer-arcgis-parser.js#L117-L172
+// ported from terraformer-arcgis-parser.js https://github.com/@arcgis/core/terraformer-arcgis-parser/blob/master/terraformer-arcgis-parser.js#L117-L172
 function convertRingsToGeoJSON (rings: any) {
   const outerRings = [];
   const holes = [];
@@ -158,7 +158,7 @@ function convertRingsToGeoJSON (rings: any) {
     }
 
     // ring is not contained in any outer ring
-    // sometimes this happens https://github.com/Esri/esri-leaflet/issues/320
+    // sometimes this happens https://github.com/@arcgis/core/esri-leaflet/issues/320
     if (!contained) {
       uncontainedHoles.push(hole);
     }

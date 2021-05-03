@@ -1,7 +1,7 @@
-import Polyline from 'esri/geometry/Polyline';
-import Point from 'esri/geometry/Point';
-import Polygon from 'esri/geometry/Polygon';
-import webMercatorUtils = require('esri/geometry/support/webMercatorUtils');
+import Polyline from '@arcgis/core/geometry/Polyline';
+import Point from '@arcgis/core/geometry/Point';
+import Polygon from '@arcgis/core/geometry/Polygon';
+import * as webMercatorUtils from '@arcgis/core/geometry/support/webMercatorUtils';
 
 const CreateGraphic = (geom: any) => {
   return webMercatorUtils.webMercatorToGeographic(geom) as any;
