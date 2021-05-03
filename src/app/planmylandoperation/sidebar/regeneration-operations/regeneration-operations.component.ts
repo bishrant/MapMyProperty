@@ -1,5 +1,9 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import Graphic from '@arcgis/core/Graphic';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import FeatureSet from '@arcgis/core/tasks/support/FeatureSet';
+import MapView from '@arcgis/core/views/MapView';
 import { NotificationModel } from 'src/app/shared/models/Notification.model';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
@@ -51,13 +55,12 @@ export class RegenerationOperationsComponent implements OnInit {
     this.esrimapService.regOpAccordionOpen.subscribe((opened) => {
       this.accordionOpened = opened;
       if (opened) {
-          if (this.pmloSoilLabelsGL.graphics.length > 0)
-          {
-            this.soilsService.showTableModal.emit(false);
-            this.pmloSoilLabelsGL.visible = false;
-            this.operationLegendService.setOperationLegendSymbols(this.selectedRadio, this.pmloSoilsGL, this.sliderValue);
-          }
-          this.operationLegendService.setOperationLegend(this.selectedRadio, false);
+        if (this.pmloSoilLabelsGL.graphics.length > 0) {
+          this.soilsService.showTableModal.emit(false);
+          this.pmloSoilLabelsGL.visible = false;
+          this.operationLegendService.setOperationLegendSymbols(this.selectedRadio, this.pmloSoilsGL, this.sliderValue);
+        }
+        this.operationLegendService.setOperationLegend(this.selectedRadio, false);
       }
     });
 
@@ -94,9 +97,8 @@ export class RegenerationOperationsComponent implements OnInit {
     this.operationLegendService.setOperationLegend(value, false);
   }
 
-  clipClearSoils(clear:boolean = null): void {
-    if (this.areSoilsClipped || clear === true)
-    {
+  clipClearSoils (clear:boolean = null): void {
+    if (this.areSoilsClipped || clear === true) {
       this.soilsService.clearSoilGLayers(this.pmloSoilsGL, this.pmloSoilLabelsGL);
     } else {
       this.clipSoils();
@@ -112,7 +114,7 @@ export class RegenerationOperationsComponent implements OnInit {
     });
   }
 
-  private clipSoils(): void {
+  private clipSoils (): void {
     if (this.userGL.graphics.filter((g) => g.geometry.type === 'polygon').length === 0) {
       this.pmloNote.body = 'A drawn boundary is needed to get regeneration attributes.';
       this.notificationsService.openNotificationsModal.emit(this.pmloNote);

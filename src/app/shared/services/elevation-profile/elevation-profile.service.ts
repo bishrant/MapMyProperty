@@ -7,6 +7,8 @@ import { ReplaySubject } from 'rxjs';
 import { AppConfiguration } from 'src/config';
 import { LoaderService } from '../Loader.service';
 import { PrintTaskService } from '../PrintTask.service';
+import MapView from '@arcgis/core/views/MapView';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 
 @Injectable()
 export class ElevationProfileService {

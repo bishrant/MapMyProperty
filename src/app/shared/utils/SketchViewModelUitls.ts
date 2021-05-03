@@ -65,8 +65,7 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): SketchViewM
     },
     defaultCreateOptions: {
       mode: 'click'
-    },
-    toggleToolOnClick: false
+    }
   });
 };
 

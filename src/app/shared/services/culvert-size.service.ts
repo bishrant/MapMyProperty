@@ -10,6 +10,9 @@ import JobInfo from '@arcgis/core/tasks/support/JobInfo';
 import PrintTask from '@arcgis/core/tasks/PrintTask';
 import PrintParameters from '@arcgis/core/tasks/support/PrintParameters';
 import { HttpClient } from '@angular/common/http';
+import { Polygon } from '@arcgis/core/geometry';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import MapView from '@arcgis/core/views/MapView';
 
 interface CulvertSizeReportParams {
   watershedImageURL: string,

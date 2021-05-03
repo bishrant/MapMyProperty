@@ -1,8 +1,5 @@
-import WidgetProperties = WidgetProperties;
-
 export interface ElevationProfileProperties
-  extends ElevationProfileViewModelProperties,
-    WidgetProperties {}
+  extends ElevationProfileViewModelProperties {}
 
 export interface ElevationProfileViewModelProperties {
   slopeThreshold?: number | undefined;

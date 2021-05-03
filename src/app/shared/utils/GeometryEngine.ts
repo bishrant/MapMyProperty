@@ -1,5 +1,7 @@
+import Collection from '@arcgis/core/core/Collection';
 import { Polygon, Point, Polyline } from '@arcgis/core/geometry';
 import { geodesicArea, equals, geodesicLength } from '@arcgis/core/geometry/geometryEngine';
+import Graphic from '@arcgis/core/Graphic';
 
 // Only works with WGS84 (wkid: 4326) and Web Mercator spatial references
 const GreaterThanMaxArea = (geometry : any, maxArea : number = 10000, unit : any) => {
@@ -29,11 +31,6 @@ const AreGraphicsEqual = (existing: any, updated: any) => {
     default:
       break;
   }
-  // if (existing.geometry.type === 'point') {
-  //     geomEqual = equals(Point.fromJSON(existing.geometry), Point.fromJSON(updated.geometry))
-  // } else {
-  //     geomEqual = equals(existing.geometry, updated.geometry);
-  // }
 
   const a1 = existing.attributes;
   const a2 = updated.attributes;

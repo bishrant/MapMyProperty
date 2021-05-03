@@ -21,8 +21,7 @@ const lineGraphicsToKML = (gJson: any) => {
   const width = gJson.attributes.symbol.width;
   const lineStyle = '<Style><LineStyle><color>' + color + '</color><width>' + width + '</width></LineStyle></Style>';
   let _KML = '<Placemark>\n';
-  _KML += name === '' ? '' : '<name>' + name + '</name>\n';
-  _KML += '<name>' + name + '</name>' + lineStyle + '\n<LineString>\n<coordinates>\n';
+  _KML += '<name>Line</name>' + lineStyle + '\n<LineString>\n<coordinates>\n';
   for (let j = 0; j < _g.paths[0].length; j++) {
     _KML = _KML + _g.paths[0][j].toString() + ' '
   }
@@ -38,7 +37,7 @@ const areaGraphicsToKML = (gJson: any) => {
   const polygonstyle = `<Style>${lineStyle}${fillStyle}</Style>`;
   let _KML = '';
   for (let i = 0; i < _g.rings.length; i++) {
-    _KML += '<Placemark>\n<name>' + name + '</name>' + polygonstyle + '\n<Polygon>\n<tessellate>1</tessellate>\n<outerBoundaryIs>\n<LinearRing>\n<coordinates>\n';
+    _KML += '<Placemark>\n<name>Polygon</name>' + polygonstyle + '\n<Polygon>\n<tessellate>1</tessellate>\n<outerBoundaryIs>\n<LinearRing>\n<coordinates>\n';
     for (let j1 = 0; j1 < _g.rings[i].length; j1++) {
       const mp2 = new Point(_g.getPoint(i, j1))
       _KML = _KML + mp2.x.toString() + ',' + mp2.y.toString() + ' ';

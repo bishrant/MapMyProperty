@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import Collection from '@arcgis/core/core/Collection';
 import Layer from '@arcgis/core/layers/Layer';
+import MapView from '@arcgis/core/views/MapView';
 import Swipe from '@arcgis/core/widgets/Swipe';
 import { Subscription } from 'rxjs';
 import { googleWMSlayer, texasBasemaps, texasBasemapsDict } from '../../layers/NAIPLayers';

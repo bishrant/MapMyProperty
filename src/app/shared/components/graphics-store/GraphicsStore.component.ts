@@ -1,4 +1,6 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import { Store } from '@ngrx/store';
 import { removeAllGraphics, removeGraphics } from '../../store/graphics.actions';
 import { AppState } from '../../store/graphics.state';

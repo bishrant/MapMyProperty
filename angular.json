@@ -52,7 +52,10 @@
               "src/styles.scss",
               "src/app/shared/styles/pmlo-shared-styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "moment"
+            ]
           },
           "configurations": {
             "production": {

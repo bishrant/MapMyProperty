@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Point } from '@arcgis/core/geometry';
 import Graphic from '@arcgis/core/Graphic';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import { BehaviorSubject } from 'rxjs';
 import { createAreaLabels, createDistanceLabels } from '../components/drawtools/GeometryEngineUtils';
 import { getTextParamsFromHTML, SetInputStyleAttributes } from '../components/drawtools/TextUtils';

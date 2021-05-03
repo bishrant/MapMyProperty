@@ -12,10 +12,10 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "module": "amd",
+    "module": "ESNext",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "ES5",
+    "target": "ES2015",
     "esModuleInterop": true,
     "typeRoots": ["node_modules/@types"],
     "lib": ["DOM", "es5", "ES6","es2015.promise", "ES7"]

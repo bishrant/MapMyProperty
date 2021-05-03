@@ -3,6 +3,7 @@ import Map from '@arcgis/core/Map';
 import Collection from '@arcgis/core/core/Collection';
 import WMSLayer from '@arcgis/core/layers/WMSLayer';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import { Extent } from '@arcgis/core/geometry';
 
 const GetWebMapAsJsonString = (mv: MapView, boundaryExtent:Extent) => {
   const webMapAsJson = {

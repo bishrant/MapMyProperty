@@ -11,6 +11,8 @@ import { EsrimapService } from '../../esrimap/esrimap.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { NotificationsService } from 'src/app/shared/services/Notifications.service';
 import { NotificationModel } from 'src/app/shared/models/Notification.model';
+import Graphic from '@arcgis/core/Graphic';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 @Component({
   selector: 'pmlo-sens-areas',

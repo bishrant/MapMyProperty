@@ -4,6 +4,7 @@ import { CreateNormalElevationLine, CreateHigherSlopeLine, GetGraphOptions, Conv
 import Graphic from '@arcgis/core/Graphic';
 import MapView from '@arcgis/core/views/MapView';
 import { PrintTaskService } from '../PrintTask.service';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 class ElevationProfileViewModel {
   constructor () {}

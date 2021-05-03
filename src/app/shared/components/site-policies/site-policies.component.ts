@@ -7,9 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SitePoliciesComponent implements OnInit {
   public year = new Date().getFullYear();
-  constructor() { }
+  constructor () { }
 
-  ngOnInit(): void {
+  ngOnInit (): void {
   }
-
 }

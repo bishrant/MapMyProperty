@@ -22,6 +22,11 @@ import { ModalService } from 'src/app/shared/lib/angular-modal/modal/modal.servi
 import { SketchSelectionService } from 'src/app/shared/services/SketchSelectionService';
 import { NotificationModel } from 'src/app/shared/models/Notification.model';
 import { NotificationsService } from 'src/app/shared/services/Notifications.service';
+import { Polygon } from '@arcgis/core/geometry';
+import Graphic from '@arcgis/core/Graphic';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import FeatureSet from '@arcgis/core/tasks/support/FeatureSet';
 
 @Component({
   selector: 'pmlo-soils',

@@ -11,7 +11,9 @@ import {
 import { addGraphics } from '../store/graphics.actions';
 import { id } from '../store/todo';
 import { GetGraphicsForExtentUsingString } from './DrawUtils';
-import Graphic = require('@arcgis/core/Graphic');
+import MapView from '@arcgis/core/views/MapView';
+import Graphic from '@arcgis/core/Graphic';
+
 declare const zip: any;
 zip.workerScriptsPath = 'scripts/';
 

@@ -1,6 +1,6 @@
-import webMercatorUtils = require('@arcgis/core/geometry/support/webMercatorUtils');
-import geodesicUtils = require('@arcgis/core/geometry/support/geodesicUtils');
-import Point = require('@arcgis/core/geometry/Point');
+import * as geodesicUtils from '@arcgis/core/geometry/support/geodesicUtils';
+import { Point } from '@arcgis/core/geometry';
+import * as webMercatorUtils from '@arcgis/core/geometry/support/webMercatorUtils';
 
 const CreateTextSymbolForLabels = (parent: any) => {
   let x = 0;

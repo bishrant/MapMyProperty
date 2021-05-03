@@ -10,6 +10,7 @@ import { Point, Polygon } from '@arcgis/core/geometry';
 import Graphic from '@arcgis/core/Graphic';
 import { TextSymbol } from '@arcgis/core/symbols';
 import { AppConfiguration } from 'src/config';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 @Injectable({
   providedIn: 'root'
@@ -73,6 +74,7 @@ export class SoilsService {
           },
           (error) => {
             resolve([]);
+            console.error(error);
           });
       });
     });
@@ -149,15 +151,16 @@ export class SoilsService {
   setSymbolColor (gl: GraphicsLayer, isOrange:boolean, alpha: number): void {
     gl.graphics.forEach((g: Graphic) => {
       let symbol: any;
+      let lineProps: LineProps;
+      let fillProps: FillProps
       switch (g.geometry.type) {
         case 'polygon':
-          let lineProps: LineProps;
           if (isOrange === false) {
             lineProps = GetDefaultSoilsLineProps(alpha);
           } else {
             lineProps = GetOrageLineProps();
           }
-          const fillProps:FillProps = GetSoilFillProps(g, alpha);
+          fillProps = GetSoilFillProps(g, alpha);
           symbol = CreatePolygonSymbol(lineProps, fillProps);
           break;
 

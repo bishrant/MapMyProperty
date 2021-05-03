@@ -1,3 +1,5 @@
+import Map from '@arcgis/core/Map';
+
 const reorderGraphicsLayer = (mapViewMap: Map) => {
   mapViewMap.allLayers.on('change', (evt) => {
     // Pull user graphics layers to the end of the array

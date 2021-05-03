@@ -14,9 +14,9 @@ import {
   GetSMZProps
 } from '../../pmloUtils/SensAreasStyles';
 import { AppConfiguration } from 'src/config';
-import { Geometry } from '@arcgis/core/geometry';
 import Graphic from '@arcgis/core/Graphic';
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import { Geometry } from '@arcgis/core/geometry';
 
 @Directive()
 @Injectable({
@@ -27,7 +27,7 @@ export class SensAreasService {
     private appConfig: AppConfiguration
   ) { }
 
-  async isWithinTexas (geo: Geometry): Promise<boolean> {
+  async isWithinTexas (geo: Geometry | any): Promise<boolean> {
     return new Promise((resolve) => {
       const _queryTask = new QueryTask({
         url: this.appConfig.usCountyLayerURL

@@ -3,6 +3,7 @@ import { ElevationProfileService } from 'src/app/shared/services/elevation-profi
 import { Subscription } from 'rxjs';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { SketchSelectionService } from 'src/app/shared/services/SketchSelectionService';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 
 @Component({
   selector: 'app-elevation-profile',
@@ -29,12 +30,12 @@ export class ElevationProfileComponent {
   drawingObservable$: Subscription;
   closePopup$: Subscription;
 
-  constructor(private elevationService: ElevationProfileService, private loaderService: LoaderService,
+  constructor (private elevationService: ElevationProfileService, private loaderService: LoaderService,
     private sketchSelectionService: SketchSelectionService) {
     this.isReversed = elevationService.isReversed;
   }
 
-  onResizeEnd($event) {
+  onResizeEnd ($event) {
     this.elevationService.resizeChart($event.width - 30, $event.height - 90);
   }
 
@@ -66,11 +67,11 @@ export class ElevationProfileComponent {
     }
   }
 
-  public cleanup() {
+  public cleanup () {
     this.elevationProfileModal.hide();
   }
 
-  modelClosed() {
+  modelClosed () {
     this.elevationService.close();
     if (this.generalSketchVM) {
       this.generalSketchVM.layer.removeAll();
@@ -82,21 +83,21 @@ export class ElevationProfileComponent {
     this.updateSketchState(true);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy () {
     this.chartDataObservable$.unsubscribe();
     this.drawingObservable$.unsubscribe();
   }
 
-  reverseProfile() {
+  reverseProfile () {
     this.isReversed = !this.isReversed;
     this.elevationService.reverseProfile();
   }
 
-  createReport() {
+  createReport () {
     this.elevationService.createReport();
   }
 
-  updateSketchState(status: boolean) {
+  updateSketchState (status: boolean) {
     this.sketchSelectionService.changeSketchSelectionMode('elevationprofile', status);
   }
 }

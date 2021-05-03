@@ -1,3 +1,4 @@
+import Graphic from '@arcgis/core/Graphic';
 import { FillProps, LineProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { HexToRGB } from 'src/app/shared/utils/Colors';
 import { GetDrainageClassColors } from './pmloColors';

@@ -1,4 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Extent } from '@arcgis/core/geometry';
+import Graphic from '@arcgis/core/Graphic';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import MapView from '@arcgis/core/views/MapView';
 import { FillProps, LineProps } from 'src/app/shared/components/drawtools/DrawTools.interface';
 import { PrintTaskService } from 'src/app/shared/services/PrintTask.service';
 import { SquareMetersToAcres } from 'src/app/shared/utils/ConversionTools';
@@ -29,7 +33,7 @@ export class HarvestOperationsService {
   }
 
   createOperationsReport (selectedRadio: string, mv: MapView, soilsGl: GraphicsLayer, boundaryExtent: Extent, reportTitle:string): Promise<string> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.printTaskService.exportWebMap(mv, 'PMLOSensAreasTemplate', 'jpg', boundaryExtent).then((mapImageUrl: string) => {
         const soilsAttributes:any = soilsGl.graphics.map((soil:Graphic) => {
           soil.attributes.Acres = SquareMetersToAcres(soil.attributes.Shape_Area);
