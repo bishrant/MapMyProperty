@@ -15,11 +15,18 @@ import { HeaderModule } from './shared/components/header/header.module';
 import { GlobalErrorHandler } from './shared/services/error/GlobalErrorHandler';
 import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { LoaderModule } from './shared/components/loader/loader.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    ServiceWorkerModule.register('./ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerImmediately'
+    }),
     HeaderModule,
     AppRoutingModule,
     BrowserAnimationsModule,
