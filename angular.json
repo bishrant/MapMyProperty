@@ -72,7 +72,7 @@
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": true,
-              "extractLicenses": false,
+              "extractLicenses": true,
               "vendorChunk": true,
               "buildOptimizer": true,
               "budgets": [
