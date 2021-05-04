@@ -39,6 +39,7 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              "src/manifest.webmanifest",
               {
                 "glob": "**/*",
                 "input": "src/assets/lib/zip",
@@ -68,13 +69,13 @@
               "customWebpackConfig": {
                 "path": "./webpack.config.prod.js"
               },
-              "optimization": true,
+              "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
-              "namedChunks": true,
+              "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": true,
-              "buildOptimizer": true,
+              "vendorChunk": false,
+              "buildOptimizer": false,
               "budgets": [
                 {
                   "type": "initial",
@@ -86,7 +87,9 @@
                   "maximumWarning": "10kb",
                   "maximumError": "200kb"
                 }
-              ]
+              ],
+              "serviceWorker": true,
+              "ngswConfigPath": "ngsw-config.json"
             }
           }
         },
