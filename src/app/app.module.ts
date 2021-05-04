@@ -21,7 +21,12 @@ import { ServiceWorkerModule } from '@angular/service-worker';
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    ServiceWorkerModule.register('./ngsw-worker.js'),
+    ServiceWorkerModule.register('./ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerImmediately'
+    }),
     HeaderModule,
     AppRoutingModule,
     BrowserAnimationsModule,

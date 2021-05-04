@@ -69,13 +69,13 @@
               "customWebpackConfig": {
                 "path": "./webpack.config.prod.js"
               },
-              "optimization": false,
+              "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": false,
+              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
