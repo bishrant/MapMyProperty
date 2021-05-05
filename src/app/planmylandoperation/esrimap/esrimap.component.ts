@@ -159,7 +159,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
       const soilsLayer: WMSLayer = CreateSoilsLayer('soilsDynamicLayer', this.appConfig.ssurgoWMSURL);
       this.mapView.map.addMany([soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer, this.generalGraphicsLayer]);
 
-      this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
+      this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView, [this.generalGraphicsLayer, this.polygonGraphicsLayer]);
       this.generalSketchVM = CreateGeneralSketchViewModel(this.generalGraphicsLayer, this.mapView);
       this.sketchVM.updatePointSymbol = defaultPointCircleSymbol;
       this.sketchVM.activePointSymbol = defaultPointCircleSymbol;

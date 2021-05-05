@@ -57,7 +57,6 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   helpHeader = 'Getting Started Tour';
   helpItem = 'gettingStartedTour';
   savedData: any;
-
   keyboardSub$: any;
   graphicsStoreSub$: Subscription;
   private subscriptions: SubscriptionCollection = {};
@@ -153,7 +152,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer, this.generalGraphicsLayer]);
 
-      this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
+      this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView, [this.generalGraphicsLayer, this.polygonGraphicsLayer]);
       this.generalSketchVM = CreateGeneralSketchViewModel(this.generalGraphicsLayer, this.mapView);
       this.sketchVM.updatePointSymbol = defaultPointCircleSymbol;
       this.sketchVM.activePointSymbol = defaultPointCircleSymbol;
