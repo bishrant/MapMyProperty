@@ -49,7 +49,11 @@ class TFSPolyline extends Polyline {
   }
 }
 
-const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): SketchViewModel => {
+const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView, snappingLayers: any[]): SketchViewModel => {
+  const snappingOptions: any = {
+    featureSources: snappingLayers.map((sl: any) => { return { layer: sl as any } })
+  }
+  console.log(snappingOptions);
   return new SketchViewModel({
     view: mapView,
     layer: graphicsLayer,
@@ -65,7 +69,8 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView): SketchViewM
     },
     defaultCreateOptions: {
       mode: 'click'
-    }
+    },
+    snappingOptions
   });
 };
 
