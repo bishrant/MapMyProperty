@@ -2,3 +2,11 @@
     height: 25em;
     font-size: 0.9em;
 }
+
+.-translate-x-full {
+    transform: translate(-100%);
+}
+
+.translate-x-full {
+    transform: translate(100%);
+}
