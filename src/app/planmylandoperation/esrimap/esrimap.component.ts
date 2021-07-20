@@ -47,6 +47,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('harvestAccPanel') harvestAccPanel: AccordionPanelComponent;
   @ViewChild('regenerationAccPanel') regenerationAccPanel: AccordionPanelComponent;
   @ViewChild('culvertAccPanel') culvertAccPanel: AccordionPanelComponent;
+  @ViewChild('plotLayoutAccPanel') plotLayoutAccPanel: AccordionPanelComponent;
   @ViewChild('elevationAccPanel') elevationAccPanel: AccordionPanelComponent;
   @ViewChild('notificationsModal') notificationsModal: ModalComponent;
   @ViewChild('helpModal') helpModal: ModalComponent;
@@ -63,6 +64,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedGraphics!: any[] | undefined;
   sidebarVisible = window.innerWidth > 640;
   mapCoords: any;
+  boundaryHasPolygons: boolean = false;
 
   geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
   geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: 'geomlabels' });
@@ -172,9 +174,11 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
             const sensAreasGL: __esri.GraphicsLayer = this.mapView.map.findLayerById('sensAreasGL') as __esri.GraphicsLayer;
 
             if (GetPolygonGraphics(boundaryLayerView.layer as __esri.GraphicsLayer).length === 0) {
+              this.boundaryHasPolygons = false;
               soilsGLHasPolygons = false;
               sensAreasGLHasPolygons = false;
             } else {
+              this.boundaryHasPolygons = true;
               if (pmloSoilsGL.graphics.length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
                 soilsGLHasPolygons = false;
               }

@@ -45,6 +45,13 @@
           <app-culvert-size [mapView]="mapView" #culvertSizeComponent></app-culvert-size>
         </app-accordion-panel>
 
+        <app-accordion-panel #plotLayoutAccPanel panelTitle="Plot Layout" relativePosition="true">
+          <div *ngIf="!boundaryHasPolygons" class="plotLayoutOverlay enabledArea">To use this tool you need to have at least one boundary.</div>
+          <div *ngIf="!boundaryHasPolygons" class="plotLayoutOverlay disabledArea"></div>
+          
+          <app-plot-layout [mapView]="mapView" #plotLayoutComponent></app-plot-layout>
+        </app-accordion-panel>
+
         <app-accordion-panel #importExportAccPanel panelTitle="Import | Export">
           <app-import-export [mapView]="mapView"></app-import-export>
         </app-accordion-panel>
@@ -162,6 +169,10 @@
 
     <ng-container *ngSwitchCase="'gettingStartedTour'">
       <pmlo-overall-help></pmlo-overall-help>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'plotLayout'">
+      <pmlo-plot-layout-help></pmlo-plot-layout-help>
     </ng-container>
   </ng-container>
 </app-modal>

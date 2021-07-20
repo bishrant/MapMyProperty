@@ -1,0 +1,80 @@
+<div class="py-3">
+    <div>
+        <app-help-button [header]="'Plot Layout'" [itemName]="'plotLayout'"></app-help-button>
+    </div>    
+    <br>
+    <div class="fw-600">Plot Number Order</div>
+    <div class="flex justify-between">
+        <img *ngFor="let direction of plotDirections" class="plotDirectionImg"
+            [ngClass]="{'selectedImage': selectedImage === direction.orientation }"
+            [src]="'assets/plot_layout/Plot' + direction.orientation + '.png'" alt="plots starting northeast"
+            (click)="updateSelection(direction.orientation)">
+    </div>
+    <div class="fw-600 mt-3">Plot Spacing</div>
+    <div class="flex">        
+        <div class="subMenuContainer">
+            <div class="md-input-main">
+                <div class="md-input-box">
+                    <input class="pmlo-md-input md-input text-right" type="number" min="0" [(ngModel)]="plotSpacingValue"
+                        aria-label="plot spacing" />
+                    <div class="pmlo-md-input-underline md-input-underline"></div>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-end">
+            <div class="mt-1">
+                <label class="inline-flex cursor-pointer">
+                    <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer"
+                        name="spacingUnit" value="chains" (change)="radioChanged($event.target.value)"
+                        [checked]="selectedRadio === 'chains'">
+                    <span class="ml-2">chains</span>
+                </label>
+            </div>
+            <div class="mt-1 ml-3">
+                <label class="inline-flex cursor-pointer">
+                    <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer"
+                        name="spacingUnit" value="feet" (change)="radioChanged($event.target.value)"
+                        [checked]="selectedRadio === 'feet'">
+                    <span class="ml-2">feet</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="fw-600 mt-3 flex">
+        <div class="w-50 mr-2">
+            <div>GPS Waypoints Prefix</div>
+            <div class="md-input-box">
+                <input id="waypointPrefixInput" class="pmlo-md-input md-input" type="text" maxlength="5"
+                [(ngModel)]="waypointPrefixValue" placeholder=" " aria-label="gps waypoint prefix" />
+                <div class="pmlo-md-input-underline md-input-underline"></div>
+            </div>
+        </div>
+        <div class="w-50 ml-2">
+            <div>Initial Plot Number</div>
+            <div class="md-input-box">
+                <input id="initialPlotInput" class="pmlo-md-input md-input" type="number" min="0"
+                [(ngModel)]="initialPlotValue" placeholder=" " aria-label="initial plot number" />
+                <div class="pmlo-md-input-underline md-input-underline"></div>
+            </div>
+        </div>        
+    </div> -->
+
+    <div class="fw-600 mt-3">GPS Waypoints Prefix</div>
+    <div class="md-input-box">
+        <input id="waypointPrefixInput" class="pmlo-md-input md-input" type="text" maxlength="5"
+        [(ngModel)]="waypointPrefixValue" placeholder=" " aria-label="gps waypoint prefix" />
+        <div class="pmlo-md-input-underline md-input-underline"></div>
+    </div>
+
+    <div class="fw-600 mt-3">Initial Plot Number</div>
+    <div class="md-input-box">
+        <input id="initialPlotInput" class="pmlo-md-input md-input" type="number" min="0"
+        [(ngModel)]="initialPlotValue" placeholder=" " aria-label="initial plot number" />
+        <div class="pmlo-md-input-underline md-input-underline"></div>
+    </div>
+
+    <div class="flex justify-center mt-3">
+        <button type="button" class="pmlo-btn pmlo-secondary generalBtn"
+        (click)="runPlotLayout()">Run</button>
+      </div>
+</div>
