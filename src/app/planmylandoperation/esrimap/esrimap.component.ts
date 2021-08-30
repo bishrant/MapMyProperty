@@ -19,7 +19,6 @@ import { addGraphics } from 'src/app/shared/store/graphics.actions';
 import { Subscription } from 'rxjs';
 import { HelpService } from 'src/app/shared/services/help/help.service';
 import { HelpObj } from 'src/app/shared/services/help/HelpObj.model';
-import { InitializeArcGISWorkers } from 'src/app/shared/utils/ArcGISWorkersUtil';
 import { GraphicsStoreComponent } from 'src/app/shared/components/graphics-store/GraphicsStore.component';
 import { defaultPointCircleSymbol } from 'src/app/shared/utils/DefaultSymbols';
 import { ElevationProfileComponent } from '../sidebar/elevation-profile/elevation-profile.component';
@@ -152,7 +151,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private initializeMap = async () => {
     try {
-      InitializeArcGISWorkers();
+      // InitializeArcGISWorkers();
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       reorderGraphicsLayer(this.mapView.map);
 
