@@ -16,7 +16,6 @@ import { ModalComponent } from 'src/app/shared/lib/angular-modal/modal/modal.com
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
-import { InitializeArcGISWorkers } from 'src/app/shared/utils/ArcGISWorkersUtil';
 import { reorderGraphicsLayer } from 'src/app/shared/utils/LayerUtils';
 import { defaultPointCircleSymbol } from 'src/app/shared/utils/DefaultSymbols';
 import { SubscriptionCollection, serialUnsubscriber } from 'src/app/shared/utils/SubscriptionUtils';
@@ -146,7 +145,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private initializeMap = async () => {
     try {
-      InitializeArcGISWorkers();
+      // InitializeArcGISWorkers();
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       reorderGraphicsLayer(this.mapView.map);
 

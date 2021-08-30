@@ -53,7 +53,6 @@ const SetupSketchViewModel = (graphicsLayer: any, mapView: MapView, snappingLaye
   const snappingOptions: any = {
     featureSources: snappingLayers.map((sl: any) => { return { layer: sl as any } })
   }
-  console.log(snappingOptions);
   return new SketchViewModel({
     view: mapView,
     layer: graphicsLayer,
