@@ -1,4 +1,4 @@
-import { Point } from 'esri/geometry'
+import { Point } from '@arcgis/core/geometry'
 import {
   createWebMercatorPolygonFromGraphic, createWebMercatorLineFromGraphic,
   createWebMercatorPointFromGraphic

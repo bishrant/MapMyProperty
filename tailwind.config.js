@@ -7,15 +7,13 @@ module.exports = {
         mmp_secondary: '#751380',
         pmlo_primary: '#8F8364',
         pmlo_secondary: '#353535'
-      },
-      borderWidth: {
-        '1':'1px'
       }
     },
-    customForms: theme => ({
+    customForms: () => ({
       default: {
         checkbox: {
           borderColor: 'black',
+          borderWidth: '1px',
           '&:checked': {
             borderColor: 'black',
             backgroundSize: '100% 100%',
@@ -33,12 +31,10 @@ module.exports = {
     })
 
   },
-  future: {
-    removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true
-  },
   variants: {
     borderWidth: ['responsive', 'hover', 'focus']
   },
-  plugins: [require('@tailwindcss/custom-forms')]
+  plugins: [require('@tailwindcss/forms')({
+    strategy: 'class'
+  })]
 }

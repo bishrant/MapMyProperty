@@ -2,13 +2,14 @@ import { addGraphics } from '../../store/graphics.actions';
 import { Component, ViewChild, ElementRef, OnInit, Input } from '@angular/core';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
-import { take } from 'rxjs/internal/operators/take';
 import { kmlToGeoJson, createKMLForExport } from '../../utils/KMLUtils';
 import { createGPXForExport, gpxToGeoJson } from '../../utils/GPXUtils';
 import { convertSHPToGraphics, downloadSHP } from '../../utils/SHPUtils';
 import { downloadFile } from '../../utils/DownloadFile';
 import { GetGraphicsForExtentUsingString } from '../../utils/DrawUtils';
 import { convertMMPJSONToGraphics } from './OldMMPUtils';
+import MapView from '@arcgis/core/views/MapView';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-import-export',
@@ -17,7 +18,7 @@ import { convertMMPJSONToGraphics } from './OldMMPUtils';
 })
 export class ImportExportComponent implements OnInit {
   @ViewChild('fileInput', { static: false }) fileInput: ElementRef;
-  @Input() mapView: __esri.MapView;
+  @Input() mapView: MapView;
   files: any = [];
   format = 'mmp';
   graphicsSub$: any;

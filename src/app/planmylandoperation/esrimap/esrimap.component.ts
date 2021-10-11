@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer, FindGraphicById, GetPolygonGraphics } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { CreateGeneralSketchViewModel, SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
-import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import { createMapView } from 'src/app/shared/utils/CreateMapView';
 import { CreateSoilsLayer } from 'src/app/shared/utils/CreateDynamicLayers';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
@@ -11,7 +11,7 @@ import { AccordionPanelComponent } from 'src/app/shared/components/accordion-pan
 import { EsrimapService } from './esrimap.service';
 import { ModalComponent } from 'src/app/shared/lib/angular-modal/modal/modal.component';
 import { AccordionPanelService } from 'src/app/shared/components/accordion-panel/accordion-panel.service';
-import GraphicsLayer from 'esri/layers/GraphicsLayer';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import { clearLocalStorage, getSavedState, setSavedState } from 'src/app/shared/store/storage.metareducer';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { Store } from '@ngrx/store';
@@ -19,7 +19,6 @@ import { addGraphics } from 'src/app/shared/store/graphics.actions';
 import { Subscription } from 'rxjs';
 import { HelpService } from 'src/app/shared/services/help/help.service';
 import { HelpObj } from 'src/app/shared/services/help/HelpObj.model';
-import { InitializeArcGISWorkers } from 'src/app/shared/utils/ArcGISWorkersUtil';
 import { GraphicsStoreComponent } from 'src/app/shared/components/graphics-store/GraphicsStore.component';
 import { defaultPointCircleSymbol } from 'src/app/shared/utils/DefaultSymbols';
 import { ElevationProfileComponent } from '../sidebar/elevation-profile/elevation-profile.component';
@@ -30,6 +29,8 @@ import { ListenToKeyboard } from 'src/app/shared/utils/MapViewUtils';
 import { serialUnsubscriber, SubscriptionCollection } from 'src/app/shared/utils/SubscriptionUtils';
 import { NotificationsService } from 'src/app/shared/services/Notifications.service';
 import { NotificationModel } from 'src/app/shared/models/Notification.model';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import MapView from '@arcgis/core/views/MapView';
 
 @Component({
   selector: 'pmlo-esrimap',
@@ -57,18 +58,18 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('culvertSizeComponent') culvertSizeComponent: CulvertSizeComponent;
   @ViewChildren(AccordionPanelComponent) accordionPanels: QueryList<AccordionPanelComponent>;
 
-  mapView!: __esri.MapView;
+  mapView!: MapView;
   clickToAddText = false;
   sketchVM: any = new SketchViewModel();
-  generalSketchVM: __esri.SketchViewModel;
+  generalSketchVM: SketchViewModel;
   selectedGraphics!: any[] | undefined;
   sidebarVisible = window.innerWidth > 640;
   mapCoords: any;
   boundaryHasPolygons: boolean = false;
 
-  geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
-  geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: 'geomlabels' });
-  polygonGraphicsLayer: __esri.GraphicsLayer = CreatePolygonGraphicsLayer();
+  geomLabelsSketchVM: SketchViewModel = new SketchViewModel();
+  geomLabelsGraphicsLayer: GraphicsLayer = new GraphicsLayer({ id: 'geomlabels' });
+  polygonGraphicsLayer: GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
   generalGraphicsLayer = CreatePolygonGraphicsLayer('generalGraphicsLayer');
 
@@ -152,14 +153,14 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private initializeMap = async () => {
     try {
-      InitializeArcGISWorkers();
+      // InitializeArcGISWorkers();
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       reorderGraphicsLayer(this.mapView.map);
 
-      const soilsLayer: __esri.WMSLayer = CreateSoilsLayer('soilsDynamicLayer', this.appConfig.ssurgoWMSURL);
+      const soilsLayer: WMSLayer = CreateSoilsLayer('soilsDynamicLayer', this.appConfig.ssurgoWMSURL);
       this.mapView.map.addMany([soilsLayer, this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer, this.generalGraphicsLayer]);
 
-      this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
+      this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView, [this.generalGraphicsLayer, this.polygonGraphicsLayer]);
       this.generalSketchVM = CreateGeneralSketchViewModel(this.generalGraphicsLayer, this.mapView);
       this.sketchVM.updatePointSymbol = defaultPointCircleSymbol;
       this.sketchVM.activePointSymbol = defaultPointCircleSymbol;
@@ -170,20 +171,20 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
           if (val) {
             let soilsGLHasPolygons: boolean = true;
             let sensAreasGLHasPolygons: boolean = true;
-            const pmloSoilsGL: __esri.GraphicsLayer = this.mapView.map.findLayerById('pmloSoilsGL') as __esri.GraphicsLayer;
-            const sensAreasGL: __esri.GraphicsLayer = this.mapView.map.findLayerById('sensAreasGL') as __esri.GraphicsLayer;
+            const pmloSoilsGL: GraphicsLayer = this.mapView.map.findLayerById('pmloSoilsGL') as GraphicsLayer;
+            const sensAreasGL: GraphicsLayer = this.mapView.map.findLayerById('sensAreasGL') as GraphicsLayer;
 
-            if (GetPolygonGraphics(boundaryLayerView.layer as __esri.GraphicsLayer).length === 0) {
+            if (GetPolygonGraphics(boundaryLayerView.layer as GraphicsLayer).length === 0) {
               this.boundaryHasPolygons = false;
               soilsGLHasPolygons = false;
               sensAreasGLHasPolygons = false;
             } else {
               this.boundaryHasPolygons = true;
-              if (pmloSoilsGL.graphics.length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
+              if (pmloSoilsGL.graphics.length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
                 soilsGLHasPolygons = false;
               }
 
-              if (sensAreasGL.graphics.length === 0 || (sensAreasGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as __esri.GraphicsLayer, sensAreasGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
+              if (sensAreasGL.graphics.length === 0 || (sensAreasGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as GraphicsLayer, sensAreasGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
                 sensAreasGLHasPolygons = false;
               }
             }

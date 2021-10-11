@@ -11,7 +11,7 @@ import { GetSelectedSoilFillProps, GetSelectedSoilLineProps } from '../../pmloUt
 import { SoilsReportService } from './soils-report.service';
 import { SensAreasService } from '../sens-areas/sens-areas.service';
 import { GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
-import Collection from 'esri/core/Collection';
+import Collection from '@arcgis/core/core/Collection';
 import { SquareMetersToAcres } from 'src/app/shared/utils/ConversionTools';
 import { LoaderService } from 'src/app/shared/services/Loader.service';
 import { TraceMMPError } from 'src/app/shared/services/error/GPServiceError';
@@ -22,6 +22,11 @@ import { ModalService } from 'src/app/shared/lib/angular-modal/modal/modal.servi
 import { SketchSelectionService } from 'src/app/shared/services/SketchSelectionService';
 import { NotificationModel } from 'src/app/shared/models/Notification.model';
 import { NotificationsService } from 'src/app/shared/services/Notifications.service';
+import { Polygon } from '@arcgis/core/geometry';
+import Graphic from '@arcgis/core/Graphic';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import WMSLayer from '@arcgis/core/layers/WMSLayer';
+import FeatureSet from '@arcgis/core/tasks/support/FeatureSet';
 
 @Component({
   selector: 'pmlo-soils',
@@ -45,11 +50,11 @@ export class SoilsComponent implements OnInit {
 
   soReportTitle:string = '';
 
-  private soilsDynamicLayer: __esri.WMSLayer;
+  private soilsDynamicLayer: WMSLayer;
   private soilsIdentifyClickEvent: any = null;
-  private userGL: __esri.GraphicsLayer;
-  private pmloSoilsGL: __esri.GraphicsLayer = CreateGL('pmloSoilsGL', 1);
-  private pmloSoilLabelsGL: __esri.GraphicsLayer = CreateGL('pmloSoilLabelsGL', 1);
+  private userGL: GraphicsLayer;
+  private pmloSoilsGL: GraphicsLayer = CreateGL('pmloSoilsGL', 1);
+  private pmloSoilLabelsGL: GraphicsLayer = CreateGL('pmloSoilLabelsGL', 1);
 
   private pmloNote:NotificationModel = new NotificationModel();
 
@@ -121,7 +126,7 @@ export class SoilsComponent implements OnInit {
       if (soil === null) {
         this.pmloSoilsGL.graphics.pop();
       } else {
-        const prevSelectedGraphic:__esri.Graphic = this.pmloSoilsGL.graphics.find(el => el.attributes.isFromSelection);
+        const prevSelectedGraphic:Graphic = this.pmloSoilsGL.graphics.find(el => el.attributes.isFromSelection);
         if (prevSelectedGraphic !== undefined) {
           this.pmloSoilsGL.graphics.pop();
         }
@@ -181,8 +186,8 @@ export class SoilsComponent implements OnInit {
         this.notificationsService.openNotificationsModal.emit(this.pmloNote);
       } else {
         this.loaderService.isLoading.next(true);
-        const inputBoundary: __esri.Graphic = polygonGraphics.getItemAt(0);
-        this.soilsService.getSoils(inputBoundary).then((result: __esri.FeatureSet[]) => {
+        const inputBoundary: Graphic = polygonGraphics.getItemAt(0);
+        this.soilsService.getSoils(inputBoundary).then((result: FeatureSet[]) => {
           if (result.length === 0) {
             this.loaderService.isLoading.next(false);
             this.pmloNote.body = 'There was an error while clipping the soils. Please try again and, if the problem persists, contact the administrator.';
@@ -236,11 +241,11 @@ export class SoilsComponent implements OnInit {
     }
   }
 
-  updateSketchState(status: boolean) {
+  updateSketchState (status: boolean) {
     this.sketchSelectionService.changeSketchSelectionMode('soils', status);
   }
 
-  public disableSoilsIdentify() {
+  public disableSoilsIdentify () {
     this.identifyCheckbox.nativeElement.checked = false;
     this.mapView.popup.close();
     this.soilsIdentifyChanged(false);
@@ -271,17 +276,17 @@ export class SoilsComponent implements OnInit {
 
   buildSoilsReport ():void {
     this.loaderService.isLoading.next(true);
-    const boundary:__esri.Graphic = this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
-    const boundaryCollection:Collection<__esri.Graphic> = new Collection<__esri.Graphic>();
+    const boundary:Graphic = this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
+    const boundaryCollection:Collection<Graphic> = new Collection<Graphic>();
     boundaryCollection.add(boundary);
-    const soilsAttributes:any = this.pmloSoilsGL.graphics.map((soil:__esri.Graphic) => {
+    const soilsAttributes:any = this.pmloSoilsGL.graphics.map((soil:Graphic) => {
       soil.attributes.Acres = SquareMetersToAcres(soil.attributes.Shape_Area);
       return soil.attributes;
     });
     Promise.all([
       this.soilsReportService.printMaps(this.mapView, this.pmloSoilsGL, this.pmloSoilLabelsGL, boundary.geometry.extent.clone().expand(1.05)),
-      this.soilsReportService.getCountyFromCentroid((boundary.geometry as __esri.Polygon).centroid),
-      this.soilsReportService.getWatershedFromCentroid((boundary.geometry as __esri.Polygon).centroid),
+      this.soilsReportService.getCountyFromCentroid((boundary.geometry as Polygon).centroid),
+      this.soilsReportService.getWatershedFromCentroid((boundary.geometry as Polygon).centroid),
       this.soilsReportService.getSoilsReportHydroParams(boundary),
       this.sensAreasService.isWithinTexas(boundary.geometry)
     ]).then((value) => {
@@ -298,8 +303,8 @@ export class SoilsComponent implements OnInit {
         wetlandsAcres: value[3].wetlandsAcres,
         isWithinTexas: value[4],
         projectAcres: GetFeaturesAreaAcres(boundaryCollection),
-        latitude: (boundary.geometry as __esri.Polygon).centroid.latitude,
-        longitude: (boundary.geometry as __esri.Polygon).centroid.longitude,
+        latitude: (boundary.geometry as Polygon).centroid.latitude,
+        longitude: (boundary.geometry as Polygon).centroid.longitude,
         soils: soilsAttributes.items
       };
 

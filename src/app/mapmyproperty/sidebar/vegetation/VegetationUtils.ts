@@ -1,5 +1,5 @@
-import FeatureLayer from 'esri/layers/FeatureLayer';
-import CIMSymbol from 'esri/symbols/CIMSymbol';
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer';
+import CIMSymbol from '@arcgis/core/symbols/CIMSymbol';
 
 const getVegetationBackgroundColor = (veg: any) => {
   const _h: string = veg.attributes.HEXColor;
@@ -31,9 +31,7 @@ const GetVegLabelInfo = (): any => {
         size: 12
       }
     },
-    labelExpressionInfo: {
-      expression: '$feature.VegID'
-    }
+    labelExpression: '[HEXColor]'
   }];
 }
 
@@ -97,7 +95,7 @@ const getVegetationHighlightSymbol = (veg: any) => {
   })
 };
 
-const CreateVegetationFeatureLayer = (vegetationData: any[]): __esri.FeatureLayer => {
+const CreateVegetationFeatureLayer = (vegetationData: any[]): FeatureLayer => {
   const _graphics = vegetationData[0].value.features.map(f => {
     f.symbol = getVegetationSymbol(f);
     return f;
@@ -105,21 +103,26 @@ const CreateVegetationFeatureLayer = (vegetationData: any[]): __esri.FeatureLaye
 
   const fLayer = new FeatureLayer({
     source: _graphics,
+    id: 'vegFeatureLayer',
     objectIdField: 'FID',
     fields: [{
       name: 'FID',
+      alias: 'FID',
       type: 'oid'
     }, {
       name: 'VegID',
+      alias: 'VegID',
       type: 'integer'
     },
     {
       name: 'HEXColor',
+      alias: 'HEXColor',
       type: 'string'
     }],
-    popupTemplate: { content: '{FID} Test' },
+    popupTemplate: { content: '{VegID}' },
     renderer: CreateVegRenderer(_graphics),
-    labelingInfo: GetVegLabelInfo()
+    labelingInfo: GetVegLabelInfo(),
+    outFields: ['*']
   })
   return fLayer;
 }

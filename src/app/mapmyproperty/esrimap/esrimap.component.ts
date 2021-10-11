@@ -2,9 +2,9 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { CreatePolygonGraphicsLayer, CreateTextGraphicsLayer } from 'src/app/shared/utils/CreateGraphicsLayer';
 import { CreateGeneralSketchViewModel, SetupSketchViewModel } from 'src/app/shared/utils/SketchViewModelUitls';
-import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 import { createMapView } from 'src/app/shared/utils/CreateMapView';
-import GraphicsLayer from 'esri/layers/GraphicsLayer';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 import { AccordionPanelComponent } from 'src/app/shared/components/accordion-panel/accordion-panel.component';
 import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.service';
 import { GraphicsStoreComponent } from 'src/app/shared/components/graphics-store/GraphicsStore.component';
@@ -16,13 +16,13 @@ import { ModalComponent } from 'src/app/shared/lib/angular-modal/modal/modal.com
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/shared/store/graphics.state';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
-import { InitializeArcGISWorkers } from 'src/app/shared/utils/ArcGISWorkersUtil';
 import { reorderGraphicsLayer } from 'src/app/shared/utils/LayerUtils';
 import { defaultPointCircleSymbol } from 'src/app/shared/utils/DefaultSymbols';
 import { SubscriptionCollection, serialUnsubscriber } from 'src/app/shared/utils/SubscriptionUtils';
 import { MMPModalWindowService } from 'src/app/shared/services/MMPModalWindow.service';
 import { NotificationsService } from 'src/app/shared/services/Notifications.service';
 import { NotificationModel } from 'src/app/shared/models/Notification.model';
+import MapView from '@arcgis/core/views/MapView';
 
 @Component({
   selector: 'app-esrimap',
@@ -38,17 +38,17 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('vegetationTableModal') vegetationTableModal: ModalComponent;
   @ViewChild('notificationsModal') notificationsModal: ModalComponent;
 
-  mapView!: __esri.MapView;
+  mapView!: MapView;
   clickToAddText = false;
   sketchVM: any = new SketchViewModel();
-  generalSketchVM: __esri.SketchViewModel;
+  generalSketchVM: SketchViewModel;
   selectedGraphics!: any[] | undefined;
   sidebarVisible = window.innerWidth > 640;
   mapCoords: any;
 
-  geomLabelsSketchVM: __esri.SketchViewModel = new SketchViewModel();
-  geomLabelsGraphicsLayer: __esri.GraphicsLayer = new GraphicsLayer({ id: 'geomlabels' });
-  polygonGraphicsLayer: __esri.GraphicsLayer = CreatePolygonGraphicsLayer();
+  geomLabelsSketchVM: SketchViewModel = new SketchViewModel();
+  geomLabelsGraphicsLayer: GraphicsLayer = new GraphicsLayer({ id: 'geomlabels' });
+  polygonGraphicsLayer: GraphicsLayer = CreatePolygonGraphicsLayer();
   textGraphicsLayer = CreateTextGraphicsLayer();
   generalGraphicsLayer = CreatePolygonGraphicsLayer('generalGraphicsLayer');
 
@@ -56,7 +56,6 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   helpHeader = 'Getting Started Tour';
   helpItem = 'gettingStartedTour';
   savedData: any;
-
   keyboardSub$: any;
   graphicsStoreSub$: Subscription;
   private subscriptions: SubscriptionCollection = {};
@@ -146,13 +145,13 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private initializeMap = async () => {
     try {
-      InitializeArcGISWorkers();
+      // InitializeArcGISWorkers();
       this.mapView = createMapView(this.mapViewEl, this.searchBarDiv);
       reorderGraphicsLayer(this.mapView.map);
 
       this.mapView.map.addMany([this.polygonGraphicsLayer, this.textGraphicsLayer, this.geomLabelsGraphicsLayer, this.generalGraphicsLayer]);
 
-      this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView);
+      this.sketchVM = SetupSketchViewModel(this.polygonGraphicsLayer, this.mapView, [this.generalGraphicsLayer, this.polygonGraphicsLayer]);
       this.generalSketchVM = CreateGeneralSketchViewModel(this.generalGraphicsLayer, this.mapView);
       this.sketchVM.updatePointSymbol = defaultPointCircleSymbol;
       this.sketchVM.activePointSymbol = defaultPointCircleSymbol;

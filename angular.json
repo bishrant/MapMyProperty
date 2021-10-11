@@ -36,10 +36,10 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.json",
             "aot": true,
-            "extractCss": true,
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              "src/manifest.webmanifest",
               {
                 "glob": "**/*",
                 "input": "src/assets/lib/zip",
@@ -53,7 +53,10 @@
               "src/styles.scss",
               "src/app/shared/styles/pmlo-shared-styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "moment"
+            ]
           },
           "configurations": {
             "production": {
@@ -69,10 +72,9 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": true,
-              "extractLicenses": false,
-              "vendorChunk": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
               "buildOptimizer": true,
               "budgets": [
                 {
@@ -85,7 +87,9 @@
                   "maximumWarning": "10kb",
                   "maximumError": "200kb"
                 }
-              ]
+              ],
+              "serviceWorker": true,
+              "ngswConfigPath": "ngsw-config.json"
             }
           }
         },

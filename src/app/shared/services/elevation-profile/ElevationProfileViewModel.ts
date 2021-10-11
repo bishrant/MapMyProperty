@@ -1,9 +1,10 @@
 import { ElevationUnits } from './interfaces.d';
 import { CalculateLength, CalculateSlope, GetSegmentsWithHigherSlope, CalculateSegmentLength, lengthAbbrMap, elevationUnitMap, sum, max, min, Decimal, avg } from './Uitls';
 import { CreateNormalElevationLine, CreateHigherSlopeLine, GetGraphOptions, ConvertElevationUnits } from './GraphStyles';
-import Graphic from 'esri/Graphic';
-import MapView from 'esri/views/MapView';
+import Graphic from '@arcgis/core/Graphic';
+import MapView from '@arcgis/core/views/MapView';
 import { PrintTaskService } from '../PrintTask.service';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 class ElevationProfileViewModel {
   constructor () {}
@@ -19,7 +20,7 @@ class ElevationProfileViewModel {
   isMSL: boolean = false;
   divId: string = 'elevation-plotly';
 
-  GetElevationData(graphic: Graphic, elevationGPServiceURL: string) {
+  GetElevationData (graphic: Graphic, elevationGPServiceURL: string) {
     const feat = graphic.toJSON();
     feat.atttributes = { OID: 1 };
     const myHeaders = new Headers();
@@ -46,7 +47,7 @@ class ElevationProfileViewModel {
     return fetch(elevationGPServiceURL, requestOptions);
   }
 
-  getChartData(pts: any, unit: ElevationUnits) {
+  getChartData (pts: any, unit: ElevationUnits) {
     pts = ConvertElevationUnits(pts, unit);
     pts = CalculateLength(pts, unit);
     pts = CalculateSlope(pts);
@@ -65,7 +66,7 @@ class ElevationProfileViewModel {
     return [data, options, pts];
   }
 
-  initializeHover (_pts: any, graphicsLayer: __esri.GraphicsLayer) {
+  initializeHover (_pts: any, graphicsLayer: GraphicsLayer) {
     const myPlot: any = document.getElementById(this.divId);
     myPlot
       .on('plotly_hover', function (data: any) {
@@ -104,7 +105,7 @@ class ElevationProfileViewModel {
       });
   }
 
-  GetStatistics() {
+  GetStatistics () {
     let pts = JSON.parse(JSON.stringify(this.ptArrayOriginal));
     pts = ConvertElevationUnits(pts, this.unit);
     pts = CalculateLength(pts, this.unit);
@@ -138,7 +139,7 @@ class ElevationProfileViewModel {
     }
   }
 
-  async printReport(plotly: any, mapView: MapView, reportURL: string, printTaskService: PrintTaskService, ext: any) {
+  async printReport (plotly: any, mapView: MapView, reportURL: string, printTaskService: PrintTaskService, ext: any) {
     return new Promise(async (resolve: any, reject: any) => {
       try {
         const mapImageUrl = await printTaskService.exportWebMap(mapView, 'ProfileToolFeetTemplate', 'png', ext);

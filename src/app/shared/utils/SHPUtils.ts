@@ -11,11 +11,13 @@ import {
 import { addGraphics } from '../store/graphics.actions';
 import { id } from '../store/todo';
 import { GetGraphicsForExtentUsingString } from './DrawUtils';
-import Graphic = require('esri/Graphic');
+import MapView from '@arcgis/core/views/MapView';
+import Graphic from '@arcgis/core/Graphic';
+
 declare const zip: any;
 zip.workerScriptsPath = 'scripts/';
 
-const getZipEntries = (file: any, callback: any, store: any, mapView: __esri.MapView) => {
+const getZipEntries = (file: any, callback: any, store: any, mapView: MapView) => {
   const reader = new zip.BlobReader(file);
   zip.createReader(reader, function (reader: any) {
     callback(reader, file, store, mapView);
@@ -45,7 +47,7 @@ const getWriter = (entry: any) => {
   });
 };
 
-const zipToShpAGOL = (file: File, store: any, mapView: __esri.MapView) => {
+const zipToShpAGOL = (file: File, store: any, mapView: MapView) => {
   const formData = new FormData();
   const publishParams: any = {
     targetSR: { wkid: 102100 },
@@ -105,7 +107,7 @@ const zipToShpAGOL = (file: File, store: any, mapView: __esri.MapView) => {
     });
 };
 
-const readerCompleteMultiple = (zipReader: any, file: any, store: any, mapView: __esri.MapView) => {
+const readerCompleteMultiple = (zipReader: any, file: any, store: any, mapView: MapView) => {
   try {
     zipReader.getEntries(async (entries: any) => {
       const nestedZips = entries.filter((e: any) => /^.*\.(zip)$/gi.test(e.filename));
@@ -270,7 +272,7 @@ const downloadSHP = async (data: any, filename: string) => {
   });
 };
 
-const convertSHPToGraphics = async (file: any, store: any, mapView: __esri.MapView) => {
+const convertSHPToGraphics = async (file: any, store: any, mapView: MapView) => {
   getZipEntries(file, readerCompleteMultiple, store, mapView);
 };
 

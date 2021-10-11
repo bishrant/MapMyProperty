@@ -1,15 +1,18 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import SketchViewModel from 'esri/widgets/Sketch/SketchViewModel';
-import Graphic from 'esri/Graphic';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
+import Graphic from '@arcgis/core/Graphic';
 import { ReplaySubject } from 'rxjs';
 import { AppConfiguration } from 'src/config';
 import { LoaderService } from './Loader.service';
-import FeatureSet from 'esri/tasks/support/FeatureSet';
-import Geoprocessor from 'esri/tasks/Geoprocessor';
-import JobInfo from 'esri/tasks/support/JobInfo';
-import PrintTask from 'esri/tasks/PrintTask';
-import PrintParameters from 'esri/tasks/support/PrintParameters';
+import FeatureSet from '@arcgis/core/tasks/support/FeatureSet';
+import Geoprocessor from '@arcgis/core/tasks/Geoprocessor';
+import JobInfo from '@arcgis/core/tasks/support/JobInfo';
+import PrintTask from '@arcgis/core/tasks/PrintTask';
+import PrintParameters from '@arcgis/core/tasks/support/PrintParameters';
 import { HttpClient } from '@angular/common/http';
+import { Polygon } from '@arcgis/core/geometry';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import MapView from '@arcgis/core/views/MapView';
 
 interface CulvertSizeReportParams {
   watershedImageURL: string,
@@ -31,12 +34,12 @@ export class CulvertSizeService {
   drawingComplete: EventEmitter<any> = new EventEmitter();
   state: EventEmitter<any> = new EventEmitter();
 
-  public mapView: __esri.MapView;
-  public sketchVM: __esri.SketchViewModel;
+  public mapView: MapView;
+  public sketchVM: SketchViewModel;
   private reveresed: boolean = false;
   public plot: any;
   public Plotly: any;
-  private _graphicsLayer: __esri.GraphicsLayer;
+  private _graphicsLayer: GraphicsLayer;
 
   constructor (private config: AppConfiguration, private loaderService: LoaderService, private http: HttpClient) { }
 
@@ -114,7 +117,7 @@ export class CulvertSizeService {
     })
   }
 
-  async createReport (watershedGeometry: __esri.Polygon, culvertData, errorModal: any) {
+  async createReport (watershedGeometry: Polygon, culvertData, errorModal: any) {
     try {
       this.loaderService.isLoading.next(true);
       const printTask: PrintTask = new PrintTask({

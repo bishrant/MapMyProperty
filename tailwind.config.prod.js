@@ -4,7 +4,7 @@ module.exports = {
     content: ['./src/**/*.html', './src/**/*.scss'],
     options: {
       whitelist: ['-translate-x-full']
-    } 
+    }
   },
   theme: {
     extend: {
@@ -13,39 +13,34 @@ module.exports = {
         mmp_secondary: '#751380',
         pmlo_primary: '#8F8364',
         pmlo_secondary: '#353535'
-      },
-      borderWidth: {
-        '1':'1px'
-      },
-
+      }
     },
-    customForms: theme => ({
+    customForms: () => ({
       default: {
         checkbox: {
           borderColor: 'black',
+          borderWidth: '1px',
           '&:checked': {
             borderColor: 'black',
             backgroundSize: '100% 100%',
             backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
+            backgroundRepeat: 'no-repeat'
           },
           'checkbox[checked="true"]': {
             borderColor: 'black',
             backgroundSize: '100% 100%',
             backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
+            backgroundRepeat: 'no-repeat'
           }
         }
       }
     })
 
   },
-  future: {
-    removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true,
-  },
   variants: {
-    borderWidth: ['responsive', 'hover', 'focus'],
+    borderWidth: ['responsive', 'hover', 'focus']
   },
-  plugins: [require('@tailwindcss/custom-forms'),],
+  plugins: [require('@tailwindcss/forms')({
+    strategy: 'class'
+  })]
 }

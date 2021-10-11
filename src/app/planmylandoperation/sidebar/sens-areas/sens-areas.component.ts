@@ -11,6 +11,8 @@ import { EsrimapService } from '../../esrimap/esrimap.service';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { NotificationsService } from 'src/app/shared/services/Notifications.service';
 import { NotificationModel } from 'src/app/shared/models/Notification.model';
+import Graphic from '@arcgis/core/Graphic';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
 
 @Component({
   selector: 'pmlo-sens-areas',
@@ -40,8 +42,8 @@ export class SensAreasComponent implements OnInit {
 
   @Input() mapView: any;
 
-  private boundaryLayer: __esri.GraphicsLayer;
-  private sensAreaGL: __esri.GraphicsLayer = CreateGL('sensAreasGL', 1);
+  private boundaryLayer: GraphicsLayer;
+  private sensAreaGL: GraphicsLayer = CreateGL('sensAreasGL', 1);
 
   private pmloNote:NotificationModel = new NotificationModel();
 
@@ -83,7 +85,7 @@ export class SensAreasComponent implements OnInit {
     } else if (this.sensAreaGL.graphics.length === 0) {
       this.loaderService.isLoading.next(true);
 
-      const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
+      const inputBoundary: Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
 
       this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((isInTexas:boolean) => {
         this.sensAreasService.getSensAreas(inputBoundary, isInTexas, this.smzBufferValue, this.wetlandsBufferValue, this.slopeValue).then((result) => {
@@ -117,7 +119,7 @@ export class SensAreasComponent implements OnInit {
 
   bufferGraphic (origin: string):void {
     this.loaderService.isLoading.next(true);
-    const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
+    const inputBoundary: Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
     const inputFeet: number = origin === 'smz' ? this.smzBufferValue : this.wetlandsBufferValue;
     if (inputFeet > 0) {
       this.sensAreasService.bufferGraphic(origin, inputBoundary, inputFeet).then(result => {
@@ -145,7 +147,7 @@ export class SensAreasComponent implements OnInit {
 
   setSlope (origin: string):void {
     this.loaderService.isLoading.next(true);
-    const inputBoundary: __esri.Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
+    const inputBoundary: Graphic = this.boundaryLayer.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
     this.sensAreasService.isWithinTexas(inputBoundary.geometry).then((isInTexas:boolean) => {
       this.sensAreasService.setSlope(inputBoundary, this.slopeValue, isInTexas).then(result => {
         if (result === null) {

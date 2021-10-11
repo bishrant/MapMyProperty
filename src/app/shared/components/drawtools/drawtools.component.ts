@@ -19,11 +19,13 @@ import { AreGraphicsEqual } from '../../utils/GeometryEngine';
 import { TextControlService } from '../../services/TextControl-service';
 import { TextControlSelectionService } from '../../services/TextControlSelection-service';
 import { Subscription } from 'rxjs';
-import Graphic from 'esri/Graphic';
+import Graphic from '@arcgis/core/Graphic';
 import { syncLabelsToGeometry } from './LabelsUtils';
 import { EsrimapService } from 'src/app/planmylandoperation/esrimap/esrimap.service';
 import { CreateTFSCircleFromPoint } from '../../utils/SketchViewModelUitls';
 import { SketchSelectionService } from '../../services/SketchSelectionService';
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer';
+import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel';
 
 @Component({
   selector: 'app-drawtools',
@@ -33,12 +35,12 @@ import { SketchSelectionService } from '../../services/SketchSelectionService';
 export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() sketchVM: any;
   @Input() generalSketchVM: any;
-  @Input() geomLabelsSketchVM: __esri.SketchViewModel;
-  @Input() geomLabelsGraphicsLayer: __esri.GraphicsLayer;
+  @Input() geomLabelsSketchVM: SketchViewModel;
+  @Input() geomLabelsGraphicsLayer: GraphicsLayer;
 
   @Input() mapView: any;
   @Input() textGraphicsLayer: any;
-  @Input() polygonGraphicsLayer: __esri.GraphicsLayer;
+  @Input() polygonGraphicsLayer: GraphicsLayer;
 
   @ViewChild('radiusInput') radiusElmRef: ElementRef;
   @ViewChild('textcontrols') textcontrolsElmRef: any;
@@ -423,7 +425,7 @@ export class DrawtoolsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   };
 
-  private CreateDraggableTextbox = (textGraphic: any, graphicsLayer: __esri.GraphicsLayer) => {
+  private CreateDraggableTextbox = (textGraphic: any, graphicsLayer: GraphicsLayer) => {
     const graphicCenter = this.mapView.toScreen(textGraphic.geometry);
     this.selectedInputBox = this.TextSelectionService.createInputWithFrame(
       graphicCenter,
