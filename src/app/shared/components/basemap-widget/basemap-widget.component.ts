@@ -4,10 +4,11 @@ import Basemap from '@arcgis/core/Basemap';
 import Layer from '@arcgis/core/layers/Layer';
 import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
 import { createBingBasemap } from '../../utils/CreateMapView';
-import { googleWMSlayer, infraredBasemapsDict, naturalColorBasemapsDict } from '../../layers/NAIPLayers';
+import { googleWMSlayer, infraredBasemapsDict, nationalNaip, naturalColorBasemapsDict } from '../../layers/NAIPLayers';
 import { WidgetToggleService } from '../../services/WidgetToggleService';
 import { Subscription } from 'rxjs';
 import MapView from '@arcgis/core/views/MapView';
+import ImageryTileLayer from '@arcgis/core/layers/ImageryTileLayer';
 const watchUtils = require('@arcgis/core/core/watchUtils');
 
 @Component({
@@ -111,7 +112,8 @@ export class BasemapWidgetComponent implements AfterViewInit, OnDestroy {
 
   usa_topo = this.createBasemap(new MapImageLayer({ url: 'https://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer', id: 'usa-topo' }), 'usa-topo');
   usgs = this.createBasemap(new MapImageLayer({ url: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer' }), 'usgs');
-  naip = this.createBasemap(new MapImageLayer({ url: 'https://gis.apfo.usda.gov/arcgis/rest/services/NAIP/USDA_CONUS_PRIME/ImageServer' }), 'naip');
+  naip = this.createBasemap(nationalNaip, 'naip');
+
   google = this.createBasemap(this.googleWMSlayer, 'texas');
   bing = createBingBasemap();
 
