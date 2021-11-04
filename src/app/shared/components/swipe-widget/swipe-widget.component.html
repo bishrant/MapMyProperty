@@ -13,7 +13,7 @@
   <div class="swipeBodyContainer">
     {{swipeMode === 'horizontal' ? 'Left Layer' : 'Top Layer'}} <br>
     <select [(ngModel)]="firstLayer" aria-label="first layer" (ngModelChange)="changeSwipeLayers('leading')">
-      <option *ngFor="let x of texasBasemaps" [value]="x" [disabled]="x === secondLayer">
+      <option *ngFor="let x of basemaps" [value]="x" [disabled]="x === secondLayer">
         {{x}}
       </option>
     </select>
@@ -21,7 +21,7 @@
     <br>
     {{swipeMode === 'horizontal' ? 'Right Layer' : 'Bottom Layer'}}<br>
     <select [(ngModel)]="secondLayer" aria-label="second layer" (ngModelChange)="changeSwipeLayers('trailing')">
-      <option *ngFor="let x of texasBasemaps" [value]="x" [disabled]="x === firstLayer">
+      <option *ngFor="let x of basemaps" [value]="x" [disabled]="x === firstLayer">
         {{x}}
       </option>
     </select>
