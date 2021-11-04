@@ -1,10 +1,11 @@
 import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import Collection from '@arcgis/core/core/Collection';
 import Layer from '@arcgis/core/layers/Layer';
+import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
 import MapView from '@arcgis/core/views/MapView';
 import Swipe from '@arcgis/core/widgets/Swipe';
 import { Subscription } from 'rxjs';
-import { googleWMSlayer, infraredBasemapsDict, naturalColorBasemapsDict } from '../../layers/NAIPLayers';
+import { googleWMSlayer, infraredBasemapsDict, nationalNaip, naturalColorBasemapsDict } from '../../layers/NAIPLayers';
 import { LoaderService } from '../../services/Loader.service';
 import { WidgetToggleService } from '../../services/WidgetToggleService';
 
@@ -17,7 +18,7 @@ export class SwipeWidgetComponent implements AfterViewInit, OnDestroy {
   loadingBaseLayer: Layer;
   @Input() mapView: MapView;
 
-  basemapDict = { ...naturalColorBasemapsDict, ...infraredBasemapsDict };
+  basemapDict = { ...naturalColorBasemapsDict, ...infraredBasemapsDict, 'National NAIP': nationalNaip, 'USA Topo': new MapImageLayer({ url: 'https://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer', id: 'usa-topo' }) };
   basemaps= Object.keys(this.basemapDict);
 
   googleWMSlayer = googleWMSlayer;
