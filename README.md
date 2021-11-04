@@ -5,7 +5,10 @@
 A revised version of map my property that integrates Draw My Ranch, Plan My Land Operation and the existing map my property into a single one.
 
 Will use at least 11.0.0 angular version.
-ESRI ArcGIS JS will be compiled using ArcGIS Webpack plugin https://github.com/Esri/arcgis-webpack-plugin which uses Dojo Webpack Plugin underneath.
+
+ESRI ArcGIS JS ESM through @arcgis/core has replaced `arcgis-js-api`
+
+~~ESRI ArcGIS JS will be compiled using ArcGIS Webpack plugin https://github.com/Esri/arcgis-webpack-plugin which uses Dojo Webpack Plugin underneath.~~
 
 Use of esri-loader is discouraged for overall consistency and portability of the application.
 
@@ -45,9 +48,6 @@ Go to https://bishrant.github.io/mapmyproperty to view it live.
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 ## Build
 

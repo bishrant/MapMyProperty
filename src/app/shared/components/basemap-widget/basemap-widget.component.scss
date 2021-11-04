@@ -92,8 +92,9 @@ title {
 select {
   display: block;
   margin: auto;
-  width: 10em;
-  height: 2em;
+  width: 13em;
+  height: 1.75em;
+  margin-top: 0.5em;
   border: 1px solid black;
   box-shadow: 0 0 1px;
 }
@@ -141,10 +142,10 @@ select {
 }
 
 .texasimagery {
-  height: 8em;
-  width: 12em;
-  display: block;
-  margin: 1em auto 0em;
+  height: 6.5em;
+  width: 10em;
+  display: inline-block;
+  // margin: 1em auto 0em;
   text-align: center;
 }
 
