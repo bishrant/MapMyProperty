@@ -4,10 +4,11 @@ import Basemap from '@arcgis/core/Basemap';
 import Layer from '@arcgis/core/layers/Layer';
 import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
 import { createBingBasemap } from '../../utils/CreateMapView';
-import { googleWMSlayer, texasBasemaps, texasBasemapsDict } from '../../layers/NAIPLayers';
+import { googleWMSlayer, infraredBasemapsDict, nationalNaip, naturalColorBasemapsDict } from '../../layers/NAIPLayers';
 import { WidgetToggleService } from '../../services/WidgetToggleService';
 import { Subscription } from 'rxjs';
 import MapView from '@arcgis/core/views/MapView';
+import ImageryTileLayer from '@arcgis/core/layers/ImageryTileLayer';
 const watchUtils = require('@arcgis/core/core/watchUtils');
 
 @Component({
@@ -19,20 +20,24 @@ export class BasemapWidgetComponent implements AfterViewInit, OnDestroy {
   basemapObject: Basemap;
   loadingBaseLayer: Layer;
   @Input() mapView: MapView;
-  texasImageryVisible = false;
+  naturalColorImageryVisible = false;
+  infraredImageryVisible = false;
   updatedDate: Date;
   loading = false;
   showBasemapLabel = true;
-  texasBasemaps= texasBasemaps;
-  texasBasemapsDict = texasBasemapsDict;
+  naturalColorBasemaps= Object.keys(naturalColorBasemapsDict);
+  naturalColorBasemapsDict = naturalColorBasemapsDict;
+  infraredBasemaps= Object.keys(infraredBasemapsDict);
+  infraredBasemapsDict = infraredBasemapsDict;
+
   googleWMSlayer = googleWMSlayer;
   subscriptions$ : Subscription;
 
   basemaps: any = [
     { label: 'Bing Hybrid', value: 'bing', image: 'bing' },
     { label: 'Aerial', value: 'satellite', image: 'aerial' },
+    { label: 'NAIP', value: 'naip', image: 'naip' },
     { label: 'Streets', value: 'streets', image: 'streets' },
-    { label: 'Topographic', value: 'topo', image: 'topo' },
     { label: 'USA Topo', value: 'usa-topo', image: 'usa-topo' },
     { label: 'USGS', value: 'usgs', image: 'usgs' }
   ];
@@ -42,29 +47,59 @@ export class BasemapWidgetComponent implements AfterViewInit, OnDestroy {
     basemap: this.basemaps[0]
   };
 
-  selectedTexasBasemap = this.texasBasemaps[0];
+  selectedNaturalColorBasemap = this.naturalColorBasemaps[0];
+  selectedInfraredBasemap = this.infraredBasemaps[0];
 
   toggle () {
     this.widgetToggleService.changeWidgetView('basemap', this.state.open);
     this.state.open = !this.state.open;
   }
 
-  toggleTexasImagery () {
-    this.texasImageryVisible = !this.texasImageryVisible;
-    this.changeTexasBasemap(!this.texasImageryVisible);
+  toggleNaturalColorImagery () {
+    this.infraredImageryVisible = false;
+    this.naturalColorImageryVisible = !this.naturalColorImageryVisible;
+    this.changeNaturalColorBasemap(!this.naturalColorImageryVisible);
   }
 
-  changeTexasBasemap (removeAll: boolean) {
+  toggleInfraredImagery () {
+    this.naturalColorImageryVisible = false;
+    this.infraredImageryVisible = !this.infraredImageryVisible;
+    this.changeInfraredBasemap(!this.infraredImageryVisible);
+  }
+
+  changeNaturalColorBasemap (removeAll: boolean) {
     this.mapView.map.basemap.baseLayers.forEach(b => {
-      if (this.texasBasemaps.includes(b.id)) {
+      if (this.naturalColorBasemaps.includes(b.id) || this.infraredBasemaps.includes(b.id)) {
         this.mapView.map.basemap.baseLayers.remove(b);
       }
     });
 
     if (!removeAll) {
-      this.mapView.map.basemap.baseLayers.add(this.texasBasemapsDict[this.selectedTexasBasemap]);
+      const _b = this.naturalColorBasemapsDict[this.selectedNaturalColorBasemap];
+      this.state.basemap = { ..._b, label: this.selectedNaturalColorBasemap };
+      this.mapView.map.basemap.baseLayers.add(this.naturalColorBasemapsDict[this.selectedNaturalColorBasemap]);
       this.basemapObject = this.mapView.map.basemap;
       this.loadingBaseLayer = this.mapView.map.basemap.baseLayers.getItemAt(1);
+    } else {
+      this.state.basemap = this.basemaps[0];
+    }
+  }
+
+  changeInfraredBasemap (removeAll: boolean) {
+    this.mapView.map.basemap.baseLayers.forEach(b => {
+      if (this.naturalColorBasemaps.includes(b.id) || this.infraredBasemaps.includes(b.id)) {
+        this.mapView.map.basemap.baseLayers.remove(b);
+      }
+    });
+
+    if (!removeAll) {
+      const _b = this.infraredBasemapsDict[this.selectedInfraredBasemap];
+      this.state.basemap = { ..._b, label: this.selectedInfraredBasemap };
+      this.mapView.map.basemap.baseLayers.add(this.infraredBasemapsDict[this.selectedInfraredBasemap]);
+      this.basemapObject = this.mapView.map.basemap;
+      this.loadingBaseLayer = this.mapView.map.basemap.baseLayers.getItemAt(1);
+    } else {
+      this.state.basemap = this.basemaps[0];
     }
   }
 
@@ -77,6 +112,8 @@ export class BasemapWidgetComponent implements AfterViewInit, OnDestroy {
 
   usa_topo = this.createBasemap(new MapImageLayer({ url: 'https://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer', id: 'usa-topo' }), 'usa-topo');
   usgs = this.createBasemap(new MapImageLayer({ url: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer' }), 'usgs');
+  naip = this.createBasemap(nationalNaip, 'naip');
+
   google = this.createBasemap(this.googleWMSlayer, 'texas');
   bing = createBingBasemap();
 
@@ -84,13 +121,15 @@ export class BasemapWidgetComponent implements AfterViewInit, OnDestroy {
     bing: this.bing,
     'usa-topo': this.usa_topo,
     usgs: this.usgs,
-    texas: this.google
+    texas: this.google,
+    naip: this.naip
   }
 
   setBasemap (basemap: any) {
     if (this.state.basemap !== basemap) {
       this.state.basemap = basemap;
-      this.texasImageryVisible = false;
+      this.naturalColorImageryVisible = false;
+      this.infraredImageryVisible = false;
 
       if (['satellite', 'topo', 'streets'].includes(basemap.value)) {
         this.basemapObject = Basemap.fromId(basemap.value);

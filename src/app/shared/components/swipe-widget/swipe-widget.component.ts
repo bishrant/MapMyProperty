@@ -1,10 +1,11 @@
 import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import Collection from '@arcgis/core/core/Collection';
 import Layer from '@arcgis/core/layers/Layer';
+import MapImageLayer from '@arcgis/core/layers/MapImageLayer';
 import MapView from '@arcgis/core/views/MapView';
 import Swipe from '@arcgis/core/widgets/Swipe';
 import { Subscription } from 'rxjs';
-import { googleWMSlayer, texasBasemaps, texasBasemapsDict } from '../../layers/NAIPLayers';
+import { googleWMSlayer, infraredBasemapsDict, nationalNaip, naturalColorBasemapsDict } from '../../layers/NAIPLayers';
 import { LoaderService } from '../../services/Loader.service';
 import { WidgetToggleService } from '../../services/WidgetToggleService';
 
@@ -16,8 +17,10 @@ import { WidgetToggleService } from '../../services/WidgetToggleService';
 export class SwipeWidgetComponent implements AfterViewInit, OnDestroy {
   loadingBaseLayer: Layer;
   @Input() mapView: MapView;
-  texasBasemaps = texasBasemaps;
-  texasBasemapsDict = texasBasemapsDict;
+
+  basemapDict = { ...naturalColorBasemapsDict, ...infraredBasemapsDict, 'National NAIP': nationalNaip, 'USA Topo': new MapImageLayer({ url: 'https://services.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer', id: 'usa-topo' }) };
+  basemaps= Object.keys(this.basemapDict);
+
   googleWMSlayer = googleWMSlayer;
   subscriptions$ : Subscription;
   state: any = {
@@ -25,8 +28,8 @@ export class SwipeWidgetComponent implements AfterViewInit, OnDestroy {
   };
 
   swipeWidget: Swipe;
-  firstLayer = this.texasBasemaps[0];
-  secondLayer = this.texasBasemaps[this.texasBasemaps.length - 1];
+  firstLayer = this.basemaps[0];
+  secondLayer = this.basemaps[this.basemaps.length - 1];
   swipeMode = 'horizontal';
 
   setSwipeMode (e) {
@@ -37,7 +40,7 @@ export class SwipeWidgetComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit () { (<any>window).mapView = this.mapView; }
 
   changeSwipeLayers (order: string) {
-    const newLayer = (order === 'leading') ? this.texasBasemapsDict[this.firstLayer] : this.texasBasemapsDict[this.secondLayer];
+    const newLayer = (order === 'leading') ? this.basemapDict[this.firstLayer] : this.basemapDict[this.secondLayer];
     const existing = (order === 'leading') ? this.swipeWidget.leadingLayers.getItemAt(0) : this.swipeWidget.trailingLayers.getItemAt(0);
     if (existing.id !== newLayer.id) {
       this.mapView.map.remove(existing);
@@ -74,8 +77,8 @@ export class SwipeWidgetComponent implements AfterViewInit, OnDestroy {
     this.state.open = !this.state.open;
     if (this.state.open) {
       if (this.swipeWidget) { this.swipeWidget.destroy() }
-      const _first = this.texasBasemapsDict[this.firstLayer];
-      const _second = this.texasBasemapsDict[this.secondLayer];
+      const _first = this.basemapDict[this.firstLayer];
+      const _second = this.basemapDict[this.secondLayer];
       this.mapView.map.addMany([_first, _second], this.mapView.map.layers.length - 3);
 
       this.loadingService.isLoading.next(true);
@@ -90,7 +93,7 @@ export class SwipeWidgetComponent implements AfterViewInit, OnDestroy {
       this.mapView.ui.add(this.swipeWidget);
     } else {
       if (this.swipeWidget) { this.swipeWidget.destroy() }
-      this.mapView.map.removeMany([this.texasBasemapsDict[this.firstLayer], this.texasBasemapsDict[this.secondLayer]])
+      this.mapView.map.removeMany([this.basemapDict[this.firstLayer], this.basemapDict[this.secondLayer]])
     }
     this.widgetToggleService.changeWidgetView('swipe', this.state.open);
   }
