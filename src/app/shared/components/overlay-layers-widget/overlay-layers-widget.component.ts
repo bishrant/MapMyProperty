@@ -52,7 +52,7 @@ export class OverlayLayersWidgetComponent implements OnInit, OnDestroy {
 
   wetAreasLegendList: any[] = [];
 
-  private wetAreasUrl = 'https://www.fws.gov/wetlandsmapper/rest/services/Wetlands/MapServer';
+  private wetAreasUrl = 'https://fwsprimary.wim.usgs.gov/server/rest/services/Wetlands/MapServer';
 
   initializeAllLayers = () => {
     this.contoursLayer = CreateMapLayer(
