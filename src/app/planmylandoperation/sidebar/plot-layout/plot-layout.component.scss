@@ -19,10 +19,15 @@
     border: 3px solid red;
 }
 
-.subMenuContainer {
-    margin-right: 1em;
+// .subMenuContainer {
+//     margin-right: 1em;
+//     margin-left: 1em;
+// }
+
+.subMenuContainer label {
+    width: 6.25rem;
 }
 
 .subMenuContainer input {
-    max-width: 3.25em;
+    width: 6.25rem;
 }

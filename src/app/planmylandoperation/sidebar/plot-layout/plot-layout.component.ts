@@ -19,7 +19,8 @@ export class PlotLayoutComponent implements OnInit {
   ];
 
   selectedImage: string = 'SW';
-  plotSpacingValue: number = 5.5;
+  plotWithinRowValue: number = 5.5;
+  plotBetweenRowValue: number = 5.5;
   selectedRadio: string = 'chains';
   waypointPrefixValue: string = 'A';
   initialPlotValue: number = 1;
