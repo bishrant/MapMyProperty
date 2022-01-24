@@ -9,6 +9,7 @@ export class EsrimapService {
   @Output() soilsAccordionOpen:EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() harvOpAccordionOpen:EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() regOpAccordionOpen:EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() plotLayoutAccordionOpen:EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() closeAllPanelsExcept:EventEmitter<string> = new EventEmitter<string>();
 
   public setActivePanel (panel: AccordionPanelComponent) {
@@ -33,6 +34,9 @@ export class EsrimapService {
       case 'Soils':
         this.soilsAccordionOpen.emit(panelOpened);
         break;
+
+      case 'Plot Layout':
+        this.plotLayoutAccordionOpen.emit(panelOpened);
     }
   }
 

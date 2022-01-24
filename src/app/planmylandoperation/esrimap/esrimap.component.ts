@@ -169,26 +169,26 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
       this.mapView.whenLayerView(this.polygonGraphicsLayer).then((boundaryLayerView) => {
         boundaryLayerView.watch('updating', (val) => {
           if (val) {
-            let soilsGLHasPolygons: boolean = true;
+            // let soilsGLHasPolygons: boolean = true;
             let sensAreasGLHasPolygons: boolean = true;
             const pmloSoilsGL: GraphicsLayer = this.mapView.map.findLayerById('pmloSoilsGL') as GraphicsLayer;
             const sensAreasGL: GraphicsLayer = this.mapView.map.findLayerById('sensAreasGL') as GraphicsLayer;
 
             if (GetPolygonGraphics(boundaryLayerView.layer as GraphicsLayer).length === 0) {
               this.boundaryHasPolygons = false;
-              soilsGLHasPolygons = false;
+              // soilsGLHasPolygons = false;
               sensAreasGLHasPolygons = false;
             } else {
               this.boundaryHasPolygons = true;
               if (pmloSoilsGL.graphics.length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
-                soilsGLHasPolygons = false;
+                // soilsGLHasPolygons = false;
               }
 
               if (sensAreasGL.graphics.length === 0 || (sensAreasGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as GraphicsLayer, sensAreasGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
                 sensAreasGLHasPolygons = false;
               }
             }
-            this.mapViewService.boundaryHasPolygons.emit(soilsGLHasPolygons);
+            this.mapViewService.boundaryHasPolygons.emit(this.boundaryHasPolygons);
             this.mapViewService.sensAreasGLHasPolygons.emit(sensAreasGLHasPolygons);
           }
         });
@@ -243,6 +243,10 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.esrimapService.regOpAccordionOpen.subscribe((open: boolean) => {
       this.regenerationAccPanel.opened = open;
+    });
+
+    this.esrimapService.plotLayoutAccordionOpen.subscribe((open: boolean) => {
+      this.plotLayoutAccPanel.opened = open;
     });
 
     this.esrimapService.closeAllPanelsExcept.subscribe((panelTitle: string) => this.closeOtherPanels(panelTitle));

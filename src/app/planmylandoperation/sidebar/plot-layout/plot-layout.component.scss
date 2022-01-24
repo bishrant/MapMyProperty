@@ -11,8 +11,8 @@
 }
 
 .plotDirectionImg {
-    width: 3.438em;
-    cursor: pointer;
+    width: 5rem;
+    //cursor: pointer;
 }
 
 .selectedImage {
@@ -24,10 +24,19 @@
 //     margin-left: 1em;
 // }
 
-.subMenuContainer label {
-    width: 6.25rem;
+.subMenuContainer .md-input-box label {
+    width: 6.5rem;
 }
 
-.subMenuContainer input {
-    width: 6.25rem;
+.subMenuContainer .md-input-box {
+    width: 5rem;
+}
+
+input:disabled {
+    cursor:not-allowed;
+    opacity: 0.38;
+}
+
+.disabled {
+    opacity: 0.38;
 }
