@@ -22,14 +22,18 @@ const areaGraphicsToGPX = (gJson: any, name: string = 'area') => {
   return _gpx
 }
 
-const pointGraphicsToGPX = (gJson: any) => {
+const pointGraphicsToGPX = (gJson: any, name:string = null) => {
   const _g = createWebMercatorPointFromGraphic(gJson);
-  return `<wpt lat="${_g.y}" lon="${_g.x}"></wpt><name>pt</name>\n`;
+  if (name) {
+    return `<wpt lat="${_g.y}" lon="${_g.x}"><name>${name}</name></wpt>\n`;
+  } else {
+    return `<wpt lat="${_g.y}" lon="${_g.x}"><name>pt</name></wpt>\n`;
+  }
 };
 
 const textGraphicsToGPX = (gJson: any) => {
   const _g = createWebMercatorPointFromGraphic(gJson);
-  return `<wpt lat="${_g.y}" lon="${_g.x}"></wpt><name>${gJson.attributes.symbol.text}</name>\n`;
+  return `<wpt lat="${_g.y}" lon="${_g.x}"><name>${gJson.attributes.symbol.text}</name></wpt>\n`;
 };
 
 const lineGraphicsToGPX = (gJson: any) => {
@@ -58,28 +62,32 @@ const gpxToGeoJson = (xml: any) => {
   return convertFeatureCollectionToGraphics(featureCollection);
 };
 
-const createGPXForExport = (graphicsArray: any) => {
+const createGPXForExport = (graphicsArray: any, isFromPlotTool:boolean = false) => {
   const placeMarksArray: any = []
   graphicsArray.forEach((g: any) => {
     const _gJson = JSON.parse(g)
-    switch (_gJson.attributes.geometryType) {
-      case 'text':
-        placeMarksArray.push(textGraphicsToGPX(_gJson));
-        break;
-      case 'point':
-        placeMarksArray.push(pointGraphicsToGPX(_gJson));
-        break;
-      case 'polyline':
-        placeMarksArray.push(lineGraphicsToGPX(_gJson));
-        break;
-      case 'polygon':
-        placeMarksArray.push(areaGraphicsToGPX(_gJson));
-        break;
-      case 'circle':
-        placeMarksArray.push(areaGraphicsToGPX(_gJson, 'circle'));
-        break;
-      default:
-        break;
+    if (isFromPlotTool === false) {
+      switch (_gJson.attributes.geometryType) {
+        case 'text':
+          placeMarksArray.push(textGraphicsToGPX(_gJson));
+          break;
+        case 'point':
+          placeMarksArray.push(pointGraphicsToGPX(_gJson));
+          break;
+        case 'polyline':
+          placeMarksArray.push(lineGraphicsToGPX(_gJson));
+          break;
+        case 'polygon':
+          placeMarksArray.push(areaGraphicsToGPX(_gJson));
+          break;
+        case 'circle':
+          placeMarksArray.push(areaGraphicsToGPX(_gJson, 'circle'));
+          break;
+        default:
+          break;
+      }
+    } else {
+      placeMarksArray.push(pointGraphicsToGPX(_gJson, _gJson.attributes.plotName));
     }
   })
   return mergeWayPtsToGPX(placeMarksArray)

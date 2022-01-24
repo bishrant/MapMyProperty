@@ -11,6 +11,9 @@ import Graphic from '@arcgis/core/Graphic';
 import { EsrimapService } from '../../esrimap/esrimap.service';
 import { GetFeaturesAreaAcres } from 'src/app/shared/utils/GeometryEngine';
 import { MapviewService } from 'src/app/shared/services/mapview.service';
+import { downloadFile } from 'src/app/shared/utils/DownloadFile';
+import { createGPXForExport } from 'src/app/shared/utils/GPXUtils';
+import Collection from '@arcgis/core/core/Collection';
 
 @Component({
   selector: 'pmlo-plot-layout',
@@ -22,23 +25,13 @@ export class PlotLayoutComponent implements OnInit {
   @Input() mapView: any;
 
   accordionOpened: boolean = false;
+  plotsInMap:boolean = false;
 
-  // plotDirections: any[] = [
-  //   { orientation: 'SW' },
-  //   { orientation: 'NW' },
-  //   { orientation: 'NE' },
-  //   { orientation: 'SE' }
-  // ];
-
-  // selectedImage: string = 'SW';
   plotWithinRowValue: number = 0;
   plotBetweenRowValue: number = 0;
   selectedRadio: string = 'feet';
   rotationAngleValue: number = 0;
   gpxPrefixValue: string = 'A';
-  // waypointPrefixValue: string = 'A';
-  // initialPlotValue: number = 1;
-  plotsInMap:boolean = false;
 
   private plotsGL: GraphicsLayer = CreateGL('plotsGL', 1);
   private userGL: GraphicsLayer;
@@ -148,7 +141,10 @@ export class PlotLayoutComponent implements OnInit {
   }
 
   createGPSReport (): void {
-    console.log('report');
+    const plotGraphics: Collection<Graphic> = this.plotsGL.graphics;
+    const exportJSon = this.convertToExportJson(plotGraphics.filter((g: Graphic) => g.symbol.type === 'simple-marker'));
+
+    downloadFile('PMLO_Plots.gpx', createGPXForExport(exportJSon, true), 'application/xml');
   }
 
   validateRotationAngle (): void {
@@ -157,6 +153,16 @@ export class PlotLayoutComponent implements OnInit {
     }
 
     this.plotDirectionImgEl.nativeElement.style.transform = `rotate(${this.rotationAngleValue.toString()}deg)`;
+  }
+
+  private convertToExportJson (plotGraphics: Collection<Graphic>): any {
+    console.log(plotGraphics);
+    const jsonGraphics = [];
+    plotGraphics.forEach((g: Graphic) => {
+      g.setAttribute('plotName', this.gpxPrefixValue + ('000' + g.attributes.OBJECTID.toString()).slice(-3));
+      jsonGraphics.push(JSON.stringify(g.toJSON()));
+    });
+    return jsonGraphics;
   }
 
   private convertToMeters (value: number): number {
