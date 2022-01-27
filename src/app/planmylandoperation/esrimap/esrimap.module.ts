@@ -40,6 +40,8 @@ import { SoilsHelpComponent } from '../help-templates/soils-help/soils-help.comp
 import { SoilsTableComponent } from '../sidebar/soils/soils-table/soils-table.component';
 import { SwipeHelpModule } from 'src/app/shared/components/help-components/swipe-help/swipe-help.module';
 import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-widget.module';
+import { PlotLayoutModule } from '../sidebar/plot-layout/plot-layout.module';
+import { PlotLayoutHelpComponent } from '../help-templates/plot-layout-help/plot-layout-help.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +57,8 @@ import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-
     SensAreasHelpComponent,
     SoilsComponent,
     SoilsHelpComponent,
-    SoilsTableComponent
+    SoilsTableComponent,
+    PlotLayoutHelpComponent
   ],
   imports: [
     AccordionPanelModule,
@@ -85,7 +88,8 @@ import { SwipeWidgetModule } from 'src/app/shared/components/swipe-widget/swipe-
     SitePoliciesModule,
     SliderModule,
     SwipeHelpModule,
-    SwipeWidgetModule
+    SwipeWidgetModule,
+    PlotLayoutModule
   ],
   exports: [EsrimapComponent]
 })

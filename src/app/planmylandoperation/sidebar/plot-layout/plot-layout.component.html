@@ -1,0 +1,102 @@
+<div class="py-3">
+    <div>
+        <app-help-button [header]="'Plot Spacing'" [itemName]="'plotLayout'"></app-help-button>
+    </div>
+
+    <div class="fw-600 mt-3 mb-2">Plot Spacing</div>
+    <div class="mt-2 flex">
+        <div class="mt-1">
+            <label class="inline-flex cursor-pointer">
+                <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer"
+                    name="spacingUnit" value="feet" (change)="radioChanged($event.target.value)"
+                    [checked]="selectedRadio === 'feet'">
+                <span class="ml-2">feet</span>
+            </label>
+        </div>
+        <div class="mt-1 ml-3">
+            <label class="inline-flex cursor-pointer">
+                <input type="radio" class="form-radio border-pmlo_secondary text-pmlo_secondary mt-1 cursor-pointer"
+                    name="spacingUnit" value="chains" (change)="radioChanged($event.target.value)"
+                    [checked]="selectedRadio === 'chains'">
+                <span class="ml-2">chains</span>
+            </label>
+        </div>
+    </div>
+    <br>
+    <div class="flex">
+        <div class="subMenuContainer">
+            <div class="md-input-main">
+                <div class="md-input-box">
+                    <input id="withinRow" class="pmlo-md-input md-input text-center" type="number" min="0"
+                        [(ngModel)]="plotWithinRowValue" aria-label="within row spacing" (change)="distanceChanged()"/>
+                    <label for="withinRow" class="md-label text-pmlo_primary">Within row</label>
+                    <div class="pmlo-md-input-underline md-input-underline"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="subMenuContainer ml-3">
+            <div class="md-input-main">
+                <div class="md-input-box">
+                    <input id="betweenRow" class="pmlo-md-input md-input text-center" type="number" min="0"
+                        [(ngModel)]="plotBetweenRowValue" aria-label="between row spacing" (change)="distanceChanged()"/>
+                    <label for="betweenRow" class="md-label text-pmlo_primary">Between rows</label>
+                    <div class="pmlo-md-input-underline md-input-underline"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="fw-600">Plot Direction</div>
+    <div class="flex">
+        <img #plotDirectionImg class="plotDirectionImg m-3" src="assets/plot_layout/PlotSW.png"
+            alt="plot direction graphic" />
+        <div class="subMenuContainer self-end ml-3 mb-3">
+            <div class="md-input-main">
+                <div class="md-input-box">
+                    <input id="rotationAngleRow" class="pmlo-md-input md-input text-center" type="number"
+                        [(ngModel)]="rotationAngleValue" aria-label="rotation angle"
+                        (change)="validateRotationAngle()" />
+                    <label for="rotationAngleRow" class="md-label text-pmlo_primary">Rotation angle</label>
+                    <div class="pmlo-md-input-underline md-input-underline"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-center mt-3">
+        <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="runPlotLayout()">{{plotsInMap ? 'Clear' : 'Run'}}</button>
+    </div>
+
+    <!-- <div class="fw-600 mt-3 mb-2" *ngIf="plotsInMap" >GPS Waypoints Prefix</div> -->
+
+    <div class="flex my-4" *ngIf="plotsInMap">
+        <div class="reportParamContainer">
+            <div class="md-input-main">
+                <div class="md-input-box">
+                    <input id="ptReportTitle" name="soReportTitle" type="text" class="pmlo-md-input md-input" placeholder=" "
+                    [(ngModel)]="ptReportTitle" maxlength="40" />
+                  <label for="ptReportTitle" class="md-label text-pmlo_primary">Report Title</label>
+                  <div class="pmlo-md-input-underline md-input-underline"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reportParamContainer ml-3">
+            <div class="md-input-main">
+                <div class="md-input-box gpxPrefix-input-box">
+                    <input id="gpxPrefix" class="pmlo-md-input md-input text-center" type="text" maxlength="3"
+                    [(ngModel)]="gpxPrefixValue" aria-label="gps waypoints prefix value" />
+                <label for="gpxPrefix" class="md-label text-pmlo_primary gpxPrefixLabel">GPX point prefix</label>
+                <div class="pmlo-md-input-underline md-input-underline"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-center mt-3">
+        <button type="button" class="pmlo-btn pmlo-secondary generalBtn" [disabled]="!plotsInMap" (click)="createGPSReport()">Report / GPX</button>
+    </div>
+</div>

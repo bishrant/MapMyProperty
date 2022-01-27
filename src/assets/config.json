@@ -12,6 +12,7 @@
   "usWatershedLayerURL": "https://hydro.nationalmap.gov/arcgis/rest/services/wbd/MapServer/4",
   "soilsReportHydroParamsGPServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/MMPSuite/SoilsReportHydroParams/GPServer/Soils%20Report%20Hydrology%20Parameters",
   "geometryServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/Utilities/Geometry/GeometryServer",
+  "plotLayoutGPServiceURL": "https://tfsgis02.tfs.tamu.edu/arcgis/rest/services/MMPSuite/CreatePlotsLayout/GPServer/Create%20Sample%20Plots",
   "ssurgoTabularURL":  "https://SDMDataAccess.sc.egov.usda.gov/Tabular/post.rest",
   "ssurgoWMSURL": "https://sdmdataaccess.nrcs.usda.gov/Spatial/sdm.wms?",
   "geologyMapServerURL": "https://txgeo.usgs.gov/arcgis/rest/services/GDT/GeologicDatabaseOfTexas250K/MapServer",

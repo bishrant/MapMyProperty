@@ -1,0 +1,58 @@
+.imgIns {
+    font-size: 0.75em;
+}
+
+.spacingImg {
+    cursor: zoom-in;
+}
+
+.fw-600 {
+    font-weight: 600;
+}
+
+.plotDirectionImg {
+    width: 5rem;
+    //cursor: pointer;
+}
+
+.selectedImage {
+    border: 3px solid red;
+}
+
+// .subMenuContainer {
+//     margin-right: 1em;
+//     margin-left: 1em;
+// }
+
+// .subMenuContainer .md-input-box label {
+//     width: 6.5rem;
+// }
+
+// .subMenuContainer .md-input-box {
+//     width: 5rem;
+// }
+
+input:disabled {
+    cursor:not-allowed;
+    opacity: 0.38;
+}
+
+.disabled {
+    opacity: 0.38;
+}
+
+.gpxPrefixLabel {
+    width: 200px;
+}
+
+.prefixInputContainer {
+    width: 7.813rem;
+}
+
+.reportParamContainer .md-input-box label {
+    width: 7.5rem;
+}
+
+.gpxPrefix-input-box {
+    width: 6rem;
+}

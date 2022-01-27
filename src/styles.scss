@@ -215,8 +215,13 @@ $sliderBase: 6px;
 .helpModal .ui-modal-body {
   max-height: 25em;
   overflow-y: auto;
-  margin: .625em 1em;
-  padding: 0;
+  padding: .625em 1em;
+  // padding: 0;
+}
+
+.tourModal .ui-modal-body {
+  padding: 0 !important;
+  margin: .625em 1em !important;
 }
 
 .helpModal .ui-modal-footer {

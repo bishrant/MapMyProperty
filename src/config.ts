@@ -22,6 +22,7 @@ export class AppConfiguration {
   sensAreasGPServiceURL: string;
   bufferSensAreasGPServiceURL: string;
   severeSlopesGPServiceURL: string;
+  plotLayoutGPServiceURL: string;
   ssurgoTabularURL: string;
   ssurgoWMSURL: string;
   geologyMapServerURL: string;

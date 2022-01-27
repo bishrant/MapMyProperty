@@ -48,6 +48,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('harvestAccPanel') harvestAccPanel: AccordionPanelComponent;
   @ViewChild('regenerationAccPanel') regenerationAccPanel: AccordionPanelComponent;
   @ViewChild('culvertAccPanel') culvertAccPanel: AccordionPanelComponent;
+  @ViewChild('plotLayoutAccPanel') plotLayoutAccPanel: AccordionPanelComponent;
   @ViewChild('elevationAccPanel') elevationAccPanel: AccordionPanelComponent;
   @ViewChild('notificationsModal') notificationsModal: ModalComponent;
   @ViewChild('helpModal') helpModal: ModalComponent;
@@ -64,6 +65,7 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedGraphics!: any[] | undefined;
   sidebarVisible = window.innerWidth > 640;
   mapCoords: any;
+  boundaryHasPolygons: boolean = false;
 
   geomLabelsSketchVM: SketchViewModel = new SketchViewModel();
   geomLabelsGraphicsLayer: GraphicsLayer = new GraphicsLayer({ id: 'geomlabels' });
@@ -167,24 +169,26 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
       this.mapView.whenLayerView(this.polygonGraphicsLayer).then((boundaryLayerView) => {
         boundaryLayerView.watch('updating', (val) => {
           if (val) {
-            let soilsGLHasPolygons: boolean = true;
+            // let soilsGLHasPolygons: boolean = true;
             let sensAreasGLHasPolygons: boolean = true;
             const pmloSoilsGL: GraphicsLayer = this.mapView.map.findLayerById('pmloSoilsGL') as GraphicsLayer;
             const sensAreasGL: GraphicsLayer = this.mapView.map.findLayerById('sensAreasGL') as GraphicsLayer;
 
             if (GetPolygonGraphics(boundaryLayerView.layer as GraphicsLayer).length === 0) {
-              soilsGLHasPolygons = false;
+              this.boundaryHasPolygons = false;
+              // soilsGLHasPolygons = false;
               sensAreasGLHasPolygons = false;
             } else {
+              this.boundaryHasPolygons = true;
               if (pmloSoilsGL.graphics.length === 0 || (pmloSoilsGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as GraphicsLayer, pmloSoilsGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
-                soilsGLHasPolygons = false;
+                // soilsGLHasPolygons = false;
               }
 
               if (sensAreasGL.graphics.length === 0 || (sensAreasGL.graphics.length > 0 && FindGraphicById(boundaryLayerView.layer as GraphicsLayer, sensAreasGL.graphics.getItemAt(0).attributes.boundaryId) === undefined)) {
                 sensAreasGLHasPolygons = false;
               }
             }
-            this.mapViewService.boundaryHasPolygons.emit(soilsGLHasPolygons);
+            this.mapViewService.boundaryHasPolygons.emit(this.boundaryHasPolygons);
             this.mapViewService.sensAreasGLHasPolygons.emit(sensAreasGLHasPolygons);
           }
         });
@@ -239,6 +243,10 @@ export class EsrimapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.esrimapService.regOpAccordionOpen.subscribe((open: boolean) => {
       this.regenerationAccPanel.opened = open;
+    });
+
+    this.esrimapService.plotLayoutAccordionOpen.subscribe((open: boolean) => {
+      this.plotLayoutAccPanel.opened = open;
     });
 
     this.esrimapService.closeAllPanelsExcept.subscribe((panelTitle: string) => this.closeOtherPanels(panelTitle));

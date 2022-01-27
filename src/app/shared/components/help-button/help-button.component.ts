@@ -10,6 +10,7 @@ export class HelpbuttonComponent {
   @Input() header: string = 'Help';
   @Input() itemName: string = 'help';
   @Input() fillColor: string = '#353535';
+  @Input() icon: string = 'help';
   constructor (private helpService: HelpService) { }
 
   openHelp (): void {

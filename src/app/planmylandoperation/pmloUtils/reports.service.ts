@@ -23,4 +23,9 @@ export class ReportsService {
     const url = this.config.backendURL + 'CreateOpConsReport';
     return this.http.post<any>(url, data);
   }
+
+  getPlotLayoutReport (data: { content: string }): Observable<any> {
+    const url = this.config.backendURL + 'CreatePlotLayoutReport';
+    return this.http.post<any>(url, data);
+  }
 }
