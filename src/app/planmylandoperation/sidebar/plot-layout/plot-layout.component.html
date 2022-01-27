@@ -1,6 +1,6 @@
 <div class="py-3">
     <div>
-        <app-help-button [header]="'Plot Spacing'"></app-help-button>
+        <app-help-button [header]="'Plot Spacing'" [itemName]="'plotLayout'"></app-help-button>
     </div>
 
     <div class="fw-600 mt-3 mb-2">Plot Spacing</div>
@@ -28,7 +28,7 @@
             <div class="md-input-main">
                 <div class="md-input-box">
                     <input id="withinRow" class="pmlo-md-input md-input text-center" type="number" min="0"
-                        [(ngModel)]="plotWithinRowValue" aria-label="within row spacing" />
+                        [(ngModel)]="plotWithinRowValue" aria-label="within row spacing" (change)="distanceChanged()"/>
                     <label for="withinRow" class="md-label text-pmlo_primary">Within row</label>
                     <div class="pmlo-md-input-underline md-input-underline"></div>
                 </div>
@@ -39,7 +39,7 @@
             <div class="md-input-main">
                 <div class="md-input-box">
                     <input id="betweenRow" class="pmlo-md-input md-input text-center" type="number" min="0"
-                        [(ngModel)]="plotBetweenRowValue" aria-label="between row spacing" />
+                        [(ngModel)]="plotBetweenRowValue" aria-label="between row spacing" (change)="distanceChanged()"/>
                     <label for="betweenRow" class="md-label text-pmlo_primary">Between rows</label>
                     <div class="pmlo-md-input-underline md-input-underline"></div>
                 </div>
@@ -70,16 +70,28 @@
         <button type="button" class="pmlo-btn pmlo-secondary generalBtn" (click)="runPlotLayout()">{{plotsInMap ? 'Clear' : 'Run'}}</button>
     </div>
 
-    <br>
+    <!-- <div class="fw-600 mt-3 mb-2" *ngIf="plotsInMap" >GPS Waypoints Prefix</div> -->
 
-    <div class="fw-600 mb-2" [ngClass]="{'disabled': !plotsInMap}">GPS Waypoints Prefix</div>
-    <div class="subMenuContainer">
-        <div class="md-input-main">
-            <div class="md-input-box">
-                <input id="gpxPrefix" class="pmlo-md-input md-input text-center" [disabled]="!plotsInMap" type="text" maxlength="3"
+    <div class="flex my-4" *ngIf="plotsInMap">
+        <div class="reportParamContainer">
+            <div class="md-input-main">
+                <div class="md-input-box">
+                    <input id="ptReportTitle" name="soReportTitle" type="text" class="pmlo-md-input md-input" placeholder=" "
+                    [(ngModel)]="ptReportTitle" maxlength="40" />
+                  <label for="ptReportTitle" class="md-label text-pmlo_primary">Report Title</label>
+                  <div class="pmlo-md-input-underline md-input-underline"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reportParamContainer ml-3">
+            <div class="md-input-main">
+                <div class="md-input-box gpxPrefix-input-box">
+                    <input id="gpxPrefix" class="pmlo-md-input md-input text-center" type="text" maxlength="3"
                     [(ngModel)]="gpxPrefixValue" aria-label="gps waypoints prefix value" />
-                <label for="gpxPrefix" class="md-label text-pmlo_primary">Prefix</label>
+                <label for="gpxPrefix" class="md-label text-pmlo_primary gpxPrefixLabel">GPX point prefix</label>
                 <div class="pmlo-md-input-underline md-input-underline"></div>
+                </div>
             </div>
         </div>
     </div>

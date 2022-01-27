@@ -24,13 +24,13 @@
 //     margin-left: 1em;
 // }
 
-.subMenuContainer .md-input-box label {
-    width: 6.5rem;
-}
+// .subMenuContainer .md-input-box label {
+//     width: 6.5rem;
+// }
 
-.subMenuContainer .md-input-box {
-    width: 5rem;
-}
+// .subMenuContainer .md-input-box {
+//     width: 5rem;
+// }
 
 input:disabled {
     cursor:not-allowed;
@@ -39,4 +39,20 @@ input:disabled {
 
 .disabled {
     opacity: 0.38;
+}
+
+.gpxPrefixLabel {
+    width: 200px;
+}
+
+.prefixInputContainer {
+    width: 7.813rem;
+}
+
+.reportParamContainer .md-input-box label {
+    width: 7.5rem;
+}
+
+.gpxPrefix-input-box {
+    width: 6rem;
 }

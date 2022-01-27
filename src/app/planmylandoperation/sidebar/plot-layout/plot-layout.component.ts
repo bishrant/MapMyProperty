@@ -14,6 +14,9 @@ import { MapviewService } from 'src/app/shared/services/mapview.service';
 import { downloadFile } from 'src/app/shared/utils/DownloadFile';
 import { createGPXForExport } from 'src/app/shared/utils/GPXUtils';
 import Collection from '@arcgis/core/core/Collection';
+import { ReportsService } from '../../pmloUtils/reports.service';
+import { TraceMMPError } from 'src/app/shared/services/error/GPServiceError';
+import { createWebMercatorPointFromGraphic } from 'src/app/shared/utils/WebMercatorUtils';
 
 @Component({
   selector: 'pmlo-plot-layout',
@@ -32,8 +35,10 @@ export class PlotLayoutComponent implements OnInit {
   selectedRadio: string = 'feet';
   rotationAngleValue: number = 0;
   gpxPrefixValue: string = 'A';
+  ptReportTitle: string = '';
 
   private plotsGL: GraphicsLayer = CreateGL('plotsGL', 1);
+  private plotLabelsGL: GraphicsLayer = CreateGL('plotLabelsGL', 1);
   private userGL: GraphicsLayer;
   private pmloNote:NotificationModel = new NotificationModel();
 
@@ -42,13 +47,14 @@ export class PlotLayoutComponent implements OnInit {
     private loaderService: LoaderService,
     private plotLayoutService: PlotLayoutService,
     private esrimapService: EsrimapService,
-    private mapViewService: MapviewService
+    private mapViewService: MapviewService,
+    private reportsService: ReportsService
   ) {}
 
   ngOnInit (): void {
     this.mapViewService.boundaryHasPolygons.subscribe((val:boolean) => {
       if (val === false) {
-        this.plotsGL.removeAll();
+        this.removePlotGraphics();
         this.plotLayoutService.updatePlotsInMapState.emit(false);
       } else {
         if (this.plotsGL.graphics.length > 0) {
@@ -56,10 +62,9 @@ export class PlotLayoutComponent implements OnInit {
           const boundaryId = firstGraphic.getAttribute('boundaryId');
 
           const boundary = this.userGL.graphics.find((boundary:Graphic) => { return boundary.attributes.id === boundaryId });
-          console.log(boundary);
 
           if (!boundary) {
-            this.plotsGL.removeAll();
+            this.removePlotGraphics();
             this.plotLayoutService.updatePlotsInMapState.emit(false);
           }
         }
@@ -73,26 +78,41 @@ export class PlotLayoutComponent implements OnInit {
         if (polygonGraphics.length === 1) {
           const polygonAcres: number = GetFeaturesAreaAcres(polygonGraphics);
           if (polygonAcres < 50) {
-            this.plotWithinRowValue = 467;
-            this.plotBetweenRowValue = 467;
+            if (this.selectedRadio === 'feet') {
+              this.plotWithinRowValue = 467;
+              this.plotBetweenRowValue = 467;
+            } else {
+              this.plotWithinRowValue = 7.1;
+              this.plotBetweenRowValue = 7.1;
+            }
           } else if (polygonAcres > 100) {
-            this.plotWithinRowValue = 660;
-            this.plotBetweenRowValue = 660;
+            if (this.selectedRadio === 'feet') {
+              this.plotWithinRowValue = 660;
+              this.plotBetweenRowValue = 660;
+            } else {
+              this.plotWithinRowValue = 10;
+              this.plotBetweenRowValue = 10;
+            }
           } else {
-            this.plotWithinRowValue = 572;
-            this.plotBetweenRowValue = 572;
+            if (this.selectedRadio === 'feet') {
+              this.plotWithinRowValue = 572;
+              this.plotBetweenRowValue = 572;
+            } else {
+              this.plotWithinRowValue = 8.7;
+              this.plotBetweenRowValue = 8.7;
+            }
           }
         }
       }
     });
     this.userGL = this.mapView.map.findLayerById('userGraphicsLayer');
-    this.mapView.map.add(this.plotsGL);
+    this.mapView.map.addMany([this.plotsGL, this.plotLabelsGL]);
 
     this.plotLayoutService.updatePlotsInMapState.subscribe((value:boolean) => {
       this.plotsInMap = value;
 
       if (value === false) {
-        this.plotsGL.removeAll();
+        this.removePlotGraphics();
       }
     });
   }
@@ -101,16 +121,20 @@ export class PlotLayoutComponent implements OnInit {
     this.selectedRadio = unit;
 
     if (unit === 'chains') {
-      this.plotWithinRowValue /= 66;
-      this.plotBetweenRowValue /= 66;
+      this.plotWithinRowValue = Math.round(this.plotWithinRowValue / 66 * 10) / 10;
+      this.plotBetweenRowValue = Math.round(this.plotBetweenRowValue / 66 * 10) / 10;
     } else {
-      this.plotWithinRowValue *= 66;
-      this.plotBetweenRowValue *= 66;
+      this.plotWithinRowValue = Math.round(this.plotWithinRowValue * 66);
+      this.plotBetweenRowValue = Math.round(this.plotBetweenRowValue * 66);
     }
   }
 
+  distanceChanged ():void {
+    this.removePlotGraphics();
+  }
+
   runPlotLayout (): void {
-    this.plotsGL.removeAll();
+    this.removePlotGraphics();
     if (!this.plotsInMap) {
       const polygonGraphics = GetPolygonGraphics(this.userGL);
       if (polygonGraphics.length > 1) {
@@ -128,7 +152,7 @@ export class PlotLayoutComponent implements OnInit {
               this.notificationsService.openNotificationsModal.emit(this.pmloNote);
             } else {
               const boundaryId: string = inputBoundary.attributes.id;
-              this.plotLayoutService.addPlotsToMap(this.plotsGL, result[0], boundaryId);
+              this.plotLayoutService.addPlotsToMap(this.plotsGL, this.plotLabelsGL, result[0], boundaryId);
               this.plotLayoutService.updatePlotsInMapState.emit(true);
               this.loaderService.isLoading.next(false);
             }
@@ -141,10 +165,40 @@ export class PlotLayoutComponent implements OnInit {
   }
 
   createGPSReport (): void {
-    const plotGraphics: Collection<Graphic> = this.plotsGL.graphics;
-    const exportJSon = this.convertToExportJson(plotGraphics.filter((g: Graphic) => g.symbol.type === 'simple-marker'));
+    this.loaderService.isLoading.next(true);
+    const boundary:Graphic = this.userGL.graphics.filter(g => g.geometry.type === 'polygon').getItemAt(0);
+    Promise.all([
+      this.plotLayoutService.printMap(this.mapView, boundary.geometry.extent.clone().expand(1.1))
+    ]).then(response => {
+      const plotGraphics: Collection<Graphic> = this.plotsGL.graphics;
+      const exportJSon = this.convertToExportJson(plotGraphics.filter((g: Graphic) => g.symbol.type === 'simple-marker'));
 
-    downloadFile('PMLO_Plots.gpx', createGPXForExport(exportJSon, true), 'application/xml');
+      const reportParams:any = {
+        ProjectName: this.ptReportTitle,
+        ImageUrl: response[0].mapImage,
+        Acres: GetFeaturesAreaAcres(new Collection<Graphic>([boundary])),
+        Units: this.selectedRadio,
+        WithinRow: this.plotWithinRowValue,
+        BetweenRows: this.plotBetweenRowValue,
+        Plots: this.getPlotList(exportJSon)
+      };
+
+      this.reportsService.getPlotLayoutReport({ content: JSON.stringify(reportParams) }).subscribe(
+        (response: any) => {
+          downloadFile('PMLO_Plots.gpx', createGPXForExport(exportJSon, true), 'application/xml');
+          window.open(response.fileName, '_blank', 'noopener');
+          this.loaderService.isLoading.next(false);
+        },
+        (error: any) => {
+          this.loaderService.isLoading.next(false);
+          throw TraceMMPError('Error getting plot layout report', error.message, 'plot-layout.component:createGPSReport');
+        }
+      )
+    })
+      .catch((error: any) => {
+        this.loaderService.isLoading.next(false);
+        throw TraceMMPError('Error getting plot layout report', error.message, 'plot-layout.component:createGPSReport');
+      });
   }
 
   validateRotationAngle (): void {
@@ -153,10 +207,26 @@ export class PlotLayoutComponent implements OnInit {
     }
 
     this.plotDirectionImgEl.nativeElement.style.transform = `rotate(${this.rotationAngleValue.toString()}deg)`;
+    this.removePlotGraphics();
+  }
+
+  private getPlotList (exportJson:any): any {
+    const plotList = [];
+
+    exportJson.forEach((g: any) => {
+      const parsedG = JSON.parse(g);
+      const _g = createWebMercatorPointFromGraphic(parsedG);
+      plotList.push({
+        Id: parsedG.attributes.OBJECTID,
+        Latitude: _g.y,
+        Longitude: _g.x
+      });
+    })
+
+    return plotList;
   }
 
   private convertToExportJson (plotGraphics: Collection<Graphic>): any {
-    console.log(plotGraphics);
     const jsonGraphics = [];
     plotGraphics.forEach((g: Graphic) => {
       g.setAttribute('plotName', this.gpxPrefixValue + ('000' + g.attributes.OBJECTID.toString()).slice(-3));
@@ -167,5 +237,11 @@ export class PlotLayoutComponent implements OnInit {
 
   private convertToMeters (value: number): number {
     return this.selectedRadio === 'chains' ? value * 20.1168 : value * 0.3048;
+  }
+
+  private removePlotGraphics (): void {
+    this.plotsGL.removeAll();
+    this.plotLabelsGL.removeAll();
+    this.plotsInMap = false;
   }
 }

@@ -315,13 +315,13 @@ export class SoilsComponent implements OnInit {
         },
         (error:any) => {
           this.loaderService.isLoading.next(false);
-          throw TraceMMPError('Error getting soils report', error.message, 'soils.component:272');
+          throw TraceMMPError('Error getting soils report', error.message, 'soils.component:buildSoilsReport');
         }
       );
     })
       .catch((error:any) => {
         this.loaderService.isLoading.next(false);
-        throw TraceMMPError('Error getting soils report', error.message, 'soils.component:272');
+        throw TraceMMPError('Error getting soils report', error.message, 'soils.component:buildSoilsReport');
       });
   }
 
