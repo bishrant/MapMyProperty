@@ -51,7 +51,7 @@ const lineGraphicsToGPX = (gJson: any) => {
 const mergeWayPtsToGPX = (waypts: any) => {
   const GPX = `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="TexasForestInfo.com"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1"
-  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">\n<name>MMP</name>`;
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">\n`;
   const places = waypts.join('\n');
   return GPX + places + ' </gpx>';
 }
